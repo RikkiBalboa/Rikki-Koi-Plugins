@@ -95,6 +95,8 @@ namespace Plugins
             KKPRimRotateYBuffer = KKPRimRotateYDefault.Value.ToString();
             KKPRimSoft = KKPRimSoftDefault.Value;
             KKPRimSoftBuffer = KKPRimSoftDefault.Value.ToString();
+            UseKKPRim = UseKKPRimDefault.Value;
+            UseKKPRimBuffer = UseKKPRimDefault.Value.ToString();
             KKPRimColor = KKPRimColorDefault.Value;
         }
 
