@@ -24,7 +24,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.kkprimcontroller";
         public const string PluginName = "KKPRim Controller";
         public const string PluginNameInternal = Constants.Prefix + "_KKPRimController";
-        public const string PluginVersion = "1.1";
+        public const string PluginVersion = "1.2";
         internal static new ManualLogSource Logger;
         private Studio.Studio studio;
 
@@ -63,7 +63,7 @@ namespace Plugins
             KeyToggleGui = Config.Bind(
                 "Keyboard Shortcuts", "Open settings window",
                 new KeyboardShortcut(KeyCode.K, KeyCode.RightControl),
-                new ConfigDescription("Open a quick access window with the most common settings.")
+                new ConfigDescription("Open a window to control KKPRim values on selected characters/objects")
             );
 
             KKPRimAsDiffuseDefault = Config.Bind("Default Values", "Diffuse", 0f);
