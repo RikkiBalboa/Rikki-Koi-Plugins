@@ -24,7 +24,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.kkprimcontroller";
         public const string PluginName = "KKPRim Controller";
         public const string PluginNameInternal = Constants.Prefix + "_KKPRimController";
-        public const string PluginVersion = "1.0";
+        public const string PluginVersion = "1.1";
         internal static new ManualLogSource Logger;
         private static KKPRimController Instance;
         private Studio.Studio studio;
@@ -223,6 +223,17 @@ namespace Plugins
             }
         }
 
+        private void SaveAsDefaults()
+        {
+            KKPRimAsDiffuseDefault.Value = KKPRimAsDiffuse;
+            KKPRimIntensityDefault.Value = KKPRimIntensity;
+            KKPRimRotateXDefault.Value = KKPRimRotateX;
+            KKPRimRotateYDefault.Value = KKPRimRotateY;
+            KKPRimSoftDefault.Value = KKPRimSoft;
+            UseKKPRimDefault.Value = UseKKPRim;
+            KKPRimColorDefault.Value = KKPRimColor;
+        }
+
         private void UpdateKKPRimValues(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go)
         {
             if (mat.HasProperty("_UseKKPRim"))
@@ -385,6 +396,8 @@ namespace Plugins
                 LoadKKPRimValues();
             if (GUILayout.Button("Reset All"))
                 ResetKKPRimValues();
+            if (GUILayout.Button("Save As Defaults"))
+                SaveAsDefaults();
             GUI.DragWindow();
         }
 
