@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UIUtility", "src\UIUtility\UIUtility.shproj", "{E6EF7A17-9328-4821-AF19-BC2C175BF4DD}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "src\Shared\Shared.shproj", "{841FFFF7-1940-4B7B-B21F-83E2F16333D4}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.TextureContainer", "src\Shared.TextureContainer\Shared.TextureContainer.shproj", "{BEB828AE-5723-4086-940F-B6EB2465060C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0Solution Items", "0Solution Items", "{ABF81409-9E50-48BE-B11F-8D97CCE183BE}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.KKPRimController", "src\KKPRimController.KK\KK.KKPRimController.csproj", "{73CED555-9406-453D-98F5-39BA332647A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KKPRimController", "KKPRimController", "{1A1369F1-0B7E-4ED6-B938-4714A42A1866}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.KKPRimController", "src\KKPRimController.KKS\KKS.KKPRimController.csproj", "{FF395052-C2B4-4555-B335-5C71A7CDE58D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.KKPRimController", "src\KKPRimController.Core\Core.KKPRimController.shproj", "{B98974D5-D331-4E2E-9498-A54DD706C4F2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73CED555-9406-453D-98F5-39BA332647A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73CED555-9406-453D-98F5-39BA332647A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73CED555-9406-453D-98F5-39BA332647A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73CED555-9406-453D-98F5-39BA332647A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{73CED555-9406-453D-98F5-39BA332647A7} = {1A1369F1-0B7E-4ED6-B938-4714A42A1866}
+		{FF395052-C2B4-4555-B335-5C71A7CDE58D} = {1A1369F1-0B7E-4ED6-B938-4714A42A1866}
+		{B98974D5-D331-4E2E-9498-A54DD706C4F2} = {1A1369F1-0B7E-4ED6-B938-4714A42A1866}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\KKPRimController.Core\KKPRimController.Core.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
+		src\KKPRimController.Core\KKPRimController.Core.projitems*{b98974d5-d331-4e2e-9498-a54dd706c4f2}*SharedItemsImports = 13
+		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{beb828ae-5723-4086-940f-b6eb2465060c}*SharedItemsImports = 13
+		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
+		src\KKPRimController.Core\KKPRimController.Core.projitems*{ff395052-c2b4-4555-b335-5c71a7cde58d}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{ff395052-c2b4-4555-b335-5c71a7cde58d}*SharedItemsImports = 4
+	EndGlobalSection
+EndGlobal
