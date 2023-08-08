@@ -1,19 +1,19 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using ChaCustom;
+using HarmonyLib;
 using KK_Plugins.MaterialEditor;
+using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Studio;
-using HarmonyLib;
+using KKAPI.Utilities;
+using Studio;
+using System;
+using System.Linq;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialEditorCharaController;
 using static MaterialEditorAPI.MaterialAPI;
-using Studio;
-using System.Linq;
-using KKAPI.Utilities;
-using ChaCustom;
-using KKAPI;
 
 namespace Plugins
 {
@@ -26,7 +26,6 @@ namespace Plugins
         public const string PluginNameInternal = Constants.Prefix + "_KKPRimController";
         public const string PluginVersion = "1.1";
         internal static new ManualLogSource Logger;
-        private static KKPRimController Instance;
         private Studio.Studio studio;
 
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
@@ -37,8 +36,6 @@ namespace Plugins
         public static ConfigEntry<float> KKPRimSoftDefault { get; private set; }
         public static ConfigEntry<float> UseKKPRimDefault { get; private set; }
         public static ConfigEntry<Color> KKPRimColorDefault { get; private set; }
-
-        private readonly Harmony _harmony = new Harmony(PluginGUID);
 
 
         private readonly int uiWindowHash = ('K' << 24) | ('K' << 16) | ('P' << 8) | ('R' << 4) | ('i' << 4) | 'm';
@@ -80,7 +77,6 @@ namespace Plugins
         private void Awake()
         {
             Logger = base.Logger;
-            Instance = this;
 
             InitSettings();
             KKAPI.Studio.StudioAPI.StudioLoadedChanged += OnSceneLoaded;
@@ -138,10 +134,10 @@ namespace Plugins
                             UpdateKKPRimClothes(controller, i);
                     if (updateHair)
                         for (var i = 0; i < controller.ChaControl.objHair.Length; i++)
-                        UpdateKKPRimHair(controller, i);
+                            UpdateKKPRimHair(controller, i);
                     if (updateAccessories)
                         for (var i = 0; i < controller.ChaControl.GetAccessoryObjects().Length; i++)
-                        UpdateKKPRimAccessory(controller, i);
+                            UpdateKKPRimAccessory(controller, i);
                     if (updateBody)
                         UpdateKKPRimBody(controller);
                 }
@@ -350,14 +346,14 @@ namespace Plugins
                     bool flag35 = GUILayout.Button("", Colorbutton(KKPRimColor), GUILayout.ExpandWidth(true)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker);
                     if (flag35)
                     {
-                        Action<Color> act3 = delegate (Color c)
+                        void act3(Color c)
                         {
                             if (c != KKPRimColor)
                             {
                                 KKPRimColor = c;
                                 UpdateKKPRim();
                             }
-                        };
+                        }
                         ColorPicker(KKPRimColor, act3);
                     }
 
@@ -421,15 +417,12 @@ namespace Plugins
 
                 GUI.SetNextControlName(label);
                 buffer = GUILayout.TextField(buffer.ToString());
-                float valueBufferFloat = value;
-
                 var focused = GUI.GetNameOfFocusedControl();
                 if (focused != label)
                 {
                     if (!float.TryParse(buffer, out float x))
                         x = value;
-                    valueBufferFloat = x;
-
+                    float valueBufferFloat = x;
                     if (valueBufferFloat != value)
                         newValue = valueBufferFloat;
                     else if (sliderBuffer != value)
@@ -445,7 +438,7 @@ namespace Plugins
                     buffer = defaultValue.ToString();
                 }
 
-                if (value != newValue) 
+                if (value != newValue)
                 {
                     value = newValue;
                     UpdateKKPRim();
