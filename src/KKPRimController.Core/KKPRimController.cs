@@ -73,7 +73,7 @@ namespace Plugins
             KKPRimSoftDefault = Config.Bind("Default Values", "Soft", 1.5f);
             UseKKPRimDefault = Config.Bind("Default Values", "Use", 0f);
             KKPRimColorDefault = Config.Bind("Default Values", "Color", Color.white);
-            KKPRimSoftHairMaxValue= Config.Bind("Misc.", "Use", 20f);
+            KKPRimSoftHairMaxValue= Config.Bind("Misc.", "Max soft value for hair", 20f, new ConfigDescription("Hair shaders react differently to higher soft values. This limits the max value to be used on hair shaders"));
         }
 
         private void Awake()
@@ -242,7 +242,14 @@ namespace Plugins
                 controller.SetMaterialFloatProperty(slot, objectType, mat, "KKPRimIntensity", KKPRimIntensity, go);
                 controller.SetMaterialFloatProperty(slot, objectType, mat, "KKPRimRotateX", KKPRimRotateX, go);
                 controller.SetMaterialFloatProperty(slot, objectType, mat, "KKPRimRotateY", KKPRimRotateY, go);
-                controller.SetMaterialFloatProperty(slot, objectType, mat, "KKPRimSoft", KKPRimSoft, go);
+                controller.SetMaterialFloatProperty(
+                    slot,
+                    objectType,
+                    mat,
+                    "KKPRimSoft",
+                    (mat.name.ToLower().Contains("hair") & KKPRimSoft > KKPRimSoftHairMaxValue.Value) ? KKPRimSoftHairMaxValue.Value : KKPRimSoft,
+                    go
+                );
                 controller.SetMaterialFloatProperty(slot, objectType, mat, "UseKKPRim", UseKKPRim, go);
                 controller.SetMaterialColorProperty(slot, objectType, mat, "KKPRimColor", KKPRimColor, go);
             }
