@@ -36,6 +36,7 @@ namespace Plugins
         public static ConfigEntry<float> KKPRimSoftDefault { get; private set; }
         public static ConfigEntry<float> UseKKPRimDefault { get; private set; }
         public static ConfigEntry<Color> KKPRimColorDefault { get; private set; }
+        public static ConfigEntry<float> KKPRimSoftHairMaxValue { get; private set; }
 
 
         private readonly int uiWindowHash = ('K' << 24) | ('K' << 16) | ('P' << 8) | ('R' << 4) | ('i' << 4) | 'm';
@@ -72,6 +73,7 @@ namespace Plugins
             KKPRimSoftDefault = Config.Bind("Default Values", "Soft", 1.5f);
             UseKKPRimDefault = Config.Bind("Default Values", "Use", 0f);
             KKPRimColorDefault = Config.Bind("Default Values", "Color", Color.white);
+            KKPRimSoftHairMaxValue= Config.Bind("Misc.", "Use", 20f);
         }
 
         private void Awake()
@@ -388,14 +390,26 @@ namespace Plugins
             }
             GUILayout.EndVertical();
 
-            if (GUILayout.Button("Set Values"))
-                UpdateKKPRim();
-            if (GUILayout.Button("Load Values"))
-                LoadKKPRimValues();
-            if (GUILayout.Button("Reset All"))
-                ResetKKPRimValues();
-            if (GUILayout.Button("Save As Defaults"))
-                SaveAsDefaults();
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.BeginVertical();
+                {
+                    if (GUILayout.Button("Set Values"))
+                        UpdateKKPRim();
+                    if (GUILayout.Button("Reset All"))
+                        ResetKKPRimValues();
+                }
+                GUILayout.EndVertical();
+                GUILayout.BeginVertical();
+                {
+                    if (GUILayout.Button("Load Values"))
+                        LoadKKPRimValues();
+                    if (GUILayout.Button("Save As Defaults"))
+                        SaveAsDefaults();
+                }
+                GUILayout.EndVertical();
+            }
+            GUILayout.EndHorizontal();
             GUI.DragWindow();
         }
 
@@ -413,7 +427,7 @@ namespace Plugins
             GUILayout.BeginHorizontal();
             {
                 float newValue = value;
-                float sliderBuffer = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(300));
+                float sliderBuffer = GUILayout.HorizontalSlider(value, min, max, GUILayout.MinWidth(300));
 
                 GUI.SetNextControlName(label);
                 buffer = GUILayout.TextField(buffer.ToString());
