@@ -24,7 +24,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.kkprimcontroller";
         public const string PluginName = "KKPRim Controller";
         public const string PluginNameInternal = Constants.Prefix + "_KKPRimController";
-        public const string PluginVersion = "1.2";
+        public const string PluginVersion = "1.3";
         internal static new ManualLogSource Logger;
         private Studio.Studio studio;
 
@@ -137,7 +137,7 @@ namespace Plugins
                     if (updateHair)
                         for (var i = 0; i < controller.ChaControl.objHair.Length; i++)
                             UpdateKKPRimHair(controller, i);
-                    if (updateAccessories)
+                    if (updateAccessories | updateHair)
                         for (var i = 0; i < controller.ChaControl.GetAccessoryObjects().Length; i++)
                             UpdateKKPRimAccessory(controller, i);
                     if (updateBody)
@@ -162,7 +162,7 @@ namespace Plugins
                     KKPRimSoftBuffer = KKPRimSoft.ToString();
                     UseKKPRimBuffer = UseKKPRim.ToString();
 
-                    UpdateKKPRim();
+                    //UpdateKKPRim();
                 }
 
                 if (ociChar != null)
@@ -247,7 +247,7 @@ namespace Plugins
                     objectType,
                     mat,
                     "KKPRimSoft",
-                    (mat.name.ToLower().Contains("hair") & KKPRimSoft > KKPRimSoftHairMaxValue.Value) ? KKPRimSoftHairMaxValue.Value : KKPRimSoft,
+                    (mat.shader.name.ToLower().Contains("hair") & KKPRimSoft > KKPRimSoftHairMaxValue.Value) ? KKPRimSoftHairMaxValue.Value : KKPRimSoft,
                     go
                 );
                 controller.SetMaterialFloatProperty(slot, objectType, mat, "UseKKPRim", UseKKPRim, go);
@@ -276,7 +276,8 @@ namespace Plugins
             if (go != null)
                 foreach (var renderer in GetRendererList(go))
                     foreach (var material in GetMaterials(go, renderer))
-                        UpdateKKPRimValues(controller, slot, ObjectType.Accessory, material, go);
+                        if ((updateAccessories & !material.shader.name.ToLower().Contains("hair")) | updateHair & material.shader.name.ToLower().Contains("hair"))
+                            UpdateKKPRimValues(controller, slot, ObjectType.Accessory, material, go);
         }
 
         private void UpdateKKPRimBody(MaterialEditorCharaController controller)
