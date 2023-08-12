@@ -247,7 +247,7 @@ namespace Plugins
                     objectType,
                     mat,
                     "KKPRimSoft",
-                    (mat.shader.name.ToLower().Contains("hair") & KKPRimSoft > KKPRimSoftHairMaxValue.Value) ? KKPRimSoftHairMaxValue.Value : KKPRimSoft,
+                    (mat.shader.name.ToLower().Contains("hair") && KKPRimSoft > KKPRimSoftHairMaxValue.Value) ? KKPRimSoftHairMaxValue.Value : KKPRimSoft,
                     go
                 );
                 controller.SetMaterialFloatProperty(slot, objectType, mat, "UseKKPRim", UseKKPRim, go);
@@ -276,7 +276,7 @@ namespace Plugins
             if (go != null)
                 foreach (var renderer in GetRendererList(go))
                     foreach (var material in GetMaterials(go, renderer))
-                        if ((updateAccessories & !material.shader.name.ToLower().Contains("hair")) | updateHair & material.shader.name.ToLower().Contains("hair"))
+                        if ((updateAccessories && !material.shader.name.ToLower().Contains("hair")) | updateHair && material.shader.name.ToLower().Contains("hair"))
                             UpdateKKPRimValues(controller, slot, ObjectType.Accessory, material, go);
         }
 
