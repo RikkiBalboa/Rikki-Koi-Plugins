@@ -24,7 +24,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.kkprimcontroller";
         public const string PluginName = "KKPRim Controller";
         public const string PluginNameInternal = Constants.Prefix + "_KKPRimController";
-        public const string PluginVersion = "1.3";
+        public const string PluginVersion = "1.4";
         internal static new ManualLogSource Logger;
         private Studio.Studio studio;
 
@@ -112,7 +112,6 @@ namespace Plugins
             if (KeyToggleGui.Value.IsDown() && StudioAPI.InsideStudio)
             {
                 uiShow = !uiShow;
-                LoadKKPRimValues();
             }
         }
 
