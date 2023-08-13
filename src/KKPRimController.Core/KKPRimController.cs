@@ -436,9 +436,14 @@ namespace Plugins
                 float newValue = value;
                 float sliderBuffer = GUILayout.HorizontalSlider(value, min, max, GUILayout.MinWidth(300));
 
+
+                var focused = GUI.GetNameOfFocusedControl();
+                if (focused == label && (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return))
+                    GUI.FocusControl(null);
+
                 GUI.SetNextControlName(label);
                 buffer = GUILayout.TextField(buffer.ToString());
-                var focused = GUI.GetNameOfFocusedControl();
+
                 if (focused != label)
                 {
                     if (!float.TryParse(buffer, out float x))
