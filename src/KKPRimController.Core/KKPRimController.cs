@@ -115,20 +115,19 @@ namespace Plugins
             }
         }
 
-        private void UpdateKKPRim()
+        private void UpdateKKPRimRecursive(TreeNodeObject node, SceneController sceneController, ref int count)
         {
-            if (StudioAPI.InsideStudio)
+            if (Studio.Studio.Instance.dicInfo.TryGetValue(node, out ObjectCtrlInfo objectCtrlInfo))
             {
-                var objects = StudioAPI.GetSelectedObjects();
-                var sceneController = MEStudio.GetSceneController();
-                if (updateObjects)
-                    foreach (var objectCtrlInfo in objects)
-                        if (objectCtrlInfo is OCIItem ociItem)
-                            UpdateKKPRimObjects(sceneController, ociItem);
-
-                var ociChars = StudioAPI.GetSelectedCharacters();
-                foreach (var ociChar in ociChars)
+                if (objectCtrlInfo is OCIItem ociItem)
                 {
+                    count++;
+                    if (updateObjects)
+                        UpdateKKPRimObjects(sceneController, ociItem);
+                }
+                else if (objectCtrlInfo is OCIChar ociChar)
+                {
+                    count++;
                     var controller = GetController(ociChar.GetChaControl());
                     if (updateClothes)
                         for (var i = 0; i < controller.ChaControl.objClothes.Length; i++)
@@ -136,11 +135,27 @@ namespace Plugins
                     if (updateHair)
                         for (var i = 0; i < controller.ChaControl.objHair.Length; i++)
                             UpdateKKPRimHair(controller, i);
-                    if (updateAccessories | updateHair)
+                    if (updateAccessories || updateHair)
                         for (var i = 0; i < controller.ChaControl.GetAccessoryObjects().Length; i++)
                             UpdateKKPRimAccessory(controller, i);
                     if (updateBody)
                         UpdateKKPRimBody(controller);
+                }
+            }
+            foreach (var child in node.child)
+                UpdateKKPRimRecursive(child, sceneController, ref count);
+        }
+
+        private void UpdateKKPRim()
+        {
+            if (StudioAPI.InsideStudio)
+            {
+                var sceneController = MEStudio.GetSceneController();
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                {
+                    UpdateKKPRimRecursive(selectNodes[i], sceneController, ref count);
                 }
             }
         }
@@ -275,7 +290,7 @@ namespace Plugins
             if (go != null)
                 foreach (var renderer in GetRendererList(go))
                     foreach (var material in GetMaterials(go, renderer))
-                        if ((updateAccessories && !material.shader.name.ToLower().Contains("hair")) | updateHair && material.shader.name.ToLower().Contains("hair"))
+                        if ((updateAccessories && !material.shader.name.ToLower().Contains("hair")) || updateHair && material.shader.name.ToLower().Contains("hair"))
                             UpdateKKPRimValues(controller, slot, ObjectType.Accessory, material, go);
         }
 
