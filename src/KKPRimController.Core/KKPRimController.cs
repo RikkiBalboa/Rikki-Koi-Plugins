@@ -127,7 +127,7 @@ namespace Plugins
                 if (objectCtrlInfo is OCIItem ociItem)
                     foreach (var rend in GetRendererList(ociItem.objectItem))
                         foreach (var mat in GetMaterials(ociItem.objectItem, rend))
-                            UpdateKKPRimObjects(sceneController, ociItem.objectInfo.dicKey, mat);
+                            objUpdateFunc(sceneController, ociItem.objectInfo.dicKey, mat);
                 else if (objectCtrlInfo is OCIChar ociChar)
                     characterUpdateFunc(ociChar);
             }
