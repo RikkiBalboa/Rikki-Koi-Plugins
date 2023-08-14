@@ -115,35 +115,24 @@ namespace Plugins
             }
         }
 
-        private void UpdateKKPRimRecursive(TreeNodeObject node, SceneController sceneController, ref int count)
+        private void UpdateKKPRimRecursive(
+            TreeNodeObject node,
+            SceneController sceneController,
+            Action<SceneController, int, Material> objUpdateFunc,
+            Action<OCIChar> characterUpdateFunc
+        )
         {
             if (Studio.Studio.Instance.dicInfo.TryGetValue(node, out ObjectCtrlInfo objectCtrlInfo))
             {
                 if (objectCtrlInfo is OCIItem ociItem)
-                {
-                    count++;
-                    if (updateObjects)
-                        UpdateKKPRimObjects(sceneController, ociItem);
-                }
+                    foreach (var rend in GetRendererList(ociItem.objectItem))
+                        foreach (var mat in GetMaterials(ociItem.objectItem, rend))
+                            UpdateKKPRimObjects(sceneController, ociItem.objectInfo.dicKey, mat);
                 else if (objectCtrlInfo is OCIChar ociChar)
-                {
-                    count++;
-                    var controller = GetController(ociChar.GetChaControl());
-                    if (updateClothes)
-                        for (var i = 0; i < controller.ChaControl.objClothes.Length; i++)
-                            UpdateKKPRimClothes(controller, i);
-                    if (updateHair)
-                        for (var i = 0; i < controller.ChaControl.objHair.Length; i++)
-                            UpdateKKPRimHair(controller, i);
-                    if (updateAccessories || updateHair)
-                        for (var i = 0; i < controller.ChaControl.GetAccessoryObjects().Length; i++)
-                            UpdateKKPRimAccessory(controller, i);
-                    if (updateBody)
-                        UpdateKKPRimBody(controller);
-                }
+                    characterUpdateFunc(ociChar);
             }
             foreach (var child in node.child)
-                UpdateKKPRimRecursive(child, sceneController, ref count);
+                UpdateKKPRimRecursive(child, sceneController, objUpdateFunc, characterUpdateFunc);
         }
 
         private void UpdateKKPRim()
@@ -151,11 +140,10 @@ namespace Plugins
             if (StudioAPI.InsideStudio)
             {
                 var sceneController = MEStudio.GetSceneController();
-                int count = 0;
                 TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
                 for (int i = 0; i < selectNodes.Length; i++)
                 {
-                    UpdateKKPRimRecursive(selectNodes[i], sceneController, ref count);
+                    UpdateKKPRimRecursive(selectNodes[i], sceneController, UpdateKKPRimObjects, UpdateKKPRimCharacter);
                 }
             }
         }
@@ -175,8 +163,6 @@ namespace Plugins
                     KKPRimRotateYBuffer = KKPRimRotateY.ToString();
                     KKPRimSoftBuffer = KKPRimSoft.ToString();
                     UseKKPRimBuffer = UseKKPRim.ToString();
-
-                    //UpdateKKPRim();
                 }
 
                 if (ociChar != null)
@@ -301,22 +287,34 @@ namespace Plugins
                     UpdateKKPRimValues(controller, 0, ObjectType.Character, material, controller.ChaControl.gameObject);
         }
 
-        private void UpdateKKPRimObjects(SceneController controller, OCIItem ociItem)
+        private void UpdateKKPRimCharacter(OCIChar ociChar)
         {
-            foreach (var renderer in GetRendererList(ociItem.objectItem))
-                foreach (var material in GetMaterials(ociItem.objectItem, renderer))
+            var controller = GetController(ociChar.GetChaControl());
+            if (updateClothes)
+                for (var i = 0; i < controller.ChaControl.objClothes.Length; i++)
+                    UpdateKKPRimClothes(controller, i);
+            if (updateHair)
+                for (var i = 0; i < controller.ChaControl.objHair.Length; i++)
+                    UpdateKKPRimHair(controller, i);
+            if (updateAccessories || updateHair)
+                for (var i = 0; i < controller.ChaControl.GetAccessoryObjects().Length; i++)
+                    UpdateKKPRimAccessory(controller, i);
+            if (updateBody)
+                UpdateKKPRimBody(controller);
+        }
+
+        private void UpdateKKPRimObjects(SceneController controller, int id, Material material)
+        {
+            if (updateObjects)
+                if (material.HasProperty("_UseKKPRim"))
                 {
-                    if (material.HasProperty("_UseKKPRim"))
-                    {
-                        int objectId = MEStudio.GetObjectID(ociItem);
-                        controller.SetMaterialFloatProperty(objectId, material, "KKPRimAsDiffuse", KKPRimAsDiffuse);
-                        controller.SetMaterialFloatProperty(objectId, material, "KKPRimIntensity", KKPRimIntensity);
-                        controller.SetMaterialFloatProperty(objectId, material, "KKPRimRotateX", KKPRimRotateX);
-                        controller.SetMaterialFloatProperty(objectId, material, "KKPRimRotateY", KKPRimRotateY);
-                        controller.SetMaterialFloatProperty(objectId, material, "KKPRimSoft", KKPRimSoft);
-                        controller.SetMaterialFloatProperty(objectId, material, "UseKKPRim", UseKKPRim);
-                        controller.SetMaterialColorProperty(objectId, material, "KKPRimColor", KKPRimColor);
-                    }
+                    controller.SetMaterialFloatProperty(id, material, "KKPRimAsDiffuse", KKPRimAsDiffuse);
+                    controller.SetMaterialFloatProperty(id, material, "KKPRimIntensity", KKPRimIntensity);
+                    controller.SetMaterialFloatProperty(id, material, "KKPRimRotateX", KKPRimRotateX);
+                    controller.SetMaterialFloatProperty(id, material, "KKPRimRotateY", KKPRimRotateY);
+                    controller.SetMaterialFloatProperty(id, material, "KKPRimSoft", KKPRimSoft);
+                    controller.SetMaterialFloatProperty(id, material, "UseKKPRim", UseKKPRim);
+                    controller.SetMaterialColorProperty(id, material, "KKPRimColor", KKPRimColor);
                 }
         }
 
