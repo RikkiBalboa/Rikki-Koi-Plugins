@@ -24,7 +24,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.shadowcolorswapper";
         public const string PluginName = "ShadowColorSwapper";
         public const string PluginNameInternal = Constants.Prefix + "_ShadowColorSwapper";
-        public const string PluginVersion = "1.0";
+        public const string PluginVersion = "1.1";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<KeyboardShortcut> KeySwapShadowColors { get; private set; }

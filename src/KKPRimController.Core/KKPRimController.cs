@@ -24,7 +24,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.kkprimcontroller";
         public const string PluginName = "KKPRim Controller";
         public const string PluginNameInternal = Constants.Prefix + "_KKPRimController";
-        public const string PluginVersion = "1.5";
+        public const string PluginVersion = "1.6";
         internal static new ManualLogSource Logger;
         private Studio.Studio studio;
 
