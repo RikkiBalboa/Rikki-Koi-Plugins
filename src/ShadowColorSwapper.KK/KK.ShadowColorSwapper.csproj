@@ -63,6 +63,7 @@
     <Reference Include="KK_MaterialEditor, Version=3.1.23.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\mods\KK_MaterialEditor.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
