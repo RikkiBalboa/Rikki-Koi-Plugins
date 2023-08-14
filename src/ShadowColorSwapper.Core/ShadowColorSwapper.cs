@@ -77,6 +77,26 @@ namespace Plugins
             }
         }
 
+        private void UpdateShadowColorsRecursive(
+            TreeNodeObject node,
+            SceneController sceneController,
+            Action<SceneController, int, Material> objUpdateFunc,
+            Action<ChaControl> characterUpdateFunc
+        )
+        {
+            if (Studio.Studio.Instance.dicInfo.TryGetValue(node, out ObjectCtrlInfo objectCtrlInfo))
+            {
+                if (objectCtrlInfo is OCIItem ociItem)
+                    foreach (var rend in GetRendererList(ociItem.objectItem))
+                        foreach (var mat in GetMaterials(ociItem.objectItem, rend))
+                            objUpdateFunc(sceneController, ociItem.objectInfo.dicKey, mat);
+                else if (objectCtrlInfo is OCIChar ociChar)
+                    characterUpdateFunc(ociChar.GetChaControl());
+            }
+            foreach (var child in node.child)
+                UpdateShadowColorsRecursive(child, sceneController, objUpdateFunc, characterUpdateFunc);
+        }
+
         private void UpdateShadowColors()
         {
             if (StudioAPI.InsideStudio)
@@ -84,13 +104,9 @@ namespace Plugins
                 Logger.LogDebug("Updating shadow colors in Studio");
                 var objects = StudioAPI.GetSelectedObjects();
                 var sceneController = MEStudio.GetSceneController();
-                foreach (var objectCtrlInfo in objects)
-                    if (objectCtrlInfo is OCIItem ociItem)
-                        UpdateShadowColorsObjects(sceneController, ociItem);
-
-                var ociChars = StudioAPI.GetSelectedCharacters();
-                foreach (var ociChar in ociChars)
-                    UpdateCharaShadowColors(ociChar.GetChaControl());
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    UpdateShadowColorsRecursive(selectNodes[i], sceneController, UpdateShadowColorsObjects, UpdateCharaShadowColors);
             }
             else if (MakerAPI.InsideAndLoaded)
             {
@@ -142,18 +158,11 @@ namespace Plugins
                     UpdateShadowColorValues(controller, 0, ObjectType.Character, material, controller.ChaControl.gameObject);
         }
 
-        private void UpdateShadowColorsObjects(SceneController controller, OCIItem ociItem)
+        private void UpdateShadowColorsObjects(SceneController controller, int id, Material material)
         {
-            foreach (var renderer in GetRendererList(ociItem.objectItem))
-                foreach (var material in GetMaterials(ociItem.objectItem, renderer))
-                {
-                    if (material.HasProperty("_ShadowColor"))
-                    {
-                        int objectId = MEStudio.GetObjectID(ociItem);
-                        if ((controller.GetMaterialColorPropertyValue(objectId, material, "ShadowColor") == null && !updateAll) | updateAll)
-                            controller.SetMaterialColorProperty(objectId, material, "ShadowColor", shadowColor);
-                    }
-                }
+            if (material.HasProperty("_ShadowColor"))
+                if ((controller.GetMaterialColorPropertyValue(id, material, "ShadowColor") == null && !updateAll) | updateAll)
+                    controller.SetMaterialColorProperty(id, material, "ShadowColor", shadowColor);
         }
 
         private void UpdateShadowColorValues(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go)
