@@ -455,7 +455,7 @@ namespace Plugins
                     GUI.FocusControl(null);
 
                 GUI.SetNextControlName(label);
-                buffer = GUILayout.TextField(buffer.ToString());
+                buffer = GUILayout.TextField(buffer.ToString(), GUILayout.Width(50));
 
                 if (focused != label)
                 {
