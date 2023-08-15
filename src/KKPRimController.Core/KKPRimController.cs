@@ -338,7 +338,7 @@ namespace Plugins
             if (uiShow)
             {
                 IMGUIUtils.DrawSolidBox(uiRect);
-                uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "Global KKPRim settings");
+                uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "KKPRim Controller");
                 IMGUIUtils.EatInputInRect(uiRect);
             }
         }
