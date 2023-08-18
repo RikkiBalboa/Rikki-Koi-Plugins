@@ -26,41 +26,10 @@ namespace PostProcessingEffectsV3
     [BepInPlugin("org.bepinex.plugins.KKS_PostProcessingEffectsV3", "KKS_PostProcessingEffectsV3", "1.4.0.0")]
     public class PostProcessingEffectsV3 : BaseUnityPlugin
     {
-        public Rect Rect1 = new Rect(220f, 50f, 420f, 420f);
 
         internal static new ManualLogSource Logger;
 
-        private bool mainwin = false;
-
-        private Canvas myCanvas;
-
-        private GameObject myGO;
-
-        private bool AOb = false;
-
-        private bool AA = false;
-
-        private bool bloomb = false;
-
-        private bool CGb = false;
-
-        private bool MBb = false;
-
-        private bool VGb = false;
-
-        private bool DOFb = false;
-
-        private bool CAb = false;
-
-        private bool SCOb = false;
-
-        private bool Posb = false;
-
-        private bool Sengab = false;
-
-        private bool distortion = false;
-
-
+        #region Constants
         private AmbientOcclusionQuality[] AOq = new AmbientOcclusionQuality[5]
         {
             AmbientOcclusionQuality.Lowest,
@@ -117,285 +86,46 @@ namespace PostProcessingEffectsV3
         };
 
         private string[] DOFm2 = new string[4] { "Small", "Medium", "Large", "VeryLarge" };
+        #endregion
 
+        #region Post Process Effects Variables
         private PostProcessVolume postProcessVolume;
-
         public PostProcessResources postProcessResources;
-
         public PostProcessLayer postProcessLayer;
-
-        private int layer;
-
         public Shader SSAOshader;
-
         public Texture2D noiseTex;
-
         private bool oAOenable;
-
         public GameObject camtarget;
-
         public AssetBundle ab;
-
         public Camera cam;
-
         public bool onoff_post;
-
         public Shader depthnormals;
-
         private bool nAOenable;
-
         public SSAOProUtils.SSAOPro sAOPro;
-
         public Shader SobelShader;
-
         public global::SobelOutline.SobelOutline sobel;
-
         private Posterize posterize;
-
         private LensDistortion lensDistortion;
-
         public Shader posShader;
-
         private SengaEffect sengaEffect;
-
         public Shader sengaShader;
-
         public Texture2D sengaToneTex;
-
         private Transform charapos = null;
+        private AmbientOcclusion AO;
+        private Bloom bloom;
+        private ColorGrading CG;
+        private MotionBlur MB;
+        private DepthOfField DOF;
+        private Vignette VG;
+        private ChromaticAberration CA;
+        #endregion
+
+        #region Setup
 
         private global::Studio.Studio studio;
 
         private Dictionary<ChaControl, Transform> CharaList = new Dictionary<ChaControl, Transform>();
 
-        private AmbientOcclusion AO;
-
-        private Bloom bloom;
-
-        private ColorGrading CG;
-
-        private MotionBlur MB;
-
-        private DepthOfField DOF;
-
-        private Vignette VG;
-
-        private ChromaticAberration CA;
-
-        private ConfigEntry<bool> AOenable { get; set; }
-
-        private ConfigEntry<bool> AOmodesel { get; set; }
-
-        private ConfigEntry<PostProcessLayer.Antialiasing> AAmode { get; set; }
-
-        private ConfigEntry<SubpixelMorphologicalAntialiasing.Quality> AAsmaaq { get; set; }
-
-        private ConfigEntry<bool> AAfxaafm { get; set; }
-
-        private ConfigEntry<bool> AAfxaakpa { get; set; }
-
-        private ConfigEntry<float> TAAjittetSpeed { get; set; }
-
-        private ConfigEntry<float> TAAsharpen { get; set; }
-
-        private ConfigEntry<float> TAAstationaryBlending { get; set; }
-
-        private ConfigEntry<float> TAAmotionBlending { get; set; }
-
-        private ConfigEntry<AmbientOcclusionMode> AOmode { get; set; }
-
-        private ConfigEntry<float> AOintensity { get; set; }
-
-        private ConfigEntry<Color> AOcolor { get; set; }
-
-        private ConfigEntry<float> AOradius { get; set; }
-
-        private ConfigEntry<AmbientOcclusionQuality> AOquality { get; set; }
-
-        private ConfigEntry<bool> CGenable { get; set; }
-
-        private ConfigEntry<Tonemapper> CGtoneMapper { get; set; }
-
-        private ConfigEntry<GradingMode> CGgradingmode { get; set; }
-
-        private ConfigEntry<float> CGposte { get; set; }
-
-        private ConfigEntry<Color> CGcolfilter { get; set; }
-
-        private ConfigEntry<float> CGtemp { get; set; }
-
-        private ConfigEntry<float> CGtint { get; set; }
-
-        private ConfigEntry<float> CGhueShift { get; set; }
-
-        private ConfigEntry<float> CGsaturation { get; set; }
-
-        private ConfigEntry<float> CGcontrast { get; set; }
-
-        private ConfigEntry<Vector4> CGlift { get; set; }
-
-        private ConfigEntry<Vector4> CGgain { get; set; }
-
-        private ConfigEntry<Vector4> CGgamma { get; set; }
-
-        private ConfigEntry<bool> Bloomenable { get; set; }
-
-        private ConfigEntry<float> Bloomintensity { get; set; }
-
-        private ConfigEntry<float> Bloomdiffusion { get; set; }
-
-        private ConfigEntry<float> BloomsoftKnee { get; set; }
-
-        private ConfigEntry<float> Bloomthreshold { get; set; }
-
-        private ConfigEntry<float> Bloomclamp { get; set; }
-
-        private ConfigEntry<float> Bloomanamor { get; set; }
-
-        private ConfigEntry<Color> Bloomcolor { get; set; }
-
-        private ConfigEntry<bool> Bloomfsmd { get; set; }
-
-        private ConfigEntry<bool> MBenable { get; set; }
-
-        private ConfigEntry<float> MBshutter { get; set; }
-
-        private ConfigEntry<int> MBsamplecnt { get; set; }
-
-        private ConfigEntry<bool> DOFenable { get; set; }
-
-        private ConfigEntry<float> DOFfocall { get; set; }
-
-        private ConfigEntry<float> DOFfocusd { get; set; }
-
-        private ConfigEntry<float> DOFaperture { get; set; }
-
-        private ConfigEntry<KernelSize> DOFmaxblur { get; set; }
-
-        private ConfigEntry<bool> VGenable { get; set; }
-
-        private ConfigEntry<Color> VGcol { get; set; }
-
-        private ConfigEntry<VignetteMode> VGmode { get; set; }
-
-        private ConfigEntry<float> VGopacity { get; set; }
-
-        private ConfigEntry<bool> VGrounded { get; set; }
-
-        private ConfigEntry<float> VGroundness { get; set; }
-
-        private ConfigEntry<float> VGsmoothness { get; set; }
-
-        private ConfigEntry<float> VGintensity { get; set; }
-
-        private ConfigEntry<Vector2> VGcenter { get; set; }
-
-        private ConfigEntry<float> CAintensity { get; set; }
-
-        private ConfigEntry<bool> CAenable { get; set; }
-
-        private ConfigEntry<bool> onoff { get; set; }
-
-        private ConfigEntry<KeyboardShortcut> OpenGUI { get; set; }
-
-        private static ConfigEntry<KeyboardShortcut> MasterSwitch { get; set; }
-
-        private ConfigEntry<bool> DOFautofocus { get; set; }
-
-        private ConfigEntry<int> DOFAFmode { get; set; }
-
-        private ConfigEntry<SSAOProUtils.SSAOPro.SampleCount> cSampleCount { get; set; }
-
-        private ConfigEntry<int> cDownsampling { get; set; }
-
-        private ConfigEntry<float> cIntensity { get; set; }
-
-        private ConfigEntry<float> cRadius { get; set; }
-
-        private ConfigEntry<float> cDistance { get; set; }
-
-        private ConfigEntry<float> cBias { get; set; }
-
-        private ConfigEntry<float> cLithingCont { get; set; }
-
-        private ConfigEntry<Color> cOccColor { get; set; }
-
-        private ConfigEntry<SSAOProUtils.SSAOPro.BlurMode> cBlurType { get; set; }
-
-        private ConfigEntry<bool> cBlurDownS { get; set; }
-
-        private ConfigEntry<int> cBlurPasses { get; set; }
-
-        private ConfigEntry<float> cThres { get; set; }
-
-        private ConfigEntry<float> cMaxDistance { get; set; }
-
-        private ConfigEntry<float> cFalloff { get; set; }
-
-        private ConfigEntry<float> OutlineWidth { get; set; }
-
-        private ConfigEntry<Color> OutlineColor { get; set; }
-
-        private ConfigEntry<float> ColorPower { get; set; }
-
-        private ConfigEntry<bool> SoutlineEnable { get; set; }
-
-        private ConfigEntry<int> PosDiv { get; set; }
-
-        private ConfigEntry<bool> PosEnable { get; set; }
-
-        private ConfigEntry<bool> DistortionEnable { get; set; }
-
-        private ConfigEntry<float> DistortionIntensity { get; set; }
-        private ConfigEntry<float> DistortionIntensityX { get; set; }
-        private ConfigEntry<float> DistortionIntensityY { get; set; }
-        private ConfigEntry<float> DistortionCenterX { get; set; }
-        private ConfigEntry<float> DistortionCenterY { get; set; }
-        private ConfigEntry<float> DistortionScale { get; set; }
-
-        private ConfigEntry<bool> PosHSV { get; set; }
-
-        private ConfigEntry<bool> SengaEnable { get; set; }
-
-        private ConfigEntry<bool> SengaOnly { get; set; }
-
-        private ConfigEntry<float> SengaSampleDistance { get; set; }
-
-        private ConfigEntry<float> SengaNomalThes { get; set; }
-
-        private ConfigEntry<float> SengaDepthThres { get; set; }
-
-        private ConfigEntry<float> SengaColorThres { get; set; }
-
-        private ConfigEntry<float> SengaSobelThres { get; set; }
-
-        private ConfigEntry<float> SengaNormalEdge { get; set; }
-
-        private ConfigEntry<float> SengaDepthEdge { get; set; }
-
-        private ConfigEntry<float> SengaColorEdge { get; set; }
-
-        private ConfigEntry<float> SengaSobelEdge { get; set; }
-
-        private ConfigEntry<float> SengaColBlend { get; set; }
-
-        private ConfigEntry<float> SengaToneThres { get; set; }
-
-        private ConfigEntry<float> SengaToneScale { get; set; }
-
-        private ConfigEntry<float> SengaToneThick { get; set; }
-
-        private ConfigEntry<bool> SengaToneEnable { get; set; }
-
-        private ConfigEntry<float> SengaBlurDir { get; set; }
-
-        private ConfigEntry<float> SengaBlurPow { get; set; }
-
-        private ConfigEntry<float> SengaBlurThick { get; set; }
-
-        private ConfigEntry<int> SengaBlurSample { get; set; }
-
-        private ConfigEntry<bool> SengaBlurEnable { get; set; }
 
         private void wall()
         {
@@ -416,6 +146,514 @@ namespace PostProcessingEffectsV3
             image.raycastTarget = true;
         }
 
+        private void Awake()
+        {
+            Logger = base.Logger;
+        }
+
+        private void OnEnable()
+        {
+            ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, "plugins/KKS_postprocessresources.asset"));
+            if (!(ab == null))
+            {
+                depthnormals = ab.LoadAsset<Shader>("Internal-DepthNormalsTexturemod");
+                postProcessResources = ScriptableObject.CreateInstance<PostProcessResources>();
+                postProcessResources.shaders = new PostProcessResources.Shaders();
+                postProcessResources.computeShaders = new PostProcessResources.ComputeShaders();
+                postProcessResources.smaaLuts = new PostProcessResources.SMAALuts();
+                postProcessResources.shaders.bloom = ab.LoadAsset<Shader>("bloom");
+                postProcessResources.shaders.copy = ab.LoadAsset<Shader>("copy");
+                postProcessResources.shaders.copyStd = ab.LoadAsset<Shader>("copyStd");
+                postProcessResources.shaders.copyStdFromTexArray = ab.LoadAsset<Shader>("copyStdFromTexArray");
+                postProcessResources.shaders.copyStdFromDoubleWide = ab.LoadAsset<Shader>("copyStdFromDoubleWide");
+                postProcessResources.shaders.discardAlpha = ab.LoadAsset<Shader>("discardAlpha");
+                postProcessResources.shaders.depthOfField = ab.LoadAsset<Shader>("depthOfField");
+                postProcessResources.shaders.finalPass = ab.LoadAsset<Shader>("finalPass");
+                postProcessResources.shaders.grainBaker = ab.LoadAsset<Shader>("grainBaker");
+                postProcessResources.shaders.motionBlur = ab.LoadAsset<Shader>("motionBlur");
+                postProcessResources.shaders.temporalAntialiasing = ab.LoadAsset<Shader>("temporalAntialiasing");
+                postProcessResources.shaders.subpixelMorphologicalAntialiasing = ab.LoadAsset<Shader>("subpixelMorphologicalAntialiasing");
+                postProcessResources.shaders.texture2dLerp = ab.LoadAsset<Shader>("texture2dLerp");
+                postProcessResources.shaders.uber = ab.LoadAsset<Shader>("uber");
+                postProcessResources.shaders.lut2DBaker = ab.LoadAsset<Shader>("lut2DBaker");
+                postProcessResources.shaders.lightMeter = ab.LoadAsset<Shader>("lightMeter");
+                postProcessResources.shaders.gammaHistogram = ab.LoadAsset<Shader>("gammaHistogram");
+                postProcessResources.shaders.waveform = ab.LoadAsset<Shader>("waveform");
+                postProcessResources.shaders.vectorscope = ab.LoadAsset<Shader>("vectorscope");
+                postProcessResources.shaders.debugOverlays = ab.LoadAsset<Shader>("debugOverlays");
+                postProcessResources.shaders.deferredFog = ab.LoadAsset<Shader>("deferredFog");
+                postProcessResources.shaders.scalableAO = ab.LoadAsset<Shader>("scalableAO");
+                postProcessResources.shaders.multiScaleAO = ab.LoadAsset<Shader>("multiScaleAO");
+                postProcessResources.shaders.screenSpaceReflections = ab.LoadAsset<Shader>("screenSpaceReflections");
+                postProcessResources.computeShaders.autoExposure = ab.LoadAsset<ComputeShader>("AutoExposure.compute");
+                postProcessResources.computeShaders.exposureHistogram = ab.LoadAsset<ComputeShader>("ExposureHistogram.compute");
+                postProcessResources.computeShaders.lut3DBaker = ab.LoadAsset<ComputeShader>("Lut3DBaker.compute");
+                postProcessResources.computeShaders.texture3dLerp = ab.LoadAsset<ComputeShader>("Texture3DLerp.compute");
+                postProcessResources.computeShaders.multiScaleAODownsample1 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample1.compute.");
+                postProcessResources.computeShaders.multiScaleAODownsample2 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample2.compute");
+                postProcessResources.computeShaders.multiScaleAORender = ab.LoadAsset<ComputeShader>("MultiScaleVORender.compute");
+                postProcessResources.computeShaders.multiScaleAOUpsample = ab.LoadAsset<ComputeShader>("MultiScaleVOUpsample.compute");
+                postProcessResources.computeShaders.gaussianDownsample = ab.LoadAsset<ComputeShader>("GaussianDownsample.compute");
+                postProcessResources.smaaLuts.area = ab.LoadAsset<Texture2D>("areaTex");
+                postProcessResources.smaaLuts.search = ab.LoadAsset<Texture2D>("searchTex");
+                postProcessResources.blueNoise64 = new Texture2D[64];
+                for (int i = 0; i < 64; i++)
+                {
+                    postProcessResources.blueNoise64[i] = ab.LoadAsset<Texture2D>("LDR_LLL1_" + i + ".png");
+                }
+                postProcessResources.blueNoise256 = new Texture2D[8];
+                for (int j = 0; j < 8; j++)
+                {
+                    postProcessResources.blueNoise256[j] = ab.LoadAsset<Texture2D>("LDR_LLL2_" + j + ".png");
+                }
+                SSAOshader = ab.LoadAsset<Shader>("SSAOPro_v2");
+                noiseTex = ab.LoadAsset<Texture2D>("noise");
+                SobelShader = ab.LoadAsset<Shader>("RealToon_Sobel_Outline_FX.shader");
+                posShader = ab.LoadAsset<Shader>("Posterize");
+                sengaShader = ab.LoadAsset<Shader>("senga");
+                sengaToneTex = ab.LoadAsset<Texture2D>("dot_03.bmp");
+                ab.Unload(false);
+                BindConfig();
+                SceneManager.sceneLoaded += OnSceneLoaded;
+                base.Config.SettingChanged += OnSettingChanged;
+                CharacterApi.CharacterReloaded += CharacterReloaded;
+                StudioSaveLoadApi.ObjectsSelected += ObjectsSelected;
+                onoff_post = onoff.Value;
+            }
+        }
+
+        private void Start()
+        {
+            if (onoff.Value)
+            {
+                GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
+                GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
+            }
+            Harmony.CreateAndPatchAll(typeof(Patch), (string)null);
+        }
+
+        private void ObjectsSelected(object sender, ObjectsSelectedEventArgs e)
+        {
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+            {
+                ObjectCtrlInfo objectCtrlInfo = e.SelectedObjects.First();
+                try
+                {
+                    OCIChar ociChar = (OCIChar)objectCtrlInfo;
+                    charapos = ociChar.GetChaControl().transform.Find("BodyTop/p_cf_body_bone/cf_j_root/cf_n_height/cf_j_hips");
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private void Update()
+        {
+            if (onoff.Value != onoff_post)
+            {
+                if (onoff.Value)
+                {
+                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
+                    GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
+                    Setup();
+                }
+                else
+                {
+                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseBuiltin);
+                    RuntimeUtilities.DestroyVolume(postProcessVolume, true, true);
+                    UnityEngine.Object.Destroy(postProcessLayer);
+                    UnityEngine.Object.Destroy(sAOPro);
+                    UnityEngine.Object.Destroy(sobel);
+                    UnityEngine.Object.Destroy(posterize);
+                    UnityEngine.Object.Destroy(sengaEffect);
+                }
+            }
+            onoff_post = onoff.Value;
+            if (onoff.Value)
+            {
+                if (DOFautofocus.Value && DOFenable.Value)
+                {
+                    if (cam == null)
+                    {
+                        return;
+                    }
+                    if (DOFAFmode.Value == 0)
+                    {
+                        DOF.focusDistance.Override(Vector3.Distance(camtarget.transform.position, cam.transform.position));
+                    }
+                    else if (DOFAFmode.Value == 1 && KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+                    {
+                        if (charapos != null)
+                        {
+                            float x = Vector3.Distance(charapos.position, cam.transform.position);
+                            DOF.focusDistance.Override(x);
+                        }
+                    }
+                    else if (DOFAFmode.Value == 2 && CharaList.Keys.Count() != 0)
+                    {
+                        Dictionary<float, Transform> dictionary = new Dictionary<float, Transform>();
+                        foreach (ChaControl key3 in CharaList.Keys)
+                        {
+                            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+                            {
+                                if (key3.GetOCIChar().treeNodeObject.visible)
+                                {
+                                    Vector3 vector = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
+                                    float key = Vector2.Distance(new Vector2(vector.x, vector.y), new Vector2(Screen.width / 2, Screen.height / 2));
+                                    dictionary.Add(key, CharaList[key3]);
+                                }
+                            }
+                            else
+                            {
+                                Vector3 vector2 = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
+                                float key2 = Vector2.Distance(new Vector2(vector2.x, vector2.y), new Vector2(Screen.width / 2, Screen.height / 2));
+                                dictionary.Add(key2, CharaList[key3]);
+                            }
+                        }
+                        DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
+                    }
+                }
+                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker || KoikatuAPI.GetCurrentGameMode() == GameMode.Unknown)
+                {
+                    cam.allowMSAA = false;
+                }
+            }
+            if (MasterSwitch.Value.IsDown())
+            {
+                onoff.Value = !onoff.Value;
+            }
+            if (OpenGUI.Value.IsDown())
+            {
+                mainwin = !mainwin;
+                if (mainwin)
+                {
+                    wall();
+                }
+                else
+                {
+                    UnityEngine.Object.Destroy(myGO);
+                }
+            }
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            cam = Camera.main;
+            camtarget = GameObject.Find("CameraTarget");
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+            {
+                studio = Singleton<global::Studio.Studio>.Instance;
+            }
+            if (onoff.Value)
+            {
+                Setup();
+            }
+            CharaList = new Dictionary<ChaControl, Transform>();
+            ChaControl[] array = UnityEngine.Object.FindObjectsOfType<ChaControl>();
+            foreach (ChaControl chaControl in array)
+            {
+                CharaList.Add(chaControl, chaControl.transform.Find("BodyTop/p_cf_body_bone/cf_j_root/cf_n_height/cf_j_hips"));
+            }
+        }
+
+        private void CharacterReloaded(object sender, CharaReloadEventArgs e)
+        {
+            CharaList = new Dictionary<ChaControl, Transform>();
+            ChaControl[] array = UnityEngine.Object.FindObjectsOfType<ChaControl>();
+            foreach (ChaControl chaControl in array)
+            {
+                CharaList.Add(chaControl, chaControl.transform.Find("BodyTop/p_cf_body_bone/cf_j_root/cf_n_height/cf_j_hips"));
+            }
+        }
+
+        private void Setup()
+        {
+            if ((bool)cam)
+            {
+                GameObject gameObject = cam.gameObject;
+                postProcessLayer = gameObject.GetComponent<PostProcessLayer>();
+                if (postProcessLayer == null)
+                {
+                    postProcessLayer = gameObject.AddComponent<PostProcessLayer>();
+                }
+                postProcessLayer.Init(postProcessResources);
+                postProcessLayer.InitBundles();
+                postProcessLayer.volumeLayer = LayerMask.GetMask(LayerMask.LayerToName(gameObject.layer));
+                postProcessLayer.volumeTrigger = gameObject.transform;
+                postProcessVolume = UnityEngine.Object.FindObjectOfType<PostProcessVolume>();
+                if (!postProcessVolume)
+                {
+                    postProcessVolume = new GameObject("PostProcessVolume").AddComponent<PostProcessVolume>();
+                }
+                postProcessVolume.isGlobal = true;
+                postProcessVolume.gameObject.layer = gameObject.layer;
+                if (!postProcessVolume.profile.HasSettings<AmbientOcclusion>())
+                {
+                    AO = postProcessVolume.profile.AddSettings<AmbientOcclusion>();
+                }
+                else
+                {
+                    postProcessVolume.profile.TryGetSettings<AmbientOcclusion>(out AO);
+                }
+                if (!postProcessVolume.profile.HasSettings<Bloom>())
+                {
+                    bloom = postProcessVolume.profile.AddSettings<Bloom>();
+                }
+                else
+                {
+                    postProcessVolume.profile.TryGetSettings<Bloom>(out bloom);
+                }
+                if (!postProcessVolume.profile.HasSettings<ColorGrading>())
+                {
+                    CG = postProcessVolume.profile.AddSettings<ColorGrading>();
+                }
+                else
+                {
+                    postProcessVolume.profile.TryGetSettings<ColorGrading>(out CG);
+                }
+                if (!postProcessVolume.profile.HasSettings<MotionBlur>())
+                {
+                    MB = postProcessVolume.profile.AddSettings<MotionBlur>();
+                }
+                else
+                {
+                    postProcessVolume.profile.TryGetSettings<MotionBlur>(out MB);
+                }
+                if (!postProcessVolume.profile.HasSettings<DepthOfField>())
+                {
+                    DOF = postProcessVolume.profile.AddSettings<DepthOfField>();
+                }
+                else
+                {
+                    postProcessVolume.profile.TryGetSettings<DepthOfField>(out DOF);
+                }
+                if (!postProcessVolume.profile.HasSettings<Vignette>())
+                {
+                    VG = postProcessVolume.profile.AddSettings<Vignette>();
+                }
+                else
+                {
+                    postProcessVolume.profile.TryGetSettings<Vignette>(out VG);
+                }
+                if (!postProcessVolume.profile.HasSettings<ChromaticAberration>())
+                {
+                    CA = postProcessVolume.profile.AddSettings<ChromaticAberration>();
+                }
+                else
+                {
+                    postProcessVolume.profile.TryGetSettings<ChromaticAberration>(out CA);
+                }
+                lensDistortion = ScriptableObject.CreateInstance<LensDistortion>();
+                lensDistortion = (LensDistortion)postProcessVolume.profile.AddSettings(lensDistortion);
+
+                sAOPro = cam.GetComponent<SSAOProUtils.SSAOPro>();
+                if (sAOPro == null)
+                {
+                    sAOPro = gameObject.AddComponent<SSAOProUtils.SSAOPro>();
+                }
+                sAOPro.enabled = false;
+                sAOPro.NoiseTexture = noiseTex;
+                sAOPro.ShaderSSAO = SSAOshader;
+                if (cam.gameObject.GetComponent<Posterize>() == null)
+                {
+                    posterize = cam.gameObject.AddComponent<Posterize>();
+                }
+                posterize.enabled = false;
+                posterize.shader = posShader;
+                if (cam.gameObject.GetComponent<global::SobelOutline.SobelOutline>() == null)
+                {
+                    sobel = cam.gameObject.AddComponent<global::SobelOutline.SobelOutline>();
+                }
+                sobel.enabled = false;
+                sobel.shader = SobelShader;
+                if (cam.gameObject.GetComponent<SengaEffect>() == null)
+                {
+                    sengaEffect = cam.gameObject.AddComponent<SengaEffect>();
+                }
+                sengaEffect.enabled = false;
+                sengaEffect.shader = sengaShader;
+                sengaEffect.ToneTex = sengaToneTex;
+                Settings();
+            }
+        }
+        #endregion
+
+        protected void OnSettingChanged(object sender, SettingChangedEventArgs e)
+        {
+            if (onoff.Value)
+            {
+                Settings();
+            }
+        }
+
+        private void Settings()
+        {
+            if (AOenable.Value)
+            {
+                if (AOmodesel.Value)
+                {
+                    oAOenable = false;
+                    nAOenable = true;
+                }
+                else
+                {
+                    oAOenable = true;
+                    nAOenable = false;
+                }
+            }
+            else
+            {
+                oAOenable = false;
+                nAOenable = false;
+            }
+            if ((bool)postProcessLayer && (bool)postProcessVolume && (bool)sAOPro)
+            {
+                postProcessLayer.antialiasingMode = AAmode.Value;
+                postProcessLayer.subpixelMorphologicalAntialiasing.quality = AAsmaaq.Value;
+                postProcessLayer.fastApproximateAntialiasing.fastMode = AAfxaafm.Value;
+                postProcessLayer.fastApproximateAntialiasing.keepAlpha = AAfxaakpa.Value;
+                postProcessLayer.temporalAntialiasing.jitterSpread = TAAjittetSpeed.Value;
+                postProcessLayer.temporalAntialiasing.motionBlending = TAAmotionBlending.Value;
+                postProcessLayer.temporalAntialiasing.stationaryBlending = TAAstationaryBlending.Value;
+                postProcessLayer.temporalAntialiasing.sharpness = TAAsharpen.Value;
+
+                bloom.enabled.Override(Bloomenable.Value);
+                bloom.intensity.Override(Bloomintensity.Value);
+                bloom.anamorphicRatio.Override(Bloomanamor.Value);
+                bloom.clamp.Override(Bloomclamp.Value);
+                bloom.color.Override(Bloomcolor.Value);
+                bloom.diffusion.Override(Bloomdiffusion.Value);
+                bloom.fastMode.Override(Bloomfsmd.Value);
+                bloom.softKnee.Override(BloomsoftKnee.Value);
+                bloom.threshold.Override(Bloomthreshold.Value);
+
+                AO.enabled.Override(oAOenable);
+                AO.mode.Override(AOmode.Value);
+                AO.intensity.Override(AOintensity.Value);
+                AO.color.Override(AOcolor.Value);
+                AO.radius.Override(AOradius.Value);
+                AO.quality.Override(AOquality.Value);
+
+                CG.enabled.Override(CGenable.Value);
+                CG.tonemapper.Override(CGtoneMapper.Value);
+                CG.gradingMode.Override(CGgradingmode.Value);
+                CG.temperature.Override(CGtemp.Value);
+                CG.tint.Override(CGtint.Value);
+                CG.postExposure.Override(CGposte.Value);
+                CG.colorFilter.Override(CGcolfilter.Value);
+                CG.hueShift.Override(CGhueShift.Value);
+                CG.saturation.Override(CGsaturation.Value);
+                CG.contrast.Override(CGcontrast.Value);
+                CG.lift.Override(CGlift.Value);
+                CG.gamma.Override(CGgamma.Value);
+                CG.gain.Override(CGgain.Value);
+
+                MB.enabled.Override(MBenable.Value);
+                MB.shutterAngle.Override(MBshutter.Value);
+                MB.sampleCount.Override(MBsamplecnt.Value);
+
+                DOF.enabled.Override(DOFenable.Value);
+                if (!DOFautofocus.Value)
+                {
+                    DOF.focusDistance.Override(DOFfocusd.Value);
+                }
+                DOF.aperture.Override(DOFaperture.Value);
+                DOF.focalLength.Override(DOFfocall.Value);
+                DOF.kernelSize.Override(DOFmaxblur.Value);
+
+                VG.enabled.Override(VGenable.Value);
+                VG.center.Override(VGcenter.Value);
+                VG.mode.Override(VGmode.Value);
+                VG.color.Override(VGcol.Value);
+                VG.intensity.Override(VGintensity.Value);
+                VG.smoothness.Override(VGsmoothness.Value);
+                VG.roundness.Override(VGroundness.Value);
+                VG.rounded.Override(VGrounded.Value);
+                VG.opacity.Override(VGopacity.Value);
+
+                lensDistortion.enabled.Override(DistortionEnable.Value);
+                lensDistortion.intensity.Override(DistortionIntensity.Value);
+                lensDistortion.intensityX.Override(DistortionIntensityX.Value);
+                lensDistortion.intensityY.Override(DistortionIntensityY.Value);
+                lensDistortion.centerX.Override(DistortionCenterX.Value);
+                lensDistortion.centerY.Override(DistortionCenterY.Value);
+                lensDistortion.scale.Override(DistortionScale.Value);
+
+                CA.enabled.Override(CAenable.Value);
+                CA.intensity.Override(CAintensity.Value);
+
+                sAOPro.enabled = nAOenable;
+                sAOPro.Bias = cBias.Value;
+                sAOPro.Blur = cBlurType.Value;
+                sAOPro.BlurBilateralThreshold = cThres.Value;
+                sAOPro.BlurDownsampling = cBlurDownS.Value;
+                sAOPro.BlurPasses = cBlurPasses.Value;
+                sAOPro.CutoffDistance = cMaxDistance.Value;
+                sAOPro.CutoffFalloff = cFalloff.Value;
+                sAOPro.Distance = cDistance.Value;
+                sAOPro.Downsampling = cDownsampling.Value;
+                sAOPro.Intensity = cIntensity.Value;
+                sAOPro.LumContribution = cLithingCont.Value;
+                sAOPro.OcclusionColor = cOccColor.Value;
+                sAOPro.Samples = cSampleCount.Value;
+                sAOPro.Radius = cRadius.Value;
+
+                sobel.enabled = SoutlineEnable.Value;
+                sobel.ColorPower = ColorPower.Value;
+                sobel.OutlineColor = OutlineColor.Value;
+                sobel.OutlineWidth = OutlineWidth.Value;
+
+                posterize.enabled = PosEnable.Value;
+                posterize._div = PosDiv.Value;
+                posterize._HSV = PosHSV.Value;
+
+                sengaEffect.enabled = SengaEnable.Value;
+                sengaEffect.SengaOnly = SengaOnly.Value;
+                sengaEffect.ColorEdge = SengaColorEdge.Value;
+                sengaEffect.ColorThreshold = SengaColorThres.Value;
+                sengaEffect.DepthEdge = SengaDepthEdge.Value;
+                sengaEffect.DepthThreshold = SengaDepthThres.Value;
+                sengaEffect.NormalEdge = SengaNormalEdge.Value;
+                sengaEffect.NormalThreshold = SengaNomalThes.Value;
+                sengaEffect.SampleDistance = SengaSampleDistance.Value;
+                sengaEffect.SobelEdge = SengaSobelEdge.Value;
+                sengaEffect.SobelThreshold = SengaSobelThres.Value;
+                sengaEffect.kosa = SengaColBlend.Value;
+                sengaEffect.toneThres = SengaToneThres.Value;
+                sengaEffect.ToneOn = SengaToneEnable.Value;
+                sengaEffect.ToneThick = SengaToneThick.Value;
+                sengaEffect.scale = SengaToneScale.Value;
+                sengaEffect.BlurOn = SengaBlurEnable.Value;
+                sengaEffect.thick = SengaBlurThick.Value;
+                sengaEffect.pow = SengaBlurPow.Value;
+                sengaEffect.SampleCount = SengaBlurSample.Value;
+                sengaEffect.dir = SengaBlurDir.Value;
+            }
+        }
+
+
+        #region UI
+        private bool mainwin = false;
+        public Rect Rect1 = new Rect(220f, 50f, 420f, 420f);
+
+        private Canvas myCanvas;
+        private GameObject myGO;
+
+        private bool AOb = false;
+        private bool AA = false;
+        private bool bloomb = false;
+        private bool CGb = false;
+        private bool MBb = false;
+        private bool VGb = false;
+        private bool DOFb = false;
+        private bool CAb = false;
+        private bool SCOb = false;
+        private bool Posb = false;
+        private bool Sengab = false;
+        private bool distortion = false;
+
+
         private void OnGUI()
         {
             if (mainwin)
@@ -427,16 +665,6 @@ namespace PostProcessingEffectsV3
                 }
                 Rect1 = GUILayout.Window(560, Rect1, mainwindow, "PostProcessingEffects");
             }
-        }
-
-        private GUIStyle colorbutton(Color col)
-        {
-            GUIStyle gUIStyle = new GUIStyle();
-            Texture2D texture2D = new Texture2D(1, 1, TextureFormat.RGBAFloat, false);
-            texture2D.SetPixel(0, 0, col);
-            texture2D.Apply();
-            gUIStyle.normal.background = texture2D;
-            return gUIStyle;
         }
 
         private void mainwindow(int windowID)
@@ -1315,6 +1543,16 @@ namespace PostProcessingEffectsV3
             GUI.DragWindow();
         }
 
+        private GUIStyle colorbutton(Color col)
+        {
+            GUIStyle gUIStyle = new GUIStyle();
+            Texture2D texture2D = new Texture2D(1, 1, TextureFormat.RGBAFloat, false);
+            texture2D.SetPixel(0, 0, col);
+            texture2D.Apply();
+            gUIStyle.normal.background = texture2D;
+            return gUIStyle;
+        }
+
         public void ColorPicker(Color col, Action<Color> act)
         {
             if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
@@ -1342,588 +1580,268 @@ namespace PostProcessingEffectsV3
                 }
             }
         }
+        #endregion
 
-        private void Awake()
+        #region Config
+
+        #region Define Configs
+        private ConfigEntry<bool> onoff { get; set; }
+        private ConfigEntry<KeyboardShortcut> OpenGUI { get; set; }
+        private static ConfigEntry<KeyboardShortcut> MasterSwitch { get; set; }
+
+        #region Anti-Aliasing
+        private ConfigEntry<PostProcessLayer.Antialiasing> AAmode { get; set; }
+        private ConfigEntry<SubpixelMorphologicalAntialiasing.Quality> AAsmaaq { get; set; }
+        private ConfigEntry<bool> AAfxaafm { get; set; }
+        private ConfigEntry<bool> AAfxaakpa { get; set; }
+        private ConfigEntry<float> TAAjittetSpeed { get; set; }
+        private ConfigEntry<float> TAAsharpen { get; set; }
+        private ConfigEntry<float> TAAstationaryBlending { get; set; }
+        private ConfigEntry<float> TAAmotionBlending { get; set; }
+        #endregion
+
+        #region Ambient Occlusion
+        private ConfigEntry<bool> AOenable { get; set; }
+        private ConfigEntry<bool> AOmodesel { get; set; }
+        private ConfigEntry<AmbientOcclusionMode> AOmode { get; set; }
+        private ConfigEntry<float> AOintensity { get; set; }
+        private ConfigEntry<Color> AOcolor { get; set; }
+        private ConfigEntry<float> AOradius { get; set; }
+        private ConfigEntry<AmbientOcclusionQuality> AOquality { get; set; }
+
+        private ConfigEntry<SSAOProUtils.SSAOPro.SampleCount> cSampleCount { get; set; }
+        private ConfigEntry<int> cDownsampling { get; set; }
+        private ConfigEntry<float> cIntensity { get; set; }
+        private ConfigEntry<float> cRadius { get; set; }
+        private ConfigEntry<float> cDistance { get; set; }
+        private ConfigEntry<float> cBias { get; set; }
+        private ConfigEntry<float> cLithingCont { get; set; }
+        private ConfigEntry<Color> cOccColor { get; set; }
+        private ConfigEntry<SSAOProUtils.SSAOPro.BlurMode> cBlurType { get; set; }
+        private ConfigEntry<bool> cBlurDownS { get; set; }
+        private ConfigEntry<int> cBlurPasses { get; set; }
+        private ConfigEntry<float> cThres { get; set; }
+        private ConfigEntry<float> cMaxDistance { get; set; }
+        private ConfigEntry<float> cFalloff { get; set; }
+        #endregion
+
+        #region Color Grading
+        private ConfigEntry<bool> CGenable { get; set; }
+        private ConfigEntry<Tonemapper> CGtoneMapper { get; set; }
+        private ConfigEntry<GradingMode> CGgradingmode { get; set; }
+        private ConfigEntry<float> CGposte { get; set; }
+        private ConfigEntry<Color> CGcolfilter { get; set; }
+        private ConfigEntry<float> CGtemp { get; set; }
+        private ConfigEntry<float> CGtint { get; set; }
+        private ConfigEntry<float> CGhueShift { get; set; }
+        private ConfigEntry<float> CGsaturation { get; set; }
+        private ConfigEntry<float> CGcontrast { get; set; }
+        private ConfigEntry<Vector4> CGlift { get; set; }
+        private ConfigEntry<Vector4> CGgain { get; set; }
+        private ConfigEntry<Vector4> CGgamma { get; set; }
+        #endregion
+
+        #region Bloom
+        private ConfigEntry<bool> Bloomenable { get; set; }
+        private ConfigEntry<float> Bloomintensity { get; set; }
+        private ConfigEntry<float> Bloomdiffusion { get; set; }
+        private ConfigEntry<float> BloomsoftKnee { get; set; }
+        private ConfigEntry<float> Bloomthreshold { get; set; }
+        private ConfigEntry<float> Bloomclamp { get; set; }
+        private ConfigEntry<float> Bloomanamor { get; set; }
+        private ConfigEntry<Color> Bloomcolor { get; set; }
+        private ConfigEntry<bool> Bloomfsmd { get; set; }
+        private ConfigEntry<bool> MBenable { get; set; }
+        private ConfigEntry<float> MBshutter { get; set; }
+        private ConfigEntry<int> MBsamplecnt { get; set; }
+        #endregion
+
+        #region Depth of Field
+        private ConfigEntry<bool> DOFenable { get; set; }
+        private ConfigEntry<float> DOFfocall { get; set; }
+        private ConfigEntry<float> DOFfocusd { get; set; }
+        private ConfigEntry<float> DOFaperture { get; set; }
+        private ConfigEntry<KernelSize> DOFmaxblur { get; set; }
+        private ConfigEntry<bool> DOFautofocus { get; set; }
+        private ConfigEntry<int> DOFAFmode { get; set; }
+        #endregion
+
+        #region Vignette
+        private ConfigEntry<bool> VGenable { get; set; }
+        private ConfigEntry<Color> VGcol { get; set; }
+        private ConfigEntry<VignetteMode> VGmode { get; set; }
+        private ConfigEntry<float> VGopacity { get; set; }
+        private ConfigEntry<bool> VGrounded { get; set; }
+        private ConfigEntry<float> VGroundness { get; set; }
+        private ConfigEntry<float> VGsmoothness { get; set; }
+        private ConfigEntry<float> VGintensity { get; set; }
+        private ConfigEntry<Vector2> VGcenter { get; set; }
+        #endregion
+
+        #region Chromatic Aberration 
+        private ConfigEntry<float> CAintensity { get; set; }
+        private ConfigEntry<bool> CAenable { get; set; }
+        #endregion
+
+        #region Outline
+        private ConfigEntry<float> OutlineWidth { get; set; }
+        private ConfigEntry<Color> OutlineColor { get; set; }
+        private ConfigEntry<float> ColorPower { get; set; }
+        private ConfigEntry<bool> SoutlineEnable { get; set; }
+
+        private ConfigEntry<bool> SengaEnable { get; set; }
+        private ConfigEntry<bool> SengaOnly { get; set; }
+        private ConfigEntry<float> SengaSampleDistance { get; set; }
+        private ConfigEntry<float> SengaNomalThes { get; set; }
+        private ConfigEntry<float> SengaDepthThres { get; set; }
+        private ConfigEntry<float> SengaColorThres { get; set; }
+        private ConfigEntry<float> SengaSobelThres { get; set; }
+        private ConfigEntry<float> SengaNormalEdge { get; set; }
+        private ConfigEntry<float> SengaDepthEdge { get; set; }
+        private ConfigEntry<float> SengaColorEdge { get; set; }
+        private ConfigEntry<float> SengaSobelEdge { get; set; }
+        private ConfigEntry<float> SengaColBlend { get; set; }
+        private ConfigEntry<float> SengaToneThres { get; set; }
+        private ConfigEntry<float> SengaToneScale { get; set; }
+        private ConfigEntry<float> SengaToneThick { get; set; }
+        private ConfigEntry<bool> SengaToneEnable { get; set; }
+        private ConfigEntry<float> SengaBlurDir { get; set; }
+        private ConfigEntry<float> SengaBlurPow { get; set; }
+        private ConfigEntry<float> SengaBlurThick { get; set; }
+        private ConfigEntry<int> SengaBlurSample { get; set; }
+        private ConfigEntry<bool> SengaBlurEnable { get; set; }
+        #endregion
+
+        #region Posterize
+        private ConfigEntry<int> PosDiv { get; set; }
+        private ConfigEntry<bool> PosEnable { get; set; }
+        private ConfigEntry<bool> PosHSV { get; set; }
+        #endregion
+
+        #region Distortion
+        private ConfigEntry<bool> DistortionEnable { get; set; }
+        private ConfigEntry<float> DistortionIntensity { get; set; }
+        private ConfigEntry<float> DistortionIntensityX { get; set; }
+        private ConfigEntry<float> DistortionIntensityY { get; set; }
+        private ConfigEntry<float> DistortionCenterX { get; set; }
+        private ConfigEntry<float> DistortionCenterY { get; set; }
+        private ConfigEntry<float> DistortionScale { get; set; }
+        #endregion
+        #endregion
+
+        private void BindConfig()
         {
-            Logger = base.Logger;
+            onoff = base.Config.Bind("_MasterSwitch", "OnOff", false, "");
+            AAmode = base.Config.Bind("AntiAliasing", "AntiAliasing Mode", PostProcessLayer.Antialiasing.None, "");
+            AAsmaaq = base.Config.Bind("AntiAliasing", "SMAA Quality", SubpixelMorphologicalAntialiasing.Quality.Medium, "");
+            AAfxaafm = base.Config.Bind("AntiAliasing", "FXAA FastMode", false, "");
+            AAfxaakpa = base.Config.Bind("AntiAliasing", "FXAA KeepAlpha", false, "");
+            TAAjittetSpeed = base.Config.Bind("AntiAliasing", "TAA JitterSpeed", 0.75f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 1f)));
+            TAAsharpen = base.Config.Bind("AntiAliasing", "TAA Sharpen", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 3f)));
+            TAAstationaryBlending = base.Config.Bind("AntiAliasing", "TAA StationaryBlending", 0.95f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.99f)));
+            TAAmotionBlending = base.Config.Bind("AntiAliasing", "TAA MotionBlending", 0.85f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.99f)));
+            AOmode = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Mode", AmbientOcclusionMode.ScalableAmbientObscurance, "");
+            AOenable = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Enable", false, "");
+            AOintensity = base.Config.Bind("Ambient Occulusion", "AOIntensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 4f)));
+            AOcolor = base.Config.Bind("Ambient Occulusion", "Color", Color.black, "");
+            AOradius = base.Config.Bind("Ambient Occulusion", "Radius", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0.0001f, 3f)));
+            AOquality = base.Config.Bind("Ambient Occulusion", "Quality", AmbientOcclusionQuality.Medium, "");
+            AOmodesel = base.Config.Bind("Ambient Occulusion", "UseNewMode", true, "");
+            cIntensity = base.Config.Bind("Ambient Occulusion", "Intensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 16f)));
+            cOccColor = base.Config.Bind("Ambient Occulusion", "Color", Color.black, "");
+            cRadius = base.Config.Bind("Ambient Occulusion", "Radius", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1.25f)));
+            cSampleCount = base.Config.Bind("Ambient Occulusion", "SampleCount", SSAOProUtils.SSAOPro.SampleCount.Medium, "");
+            cBlurDownS = base.Config.Bind("Ambient Occulusion", "BlurDownsampling", false, "");
+            cDownsampling = base.Config.Bind("Ambient Occulusion", "DownSampling", 1, new ConfigDescription("", new AcceptableValueRange<int>(1, 4)));
+            cDistance = base.Config.Bind("Ambient Occulusion", "Distance", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            cBias = base.Config.Bind("Ambient Occulusion", "Bias", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            cLithingCont = base.Config.Bind("Ambient Occulusion", "LightingContribution", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            cBlurType = base.Config.Bind("Ambient Occulusion", "BlurType", SSAOProUtils.SSAOPro.BlurMode.HighQualityBilateral, "");
+            cBlurPasses = base.Config.Bind("Ambient Occulusion", "BlurPasses", 1, new ConfigDescription("", new AcceptableValueRange<int>(1, 4)));
+            cThres = base.Config.Bind("Ambient Occulusion", "Threshold", 10f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 20f)));
+            cMaxDistance = base.Config.Bind("Ambient Occulusion", "MaxDistance", 150f, "");
+            cFalloff = base.Config.Bind("Ambient Occulusion", "Falloff", 50f, "");
+            Bloomenable = base.Config.Bind("Bloom", "_Bloom Enable", false, "");
+            Bloomintensity = base.Config.Bind("Bloom", "Intensity", 3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            Bloomanamor = base.Config.Bind("Bloom", "AnamorphicRatio", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            BloomsoftKnee = base.Config.Bind("Bloom", "Softknee", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            Bloomthreshold = base.Config.Bind("Bloom", "Threshold", 1.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            Bloomclamp = base.Config.Bind("Bloom", "Clamp", 65472f, "");
+            Bloomdiffusion = base.Config.Bind("Bloom", "Diffusion", 7f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 10f)));
+            Bloomcolor = base.Config.Bind("Bloom", "Color", Color.white, "");
+            Bloomfsmd = base.Config.Bind("Bloom", "FastMode", false, "");
+            CGenable = base.Config.Bind("Color Grading", "_Color Grading Enable", false, "");
+            CGtoneMapper = base.Config.Bind("Color Grading", "ToneMapper", Tonemapper.None, "");
+            CGgradingmode = base.Config.Bind("Color Grading", "GradingMode", GradingMode.LowDefinitionRange, "");
+            CGposte = base.Config.Bind("Color Grading", "Tone PostExposure", 0f, "");
+            CGtemp = base.Config.Bind("Color Grading", "WhiteBalance Temperature", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            CGtint = base.Config.Bind("Color Grading", "WhiteBalance Tint", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            CGhueShift = base.Config.Bind("Color Grading", "Tone HueShift", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-180f, 180f)));
+            CGsaturation = base.Config.Bind("Color Grading", "Tone Saturation", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            CGcontrast = base.Config.Bind("Color Grading", "Tone Contrast", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            CGlift = base.Config.Bind("Color Grading", "Trackballs Lift", new Vector4(1f, 1f, 1f, 0f), "");
+            CGgamma = base.Config.Bind("Color Grading", "Trackballs Gammma", new Vector4(1f, 1f, 1f, 0f), "");
+            CGgain = base.Config.Bind("Color Grading", "Trackballs Gain", new Vector4(1f, 1f, 1f, 0f), "");
+            CGcolfilter = base.Config.Bind("Color Grading", "Tone ColorFilter", Color.white, "");
+            CAenable = base.Config.Bind("Chromatic Aberration", "_Chromatic Aberration Enable", false, "");
+            CAintensity = base.Config.Bind("Chromatic Aberration", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            MBenable = base.Config.Bind("Motion Blur", "_MotionBlur Enable", false, "");
+            MBshutter = base.Config.Bind("Motion Blur", "ShutterAngle", 270f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 360f)));
+            MBsamplecnt = base.Config.Bind("Motion Blur", "SampleCount", 10, new ConfigDescription("", new AcceptableValueRange<int>(4, 32)));
+            DOFenable = base.Config.Bind("Depth of Field", "_DOF Enable", false, "");
+            DOFfocusd = base.Config.Bind("Depth of Field", "FocusDistance", 10f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 100f)));
+            DOFaperture = base.Config.Bind("Depth of Field", "Aperture", 5.6f, new ConfigDescription("", new AcceptableValueRange<float>(0.05f, 32f)));
+            DOFfocall = base.Config.Bind("Depth of Field", "FoculLength", 50f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 300f)));
+            DOFmaxblur = base.Config.Bind("Depth of Field", "MaxBlurSize", KernelSize.Medium, "");
+            VGenable = base.Config.Bind("Vignette", "_Vignette Enable", false, "");
+            VGcenter = base.Config.Bind("Vignette", "Canter", new Vector2(0.5f, 0.5f), "");
+            VGmode = base.Config.Bind("Vignette", "Mode", VignetteMode.Classic, "");
+            VGcol = base.Config.Bind("Vignette", "Color", new Color(0f, 0f, 0f, 1f), "");
+            VGintensity = base.Config.Bind("Vignette", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            VGsmoothness = base.Config.Bind("Vignette", "Smoothness", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
+            VGroundness = base.Config.Bind("Vignette", "Roundness", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            VGrounded = base.Config.Bind("Vignette", "Rounded", false, "");
+            VGopacity = base.Config.Bind("Vignette", "Opacity", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            DOFautofocus = base.Config.Bind("Depth of Field", "AutoFocus", false, "");
+            DOFAFmode = base.Config.Bind("Depth of Field", "AutoFocusMode", 0, new ConfigDescription("", new AcceptableValueRange<int>(0, 2)));
+            MasterSwitch = base.Config.Bind("_MasterSwitch", "_Switch", default(KeyboardShortcut), "");
+            OpenGUI = base.Config.Bind("_OpenGUI", "_OpenGUI", default(KeyboardShortcut), "");
+            SoutlineEnable = base.Config.Bind("SobelColorOutline", "_Enable", false, "");
+            OutlineWidth = base.Config.Bind("SobelColorOutline", "OutlineWidth", 0.02f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            OutlineColor = base.Config.Bind("SobelColorOutline", "OutlineColor", Color.white, "");
+            ColorPower = base.Config.Bind("SobelColorOutline", "ColorPower", 2f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            PosEnable = base.Config.Bind("Posterize", "_Enable", false, "");
+            PosDiv = base.Config.Bind("Posterize", "DivisionNum", 8, new ConfigDescription("", new AcceptableValueRange<int>(1, 64)));
+            PosHSV = base.Config.Bind("Posterize", "UseHSVtrans", true, "");
+            SengaEnable = base.Config.Bind("CustomizableOutline", "_Enable", false, "");
+            SengaOnly = base.Config.Bind("CustomizableOutline", "OutlineOnly", false, "");
+            SengaNomalThes = base.Config.Bind("CustomizableOutline", "NormalThreshold", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
+            SengaDepthThres = base.Config.Bind("CustomizableOutline", "DepthThreshold", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 10f)));
+            SengaColorThres = base.Config.Bind("CustomizableOutline", "ColorThreshold", 0.01f, new ConfigDescription("", new AcceptableValueRange<float>(0.001f, 1f)));
+            SengaSobelThres = base.Config.Bind("CustomizableOutline", "SobelThreshold", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 10f)));
+            SengaNormalEdge = base.Config.Bind("CustomizableOutline", "NormalEdge", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaDepthEdge = base.Config.Bind("CustomizableOutline", "DepthEdge", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaColorEdge = base.Config.Bind("CustomizableOutline", "ColorEdge", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaSobelEdge = base.Config.Bind("CustomizableOutline", "SobelEdge", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaSampleDistance = base.Config.Bind("CustomizableOutline", "SampleDistance", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 3f)));
+            SengaColBlend = base.Config.Bind("CustomizableOutline", "ColorBlend", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 20f)));
+            SengaToneEnable = base.Config.Bind("CustomizableOutline", "PasteTone", false, "");
+            SengaToneScale = base.Config.Bind("CustomizableOutline", "ToneScale", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 10f)));
+            SengaToneThick = base.Config.Bind("CustomizableOutline", "ToneThickness", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            SengaToneThres = base.Config.Bind("CustomizableOutline", "ToneThreshold", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            SengaBlurEnable = base.Config.Bind("CustomizableOutline", "BlurOn", false, "");
+            SengaBlurDir = base.Config.Bind("CustomizableOutline", "BlurDirection", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            SengaBlurPow = base.Config.Bind("CustomizableOutline", "BlurPower", 0.6f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 5f)));
+            SengaBlurThick = base.Config.Bind("CustomizableOutline", "BlurThickness", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaBlurSample = base.Config.Bind("CustomizableOutline", "BlurSampleCount", 8, new ConfigDescription("", new AcceptableValueRange<int>(2, 64)));
+            DistortionEnable = base.Config.Bind("Lens Distortion", "_Enable", false, "");
+            DistortionIntensity = base.Config.Bind("Lens Distortion", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            DistortionIntensityX = base.Config.Bind("Lens Distortion", "X Multiplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1)));
+            DistortionIntensityY = base.Config.Bind("Lens Distortion", "Y Mulitplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            DistortionCenterX = base.Config.Bind("Lens Distortion", "X Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            DistortionCenterY = base.Config.Bind("Lens Distortion", "Y Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            DistortionScale = base.Config.Bind("Lens Distortion", "Scale", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 5f)));
         }
-
-        private void OnEnable()
-        {
-            ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, "plugins/KKS_postprocessresources.asset"));
-            if (!(ab == null))
-            {
-                depthnormals = ab.LoadAsset<Shader>("Internal-DepthNormalsTexturemod");
-                postProcessResources = ScriptableObject.CreateInstance<PostProcessResources>();
-                postProcessResources.shaders = new PostProcessResources.Shaders();
-                postProcessResources.computeShaders = new PostProcessResources.ComputeShaders();
-                postProcessResources.smaaLuts = new PostProcessResources.SMAALuts();
-                postProcessResources.shaders.bloom = ab.LoadAsset<Shader>("bloom");
-                postProcessResources.shaders.copy = ab.LoadAsset<Shader>("copy");
-                postProcessResources.shaders.copyStd = ab.LoadAsset<Shader>("copyStd");
-                postProcessResources.shaders.copyStdFromTexArray = ab.LoadAsset<Shader>("copyStdFromTexArray");
-                postProcessResources.shaders.copyStdFromDoubleWide = ab.LoadAsset<Shader>("copyStdFromDoubleWide");
-                postProcessResources.shaders.discardAlpha = ab.LoadAsset<Shader>("discardAlpha");
-                postProcessResources.shaders.depthOfField = ab.LoadAsset<Shader>("depthOfField");
-                postProcessResources.shaders.finalPass = ab.LoadAsset<Shader>("finalPass");
-                postProcessResources.shaders.grainBaker = ab.LoadAsset<Shader>("grainBaker");
-                postProcessResources.shaders.motionBlur = ab.LoadAsset<Shader>("motionBlur");
-                postProcessResources.shaders.temporalAntialiasing = ab.LoadAsset<Shader>("temporalAntialiasing");
-                postProcessResources.shaders.subpixelMorphologicalAntialiasing = ab.LoadAsset<Shader>("subpixelMorphologicalAntialiasing");
-                postProcessResources.shaders.texture2dLerp = ab.LoadAsset<Shader>("texture2dLerp");
-                postProcessResources.shaders.uber = ab.LoadAsset<Shader>("uber");
-                postProcessResources.shaders.lut2DBaker = ab.LoadAsset<Shader>("lut2DBaker");
-                postProcessResources.shaders.lightMeter = ab.LoadAsset<Shader>("lightMeter");
-                postProcessResources.shaders.gammaHistogram = ab.LoadAsset<Shader>("gammaHistogram");
-                postProcessResources.shaders.waveform = ab.LoadAsset<Shader>("waveform");
-                postProcessResources.shaders.vectorscope = ab.LoadAsset<Shader>("vectorscope");
-                postProcessResources.shaders.debugOverlays = ab.LoadAsset<Shader>("debugOverlays");
-                postProcessResources.shaders.deferredFog = ab.LoadAsset<Shader>("deferredFog");
-                postProcessResources.shaders.scalableAO = ab.LoadAsset<Shader>("scalableAO");
-                postProcessResources.shaders.multiScaleAO = ab.LoadAsset<Shader>("multiScaleAO");
-                postProcessResources.shaders.screenSpaceReflections = ab.LoadAsset<Shader>("screenSpaceReflections");
-                postProcessResources.computeShaders.autoExposure = ab.LoadAsset<ComputeShader>("AutoExposure.compute");
-                postProcessResources.computeShaders.exposureHistogram = ab.LoadAsset<ComputeShader>("ExposureHistogram.compute");
-                postProcessResources.computeShaders.lut3DBaker = ab.LoadAsset<ComputeShader>("Lut3DBaker.compute");
-                postProcessResources.computeShaders.texture3dLerp = ab.LoadAsset<ComputeShader>("Texture3DLerp.compute");
-                postProcessResources.computeShaders.multiScaleAODownsample1 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample1.compute.");
-                postProcessResources.computeShaders.multiScaleAODownsample2 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample2.compute");
-                postProcessResources.computeShaders.multiScaleAORender = ab.LoadAsset<ComputeShader>("MultiScaleVORender.compute");
-                postProcessResources.computeShaders.multiScaleAOUpsample = ab.LoadAsset<ComputeShader>("MultiScaleVOUpsample.compute");
-                postProcessResources.computeShaders.gaussianDownsample = ab.LoadAsset<ComputeShader>("GaussianDownsample.compute");
-                postProcessResources.smaaLuts.area = ab.LoadAsset<Texture2D>("areaTex");
-                postProcessResources.smaaLuts.search = ab.LoadAsset<Texture2D>("searchTex");
-                postProcessResources.blueNoise64 = new Texture2D[64];
-                for (int i = 0; i < 64; i++)
-                {
-                    postProcessResources.blueNoise64[i] = ab.LoadAsset<Texture2D>("LDR_LLL1_" + i + ".png");
-                }
-                postProcessResources.blueNoise256 = new Texture2D[8];
-                for (int j = 0; j < 8; j++)
-                {
-                    postProcessResources.blueNoise256[j] = ab.LoadAsset<Texture2D>("LDR_LLL2_" + j + ".png");
-                }
-                SSAOshader = ab.LoadAsset<Shader>("SSAOPro_v2");
-                noiseTex = ab.LoadAsset<Texture2D>("noise");
-                SobelShader = ab.LoadAsset<Shader>("RealToon_Sobel_Outline_FX.shader");
-                posShader = ab.LoadAsset<Shader>("Posterize");
-                sengaShader = ab.LoadAsset<Shader>("senga");
-                sengaToneTex = ab.LoadAsset<Texture2D>("dot_03.bmp");
-                ab.Unload(false);
-                onoff = base.Config.Bind("_MasterSwitch", "OnOff", false, "");
-                AAmode = base.Config.Bind("AntiAliasing", "AntiAliasing Mode", PostProcessLayer.Antialiasing.None, "");
-                AAsmaaq = base.Config.Bind("AntiAliasing", "SMAA Quality", SubpixelMorphologicalAntialiasing.Quality.Medium, "");
-                AAfxaafm = base.Config.Bind("AntiAliasing", "FXAA FastMode", false, "");
-                AAfxaakpa = base.Config.Bind("AntiAliasing", "FXAA KeepAlpha", false, "");
-                TAAjittetSpeed = base.Config.Bind("AntiAliasing", "TAA JitterSpeed", 0.75f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 1f)));
-                TAAsharpen = base.Config.Bind("AntiAliasing", "TAA Sharpen", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 3f)));
-                TAAstationaryBlending = base.Config.Bind("AntiAliasing", "TAA StationaryBlending", 0.95f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.99f)));
-                TAAmotionBlending = base.Config.Bind("AntiAliasing", "TAA MotionBlending", 0.85f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.99f)));
-                AOmode = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Mode", AmbientOcclusionMode.ScalableAmbientObscurance, "");
-                AOenable = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Enable", false, "");
-                AOintensity = base.Config.Bind("Ambient Occulusion", "AOIntensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 4f)));
-                AOcolor = base.Config.Bind("Ambient Occulusion", "Color", Color.black, "");
-                AOradius = base.Config.Bind("Ambient Occulusion", "Radius", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0.0001f, 3f)));
-                AOquality = base.Config.Bind("Ambient Occulusion", "Quality", AmbientOcclusionQuality.Medium, "");
-                AOmodesel = base.Config.Bind("Ambient Occulusion", "UseNewMode", true, "");
-                cIntensity = base.Config.Bind("Ambient Occulusion", "Intensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 16f)));
-                cOccColor = base.Config.Bind("Ambient Occulusion", "Color", Color.black, "");
-                cRadius = base.Config.Bind("Ambient Occulusion", "Radius", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1.25f)));
-                cSampleCount = base.Config.Bind("Ambient Occulusion", "SampleCount", SSAOProUtils.SSAOPro.SampleCount.Medium, "");
-                cBlurDownS = base.Config.Bind("Ambient Occulusion", "BlurDownsampling", false, "");
-                cDownsampling = base.Config.Bind("Ambient Occulusion", "DownSampling", 1, new ConfigDescription("", new AcceptableValueRange<int>(1, 4)));
-                cDistance = base.Config.Bind("Ambient Occulusion", "Distance", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-                cBias = base.Config.Bind("Ambient Occulusion", "Bias", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                cLithingCont = base.Config.Bind("Ambient Occulusion", "LightingContribution", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                cBlurType = base.Config.Bind("Ambient Occulusion", "BlurType", SSAOProUtils.SSAOPro.BlurMode.HighQualityBilateral, "");
-                cBlurPasses = base.Config.Bind("Ambient Occulusion", "BlurPasses", 1, new ConfigDescription("", new AcceptableValueRange<int>(1, 4)));
-                cThres = base.Config.Bind("Ambient Occulusion", "Threshold", 10f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 20f)));
-                cMaxDistance = base.Config.Bind("Ambient Occulusion", "MaxDistance", 150f, "");
-                cFalloff = base.Config.Bind("Ambient Occulusion", "Falloff", 50f, "");
-                Bloomenable = base.Config.Bind("Bloom", "_Bloom Enable", false, "");
-                Bloomintensity = base.Config.Bind("Bloom", "Intensity", 3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-                Bloomanamor = base.Config.Bind("Bloom", "AnamorphicRatio", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-                BloomsoftKnee = base.Config.Bind("Bloom", "Softknee", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                Bloomthreshold = base.Config.Bind("Bloom", "Threshold", 1.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-                Bloomclamp = base.Config.Bind("Bloom", "Clamp", 65472f, "");
-                Bloomdiffusion = base.Config.Bind("Bloom", "Diffusion", 7f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 10f)));
-                Bloomcolor = base.Config.Bind("Bloom", "Color", Color.white, "");
-                Bloomfsmd = base.Config.Bind("Bloom", "FastMode", false, "");
-                CGenable = base.Config.Bind("Color Grading", "_Color Grading Enable", false, "");
-                CGtoneMapper = base.Config.Bind("Color Grading", "ToneMapper", Tonemapper.None, "");
-                CGgradingmode = base.Config.Bind("Color Grading", "GradingMode", GradingMode.LowDefinitionRange, "");
-                CGposte = base.Config.Bind("Color Grading", "Tone PostExposure", 0f, "");
-                CGtemp = base.Config.Bind("Color Grading", "WhiteBalance Temperature", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-                CGtint = base.Config.Bind("Color Grading", "WhiteBalance Tint", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-                CGhueShift = base.Config.Bind("Color Grading", "Tone HueShift", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-180f, 180f)));
-                CGsaturation = base.Config.Bind("Color Grading", "Tone Saturation", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-                CGcontrast = base.Config.Bind("Color Grading", "Tone Contrast", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-                CGlift = base.Config.Bind("Color Grading", "Trackballs Lift", new Vector4(1f, 1f, 1f, 0f), "");
-                CGgamma = base.Config.Bind("Color Grading", "Trackballs Gammma", new Vector4(1f, 1f, 1f, 0f), "");
-                CGgain = base.Config.Bind("Color Grading", "Trackballs Gain", new Vector4(1f, 1f, 1f, 0f), "");
-                CGcolfilter = base.Config.Bind("Color Grading", "Tone ColorFilter", Color.white, "");
-                CAenable = base.Config.Bind("Chromatic Aberration", "_Chromatic Aberration Enable", false, "");
-                CAintensity = base.Config.Bind("Chromatic Aberration", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                MBenable = base.Config.Bind("Motion Blur", "_MotionBlur Enable", false, "");
-                MBshutter = base.Config.Bind("Motion Blur", "ShutterAngle", 270f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 360f)));
-                MBsamplecnt = base.Config.Bind("Motion Blur", "SampleCount", 10, new ConfigDescription("", new AcceptableValueRange<int>(4, 32)));
-                DOFenable = base.Config.Bind("Depth of Field", "_DOF Enable", false, "");
-                DOFfocusd = base.Config.Bind("Depth of Field", "FocusDistance", 10f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 100f)));
-                DOFaperture = base.Config.Bind("Depth of Field", "Aperture", 5.6f, new ConfigDescription("", new AcceptableValueRange<float>(0.05f, 32f)));
-                DOFfocall = base.Config.Bind("Depth of Field", "FoculLength", 50f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 300f)));
-                DOFmaxblur = base.Config.Bind("Depth of Field", "MaxBlurSize", KernelSize.Medium, "");
-                VGenable = base.Config.Bind("Vignette", "_Vignette Enable", false, "");
-                VGcenter = base.Config.Bind("Vignette", "Canter", new Vector2(0.5f, 0.5f), "");
-                VGmode = base.Config.Bind("Vignette", "Mode", VignetteMode.Classic, "");
-                VGcol = base.Config.Bind("Vignette", "Color", new Color(0f, 0f, 0f, 1f), "");
-                VGintensity = base.Config.Bind("Vignette", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                VGsmoothness = base.Config.Bind("Vignette", "Smoothness", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
-                VGroundness = base.Config.Bind("Vignette", "Roundness", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                VGrounded = base.Config.Bind("Vignette", "Rounded", false, "");
-                VGopacity = base.Config.Bind("Vignette", "Opacity", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                DOFautofocus = base.Config.Bind("Depth of Field", "AutoFocus", false, "");
-                DOFAFmode = base.Config.Bind("Depth of Field", "AutoFocusMode", 0, new ConfigDescription("", new AcceptableValueRange<int>(0, 2)));
-                MasterSwitch = base.Config.Bind("_MasterSwitch", "_Switch", default(KeyboardShortcut), "");
-                OpenGUI = base.Config.Bind("_OpenGUI", "_OpenGUI", default(KeyboardShortcut), "");
-                SoutlineEnable = base.Config.Bind("SobelColorOutline", "_Enable", false, "");
-                OutlineWidth = base.Config.Bind("SobelColorOutline", "OutlineWidth", 0.02f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                OutlineColor = base.Config.Bind("SobelColorOutline", "OutlineColor", Color.white, "");
-                ColorPower = base.Config.Bind("SobelColorOutline", "ColorPower", 2f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-                PosEnable = base.Config.Bind("Posterize", "_Enable", false, "");
-                PosDiv = base.Config.Bind("Posterize", "DivisionNum", 8, new ConfigDescription("", new AcceptableValueRange<int>(1, 64)));
-                PosHSV = base.Config.Bind("Posterize", "UseHSVtrans", true, "");
-                SengaEnable = base.Config.Bind("CustomizableOutline", "_Enable", false, "");
-                SengaOnly = base.Config.Bind("CustomizableOutline", "OutlineOnly", false, "");
-                SengaNomalThes = base.Config.Bind("CustomizableOutline", "NormalThreshold", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
-                SengaDepthThres = base.Config.Bind("CustomizableOutline", "DepthThreshold", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 10f)));
-                SengaColorThres = base.Config.Bind("CustomizableOutline", "ColorThreshold", 0.01f, new ConfigDescription("", new AcceptableValueRange<float>(0.001f, 1f)));
-                SengaSobelThres = base.Config.Bind("CustomizableOutline", "SobelThreshold", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 10f)));
-                SengaNormalEdge = base.Config.Bind("CustomizableOutline", "NormalEdge", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                SengaDepthEdge = base.Config.Bind("CustomizableOutline", "DepthEdge", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                SengaColorEdge = base.Config.Bind("CustomizableOutline", "ColorEdge", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                SengaSobelEdge = base.Config.Bind("CustomizableOutline", "SobelEdge", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                SengaSampleDistance = base.Config.Bind("CustomizableOutline", "SampleDistance", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 3f)));
-                SengaColBlend = base.Config.Bind("CustomizableOutline", "ColorBlend", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 20f)));
-                SengaToneEnable = base.Config.Bind("CustomizableOutline", "PasteTone", false, "");
-                SengaToneScale = base.Config.Bind("CustomizableOutline", "ToneScale", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 10f)));
-                SengaToneThick = base.Config.Bind("CustomizableOutline", "ToneThickness", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-                SengaToneThres = base.Config.Bind("CustomizableOutline", "ToneThreshold", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-                SengaBlurEnable = base.Config.Bind("CustomizableOutline", "BlurOn", false, "");
-                SengaBlurDir = base.Config.Bind("CustomizableOutline", "BlurDirection", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-                SengaBlurPow = base.Config.Bind("CustomizableOutline", "BlurPower", 0.6f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 5f)));
-                SengaBlurThick = base.Config.Bind("CustomizableOutline", "BlurThickness", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                SengaBlurSample = base.Config.Bind("CustomizableOutline", "BlurSampleCount", 8, new ConfigDescription("", new AcceptableValueRange<int>(2, 64)));
-                DistortionEnable = base.Config.Bind("Lens Distortion", "_Enable", false, "");
-                DistortionIntensity = base.Config.Bind("Lens Distortion", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-                DistortionIntensityX = base.Config.Bind("Lens Distortion", "X Multiplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1)));
-                DistortionIntensityY = base.Config.Bind("Lens Distortion", "Y Mulitplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-                DistortionCenterX = base.Config.Bind("Lens Distortion", "X Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-                DistortionCenterY = base.Config.Bind("Lens Distortion", "Y Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-                DistortionScale = base.Config.Bind("Lens Distortion", "Scale", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 5f)));
-                SceneManager.sceneLoaded += OnSceneLoaded;
-                base.Config.SettingChanged += OnSettingChanged;
-                CharacterApi.CharacterReloaded += CharacterReloaded;
-                StudioSaveLoadApi.ObjectsSelected += ObjectsSelected;
-                onoff_post = onoff.Value;
-            }
-        }
-
-        private void Start()
-        {
-            if (onoff.Value)
-            {
-                GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
-                GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
-            }
-            Harmony.CreateAndPatchAll(typeof(Patch), (string)null);
-        }
-
-        private void ObjectsSelected(object sender, ObjectsSelectedEventArgs e)
-        {
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
-            {
-                ObjectCtrlInfo objectCtrlInfo = e.SelectedObjects.First();
-                try
-                {
-                    OCIChar ociChar = (OCIChar)objectCtrlInfo;
-                    charapos = ociChar.GetChaControl().transform.Find("BodyTop/p_cf_body_bone/cf_j_root/cf_n_height/cf_j_hips");
-                }
-                catch
-                {
-                }
-            }
-        }
-
-        private void Update()
-        {
-            if (onoff.Value != onoff_post)
-            {
-                if (onoff.Value)
-                {
-                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
-                    GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
-                    Setup();
-                }
-                else
-                {
-                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseBuiltin);
-                    RuntimeUtilities.DestroyVolume(postProcessVolume, true, true);
-                    UnityEngine.Object.Destroy(postProcessLayer);
-                    UnityEngine.Object.Destroy(sAOPro);
-                    UnityEngine.Object.Destroy(sobel);
-                    UnityEngine.Object.Destroy(posterize);
-                    UnityEngine.Object.Destroy(sengaEffect);
-                }
-            }
-            onoff_post = onoff.Value;
-            if (onoff.Value)
-            {
-                if (DOFautofocus.Value && DOFenable.Value)
-                {
-                    if (cam == null)
-                    {
-                        return;
-                    }
-                    if (DOFAFmode.Value == 0)
-                    {
-                        DOF.focusDistance.Override(Vector3.Distance(camtarget.transform.position, cam.transform.position));
-                    }
-                    else if (DOFAFmode.Value == 1 && KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
-                    {
-                        if (charapos != null)
-                        {
-                            float x = Vector3.Distance(charapos.position, cam.transform.position);
-                            DOF.focusDistance.Override(x);
-                        }
-                    }
-                    else if (DOFAFmode.Value == 2 && CharaList.Keys.Count() != 0)
-                    {
-                        Dictionary<float, Transform> dictionary = new Dictionary<float, Transform>();
-                        foreach (ChaControl key3 in CharaList.Keys)
-                        {
-                            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
-                            {
-                                if (key3.GetOCIChar().treeNodeObject.visible)
-                                {
-                                    Vector3 vector = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
-                                    float key = Vector2.Distance(new Vector2(vector.x, vector.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                    dictionary.Add(key, CharaList[key3]);
-                                }
-                            }
-                            else
-                            {
-                                Vector3 vector2 = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
-                                float key2 = Vector2.Distance(new Vector2(vector2.x, vector2.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                dictionary.Add(key2, CharaList[key3]);
-                            }
-                        }
-                        DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
-                    }
-                }
-                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker || KoikatuAPI.GetCurrentGameMode() == GameMode.Unknown)
-                {
-                    cam.allowMSAA = false;
-                }
-            }
-            if (MasterSwitch.Value.IsDown())
-            {
-                onoff.Value = !onoff.Value;
-            }
-            if (OpenGUI.Value.IsDown())
-            {
-                mainwin = !mainwin;
-                if (mainwin)
-                {
-                    wall();
-                }
-                else
-                {
-                    UnityEngine.Object.Destroy(myGO);
-                }
-            }
-        }
-
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            cam = Camera.main;
-            camtarget = GameObject.Find("CameraTarget");
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
-            {
-                studio = Singleton<global::Studio.Studio>.Instance;
-            }
-            if (onoff.Value)
-            {
-                Setup();
-            }
-            CharaList = new Dictionary<ChaControl, Transform>();
-            ChaControl[] array = UnityEngine.Object.FindObjectsOfType<ChaControl>();
-            foreach (ChaControl chaControl in array)
-            {
-                CharaList.Add(chaControl, chaControl.transform.Find("BodyTop/p_cf_body_bone/cf_j_root/cf_n_height/cf_j_hips"));
-            }
-        }
-
-        private void CharacterReloaded(object sender, CharaReloadEventArgs e)
-        {
-            CharaList = new Dictionary<ChaControl, Transform>();
-            ChaControl[] array = UnityEngine.Object.FindObjectsOfType<ChaControl>();
-            foreach (ChaControl chaControl in array)
-            {
-                CharaList.Add(chaControl, chaControl.transform.Find("BodyTop/p_cf_body_bone/cf_j_root/cf_n_height/cf_j_hips"));
-            }
-        }
-
-        private void Setup()
-        {
-            if ((bool)cam)
-            {
-                GameObject gameObject = cam.gameObject;
-                postProcessLayer = gameObject.GetComponent<PostProcessLayer>();
-                if (postProcessLayer == null)
-                {
-                    postProcessLayer = gameObject.AddComponent<PostProcessLayer>();
-                }
-                postProcessLayer.Init(postProcessResources);
-                postProcessLayer.InitBundles();
-                postProcessLayer.volumeLayer = LayerMask.GetMask(LayerMask.LayerToName(gameObject.layer));
-                postProcessLayer.volumeTrigger = gameObject.transform;
-                postProcessVolume = UnityEngine.Object.FindObjectOfType<PostProcessVolume>();
-                if (!postProcessVolume)
-                {
-                    postProcessVolume = new GameObject("PostProcessVolume").AddComponent<PostProcessVolume>();
-                }
-                postProcessVolume.isGlobal = true;
-                postProcessVolume.gameObject.layer = gameObject.layer;
-                if (!postProcessVolume.profile.HasSettings<AmbientOcclusion>())
-                {
-                    AO = postProcessVolume.profile.AddSettings<AmbientOcclusion>();
-                }
-                else
-                {
-                    postProcessVolume.profile.TryGetSettings<AmbientOcclusion>(out AO);
-                }
-                if (!postProcessVolume.profile.HasSettings<Bloom>())
-                {
-                    bloom = postProcessVolume.profile.AddSettings<Bloom>();
-                }
-                else
-                {
-                    postProcessVolume.profile.TryGetSettings<Bloom>(out bloom);
-                }
-                if (!postProcessVolume.profile.HasSettings<ColorGrading>())
-                {
-                    CG = postProcessVolume.profile.AddSettings<ColorGrading>();
-                }
-                else
-                {
-                    postProcessVolume.profile.TryGetSettings<ColorGrading>(out CG);
-                }
-                if (!postProcessVolume.profile.HasSettings<MotionBlur>())
-                {
-                    MB = postProcessVolume.profile.AddSettings<MotionBlur>();
-                }
-                else
-                {
-                    postProcessVolume.profile.TryGetSettings<MotionBlur>(out MB);
-                }
-                if (!postProcessVolume.profile.HasSettings<DepthOfField>())
-                {
-                    DOF = postProcessVolume.profile.AddSettings<DepthOfField>();
-                }
-                else
-                {
-                    postProcessVolume.profile.TryGetSettings<DepthOfField>(out DOF);
-                }
-                if (!postProcessVolume.profile.HasSettings<Vignette>())
-                {
-                    VG = postProcessVolume.profile.AddSettings<Vignette>();
-                }
-                else
-                {
-                    postProcessVolume.profile.TryGetSettings<Vignette>(out VG);
-                }
-                if (!postProcessVolume.profile.HasSettings<ChromaticAberration>())
-                {
-                    CA = postProcessVolume.profile.AddSettings<ChromaticAberration>();
-                }
-                else
-                {
-                    postProcessVolume.profile.TryGetSettings<ChromaticAberration>(out CA);
-                }
-                lensDistortion = ScriptableObject.CreateInstance<LensDistortion>();
-                lensDistortion = (LensDistortion)postProcessVolume.profile.AddSettings(lensDistortion);
-
-                sAOPro = cam.GetComponent<SSAOProUtils.SSAOPro>();
-                if (sAOPro == null)
-                {
-                    sAOPro = gameObject.AddComponent<SSAOProUtils.SSAOPro>();
-                }
-                sAOPro.enabled = false;
-                sAOPro.NoiseTexture = noiseTex;
-                sAOPro.ShaderSSAO = SSAOshader;
-                if (cam.gameObject.GetComponent<Posterize>() == null)
-                {
-                    posterize = cam.gameObject.AddComponent<Posterize>();
-                }
-                posterize.enabled = false;
-                posterize.shader = posShader;
-                if (cam.gameObject.GetComponent<global::SobelOutline.SobelOutline>() == null)
-                {
-                    sobel = cam.gameObject.AddComponent<global::SobelOutline.SobelOutline>();
-                }
-                sobel.enabled = false;
-                sobel.shader = SobelShader;
-                if (cam.gameObject.GetComponent<SengaEffect>() == null)
-                {
-                    sengaEffect = cam.gameObject.AddComponent<SengaEffect>();
-                }
-                sengaEffect.enabled = false;
-                sengaEffect.shader = sengaShader;
-                sengaEffect.ToneTex = sengaToneTex;
-                Settings();
-            }
-        }
-
-        protected void OnSettingChanged(object sender, SettingChangedEventArgs e)
-        {
-            if (onoff.Value)
-            {
-                Settings();
-            }
-        }
-
-        private void Settings()
-        {
-            if (AOenable.Value)
-            {
-                if (AOmodesel.Value)
-                {
-                    oAOenable = false;
-                    nAOenable = true;
-                }
-                else
-                {
-                    oAOenable = true;
-                    nAOenable = false;
-                }
-            }
-            else
-            {
-                oAOenable = false;
-                nAOenable = false;
-            }
-            if ((bool)postProcessLayer && (bool)postProcessVolume && (bool)sAOPro)
-            {
-                postProcessLayer.antialiasingMode = AAmode.Value;
-                postProcessLayer.subpixelMorphologicalAntialiasing.quality = AAsmaaq.Value;
-                postProcessLayer.fastApproximateAntialiasing.fastMode = AAfxaafm.Value;
-                postProcessLayer.fastApproximateAntialiasing.keepAlpha = AAfxaakpa.Value;
-                postProcessLayer.temporalAntialiasing.jitterSpread = TAAjittetSpeed.Value;
-                postProcessLayer.temporalAntialiasing.motionBlending = TAAmotionBlending.Value;
-                postProcessLayer.temporalAntialiasing.stationaryBlending = TAAstationaryBlending.Value;
-                postProcessLayer.temporalAntialiasing.sharpness = TAAsharpen.Value;
-                bloom.enabled.Override(Bloomenable.Value);
-                bloom.intensity.Override(Bloomintensity.Value);
-                bloom.anamorphicRatio.Override(Bloomanamor.Value);
-                bloom.clamp.Override(Bloomclamp.Value);
-                bloom.color.Override(Bloomcolor.Value);
-                bloom.diffusion.Override(Bloomdiffusion.Value);
-                bloom.fastMode.Override(Bloomfsmd.Value);
-                bloom.softKnee.Override(BloomsoftKnee.Value);
-                bloom.threshold.Override(Bloomthreshold.Value);
-                AO.enabled.Override(oAOenable);
-                AO.mode.Override(AOmode.Value);
-                AO.intensity.Override(AOintensity.Value);
-                AO.color.Override(AOcolor.Value);
-                AO.radius.Override(AOradius.Value);
-                AO.quality.Override(AOquality.Value);
-                CG.enabled.Override(CGenable.Value);
-                CG.tonemapper.Override(CGtoneMapper.Value);
-                CG.gradingMode.Override(CGgradingmode.Value);
-                CG.temperature.Override(CGtemp.Value);
-                CG.tint.Override(CGtint.Value);
-                CG.postExposure.Override(CGposte.Value);
-                CG.colorFilter.Override(CGcolfilter.Value);
-                CG.hueShift.Override(CGhueShift.Value);
-                CG.saturation.Override(CGsaturation.Value);
-                CG.contrast.Override(CGcontrast.Value);
-                CG.lift.Override(CGlift.Value);
-                CG.gamma.Override(CGgamma.Value);
-                CG.gain.Override(CGgain.Value);
-                MB.enabled.Override(MBenable.Value);
-                MB.shutterAngle.Override(MBshutter.Value);
-                MB.sampleCount.Override(MBsamplecnt.Value);
-                DOF.enabled.Override(DOFenable.Value);
-                if (!DOFautofocus.Value)
-                {
-                    DOF.focusDistance.Override(DOFfocusd.Value);
-                }
-                DOF.aperture.Override(DOFaperture.Value);
-                DOF.focalLength.Override(DOFfocall.Value);
-                DOF.kernelSize.Override(DOFmaxblur.Value);
-                VG.enabled.Override(VGenable.Value);
-                VG.center.Override(VGcenter.Value);
-                VG.mode.Override(VGmode.Value);
-                VG.color.Override(VGcol.Value);
-                VG.intensity.Override(VGintensity.Value);
-                VG.smoothness.Override(VGsmoothness.Value);
-                VG.roundness.Override(VGroundness.Value);
-                VG.rounded.Override(VGrounded.Value);
-                VG.opacity.Override(VGopacity.Value);
-                Logger.LogInfo(lensDistortion == null);
-                lensDistortion.enabled.Override(DistortionEnable.Value);
-                lensDistortion.intensity.Override(DistortionIntensity.Value);
-                lensDistortion.intensityX.Override(DistortionIntensityX.Value);
-                lensDistortion.intensityY.Override(DistortionIntensityY.Value);
-                lensDistortion.centerX.Override(DistortionCenterX.Value);
-                lensDistortion.centerY.Override(DistortionCenterY.Value);
-                lensDistortion.scale.Override(DistortionScale.Value);
-                CA.enabled.Override(CAenable.Value);
-                CA.intensity.Override(CAintensity.Value);
-                sAOPro.enabled = nAOenable;
-                sAOPro.Bias = cBias.Value;
-                sAOPro.Blur = cBlurType.Value;
-                sAOPro.BlurBilateralThreshold = cThres.Value;
-                sAOPro.BlurDownsampling = cBlurDownS.Value;
-                sAOPro.BlurPasses = cBlurPasses.Value;
-                sAOPro.CutoffDistance = cMaxDistance.Value;
-                sAOPro.CutoffFalloff = cFalloff.Value;
-                sAOPro.Distance = cDistance.Value;
-                sAOPro.Downsampling = cDownsampling.Value;
-                sAOPro.Intensity = cIntensity.Value;
-                sAOPro.LumContribution = cLithingCont.Value;
-                sAOPro.OcclusionColor = cOccColor.Value;
-                sAOPro.Samples = cSampleCount.Value;
-                sAOPro.Radius = cRadius.Value;
-                sobel.enabled = SoutlineEnable.Value;
-                sobel.ColorPower = ColorPower.Value;
-                sobel.OutlineColor = OutlineColor.Value;
-                sobel.OutlineWidth = OutlineWidth.Value;
-                posterize.enabled = PosEnable.Value;
-                posterize._div = PosDiv.Value;
-                posterize._HSV = PosHSV.Value;
-                sengaEffect.enabled = SengaEnable.Value;
-                sengaEffect.SengaOnly = SengaOnly.Value;
-                sengaEffect.ColorEdge = SengaColorEdge.Value;
-                sengaEffect.ColorThreshold = SengaColorThres.Value;
-                sengaEffect.DepthEdge = SengaDepthEdge.Value;
-                sengaEffect.DepthThreshold = SengaDepthThres.Value;
-                sengaEffect.NormalEdge = SengaNormalEdge.Value;
-                sengaEffect.NormalThreshold = SengaNomalThes.Value;
-                sengaEffect.SampleDistance = SengaSampleDistance.Value;
-                sengaEffect.SobelEdge = SengaSobelEdge.Value;
-                sengaEffect.SobelThreshold = SengaSobelThres.Value;
-                sengaEffect.kosa = SengaColBlend.Value;
-                sengaEffect.toneThres = SengaToneThres.Value;
-                sengaEffect.ToneOn = SengaToneEnable.Value;
-                sengaEffect.ToneThick = SengaToneThick.Value;
-                sengaEffect.scale = SengaToneScale.Value;
-                sengaEffect.BlurOn = SengaBlurEnable.Value;
-                sengaEffect.thick = SengaBlurThick.Value;
-                sengaEffect.pow = SengaBlurPow.Value;
-                sengaEffect.SampleCount = SengaBlurSample.Value;
-                sengaEffect.dir = SengaBlurDir.Value;
-            }
-        }
+        #endregion
     }
 }
