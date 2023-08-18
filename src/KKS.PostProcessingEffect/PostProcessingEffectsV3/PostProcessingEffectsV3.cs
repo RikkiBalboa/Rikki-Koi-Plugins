@@ -653,6 +653,10 @@ namespace PostProcessingEffectsV3
         private bool Sengab = false;
         private bool distortion = false;
 
+        #region Buffers
+        private string DistortionIntensityBuffer = "";
+        #endregion
+
 
         private void OnGUI()
         {
@@ -665,6 +669,49 @@ namespace PostProcessingEffectsV3
                 }
                 Rect1 = GUILayout.Window(560, Rect1, mainwindow, "PostProcessingEffects");
             }
+        }
+
+        private float DrawSliderTextBoxCombo(string label, float min, float max, ref string buffer, float value, float valueDefault)
+        {
+            float newValue = value;
+            string focused = GUI.GetNameOfFocusedControl();
+            if (focused == label && (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return))
+                GUI.FocusControl(null);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label, GUILayout.Width(120f));
+
+            float sliderBuffer = GUILayout.HorizontalSlider(value, min, max);
+
+            GUI.SetNextControlName(label);
+            buffer = GUILayout.TextField(buffer.ToString(), GUILayout.Width(50));
+
+            if (focused != label)
+            {
+                if (!float.TryParse(buffer, out float valueBufferFloat))
+                {
+                    valueBufferFloat = value;
+                    buffer = value.ToString();
+                }
+                if (valueBufferFloat != value)
+                    newValue = valueBufferFloat;
+                else if (sliderBuffer != value)
+                {
+                    newValue = sliderBuffer;
+                    buffer = newValue.ToString();
+                }
+            }
+
+            if (GUILayout.Button("Reset", GUILayout.Width(60f)))
+            {
+                newValue = valueDefault;
+                buffer = valueDefault.ToString();
+            }
+
+            GUILayout.EndHorizontal();
+            if (value.CompareTo(min) < 0) return min;
+            else if (value.CompareTo(max) > 0) return max;
+            else return value;
         }
 
         private void mainwindow(int windowID)
@@ -1508,15 +1555,17 @@ namespace PostProcessingEffectsV3
                 GUILayout.BeginVertical();
                 DistortionEnable.Value = GUILayout.Toggle(DistortionEnable.Value, "Enable");
 
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Intensity", GUILayout.Width(120f));
-                DistortionIntensity.Value = (float)GUILayout.HorizontalSlider(DistortionIntensity.Value, -100f, 100f);
-                GUILayout.Label(DistortionIntensity.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DistortionIntensity.Value = (float)DistortionIntensity.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+                //GUILayout.BeginHorizontal();
+                //GUILayout.Label("Intensity", GUILayout.Width(120f));
+                //DistortionIntensity.Value = (float)GUILayout.HorizontalSlider(DistortionIntensity.Value, -100f, 100f);
+                //GUILayout.Label(DistortionIntensity.Value.ToString("F"), GUILayout.Width(40f));
+                //if (GUILayout.Button("Reset", GUILayout.Width(60f)))
+                //{
+                //    DistortionIntensity.Value = (float)DistortionIntensity.DefaultValue;
+                //}
+                //GUILayout.EndHorizontal();
+
+                DistortionIntensity.Value = DrawSliderTextBoxCombo("Intensity", -100f, 100f, ref DistortionIntensityBuffer, DistortionIntensity.Value, (float)DistortionIntensity.DefaultValue);
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("X Multiplier", GUILayout.Width(120f));
@@ -1868,6 +1917,7 @@ namespace PostProcessingEffectsV3
             SengaBlurSample = base.Config.Bind("CustomizableOutline", "BlurSampleCount", 8, new ConfigDescription("", new AcceptableValueRange<int>(2, 64)));
             DistortionEnable = base.Config.Bind("Lens Distortion", "_Enable", false, "");
             DistortionIntensity = base.Config.Bind("Lens Distortion", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            DistortionIntensityBuffer = DistortionIntensity.Value.ToString();
             DistortionIntensityX = base.Config.Bind("Lens Distortion", "X Multiplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1)));
             DistortionIntensityY = base.Config.Bind("Lens Distortion", "Y Mulitplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             DistortionCenterX = base.Config.Bind("Lens Distortion", "X Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
