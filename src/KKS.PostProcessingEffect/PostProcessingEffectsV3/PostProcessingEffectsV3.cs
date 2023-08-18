@@ -654,7 +654,12 @@ namespace PostProcessingEffectsV3
         private bool distortion = false;
 
         #region Buffers
-        private string DistortionIntensityBuffer = "";
+        private string DistortionIntensityBuffer;
+        private string DistortionIntensityXBuffer;
+        private string DistortionIntensityYBuffer;
+        private string DistortionCenterXBuffer;
+        private string DistortionCenterYBuffer;
+        private string DistortionScaleBuffer;
         #endregion
 
 
@@ -711,7 +716,7 @@ namespace PostProcessingEffectsV3
             GUILayout.EndHorizontal();
             if (value.CompareTo(min) < 0) return min;
             else if (value.CompareTo(max) > 0) return max;
-            else return value;
+            else return newValue;
         }
 
         private void mainwindow(int windowID)
@@ -1555,68 +1560,24 @@ namespace PostProcessingEffectsV3
                 GUILayout.BeginVertical();
                 DistortionEnable.Value = GUILayout.Toggle(DistortionEnable.Value, "Enable");
 
-                //GUILayout.BeginHorizontal();
-                //GUILayout.Label("Intensity", GUILayout.Width(120f));
-                //DistortionIntensity.Value = (float)GUILayout.HorizontalSlider(DistortionIntensity.Value, -100f, 100f);
-                //GUILayout.Label(DistortionIntensity.Value.ToString("F"), GUILayout.Width(40f));
-                //if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                //{
-                //    DistortionIntensity.Value = (float)DistortionIntensity.DefaultValue;
-                //}
-                //GUILayout.EndHorizontal();
-
-                DistortionIntensity.Value = DrawSliderTextBoxCombo("Intensity", -100f, 100f, ref DistortionIntensityBuffer, DistortionIntensity.Value, (float)DistortionIntensity.DefaultValue);
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("X Multiplier", GUILayout.Width(120f));
-                DistortionIntensityX.Value = (float)GUILayout.HorizontalSlider(DistortionIntensityX.Value, 0f, 1f);
-                GUILayout.Label(DistortionIntensityX.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DistortionIntensityX.Value = (float)DistortionIntensityX.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Y Multiplier", GUILayout.Width(120f));
-                DistortionIntensityY.Value = (float)GUILayout.HorizontalSlider(DistortionIntensityY.Value, 0f, 1f);
-                GUILayout.Label(DistortionIntensityY.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DistortionIntensityY.Value = (float)DistortionIntensityY.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Center X", GUILayout.Width(120f));
-                DistortionCenterX.Value = (float)GUILayout.HorizontalSlider(DistortionCenterX.Value, -1f, 1);
-                GUILayout.Label(DistortionCenterX.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DistortionCenterX.Value = (float)DistortionCenterX.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Center Y", GUILayout.Width(120f));
-                DistortionCenterY.Value = (float)GUILayout.HorizontalSlider(DistortionCenterY.Value, -1f, 1f);
-                GUILayout.Label(DistortionCenterY.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DistortionCenterY.Value = (float)DistortionCenterY.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Scale", GUILayout.Width(120f));
-                DistortionScale.Value = (float)GUILayout.HorizontalSlider(DistortionScale.Value, 001f, 5f);
-                GUILayout.Label(DistortionScale.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DistortionScale.Value = (float)DistortionScale.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-
+                DistortionIntensity.Value = DrawSliderTextBoxCombo(
+                    "Intensity", -100f, 100f, ref DistortionIntensityBuffer, DistortionIntensity.Value, (float)DistortionIntensity.DefaultValue
+                );
+                DistortionIntensityX.Value = DrawSliderTextBoxCombo(
+                    "X Multiplier", 0f, 1f, ref DistortionIntensityXBuffer, DistortionIntensityX.Value, (float)DistortionIntensityX.DefaultValue
+                );
+                DistortionIntensityY.Value = DrawSliderTextBoxCombo(
+                    "Y Multiplier", 0f, 1f, ref DistortionIntensityYBuffer, DistortionIntensityY.Value, (float)DistortionIntensityY.DefaultValue
+                );
+                DistortionCenterX.Value = DrawSliderTextBoxCombo(
+                   "Center X", -1f, 1f, ref DistortionCenterXBuffer, DistortionCenterX.Value, (float)DistortionCenterX.DefaultValue
+               );
+                DistortionCenterY.Value = DrawSliderTextBoxCombo(
+                   "Center Y", -1f, 1f, ref DistortionCenterYBuffer, DistortionCenterY.Value, (float)DistortionCenterY.DefaultValue
+               );
+                DistortionScale.Value = DrawSliderTextBoxCombo(
+                   "Scale", 0.01f, 5f, ref DistortionScaleBuffer, DistortionScale.Value, (float)DistortionScale.DefaultValue
+               );
                 GUILayout.EndVertical();
             }
             #endregion
@@ -1919,10 +1880,15 @@ namespace PostProcessingEffectsV3
             DistortionIntensity = base.Config.Bind("Lens Distortion", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
             DistortionIntensityBuffer = DistortionIntensity.Value.ToString();
             DistortionIntensityX = base.Config.Bind("Lens Distortion", "X Multiplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1)));
+            DistortionIntensityXBuffer = DistortionIntensityX.Value.ToString();
             DistortionIntensityY = base.Config.Bind("Lens Distortion", "Y Mulitplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            DistortionIntensityYBuffer = DistortionIntensityY.Value.ToString();
             DistortionCenterX = base.Config.Bind("Lens Distortion", "X Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            DistortionCenterXBuffer = DistortionCenterX.Value.ToString();
             DistortionCenterY = base.Config.Bind("Lens Distortion", "Y Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-            DistortionScale = base.Config.Bind("Lens Distortion", "Scale", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 5f)));
+            DistortionCenterYBuffer = DistortionCenterY.Value.ToString();
+            DistortionScale = base.Config.Bind("Lens Distortion", "Scale", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 5f)));
+            DistortionScaleBuffer = DistortionScale.Value.ToString();
         }
         #endregion
     }
