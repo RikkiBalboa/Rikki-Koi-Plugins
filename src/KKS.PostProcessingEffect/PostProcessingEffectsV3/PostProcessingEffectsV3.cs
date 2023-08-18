@@ -669,6 +669,7 @@ namespace PostProcessingEffectsV3
 
         private void mainwindow(int windowID)
         {
+            #region Ambient Occulusion
             onoff.Value = GUILayout.Toggle(onoff.Value, "Enable/Disable All");
             AOb = GUILayout.Toggle(AOb, "AmbientOcculusion ", GUI.skin.button);
             if (AOb)
@@ -849,6 +850,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Anti Aliasing
             AA = GUILayout.Toggle(AA, "AntiAliasing ", GUI.skin.button);
             if (AA)
             {
@@ -917,6 +921,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Bloom
             bloomb = GUILayout.Toggle(bloomb, "Bloom ", GUI.skin.button);
             if (bloomb)
             {
@@ -993,6 +1000,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Chromatic Aberration
             CAb = GUILayout.Toggle(CAb, "ChromaticAberration", GUI.skin.button);
             if (CAb)
             {
@@ -1107,6 +1117,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Depth of Field
             DOFb = GUILayout.Toggle(DOFb, "DepthOfField ", GUI.skin.button);
             if (DOFb)
             {
@@ -1156,6 +1169,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Motion Blur
             MBb = GUILayout.Toggle(MBb, "MotionBlur", GUI.skin.button);
             if (MBb)
             {
@@ -1181,6 +1197,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Vignette
             VGb = GUILayout.Toggle(VGb, "Vignette", GUI.skin.button);
             if (VGb)
             {
@@ -1249,6 +1268,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Sobel Color Outline
             SCOb = GUILayout.Toggle(SCOb, "SobelColorOutline", GUI.skin.button);
             if (SCOb)
             {
@@ -1289,6 +1311,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Posterize
             Posb = GUILayout.Toggle(Posb, "Posterize", GUI.skin.button);
             if (Posb)
             {
@@ -1306,6 +1331,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Customizaable Outline
             Sengab = GUILayout.Toggle(Sengab, "CustomizaableOutline", GUI.skin.button);
             if (Sengab)
             {
@@ -1471,7 +1499,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
+            #endregion
 
+            #region Distortion
             distortion = GUILayout.Toggle(distortion, "Lens Distortion ", GUI.skin.button);
             if (distortion)
             {
@@ -1540,6 +1570,8 @@ namespace PostProcessingEffectsV3
 
                 GUILayout.EndVertical();
             }
+            #endregion
+
             GUI.DragWindow();
         }
 
