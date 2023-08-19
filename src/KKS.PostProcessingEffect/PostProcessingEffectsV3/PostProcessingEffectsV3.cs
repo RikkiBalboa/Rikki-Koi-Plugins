@@ -687,6 +687,9 @@ namespace PostProcessingEffectsV3
         private string CGhueShiftBuffer;
         private string CGsaturationBuffer;
         private string CGcontrastBuffer;
+        private string DOFfocusdBuffer;
+        private string DOFapertureBuffer;
+        private string DOFfocallBuffer;
         #endregion
 
 
@@ -1074,33 +1077,17 @@ namespace PostProcessingEffectsV3
             {
                 GUILayout.BeginVertical();
                 DOFenable.Value = GUILayout.Toggle(DOFenable.Value, "Enable");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("FocusDistance  ", GUILayout.Width(120f));
-                DOFfocusd.Value = GUILayout.HorizontalSlider(DOFfocusd.Value, 0f, 50f);
-                GUILayout.Label(DOFfocusd.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DOFfocusd.Value = (float)DOFfocusd.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Aperture", GUILayout.Width(120f));
-                DOFaperture.Value = GUILayout.HorizontalSlider(DOFaperture.Value, 0.1f, 32f);
-                GUILayout.Label(DOFaperture.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DOFaperture.Value = (float)DOFaperture.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("FocalLength", GUILayout.Width(120f));
-                DOFfocall.Value = GUILayout.HorizontalSlider(DOFfocall.Value, 1f, 300f);
-                GUILayout.Label(DOFfocall.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    DOFfocall.Value = (float)DOFfocall.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                DOFfocusd.Value = DrawSliderTextBoxCombo(
+                    "FocusDistance  ", 0.1f, 50f, ref DOFfocusdBuffer, DOFfocusd.Value, (float)DOFfocusd.DefaultValue
+                );
+                DOFaperture.Value = DrawSliderTextBoxCombo(
+                    "Aperture", 0.05f, 32f, ref DOFapertureBuffer, DOFaperture.Value, (float)DOFaperture.DefaultValue
+                );
+                DOFfocall.Value = DrawSliderTextBoxCombo(
+                    "FocalLength", 1f, 300f, ref DOFfocallBuffer, DOFfocall.Value, (float)DOFfocall.DefaultValue
+                );
+
                 int selected5 = Array.IndexOf(DOFm, DOFmaxblur.Value);
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("MaxBlurSize  ", GUILayout.Width(120f));
@@ -1756,8 +1743,11 @@ namespace PostProcessingEffectsV3
             MBsamplecnt = base.Config.Bind("Motion Blur", "SampleCount", 10, new ConfigDescription("", new AcceptableValueRange<int>(4, 32)));
             DOFenable = base.Config.Bind("Depth of Field", "_DOF Enable", false, "");
             DOFfocusd = base.Config.Bind("Depth of Field", "FocusDistance", 10f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 100f)));
+            DOFfocusdBuffer = DOFfocusd.DefaultValue.ToString();
             DOFaperture = base.Config.Bind("Depth of Field", "Aperture", 5.6f, new ConfigDescription("", new AcceptableValueRange<float>(0.05f, 32f)));
+            DOFapertureBuffer = DOFaperture.DefaultValue.ToString();
             DOFfocall = base.Config.Bind("Depth of Field", "FoculLength", 50f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 300f)));
+            DOFfocallBuffer = DOFfocall.DefaultValue.ToString();
             DOFmaxblur = base.Config.Bind("Depth of Field", "MaxBlurSize", KernelSize.Medium, "");
             VGenable = base.Config.Bind("Vignette", "_Vignette Enable", false, "");
             VGcenter = base.Config.Bind("Vignette", "Canter", new Vector2(0.5f, 0.5f), "");
