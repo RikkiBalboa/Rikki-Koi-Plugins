@@ -687,7 +687,7 @@ namespace PostProcessingEffectsV3
             }
         }
 
-        private float DrawSliderTextBoxCombo(string label, float min, float max, ref string buffer, float value, float valueDefault)
+        private float DrawSliderTextBoxCombo(string label, float min, float max, ref string buffer, float value, float valueDefault, bool isIntSlider = false)
         {
             float newValue = value;
             string focused = GUI.GetNameOfFocusedControl();
@@ -698,6 +698,7 @@ namespace PostProcessingEffectsV3
             GUILayout.Label(label, GUILayout.Width(120f));
 
             float sliderBuffer = GUILayout.HorizontalSlider(value, min, max);
+            if (isIntSlider) sliderBuffer = (int)sliderBuffer;
 
             GUI.SetNextControlName(label);
             buffer = GUILayout.TextField(buffer.ToString(), GUILayout.Width(50));
@@ -760,7 +761,7 @@ namespace PostProcessingEffectsV3
                     GUILayout.EndHorizontal();
 
                     cDownsampling.Value = (int)DrawSliderTextBoxCombo(
-                        "Downsampling", -1f, 4f, ref cDownsamplingBuffer, cDownsampling.Value, (int)cDownsampling.DefaultValue
+                        "Downsampling", 1f, 4f, ref cDownsamplingBuffer, cDownsampling.Value, (int)cDownsampling.DefaultValue, true
                     );
                     cIntensity.Value = DrawSliderTextBoxCombo(
                         "Intensity", 0f, 16f, ref cIntensityBuffer, cIntensity.Value, (float)cIntensity.DefaultValue
@@ -806,7 +807,7 @@ namespace PostProcessingEffectsV3
                     cBlurDownS.Value = GUILayout.Toggle(cBlurDownS.Value, "BlurDownsampling");
 
                     cBlurPasses.Value = (int)DrawSliderTextBoxCombo(
-                        "BlurPasses", 1f, 4f, ref cBlurPassesBuffer, cBlurPasses.Value, (int)cBlurPasses.DefaultValue
+                        "BlurPasses", 1f, 4f, ref cBlurPassesBuffer, cBlurPasses.Value, (int)cBlurPasses.DefaultValue, true
                     );
                     cThres.Value = DrawSliderTextBoxCombo(
                         "BlurThreshold", 1f, 20f, ref cThresBuffer, cThres.Value, (float)cThres.DefaultValue
