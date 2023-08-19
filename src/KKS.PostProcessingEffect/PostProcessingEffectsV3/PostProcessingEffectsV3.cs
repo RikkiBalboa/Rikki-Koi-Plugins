@@ -660,6 +660,17 @@ namespace PostProcessingEffectsV3
         private string DistortionCenterXBuffer;
         private string DistortionCenterYBuffer;
         private string DistortionScaleBuffer;
+        private string cDownsamplingBuffer;
+        private string cIntensityBuffer;
+        private string cRadiusBuffer;
+        private string cDistanceBuffer;
+        private string cBiasBuffer;
+        private string cLithingContBuffer;
+        private string cBlurPassesBuffer;
+        private string cThresBuffer;
+        private string cMaxDistanceBuffer;
+        private string AOintensityBuffer;
+        private string AOradiusBuffer;
         #endregion
 
 
@@ -739,60 +750,26 @@ namespace PostProcessingEffectsV3
                         cSampleCount.Value = (SSAOProUtils.SSAOPro.SampleCount)cSampleCount.DefaultValue;
                     }
                     GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Downsampling", GUILayout.Width(120f));
-                    cDownsampling.Value = (int)GUILayout.HorizontalSlider(cDownsampling.Value, 1f, 4f);
-                    GUILayout.Label(cDownsampling.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        cDownsampling.Value = (int)cDownsampling.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Intensity", GUILayout.Width(120f));
-                    cIntensity.Value = GUILayout.HorizontalSlider(cIntensity.Value, 0f, 16f);
-                    GUILayout.Label(cIntensity.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        cIntensity.Value = (float)cIntensity.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Radius   ", GUILayout.Width(120f));
-                    cRadius.Value = GUILayout.HorizontalSlider(cRadius.Value, 0.01f, 1.25f);
-                    GUILayout.Label(cRadius.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        cRadius.Value = (float)cRadius.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Distance   ", GUILayout.Width(120f));
-                    cDistance.Value = GUILayout.HorizontalSlider(cDistance.Value, 0f, 10f);
-                    GUILayout.Label(cDistance.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        cDistance.Value = (float)cDistance.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Bias   ", GUILayout.Width(120f));
-                    cBias.Value = GUILayout.HorizontalSlider(cBias.Value, 0f, 1f);
-                    GUILayout.Label(cBias.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        cBias.Value = (float)cBias.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("LightingContribution   ", GUILayout.Width(120f));
-                    cLithingCont.Value = GUILayout.HorizontalSlider(cLithingCont.Value, 0f, 1f);
-                    GUILayout.Label(cLithingCont.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        cLithingCont.Value = (float)cLithingCont.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
+
+                    cDownsampling.Value = (int)DrawSliderTextBoxCombo(
+                        "Downsampling", -1f, 4f, ref cDownsamplingBuffer, cDownsampling.Value, (int)cDownsampling.DefaultValue
+                    );
+                    cIntensity.Value = DrawSliderTextBoxCombo(
+                        "Intensity", 0f, 16f, ref cIntensityBuffer, cIntensity.Value, (float)cIntensity.DefaultValue
+                    );
+                    cRadius.Value = DrawSliderTextBoxCombo(
+                        "Radius   ", 0.01f, 1.25f, ref cRadiusBuffer, cRadius.Value, (float)cRadius.DefaultValue
+                    );
+                    cDistance.Value = DrawSliderTextBoxCombo(
+                        "Distance   ", 0f, 10f, ref cDistanceBuffer, cDistance.Value, (float)cDistance.DefaultValue
+                    );
+                    cBias.Value = DrawSliderTextBoxCombo(
+                        "Bias   ", 0f, 1f, ref cBiasBuffer, cBias.Value, (float)cBias.DefaultValue
+                    );
+                    cLithingCont.Value = DrawSliderTextBoxCombo(
+                        "LightingContribution   ", 0f, 1f, ref cLithingContBuffer, cLithingCont.Value, (float)cLithingCont.DefaultValue
+                    );
+
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Color   ");
                     if (GUILayout.Button("", colorbutton(cOccColor.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
@@ -807,6 +784,7 @@ namespace PostProcessingEffectsV3
                     {
                         cOccColor.Value = (Color)cOccColor.DefaultValue;
                     }
+
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("BlurType  ", GUILayout.Width(120f));
@@ -816,25 +794,16 @@ namespace PostProcessingEffectsV3
                         cBlurType.Value = (SSAOProUtils.SSAOPro.BlurMode)cBlurType.DefaultValue;
                     }
                     GUILayout.EndHorizontal();
+
                     cBlurDownS.Value = GUILayout.Toggle(cBlurDownS.Value, "BlurDownsampling");
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("BlurPasses", GUILayout.Width(120f));
-                    cBlurPasses.Value = (int)GUILayout.HorizontalSlider(cBlurPasses.Value, 1f, 4f);
-                    GUILayout.Label(cBlurPasses.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        cBlurPasses.Value = (int)cBlurPasses.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("BlurThreshold", GUILayout.Width(120f));
-                    cThres.Value = GUILayout.HorizontalSlider(cThres.Value, 1f, 20f);
-                    GUILayout.Label(cThres.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        cThres.Value = (float)cThres.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
+
+                    cBlurPasses.Value = (int)DrawSliderTextBoxCombo(
+                        "BlurPasses", 1f, 4f, ref cBlurPassesBuffer, cBlurPasses.Value, (int)cBlurPasses.DefaultValue
+                    );
+                    cThres.Value = DrawSliderTextBoxCombo(
+                        "BlurThreshold", 1f, 20f, ref cThresBuffer, cThres.Value, (float)cThres.DefaultValue
+                    );
+
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("MaxDistance", GUILayout.Width(120f));
                     cMaxDistance.Value = float.Parse(GUILayout.TextField(cMaxDistance.Value.ToString("F")));
@@ -856,24 +825,13 @@ namespace PostProcessingEffectsV3
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Intensity", GUILayout.Width(120f));
-                    AOintensity.Value = GUILayout.HorizontalSlider(AOintensity.Value, 0f, 4f);
-                    GUILayout.Label(AOintensity.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        AOintensity.Value = (float)AOintensity.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Radius   ", GUILayout.Width(120f));
-                    AOradius.Value = GUILayout.HorizontalSlider(AOradius.Value, 0.0001f, 3f);
-                    GUILayout.Label(AOradius.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        AOradius.Value = (float)AOradius.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
+                    AOintensity.Value = DrawSliderTextBoxCombo(
+                        "Intensity", 0f, 4f, ref AOintensityBuffer, AOintensity.Value, (float)AOintensity.DefaultValue
+                    );
+                    AOradius.Value = DrawSliderTextBoxCombo(
+                        "Radius   ", 00001f, 3f, ref AOradiusBuffer, AOradius.Value, (float)AOradius.DefaultValue
+                    );
+
                     int selected = Array.IndexOf(AOq, AOquality.Value);
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Quality  ", GUILayout.Width(120f));
@@ -1785,22 +1743,32 @@ namespace PostProcessingEffectsV3
             AOmode = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Mode", AmbientOcclusionMode.ScalableAmbientObscurance, "");
             AOenable = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Enable", false, "");
             AOintensity = base.Config.Bind("Ambient Occulusion", "AOIntensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 4f)));
+            AOintensityBuffer = AOintensity.DefaultValue.ToString();
             AOcolor = base.Config.Bind("Ambient Occulusion", "Color", Color.black, "");
             AOradius = base.Config.Bind("Ambient Occulusion", "Radius", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0.0001f, 3f)));
+            AOradiusBuffer = AOradius.DefaultValue.ToString();
             AOquality = base.Config.Bind("Ambient Occulusion", "Quality", AmbientOcclusionQuality.Medium, "");
             AOmodesel = base.Config.Bind("Ambient Occulusion", "UseNewMode", true, "");
             cIntensity = base.Config.Bind("Ambient Occulusion", "Intensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 16f)));
+            cIntensityBuffer = cIntensity.DefaultValue.ToString();
             cOccColor = base.Config.Bind("Ambient Occulusion", "Color", Color.black, "");
             cRadius = base.Config.Bind("Ambient Occulusion", "Radius", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1.25f)));
+            cRadiusBuffer = cRadius.DefaultValue.ToString();
             cSampleCount = base.Config.Bind("Ambient Occulusion", "SampleCount", SSAOProUtils.SSAOPro.SampleCount.Medium, "");
             cBlurDownS = base.Config.Bind("Ambient Occulusion", "BlurDownsampling", false, "");
             cDownsampling = base.Config.Bind("Ambient Occulusion", "DownSampling", 1, new ConfigDescription("", new AcceptableValueRange<int>(1, 4)));
+            cDownsamplingBuffer = cDownsampling.DefaultValue.ToString();
             cDistance = base.Config.Bind("Ambient Occulusion", "Distance", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            cDistanceBuffer = cDistance.DefaultValue.ToString();
             cBias = base.Config.Bind("Ambient Occulusion", "Bias", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            cBiasBuffer = cBias.DefaultValue.ToString();
             cLithingCont = base.Config.Bind("Ambient Occulusion", "LightingContribution", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            cLithingContBuffer = cLithingCont.DefaultValue.ToString();
             cBlurType = base.Config.Bind("Ambient Occulusion", "BlurType", SSAOProUtils.SSAOPro.BlurMode.HighQualityBilateral, "");
             cBlurPasses = base.Config.Bind("Ambient Occulusion", "BlurPasses", 1, new ConfigDescription("", new AcceptableValueRange<int>(1, 4)));
+            cBlurPassesBuffer = cBlurPasses.DefaultValue.ToString();
             cThres = base.Config.Bind("Ambient Occulusion", "Threshold", 10f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 20f)));
+            cThresBuffer = cThres.DefaultValue.ToString();
             cMaxDistance = base.Config.Bind("Ambient Occulusion", "MaxDistance", 150f, "");
             cFalloff = base.Config.Bind("Ambient Occulusion", "Falloff", 50f, "");
             Bloomenable = base.Config.Bind("Bloom", "_Bloom Enable", false, "");
