@@ -699,6 +699,24 @@ namespace PostProcessingEffectsV3
         private string VGroundnessBuffer;
         private string OutlineWidthBuffer;
         private string ColorPowerBuffer;
+        private string PosDivBuffer;
+        private string SengaSampleDistanceBuffer;
+        private string SengaNomalThesBuffer;
+        private string SengaDepthThresBuffer;
+        private string SengaColorThresBuffer;
+        private string SengaSobelThresBuffer;
+        private string SengaNormalEdgeBuffer;
+        private string SengaDepthEdgeBuffer;
+        private string SengaColorEdgeBuffer;
+        private string SengaSobelEdgeBuffer;
+        private string SengaColBlendBuffer;
+        private string SengaToneScaleBuffer;
+        private string SengaToneThickBuffer;
+        private string SengaToneThresBuffer;
+        private string SengaBlurDirBuffer;
+        private string SengaBlurPowBuffer;
+        private string SengaBlurThickBuffer;
+        private string SengaBlurSampleBuffer;
         #endregion
 
 
@@ -1221,15 +1239,10 @@ namespace PostProcessingEffectsV3
                 GUILayout.BeginVertical();
                 PosEnable.Value = GUILayout.Toggle(PosEnable.Value, "Enable");
                 PosHSV.Value = GUILayout.Toggle(PosHSV.Value, "HSV Transfer");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("DivisionNum", GUILayout.Width(120f));
-                PosDiv.Value = (int)GUILayout.HorizontalSlider(PosDiv.Value, 1f, 64f);
-                GUILayout.Label(PosDiv.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    PosDiv.Value = (int)PosDiv.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                PosDiv.Value = (int)DrawSliderTextBoxCombo(
+                    "DivisionNum", 1f, 64f, ref PosDivBuffer, PosDiv.Value, (int)PosDiv.DefaultValue, true
+                );
                 GUILayout.EndVertical();
             }
             #endregion
@@ -1241,163 +1254,66 @@ namespace PostProcessingEffectsV3
                 GUILayout.BeginVertical();
                 SengaEnable.Value = GUILayout.Toggle(SengaEnable.Value, "Enable");
                 SengaOnly.Value = GUILayout.Toggle(SengaOnly.Value, "SengaMode");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("SampleDistance", GUILayout.Width(120f));
-                SengaSampleDistance.Value = GUILayout.HorizontalSlider(SengaSampleDistance.Value, 0f, 3f);
-                GUILayout.Label(SengaSampleDistance.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaSampleDistance.Value = (float)SengaSampleDistance.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("NormalThreshold", GUILayout.Width(120f));
-                SengaNomalThes.Value = GUILayout.HorizontalSlider(SengaNomalThes.Value, 0.01f, 1f);
-                GUILayout.Label(SengaNomalThes.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaNomalThes.Value = (float)SengaNomalThes.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("DepthThreshold", GUILayout.Width(120f));
-                SengaDepthThres.Value = GUILayout.HorizontalSlider(SengaDepthThres.Value, 0.01f, 10f);
-                GUILayout.Label(SengaDepthThres.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaDepthThres.Value = (float)SengaDepthThres.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("ColorThreshold", GUILayout.Width(120f));
-                SengaColorThres.Value = GUILayout.HorizontalSlider(SengaColorThres.Value, 0.001f, 1f);
-                GUILayout.Label(SengaColorThres.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaColorThres.Value = (float)SengaColorThres.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("SobelThreshold", GUILayout.Width(120f));
-                SengaSobelThres.Value = GUILayout.HorizontalSlider(SengaSobelThres.Value, 0.01f, 10f);
-                GUILayout.Label(SengaSobelThres.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaSobelThres.Value = (float)SengaSobelThres.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("NormalEdge", GUILayout.Width(120f));
-                SengaNormalEdge.Value = GUILayout.HorizontalSlider(SengaNormalEdge.Value, 0f, 1f);
-                GUILayout.Label(SengaNormalEdge.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaNormalEdge.Value = (float)SengaNormalEdge.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("DepthEdge", GUILayout.Width(120f));
-                SengaDepthEdge.Value = GUILayout.HorizontalSlider(SengaDepthEdge.Value, 0f, 1f);
-                GUILayout.Label(SengaDepthEdge.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaDepthEdge.Value = (float)SengaDepthEdge.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("ColorEdge", GUILayout.Width(120f));
-                SengaColorEdge.Value = GUILayout.HorizontalSlider(SengaColorEdge.Value, 0f, 1f);
-                GUILayout.Label(SengaColorEdge.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaColorEdge.Value = (float)SengaColorEdge.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("SobelEdge", GUILayout.Width(120f));
-                SengaSobelEdge.Value = GUILayout.HorizontalSlider(SengaSobelEdge.Value, 0f, 1f);
-                GUILayout.Label(SengaSobelEdge.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaSobelEdge.Value = (float)SengaSobelEdge.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("ColorBlend", GUILayout.Width(120f));
-                SengaColBlend.Value = GUILayout.HorizontalSlider(SengaColBlend.Value, 0f, 20f);
-                GUILayout.Label(SengaColBlend.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaColBlend.Value = (float)SengaColBlend.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                SengaSampleDistance.Value = DrawSliderTextBoxCombo(
+                    "SampleDistance", 0f, 3f, ref SengaSampleDistanceBuffer, SengaSampleDistance.Value, (float)SengaSampleDistance.DefaultValue
+                );
+                SengaNomalThes.Value = DrawSliderTextBoxCombo(
+                    "NormalThreshold", 0.01f, 1f, ref SengaNomalThesBuffer, SengaNomalThes.Value, (float)SengaNomalThes.DefaultValue
+                );
+                SengaDepthThres.Value = DrawSliderTextBoxCombo(
+                    "DepthThreshold", 0.01f, 10f, ref SengaDepthThresBuffer, SengaDepthThres.Value, (float)SengaDepthThres.DefaultValue
+                );
+                SengaColorThres.Value = DrawSliderTextBoxCombo(
+                    "ColorThreshold", 0.001f, 1f, ref SengaColorThresBuffer, SengaColorThres.Value, (float)SengaColorThres.DefaultValue
+                );
+                SengaSobelThres.Value = DrawSliderTextBoxCombo(
+                    "SobelThreshold", 0.01f, 10f, ref SengaSobelThresBuffer, SengaSobelThres.Value, (float)SengaSobelThres.DefaultValue
+                );
+                SengaNormalEdge.Value = DrawSliderTextBoxCombo(
+                    "NormalEdge", 0f, 1f, ref SengaNormalEdgeBuffer, SengaNormalEdge.Value, (float)SengaNormalEdge.DefaultValue
+                );
+                SengaDepthEdge.Value = DrawSliderTextBoxCombo(
+                    "DepthEdge", 0f, 1f, ref SengaDepthEdgeBuffer, SengaDepthEdge.Value, (float)SengaDepthEdge.DefaultValue
+                );
+                SengaColorEdge.Value = DrawSliderTextBoxCombo(
+                    "ColorEdge", 0f, 1f, ref SengaColorEdgeBuffer, SengaColorEdge.Value, (float)SengaColorEdge.DefaultValue
+                );
+                SengaSobelEdge.Value = DrawSliderTextBoxCombo(
+                    "SobelEdge", 0f, 1f, ref SengaSobelEdgeBuffer, SengaSobelEdge.Value, (float)SengaSobelEdge.DefaultValue
+                );
+                SengaColBlend.Value = DrawSliderTextBoxCombo(
+                    "ColorBlend", 0f, 20f, ref SengaColBlendBuffer, SengaColBlend.Value, (float)SengaColBlend.DefaultValue
+                );
+
                 GUILayout.Label("Tone", GUILayout.Width(120f));
                 SengaToneEnable.Value = GUILayout.Toggle(SengaToneEnable.Value, "PasteTone");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("ToneScale", GUILayout.Width(120f));
-                SengaToneScale.Value = GUILayout.HorizontalSlider(SengaToneScale.Value, 0.01f, 10f);
-                GUILayout.Label(SengaToneScale.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaToneScale.Value = (float)SengaToneScale.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("ToneThickness", GUILayout.Width(120f));
-                SengaToneThick.Value = GUILayout.HorizontalSlider(SengaToneThick.Value, -1f, 1f);
-                GUILayout.Label(SengaToneThick.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaToneThick.Value = (float)SengaToneThick.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("ToneThreshold", GUILayout.Width(120f));
-                SengaToneThres.Value = GUILayout.HorizontalSlider(SengaToneThres.Value, -1f, 1f);
-                GUILayout.Label(SengaToneThres.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaToneThres.Value = (float)SengaToneThres.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                SengaToneScale.Value = DrawSliderTextBoxCombo(
+                    "ToneScale", 0.1f, 10f, ref SengaToneScaleBuffer, SengaToneScale.Value, (float)SengaToneScale.DefaultValue
+                );
+                SengaToneThick.Value = DrawSliderTextBoxCombo(
+                    "ToneThickness", -1f, 1f, ref SengaToneThickBuffer, SengaToneThick.Value, (float)SengaToneThick.DefaultValue
+                );
+                SengaToneThres.Value = DrawSliderTextBoxCombo(
+                    "ToneThreshold", -1f, 1f, ref SengaToneThresBuffer, SengaToneThres.Value, (float)SengaToneThres.DefaultValue
+                );
+
                 GUILayout.Label("Blur", GUILayout.Width(120f));
                 SengaBlurEnable.Value = GUILayout.Toggle(SengaBlurEnable.Value, "BlurEnable");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("BlurDirection", GUILayout.Width(120f));
-                SengaBlurDir.Value = GUILayout.HorizontalSlider(SengaBlurDir.Value, 0f, 10f);
-                GUILayout.Label(SengaBlurDir.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaBlurDir.Value = (float)SengaBlurDir.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("BlurPower", GUILayout.Width(120f));
-                SengaBlurPow.Value = GUILayout.HorizontalSlider(SengaBlurPow.Value, 0f, 5f);
-                GUILayout.Label(SengaBlurPow.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaBlurPow.Value = (float)SengaBlurPow.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("BlurThickness", GUILayout.Width(120f));
-                SengaBlurThick.Value = GUILayout.HorizontalSlider(SengaBlurThick.Value, 0f, 1f);
-                GUILayout.Label(SengaBlurThick.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaBlurThick.Value = (float)SengaBlurThick.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("BlurSampleCount", GUILayout.Width(120f));
-                SengaBlurSample.Value = (int)GUILayout.HorizontalSlider(SengaBlurSample.Value, 2f, 64f);
-                GUILayout.Label(SengaBlurSample.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    SengaBlurSample.Value = (int)SengaBlurSample.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                SengaBlurDir.Value = DrawSliderTextBoxCombo(
+                    "BlurDirection", 0f, 10f, ref SengaBlurDirBuffer, SengaBlurDir.Value, (float)SengaBlurDir.DefaultValue
+                );
+                SengaBlurPow.Value = DrawSliderTextBoxCombo(
+                    "BlurPower", 0f, 5f, ref SengaBlurPowBuffer, SengaBlurPow.Value, (float)SengaBlurPow.DefaultValue
+                );
+                SengaBlurThick.Value = DrawSliderTextBoxCombo(
+                    "BlurThickness", 0f, 1f, ref SengaBlurThickBuffer, SengaBlurThick.Value, (float)SengaBlurThick.DefaultValue
+                );
+                SengaBlurSample.Value = (int)DrawSliderTextBoxCombo(
+                    "BlurSampleCount", 2f, 64f, ref SengaBlurSampleBuffer, SengaBlurSample.Value, (int)SengaBlurSample.DefaultValue, true
+                );
                 GUILayout.EndVertical();
             }
             #endregion
@@ -1742,28 +1658,46 @@ namespace PostProcessingEffectsV3
             ColorPowerBuffer = ColorPower.DefaultValue.ToString();
             PosEnable = base.Config.Bind("Posterize", "_Enable", false, "");
             PosDiv = base.Config.Bind("Posterize", "DivisionNum", 8, new ConfigDescription("", new AcceptableValueRange<int>(1, 64)));
+            PosDivBuffer = PosDiv.DefaultValue.ToString();
             PosHSV = base.Config.Bind("Posterize", "UseHSVtrans", true, "");
             SengaEnable = base.Config.Bind("CustomizableOutline", "_Enable", false, "");
             SengaOnly = base.Config.Bind("CustomizableOutline", "OutlineOnly", false, "");
             SengaNomalThes = base.Config.Bind("CustomizableOutline", "NormalThreshold", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
+            SengaNomalThesBuffer = SengaNomalThes.DefaultValue.ToString();
             SengaDepthThres = base.Config.Bind("CustomizableOutline", "DepthThreshold", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 10f)));
+            SengaDepthThresBuffer = SengaDepthThres.DefaultValue.ToString();
             SengaColorThres = base.Config.Bind("CustomizableOutline", "ColorThreshold", 0.01f, new ConfigDescription("", new AcceptableValueRange<float>(0.001f, 1f)));
+            SengaColorThresBuffer = SengaColorThres.DefaultValue.ToString();
             SengaSobelThres = base.Config.Bind("CustomizableOutline", "SobelThreshold", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 10f)));
+            SengaSobelThresBuffer = SengaSobelThres.DefaultValue.ToString();
             SengaNormalEdge = base.Config.Bind("CustomizableOutline", "NormalEdge", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaNormalEdgeBuffer = SengaNormalEdge.DefaultValue.ToString();
             SengaDepthEdge = base.Config.Bind("CustomizableOutline", "DepthEdge", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaDepthEdgeBuffer = SengaDepthEdge.DefaultValue.ToString();
             SengaColorEdge = base.Config.Bind("CustomizableOutline", "ColorEdge", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaColorEdgeBuffer = SengaColorEdge.DefaultValue.ToString();
             SengaSobelEdge = base.Config.Bind("CustomizableOutline", "SobelEdge", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaSobelEdgeBuffer = SengaSobelEdge.DefaultValue.ToString();
             SengaSampleDistance = base.Config.Bind("CustomizableOutline", "SampleDistance", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 3f)));
             SengaColBlend = base.Config.Bind("CustomizableOutline", "ColorBlend", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 20f)));
+            SengaColBlendBuffer = SengaColBlend.DefaultValue.ToString();
             SengaToneEnable = base.Config.Bind("CustomizableOutline", "PasteTone", false, "");
             SengaToneScale = base.Config.Bind("CustomizableOutline", "ToneScale", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 10f)));
+            SengaToneScaleBuffer = SengaToneScale.DefaultValue.ToString();
             SengaToneThick = base.Config.Bind("CustomizableOutline", "ToneThickness", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            SengaToneThickBuffer = SengaToneThick.DefaultValue.ToString();
             SengaToneThres = base.Config.Bind("CustomizableOutline", "ToneThreshold", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            SengaToneThresBuffer = SengaToneThres.DefaultValue.ToString();
             SengaBlurEnable = base.Config.Bind("CustomizableOutline", "BlurOn", false, "");
             SengaBlurDir = base.Config.Bind("CustomizableOutline", "BlurDirection", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            SengaBlurDirBuffer = SengaBlurDir.DefaultValue.ToString();
             SengaBlurPow = base.Config.Bind("CustomizableOutline", "BlurPower", 0.6f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 5f)));
+            SengaBlurPowBuffer = SengaBlurPow.DefaultValue.ToString();
             SengaBlurThick = base.Config.Bind("CustomizableOutline", "BlurThickness", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            SengaBlurThickBuffer = SengaBlurThick.DefaultValue.ToString();
             SengaBlurSample = base.Config.Bind("CustomizableOutline", "BlurSampleCount", 8, new ConfigDescription("", new AcceptableValueRange<int>(2, 64)));
+            SengaBlurSampleBuffer = SengaBlurSample.DefaultValue.ToString();
+            SengaSampleDistanceBuffer = SengaSampleDistance.DefaultValue.ToString();
             DistortionEnable = base.Config.Bind("Lens Distortion", "_Enable", false, "");
             DistortionIntensity = base.Config.Bind("Lens Distortion", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
             DistortionIntensityBuffer = DistortionIntensity.Value.ToString();
