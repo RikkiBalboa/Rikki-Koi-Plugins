@@ -725,8 +725,16 @@ namespace PostProcessingEffectsV3
             }
 
             GUILayout.EndHorizontal();
-            if (value.CompareTo(min) < 0) return min;
-            else if (value.CompareTo(max) > 0) return max;
+            if (newValue.CompareTo(min) < 0)
+            {
+                buffer = min.ToString();
+                return min;
+            }
+            else if (newValue.CompareTo(max) > 0)
+            {
+                buffer = max.ToString();
+                return max;
+            }
             else return newValue;
         }
 
