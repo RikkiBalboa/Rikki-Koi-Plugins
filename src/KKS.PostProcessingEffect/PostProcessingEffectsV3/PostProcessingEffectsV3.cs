@@ -680,6 +680,7 @@ namespace PostProcessingEffectsV3
         private string BloomclampBuffer;
         private string BloomdiffusionBuffer;
         private string BloomanamorBuffer;
+        private string CAintensityBuffer;
         #endregion
 
 
@@ -978,15 +979,10 @@ namespace PostProcessingEffectsV3
             {
                 GUILayout.BeginVertical();
                 CAenable.Value = GUILayout.Toggle(CAenable.Value, "Enable");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Intensity  ", GUILayout.Width(120f));
-                CAintensity.Value = GUILayout.HorizontalSlider(CAintensity.Value, 0f, 1f);
-                GUILayout.Label(CAintensity.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    CAintensity.Value = (float)CAintensity.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                CAintensity.Value = DrawSliderTextBoxCombo(
+                    "Intensity  ", 0f, 1f, ref CAintensityBuffer, CAintensity.Value, (float)CAintensity.DefaultValue
+                );
                 GUILayout.EndVertical();
             }
             #endregion
@@ -1768,6 +1764,7 @@ namespace PostProcessingEffectsV3
             CGcolfilter = base.Config.Bind("Color Grading", "Tone ColorFilter", Color.white, "");
             CAenable = base.Config.Bind("Chromatic Aberration", "_Chromatic Aberration Enable", false, "");
             CAintensity = base.Config.Bind("Chromatic Aberration", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            CAintensityBuffer = CAintensity.DefaultValue.ToString();
             MBenable = base.Config.Bind("Motion Blur", "_MotionBlur Enable", false, "");
             MBshutter = base.Config.Bind("Motion Blur", "ShutterAngle", 270f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 360f)));
             MBsamplecnt = base.Config.Bind("Motion Blur", "SampleCount", 10, new ConfigDescription("", new AcceptableValueRange<int>(4, 32)));
