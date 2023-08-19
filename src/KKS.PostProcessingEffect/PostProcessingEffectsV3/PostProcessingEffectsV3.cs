@@ -635,7 +635,7 @@ namespace PostProcessingEffectsV3
 
         #region UI
         private bool mainwin = false;
-        public Rect Rect1 = new Rect(220f, 50f, 420f, 420f);
+        public Rect Rect1 = new Rect(220f, 50f, 520, 420f);
 
         private Canvas myCanvas;
         private GameObject myGO;
