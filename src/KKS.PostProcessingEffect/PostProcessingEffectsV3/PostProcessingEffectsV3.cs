@@ -989,6 +989,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
+            #endregion
+
+            #region Color Grading
             CGb = GUILayout.Toggle(CGb, "ColorGrading ", GUI.skin.button);
             if (CGb)
             {
