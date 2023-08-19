@@ -690,6 +690,8 @@ namespace PostProcessingEffectsV3
         private string DOFfocusdBuffer;
         private string DOFapertureBuffer;
         private string DOFfocallBuffer;
+        private string MBshutterBuffer;
+        private string MBsamplecntBuffer;
         #endregion
 
 
@@ -1113,24 +1115,13 @@ namespace PostProcessingEffectsV3
             {
                 GUILayout.BeginVertical();
                 MBenable.Value = GUILayout.Toggle(MBenable.Value, "Enable");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("ShutterAngle  ", GUILayout.Width(120f));
-                MBshutter.Value = GUILayout.HorizontalSlider(MBshutter.Value, 0f, 360f);
-                GUILayout.Label(MBshutter.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    MBshutter.Value = (float)MBshutter.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("SampleCount", GUILayout.Width(120f));
-                MBsamplecnt.Value = (int)GUILayout.HorizontalSlider(MBsamplecnt.Value, 4f, 32f);
-                GUILayout.Label(MBsamplecnt.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    MBsamplecnt.Value = (int)MBsamplecnt.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                MBshutter.Value = DrawSliderTextBoxCombo(
+                    "ShutterAngle  ", 0f, 360f, ref MBshutterBuffer, MBshutter.Value, (float)MBshutter.DefaultValue
+                );
+                MBsamplecnt.Value = (int)DrawSliderTextBoxCombo(
+                    "ShutterAngle  ", 4f, 32f, ref MBsamplecntBuffer, MBsamplecnt.Value, (int)MBsamplecnt.DefaultValue, true
+                );
                 GUILayout.EndVertical();
             }
             #endregion
@@ -1740,7 +1731,9 @@ namespace PostProcessingEffectsV3
             CAintensityBuffer = CAintensity.DefaultValue.ToString();
             MBenable = base.Config.Bind("Motion Blur", "_MotionBlur Enable", false, "");
             MBshutter = base.Config.Bind("Motion Blur", "ShutterAngle", 270f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 360f)));
+            MBshutterBuffer = MBshutter.DefaultValue.ToString();
             MBsamplecnt = base.Config.Bind("Motion Blur", "SampleCount", 10, new ConfigDescription("", new AcceptableValueRange<int>(4, 32)));
+            MBsamplecntBuffer = MBsamplecnt.DefaultValue.ToString();
             DOFenable = base.Config.Bind("Depth of Field", "_DOF Enable", false, "");
             DOFfocusd = base.Config.Bind("Depth of Field", "FocusDistance", 10f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 100f)));
             DOFfocusdBuffer = DOFfocusd.DefaultValue.ToString();
