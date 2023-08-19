@@ -697,6 +697,8 @@ namespace PostProcessingEffectsV3
         private string VGintensityBuffer;
         private string VGsmoothnessBuffer;
         private string VGroundnessBuffer;
+        private string OutlineWidthBuffer;
+        private string ColorPowerBuffer;
         #endregion
 
 
@@ -1201,24 +1203,13 @@ namespace PostProcessingEffectsV3
                     OutlineColor.Value = (Color)OutlineColor.DefaultValue;
                 }
                 GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("OutlineWidth", GUILayout.Width(120f));
-                OutlineWidth.Value = GUILayout.HorizontalSlider(OutlineWidth.Value, 0f, 1f);
-                GUILayout.Label(OutlineWidth.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    OutlineWidth.Value = (float)OutlineWidth.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("ColorPower", GUILayout.Width(120f));
-                ColorPower.Value = GUILayout.HorizontalSlider(ColorPower.Value, 0f, 10f);
-                GUILayout.Label(ColorPower.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    ColorPower.Value = (float)ColorPower.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                OutlineWidth.Value = DrawSliderTextBoxCombo(
+                    "OutlineWidth", 0f, 1f, ref OutlineWidthBuffer, OutlineWidth.Value, (float)OutlineWidth.DefaultValue
+                );
+                ColorPower.Value = DrawSliderTextBoxCombo(
+                    "ColorPower", 0f, 1f, ref ColorPowerBuffer, ColorPower.Value, (float)ColorPower.DefaultValue
+                );
                 GUILayout.EndVertical();
             }
             #endregion
@@ -1745,8 +1736,10 @@ namespace PostProcessingEffectsV3
             OpenGUI = base.Config.Bind("_OpenGUI", "_OpenGUI", default(KeyboardShortcut), "");
             SoutlineEnable = base.Config.Bind("SobelColorOutline", "_Enable", false, "");
             OutlineWidth = base.Config.Bind("SobelColorOutline", "OutlineWidth", 0.02f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            OutlineWidthBuffer = OutlineWidth.DefaultValue.ToString();
             OutlineColor = base.Config.Bind("SobelColorOutline", "OutlineColor", Color.white, "");
             ColorPower = base.Config.Bind("SobelColorOutline", "ColorPower", 2f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            ColorPowerBuffer = ColorPower.DefaultValue.ToString();
             PosEnable = base.Config.Bind("Posterize", "_Enable", false, "");
             PosDiv = base.Config.Bind("Posterize", "DivisionNum", 8, new ConfigDescription("", new AcceptableValueRange<int>(1, 64)));
             PosHSV = base.Config.Bind("Posterize", "UseHSVtrans", true, "");
