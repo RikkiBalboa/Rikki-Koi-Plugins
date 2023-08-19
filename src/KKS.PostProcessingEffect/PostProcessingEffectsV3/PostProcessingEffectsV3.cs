@@ -681,6 +681,12 @@ namespace PostProcessingEffectsV3
         private string BloomdiffusionBuffer;
         private string BloomanamorBuffer;
         private string CAintensityBuffer;
+        private string CGtempBuffer;
+        private string CGtintBuffer;
+        private string CGposteBuffer;
+        private string CGhueShiftBuffer;
+        private string CGsaturationBuffer;
+        private string CGcontrastBuffer;
         #endregion
 
 
@@ -1002,6 +1008,7 @@ namespace PostProcessingEffectsV3
                 {
                     CGgradingmode.Value = (GradingMode)CGgradingmode.DefaultValue;
                 }
+                //TODO add custom tonemapping
                 GUILayout.EndHorizontal();
                 selected4 = Array.IndexOf(CGt, CGtoneMapper.Value);
                 GUILayout.BeginHorizontal();
@@ -1014,34 +1021,21 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.Label("WhiteBalance  ", GUILayout.Width(120f));
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Temperature  ", GUILayout.Width(120f));
-                CGtemp.Value = GUILayout.HorizontalSlider(CGtemp.Value, -100f, 100f);
-                GUILayout.Label(CGtemp.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    CGtemp.Value = (float)CGtemp.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Tint", GUILayout.Width(120f));
-                CGtint.Value = GUILayout.HorizontalSlider(CGtint.Value, -100f, 100f);
-                GUILayout.Label(CGtint.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    CGtint.Value = (float)CGtint.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                CGtemp.Value = DrawSliderTextBoxCombo(
+                    "Temperature  ", -100f, 100f, ref CGtempBuffer, CGtemp.Value, (float)CGtemp.DefaultValue
+                );
+                CGtint.Value = DrawSliderTextBoxCombo(
+                    "Tint", -100f, 100f, ref CGtintBuffer, CGtint.Value, (float)CGtint.DefaultValue
+                );
+
                 GUILayout.Label("Tone  ", GUILayout.Width(120f));
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("PostExposure", GUILayout.Width(120f));
-                CGposte.Value = GUILayout.HorizontalSlider(CGposte.Value, 0f, 1f);
-                GUILayout.Label(CGposte.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    CGposte.Value = (float)CGposte.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                CGposte.Value = DrawSliderTextBoxCombo(
+                    "PostExposure", 0f, 1f, ref CGposteBuffer, CGposte.Value, (float)CGposte.DefaultValue
+                );
+                //TODO Add brightness slider support
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Color   ");
                 if (GUILayout.Button("", colorbutton(CGcolfilter.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
@@ -1057,33 +1051,19 @@ namespace PostProcessingEffectsV3
                     CGcolfilter.Value = (Color)CGcolfilter.DefaultValue;
                 }
                 GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("HueShift", GUILayout.Width(120f));
-                CGhueShift.Value = GUILayout.HorizontalSlider(CGhueShift.Value, -180f, 180f);
-                GUILayout.Label(CGhueShift.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    CGhueShift.Value = (float)CGhueShift.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Saturation", GUILayout.Width(120f));
-                CGsaturation.Value = GUILayout.HorizontalSlider(CGsaturation.Value, -100f, 100f);
-                GUILayout.Label(CGsaturation.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    CGsaturation.Value = (float)CGsaturation.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Contrast", GUILayout.Width(120f));
-                CGcontrast.Value = GUILayout.HorizontalSlider(CGcontrast.Value, -100f, 100f);
-                GUILayout.Label(CGcontrast.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    CGcontrast.Value = (float)CGcontrast.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                CGhueShift.Value = DrawSliderTextBoxCombo(
+                    "HueShift", -180f, 180f, ref CGhueShiftBuffer, CGhueShift.Value, (float)CGhueShift.DefaultValue
+                );
+                CGsaturation.Value = DrawSliderTextBoxCombo(
+                    "Saturation", -100f, 100f, ref CGsaturationBuffer, CGsaturation.Value, (float)CGsaturation.DefaultValue
+                );
+                CGcontrast.Value = DrawSliderTextBoxCombo(
+                    "Contrast", -100f, 100f, ref CGcontrastBuffer, CGcontrast.Value, (float)CGcontrast.DefaultValue
+                );
+
+                //TODO add channel mixer
+                //TODO add trackballs support
                 GUILayout.EndVertical();
             }
             #endregion
@@ -1753,11 +1733,17 @@ namespace PostProcessingEffectsV3
             CGtoneMapper = base.Config.Bind("Color Grading", "ToneMapper", Tonemapper.None, "");
             CGgradingmode = base.Config.Bind("Color Grading", "GradingMode", GradingMode.LowDefinitionRange, "");
             CGposte = base.Config.Bind("Color Grading", "Tone PostExposure", 0f, "");
+            CGposteBuffer = CGposte.DefaultValue.ToString();
             CGtemp = base.Config.Bind("Color Grading", "WhiteBalance Temperature", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            CGtempBuffer = CGtemp.DefaultValue.ToString();
             CGtint = base.Config.Bind("Color Grading", "WhiteBalance Tint", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            CGtintBuffer = CGtint.DefaultValue.ToString();
             CGhueShift = base.Config.Bind("Color Grading", "Tone HueShift", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-180f, 180f)));
+            CGhueShiftBuffer = CGhueShift.DefaultValue.ToString();
             CGsaturation = base.Config.Bind("Color Grading", "Tone Saturation", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            CGsaturationBuffer = CGsaturation.DefaultValue.ToString();
             CGcontrast = base.Config.Bind("Color Grading", "Tone Contrast", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
+            CGcontrastBuffer = CGcontrast.DefaultValue.ToString();
             CGlift = base.Config.Bind("Color Grading", "Trackballs Lift", new Vector4(1f, 1f, 1f, 0f), "");
             CGgamma = base.Config.Bind("Color Grading", "Trackballs Gammma", new Vector4(1f, 1f, 1f, 0f), "");
             CGgain = base.Config.Bind("Color Grading", "Trackballs Gain", new Vector4(1f, 1f, 1f, 0f), "");
