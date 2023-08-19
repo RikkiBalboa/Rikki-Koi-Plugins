@@ -458,6 +458,7 @@ namespace PostProcessingEffectsV3
             if (onoff.Value)
             {
                 Settings();
+                UpdateBuffers();
             }
         }
 
@@ -693,6 +694,74 @@ namespace PostProcessingEffectsV3
         private string SengaBlurPowBuffer;
         private string SengaBlurThickBuffer;
         private string SengaBlurSampleBuffer;
+
+        private void UpdateBuffers()
+        {
+            TAAjittetSpeedBuffer = TAAjittetSpeed.Value.ToString();
+            TAAsharpenBuffer = TAAsharpen.Value.ToString();
+            TAAstationaryBlendingBuffer = TAAstationaryBlending.Value.ToString();
+            TAAmotionBlendingBuffer = TAAmotionBlending.Value.ToString();
+            AOintensityBuffer = AOintensity.Value.ToString();
+            AOradiusBuffer = AOradius.Value.ToString();
+            cIntensityBuffer = cIntensity.Value.ToString();
+            cRadiusBuffer = cRadius.Value.ToString();
+            cDownsamplingBuffer = cDownsampling.Value.ToString();
+            cDistanceBuffer = cDistance.Value.ToString();
+            cBiasBuffer = cBias.Value.ToString();
+            cLithingContBuffer = cLithingCont.Value.ToString();
+            cBlurPassesBuffer = cBlurPasses.Value.ToString();
+            cThresBuffer = cThres.Value.ToString();
+            BloomintensityBuffer = Bloomintensity.Value.ToString();
+            BloomanamorBuffer = Bloomanamor.Value.ToString();
+            BloomsoftKneeBuffer = BloomsoftKnee.Value.ToString();
+            BloomthresholdBuffer = Bloomthreshold.Value.ToString();
+            BloomclampBuffer = Bloomclamp.Value.ToString();
+            BloomdiffusionBuffer = Bloomdiffusion.Value.ToString();
+            CGposteBuffer = CGposte.Value.ToString();
+            CGtempBuffer = CGtemp.Value.ToString();
+            CGtintBuffer = CGtint.Value.ToString();
+            CGhueShiftBuffer = CGhueShift.Value.ToString();
+            CGsaturationBuffer = CGsaturation.Value.ToString();
+            CGcontrastBuffer = CGcontrast.Value.ToString();
+            CAintensityBuffer = CAintensity.Value.ToString();
+            MBshutterBuffer = MBshutter.Value.ToString();
+            MBsamplecntBuffer = MBsamplecnt.Value.ToString();
+            DOFfocusdBuffer = DOFfocusd.Value.ToString();
+            DOFapertureBuffer = DOFaperture.Value.ToString();
+            DOFfocallBuffer = DOFfocall.Value.ToString();
+            VGintensityBuffer = VGintensity.Value.ToString();
+            VGsmoothnessBuffer = VGsmoothness.Value.ToString();
+            VGroundnessBuffer = VGroundness.Value.ToString();
+            VGcenterXBuffer = VGcenter.Value.x.ToString();
+            VGcenterYBuffer = VGcenter.Value.y.ToString();
+            OutlineWidthBuffer = OutlineWidth.Value.ToString();
+            ColorPowerBuffer = ColorPower.Value.ToString();
+            PosDivBuffer = PosDiv.Value.ToString();
+            SengaNomalThesBuffer = SengaNomalThes.Value.ToString();
+            SengaDepthThresBuffer = SengaDepthThres.Value.ToString();
+            SengaColorThresBuffer = SengaColorThres.Value.ToString();
+            SengaSobelThresBuffer = SengaSobelThres.Value.ToString();
+            SengaNormalEdgeBuffer = SengaNormalEdge.Value.ToString();
+            SengaDepthEdgeBuffer = SengaDepthEdge.Value.ToString();
+            SengaColorEdgeBuffer = SengaColorEdge.Value.ToString();
+            SengaSobelEdgeBuffer = SengaSobelEdge.Value.ToString();
+            SengaColBlendBuffer = SengaColBlend.Value.ToString();
+            SengaToneScaleBuffer = SengaToneScale.Value.ToString();
+            SengaToneThickBuffer = SengaToneThick.Value.ToString();
+            SengaToneThresBuffer = SengaToneThres.Value.ToString();
+            SengaBlurDirBuffer = SengaBlurDir.Value.ToString();
+            SengaBlurPowBuffer = SengaBlurPow.Value.ToString();
+            SengaBlurThickBuffer = SengaBlurThick.Value.ToString();
+            SengaBlurSampleBuffer = SengaBlurSample.Value.ToString();
+            SengaSampleDistanceBuffer = SengaSampleDistance.Value.ToString();
+            DistortionIntensityBuffer = DistortionIntensity.Value.ToString();
+            DistortionIntensityXBuffer = DistortionIntensityX.Value.ToString();
+            DistortionIntensityYBuffer = DistortionIntensityY.Value.ToString();
+            DistortionCenterXBuffer = DistortionCenterX.Value.ToString();
+            DistortionCenterYBuffer = DistortionCenterY.Value.ToString();
+            DistortionScaleBuffer = DistortionScale.Value.ToString();
+
+        }
         #endregion
 
 
@@ -730,36 +799,20 @@ namespace PostProcessingEffectsV3
             if (focused != label)
             {
                 if (!float.TryParse(buffer, out float valueBufferFloat))
-                {
                     valueBufferFloat = value;
-                    buffer = value.ToString();
-                }
                 if (valueBufferFloat != value)
                     newValue = valueBufferFloat;
                 else if (sliderBuffer != value)
-                {
                     newValue = sliderBuffer;
-                    buffer = newValue.ToString();
-                }
             }
 
             if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-            {
                 newValue = valueDefault;
-                buffer = valueDefault.ToString();
-            }
 
             GUILayout.EndHorizontal();
-            if (newValue.CompareTo(min) < 0)
-            {
-                buffer = min.ToString();
-                return min;
-            }
-            else if (newValue.CompareTo(max) > 0)
-            {
-                buffer = max.ToString();
-                return max;
-            }
+
+            if (newValue.CompareTo(min) < 0) return min;
+            else if (newValue.CompareTo(max) > 0) return max;
             else return newValue;
         }
 
@@ -1467,7 +1520,7 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<Vector2> VGcenter { get; set; }
         #endregion
 
-        #region Chromatic Aberration 
+        #region Chromatic Aberration
         private ConfigEntry<float> CAintensity { get; set; }
         private ConfigEntry<bool> CAenable { get; set; }
         #endregion
@@ -1526,106 +1579,69 @@ namespace PostProcessingEffectsV3
             AAfxaafm = base.Config.Bind("AntiAliasing", "FXAA FastMode", false, "");
             AAfxaakpa = base.Config.Bind("AntiAliasing", "FXAA KeepAlpha", false, "");
             TAAjittetSpeed = base.Config.Bind("AntiAliasing", "TAA JitterSpeed", 0.75f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 1f)));
-            TAAjittetSpeedBuffer = TAAjittetSpeed.DefaultValue.ToString();
             TAAsharpen = base.Config.Bind("AntiAliasing", "TAA Sharpen", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 3f)));
-            TAAsharpenBuffer = TAAsharpen.DefaultValue.ToString();
             TAAstationaryBlending = base.Config.Bind("AntiAliasing", "TAA StationaryBlending", 0.95f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.99f)));
-            TAAstationaryBlendingBuffer = TAAstationaryBlending.DefaultValue.ToString();
             TAAmotionBlending = base.Config.Bind("AntiAliasing", "TAA MotionBlending", 0.85f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.99f)));
-            TAAmotionBlendingBuffer = TAAmotionBlending.DefaultValue.ToString();
             AOmode = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Mode", AmbientOcclusionMode.ScalableAmbientObscurance, "");
             AOenable = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Enable", false, "");
             AOintensity = base.Config.Bind("Ambient Occulusion", "AOIntensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 4f)));
-            AOintensityBuffer = AOintensity.DefaultValue.ToString();
             AOcolor = base.Config.Bind("Ambient Occulusion", "Color", Color.black, "");
             AOradius = base.Config.Bind("Ambient Occulusion", "Radius", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0.0001f, 3f)));
-            AOradiusBuffer = AOradius.DefaultValue.ToString();
             AOquality = base.Config.Bind("Ambient Occulusion", "Quality", AmbientOcclusionQuality.Medium, "");
             AOmodesel = base.Config.Bind("Ambient Occulusion", "UseNewMode", true, "");
             cIntensity = base.Config.Bind("Ambient Occulusion", "Intensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 16f)));
-            cIntensityBuffer = cIntensity.DefaultValue.ToString();
             cOccColor = base.Config.Bind("Ambient Occulusion", "Color", Color.black, "");
             cRadius = base.Config.Bind("Ambient Occulusion", "Radius", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1.25f)));
-            cRadiusBuffer = cRadius.DefaultValue.ToString();
             cSampleCount = base.Config.Bind("Ambient Occulusion", "SampleCount", SSAOProUtils.SSAOPro.SampleCount.Medium, "");
             cBlurDownS = base.Config.Bind("Ambient Occulusion", "BlurDownsampling", false, "");
             cDownsampling = base.Config.Bind("Ambient Occulusion", "DownSampling", 1, new ConfigDescription("", new AcceptableValueRange<int>(1, 4)));
-            cDownsamplingBuffer = cDownsampling.DefaultValue.ToString();
             cDistance = base.Config.Bind("Ambient Occulusion", "Distance", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-            cDistanceBuffer = cDistance.DefaultValue.ToString();
             cBias = base.Config.Bind("Ambient Occulusion", "Bias", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            cBiasBuffer = cBias.DefaultValue.ToString();
             cLithingCont = base.Config.Bind("Ambient Occulusion", "LightingContribution", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            cLithingContBuffer = cLithingCont.DefaultValue.ToString();
             cBlurType = base.Config.Bind("Ambient Occulusion", "BlurType", SSAOProUtils.SSAOPro.BlurMode.HighQualityBilateral, "");
             cBlurPasses = base.Config.Bind("Ambient Occulusion", "BlurPasses", 1, new ConfigDescription("", new AcceptableValueRange<int>(1, 4)));
-            cBlurPassesBuffer = cBlurPasses.DefaultValue.ToString();
             cThres = base.Config.Bind("Ambient Occulusion", "Threshold", 10f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 20f)));
-            cThresBuffer = cThres.DefaultValue.ToString();
             cMaxDistance = base.Config.Bind("Ambient Occulusion", "MaxDistance", 150f, "");
             cFalloff = base.Config.Bind("Ambient Occulusion", "Falloff", 50f, "");
             Bloomenable = base.Config.Bind("Bloom", "_Bloom Enable", false, "");
             Bloomintensity = base.Config.Bind("Bloom", "Intensity", 3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-            BloomintensityBuffer = Bloomintensity.DefaultValue.ToString();
             Bloomanamor = base.Config.Bind("Bloom", "AnamorphicRatio", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-            BloomanamorBuffer = Bloomanamor.DefaultValue.ToString();
             BloomsoftKnee = base.Config.Bind("Bloom", "Softknee", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            BloomsoftKneeBuffer = BloomsoftKnee.DefaultValue.ToString();
             Bloomthreshold = base.Config.Bind("Bloom", "Threshold", 1.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-            BloomthresholdBuffer = Bloomthreshold.DefaultValue.ToString();
             Bloomclamp = base.Config.Bind("Bloom", "Clamp", 65472f, "");
-            BloomclampBuffer = Bloomclamp.DefaultValue.ToString();
             Bloomdiffusion = base.Config.Bind("Bloom", "Diffusion", 7f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 10f)));
-            BloomdiffusionBuffer = Bloomdiffusion.DefaultValue.ToString();
             Bloomcolor = base.Config.Bind("Bloom", "Color", Color.white, "");
             Bloomfsmd = base.Config.Bind("Bloom", "FastMode", false, "");
             CGenable = base.Config.Bind("Color Grading", "_Color Grading Enable", false, "");
             CGtoneMapper = base.Config.Bind("Color Grading", "ToneMapper", Tonemapper.None, "");
             CGgradingmode = base.Config.Bind("Color Grading", "GradingMode", GradingMode.LowDefinitionRange, "");
             CGposte = base.Config.Bind("Color Grading", "Tone PostExposure", 0f, "");
-            CGposteBuffer = CGposte.DefaultValue.ToString();
             CGtemp = base.Config.Bind("Color Grading", "WhiteBalance Temperature", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-            CGtempBuffer = CGtemp.DefaultValue.ToString();
             CGtint = base.Config.Bind("Color Grading", "WhiteBalance Tint", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-            CGtintBuffer = CGtint.DefaultValue.ToString();
             CGhueShift = base.Config.Bind("Color Grading", "Tone HueShift", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-180f, 180f)));
-            CGhueShiftBuffer = CGhueShift.DefaultValue.ToString();
             CGsaturation = base.Config.Bind("Color Grading", "Tone Saturation", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-            CGsaturationBuffer = CGsaturation.DefaultValue.ToString();
             CGcontrast = base.Config.Bind("Color Grading", "Tone Contrast", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-            CGcontrastBuffer = CGcontrast.DefaultValue.ToString();
             CGlift = base.Config.Bind("Color Grading", "Trackballs Lift", new Vector4(1f, 1f, 1f, 0f), "");
             CGgamma = base.Config.Bind("Color Grading", "Trackballs Gammma", new Vector4(1f, 1f, 1f, 0f), "");
             CGgain = base.Config.Bind("Color Grading", "Trackballs Gain", new Vector4(1f, 1f, 1f, 0f), "");
             CGcolfilter = base.Config.Bind("Color Grading", "Tone ColorFilter", Color.white, "");
             CAenable = base.Config.Bind("Chromatic Aberration", "_Chromatic Aberration Enable", false, "");
             CAintensity = base.Config.Bind("Chromatic Aberration", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            CAintensityBuffer = CAintensity.DefaultValue.ToString();
             MBenable = base.Config.Bind("Motion Blur", "_MotionBlur Enable", false, "");
             MBshutter = base.Config.Bind("Motion Blur", "ShutterAngle", 270f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 360f)));
-            MBshutterBuffer = MBshutter.DefaultValue.ToString();
             MBsamplecnt = base.Config.Bind("Motion Blur", "SampleCount", 10, new ConfigDescription("", new AcceptableValueRange<int>(4, 32)));
-            MBsamplecntBuffer = MBsamplecnt.DefaultValue.ToString();
             DOFenable = base.Config.Bind("Depth of Field", "_DOF Enable", false, "");
             DOFfocusd = base.Config.Bind("Depth of Field", "FocusDistance", 10f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 100f)));
-            DOFfocusdBuffer = DOFfocusd.DefaultValue.ToString();
             DOFaperture = base.Config.Bind("Depth of Field", "Aperture", 5.6f, new ConfigDescription("", new AcceptableValueRange<float>(0.05f, 32f)));
-            DOFapertureBuffer = DOFaperture.DefaultValue.ToString();
             DOFfocall = base.Config.Bind("Depth of Field", "FoculLength", 50f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 300f)));
-            DOFfocallBuffer = DOFfocall.DefaultValue.ToString();
             DOFmaxblur = base.Config.Bind("Depth of Field", "MaxBlurSize", KernelSize.Medium, "");
             VGenable = base.Config.Bind("Vignette", "_Vignette Enable", false, "");
             VGcenter = base.Config.Bind("Vignette", "Canter", new Vector2(0.5f, 0.5f), "");
-            VGcenterXBuffer = VGcenter.Value.x.ToString();
-            VGcenterYBuffer = VGcenter.Value.y.ToString();
             VGmode = base.Config.Bind("Vignette", "Mode", VignetteMode.Classic, "");
             VGcol = base.Config.Bind("Vignette", "Color", new Color(0f, 0f, 0f, 1f), "");
             VGintensity = base.Config.Bind("Vignette", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            VGintensityBuffer = VGintensity.DefaultValue.ToString();
             VGsmoothness = base.Config.Bind("Vignette", "Smoothness", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
-            VGsmoothnessBuffer = VGsmoothness.DefaultValue.ToString();
             VGroundness = base.Config.Bind("Vignette", "Roundness", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            VGroundnessBuffer = VGroundness.DefaultValue.ToString();
             VGrounded = base.Config.Bind("Vignette", "Rounded", false, "");
             VGopacity = base.Config.Bind("Vignette", "Opacity", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             DOFautofocus = base.Config.Bind("Depth of Field", "AutoFocus", false, "");
@@ -1634,65 +1650,40 @@ namespace PostProcessingEffectsV3
             OpenGUI = base.Config.Bind("_OpenGUI", "_OpenGUI", default(KeyboardShortcut), "");
             SoutlineEnable = base.Config.Bind("SobelColorOutline", "_Enable", false, "");
             OutlineWidth = base.Config.Bind("SobelColorOutline", "OutlineWidth", 0.02f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            OutlineWidthBuffer = OutlineWidth.DefaultValue.ToString();
             OutlineColor = base.Config.Bind("SobelColorOutline", "OutlineColor", Color.white, "");
             ColorPower = base.Config.Bind("SobelColorOutline", "ColorPower", 2f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-            ColorPowerBuffer = ColorPower.DefaultValue.ToString();
             PosEnable = base.Config.Bind("Posterize", "_Enable", false, "");
             PosDiv = base.Config.Bind("Posterize", "DivisionNum", 8, new ConfigDescription("", new AcceptableValueRange<int>(1, 64)));
-            PosDivBuffer = PosDiv.DefaultValue.ToString();
             PosHSV = base.Config.Bind("Posterize", "UseHSVtrans", true, "");
             SengaEnable = base.Config.Bind("CustomizableOutline", "_Enable", false, "");
             SengaOnly = base.Config.Bind("CustomizableOutline", "OutlineOnly", false, "");
             SengaNomalThes = base.Config.Bind("CustomizableOutline", "NormalThreshold", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
-            SengaNomalThesBuffer = SengaNomalThes.DefaultValue.ToString();
             SengaDepthThres = base.Config.Bind("CustomizableOutline", "DepthThreshold", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 10f)));
-            SengaDepthThresBuffer = SengaDepthThres.DefaultValue.ToString();
             SengaColorThres = base.Config.Bind("CustomizableOutline", "ColorThreshold", 0.01f, new ConfigDescription("", new AcceptableValueRange<float>(0.001f, 1f)));
-            SengaColorThresBuffer = SengaColorThres.DefaultValue.ToString();
             SengaSobelThres = base.Config.Bind("CustomizableOutline", "SobelThreshold", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 10f)));
-            SengaSobelThresBuffer = SengaSobelThres.DefaultValue.ToString();
             SengaNormalEdge = base.Config.Bind("CustomizableOutline", "NormalEdge", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            SengaNormalEdgeBuffer = SengaNormalEdge.DefaultValue.ToString();
             SengaDepthEdge = base.Config.Bind("CustomizableOutline", "DepthEdge", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            SengaDepthEdgeBuffer = SengaDepthEdge.DefaultValue.ToString();
             SengaColorEdge = base.Config.Bind("CustomizableOutline", "ColorEdge", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            SengaColorEdgeBuffer = SengaColorEdge.DefaultValue.ToString();
             SengaSobelEdge = base.Config.Bind("CustomizableOutline", "SobelEdge", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            SengaSobelEdgeBuffer = SengaSobelEdge.DefaultValue.ToString();
             SengaSampleDistance = base.Config.Bind("CustomizableOutline", "SampleDistance", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 3f)));
             SengaColBlend = base.Config.Bind("CustomizableOutline", "ColorBlend", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 20f)));
-            SengaColBlendBuffer = SengaColBlend.DefaultValue.ToString();
             SengaToneEnable = base.Config.Bind("CustomizableOutline", "PasteTone", false, "");
             SengaToneScale = base.Config.Bind("CustomizableOutline", "ToneScale", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 10f)));
-            SengaToneScaleBuffer = SengaToneScale.DefaultValue.ToString();
             SengaToneThick = base.Config.Bind("CustomizableOutline", "ToneThickness", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-            SengaToneThickBuffer = SengaToneThick.DefaultValue.ToString();
             SengaToneThres = base.Config.Bind("CustomizableOutline", "ToneThreshold", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-            SengaToneThresBuffer = SengaToneThres.DefaultValue.ToString();
             SengaBlurEnable = base.Config.Bind("CustomizableOutline", "BlurOn", false, "");
             SengaBlurDir = base.Config.Bind("CustomizableOutline", "BlurDirection", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
-            SengaBlurDirBuffer = SengaBlurDir.DefaultValue.ToString();
             SengaBlurPow = base.Config.Bind("CustomizableOutline", "BlurPower", 0.6f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 5f)));
-            SengaBlurPowBuffer = SengaBlurPow.DefaultValue.ToString();
             SengaBlurThick = base.Config.Bind("CustomizableOutline", "BlurThickness", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            SengaBlurThickBuffer = SengaBlurThick.DefaultValue.ToString();
             SengaBlurSample = base.Config.Bind("CustomizableOutline", "BlurSampleCount", 8, new ConfigDescription("", new AcceptableValueRange<int>(2, 64)));
-            SengaBlurSampleBuffer = SengaBlurSample.DefaultValue.ToString();
-            SengaSampleDistanceBuffer = SengaSampleDistance.DefaultValue.ToString();
             DistortionEnable = base.Config.Bind("Lens Distortion", "_Enable", false, "");
             DistortionIntensity = base.Config.Bind("Lens Distortion", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
-            DistortionIntensityBuffer = DistortionIntensity.Value.ToString();
             DistortionIntensityX = base.Config.Bind("Lens Distortion", "X Multiplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1)));
-            DistortionIntensityXBuffer = DistortionIntensityX.Value.ToString();
             DistortionIntensityY = base.Config.Bind("Lens Distortion", "Y Mulitplier", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            DistortionIntensityYBuffer = DistortionIntensityY.Value.ToString();
             DistortionCenterX = base.Config.Bind("Lens Distortion", "X Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-            DistortionCenterXBuffer = DistortionCenterX.Value.ToString();
             DistortionCenterY = base.Config.Bind("Lens Distortion", "Y Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
-            DistortionCenterYBuffer = DistortionCenterY.Value.ToString();
             DistortionScale = base.Config.Bind("Lens Distortion", "Scale", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 5f)));
-            DistortionScaleBuffer = DistortionScale.Value.ToString();
+            UpdateBuffers();
         }
         #endregion
     }
