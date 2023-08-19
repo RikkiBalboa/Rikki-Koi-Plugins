@@ -668,7 +668,6 @@ namespace PostProcessingEffectsV3
         private string cLithingContBuffer;
         private string cBlurPassesBuffer;
         private string cThresBuffer;
-        private string cMaxDistanceBuffer;
         private string AOintensityBuffer;
         private string AOradiusBuffer;
         #endregion
