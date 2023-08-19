@@ -692,6 +692,11 @@ namespace PostProcessingEffectsV3
         private string DOFfocallBuffer;
         private string MBshutterBuffer;
         private string MBsamplecntBuffer;
+        private string VGcenterXBuffer;
+        private string VGcenterYBuffer;
+        private string VGintensityBuffer;
+        private string VGsmoothnessBuffer;
+        private string VGroundnessBuffer;
         #endregion
 
 
@@ -1147,52 +1152,30 @@ namespace PostProcessingEffectsV3
                     VGcol.Value = (Color)VGcol.DefaultValue;
                 }
                 GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
+
                 GUILayout.Label("Center  ", GUILayout.Width(120f));
-                GUILayout.Label("X: ");
-                float x = GUILayout.HorizontalSlider(VGcenter.Value.x, 0f, 1f);
-                GUILayout.Label(x.ToString("F"), GUILayout.Width(40f));
-                GUILayout.Label("", GUILayout.Width(60f));
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("", GUILayout.Width(120f));
-                GUILayout.Label("Y: ");
-                float y = GUILayout.HorizontalSlider(VGcenter.Value.y, 0f, 1f);
-                GUILayout.Label(y.ToString("F"), GUILayout.Width(40f));
+                float x = DrawSliderTextBoxCombo(
+                    "X: ", 0f, 1f, ref VGcenterXBuffer, VGcenter.Value.x, 0.5f
+                );
+                float y = DrawSliderTextBoxCombo(
+                    "Y: ", 0f, 1f, ref VGcenterYBuffer, VGcenter.Value.y, 0.5f
+                );
                 VGcenter.Value = new Vector2(x, y);
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    VGcenter.Value = (Vector2)VGcenter.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Intensity", GUILayout.Width(120f));
-                VGintensity.Value = GUILayout.HorizontalSlider(VGintensity.Value, 0f, 1f);
-                GUILayout.Label(VGintensity.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    VGintensity.Value = (float)VGintensity.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Smoothness", GUILayout.Width(120f));
-                VGsmoothness.Value = GUILayout.HorizontalSlider(VGsmoothness.Value, 0f, 1f);
-                GUILayout.Label(VGsmoothness.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    VGsmoothness.Value = (float)VGsmoothness.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                GUILayout.Label("Settings", GUILayout.Width(120f));
+
+                VGintensity.Value = DrawSliderTextBoxCombo(
+                    "Intensity", 0f, 1f, ref VGintensityBuffer, VGintensity.Value, (float)VGintensity.DefaultValue
+                );
+                VGsmoothness.Value = DrawSliderTextBoxCombo(
+                    "Smoothness", 0f, 1f, ref VGsmoothnessBuffer, VGsmoothness.Value, (float)VGsmoothness.DefaultValue
+                );
+
                 VGrounded.Value = GUILayout.Toggle(VGrounded.Value, "Rounded");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Roundness", GUILayout.Width(120f));
-                VGroundness.Value = GUILayout.HorizontalSlider(VGroundness.Value, 0f, 1f);
-                GUILayout.Label(VGroundness.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    VGroundness.Value = (float)VGroundness.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                VGroundness.Value = DrawSliderTextBoxCombo(
+                    "Roundness", 0f, 1f, ref VGroundnessBuffer, VGroundness.Value, (float)VGroundness.DefaultValue
+                );
                 GUILayout.EndVertical();
             }
             #endregion
@@ -1744,11 +1727,16 @@ namespace PostProcessingEffectsV3
             DOFmaxblur = base.Config.Bind("Depth of Field", "MaxBlurSize", KernelSize.Medium, "");
             VGenable = base.Config.Bind("Vignette", "_Vignette Enable", false, "");
             VGcenter = base.Config.Bind("Vignette", "Canter", new Vector2(0.5f, 0.5f), "");
+            VGcenterXBuffer = VGcenter.Value.x.ToString();
+            VGcenterYBuffer = VGcenter.Value.y.ToString();
             VGmode = base.Config.Bind("Vignette", "Mode", VignetteMode.Classic, "");
             VGcol = base.Config.Bind("Vignette", "Color", new Color(0f, 0f, 0f, 1f), "");
             VGintensity = base.Config.Bind("Vignette", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            VGintensityBuffer = VGintensity.DefaultValue.ToString();
             VGsmoothness = base.Config.Bind("Vignette", "Smoothness", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
+            VGsmoothnessBuffer = VGsmoothness.DefaultValue.ToString();
             VGroundness = base.Config.Bind("Vignette", "Roundness", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            VGroundnessBuffer = VGroundness.DefaultValue.ToString();
             VGrounded = base.Config.Bind("Vignette", "Rounded", false, "");
             VGopacity = base.Config.Bind("Vignette", "Opacity", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             DOFautofocus = base.Config.Bind("Depth of Field", "AutoFocus", false, "");
