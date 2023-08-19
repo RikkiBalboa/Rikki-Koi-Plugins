@@ -674,6 +674,12 @@ namespace PostProcessingEffectsV3
         private string TAAstationaryBlendingBuffer;
         private string TAAmotionBlendingBuffer;
         private string TAAsharpenBuffer;
+        private string BloomintensityBuffer;
+        private string BloomthresholdBuffer;
+        private string BloomsoftKneeBuffer;
+        private string BloomclampBuffer;
+        private string BloomdiffusionBuffer;
+        private string BloomanamorBuffer;
         #endregion
 
 
@@ -927,60 +933,26 @@ namespace PostProcessingEffectsV3
             {
                 GUILayout.BeginVertical();
                 Bloomenable.Value = GUILayout.Toggle(Bloomenable.Value, "Enable");
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Intensity  ", GUILayout.Width(120f));
-                Bloomintensity.Value = GUILayout.HorizontalSlider(Bloomintensity.Value, 0f, 10f);
-                GUILayout.Label(Bloomintensity.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    Bloomintensity.Value = (float)Bloomintensity.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Threshold", GUILayout.Width(120f));
-                Bloomthreshold.Value = GUILayout.HorizontalSlider(Bloomthreshold.Value, 0f, 5f);
-                GUILayout.Label(Bloomthreshold.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    Bloomthreshold.Value = (float)Bloomthreshold.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("SoftKnee", GUILayout.Width(120f));
-                BloomsoftKnee.Value = GUILayout.HorizontalSlider(BloomsoftKnee.Value, 0f, 1f);
-                GUILayout.Label(BloomsoftKnee.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    BloomsoftKnee.Value = (float)BloomsoftKnee.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Clamp", GUILayout.Width(120f));
-                Bloomclamp.Value = GUILayout.HorizontalSlider(Bloomclamp.Value, 0f, 1f);
-                GUILayout.Label(Bloomclamp.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    Bloomclamp.Value = (float)Bloomclamp.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Diffusion", GUILayout.Width(120f));
-                Bloomdiffusion.Value = GUILayout.HorizontalSlider(Bloomdiffusion.Value, 1f, 10f);
-                GUILayout.Label(Bloomdiffusion.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    Bloomdiffusion.Value = (float)Bloomdiffusion.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("AnamorphicPatio", GUILayout.Width(120f));
-                Bloomanamor.Value = GUILayout.HorizontalSlider(Bloomanamor.Value, -1f, 1f);
-                GUILayout.Label(Bloomanamor.Value.ToString("F"), GUILayout.Width(40f));
-                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                {
-                    Bloomanamor.Value = (float)Bloomanamor.DefaultValue;
-                }
-                GUILayout.EndHorizontal();
+
+                Bloomintensity.Value = DrawSliderTextBoxCombo(
+                    "Intensity  ", 0f, 10f, ref BloomintensityBuffer, Bloomintensity.Value, (float)Bloomintensity.DefaultValue
+                );
+                Bloomthreshold.Value = DrawSliderTextBoxCombo(
+                    "Threshold", 0f, 5f, ref BloomthresholdBuffer, Bloomthreshold.Value, (float)Bloomthreshold.DefaultValue
+                );
+                BloomsoftKnee.Value = DrawSliderTextBoxCombo(
+                    "SoftKnee", 0f, 1f, ref BloomsoftKneeBuffer, BloomsoftKnee.Value, (float)BloomsoftKnee.DefaultValue
+                );
+                Bloomclamp.Value = DrawSliderTextBoxCombo(
+                    "Clamp", 0f, 65472f, ref BloomclampBuffer, Bloomclamp.Value, (float)Bloomclamp.DefaultValue
+                );
+                Bloomdiffusion.Value = DrawSliderTextBoxCombo(
+                    "Diffusion", 1f, 10f, ref BloomdiffusionBuffer, Bloomdiffusion.Value, (float)Bloomdiffusion.DefaultValue
+                );
+                Bloomanamor.Value = DrawSliderTextBoxCombo(
+                    "AnamorphicPatio", -1f, 1f, ref BloomanamorBuffer, Bloomanamor.Value, (float)Bloomanamor.DefaultValue
+                );
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Color   ");
                 if (GUILayout.Button("", colorbutton(Bloomcolor.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
@@ -1765,11 +1737,17 @@ namespace PostProcessingEffectsV3
             cFalloff = base.Config.Bind("Ambient Occulusion", "Falloff", 50f, "");
             Bloomenable = base.Config.Bind("Bloom", "_Bloom Enable", false, "");
             Bloomintensity = base.Config.Bind("Bloom", "Intensity", 3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            BloomintensityBuffer = Bloomintensity.DefaultValue.ToString();
             Bloomanamor = base.Config.Bind("Bloom", "AnamorphicRatio", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
+            BloomanamorBuffer = Bloomanamor.DefaultValue.ToString();
             BloomsoftKnee = base.Config.Bind("Bloom", "Softknee", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            BloomsoftKneeBuffer = BloomsoftKnee.DefaultValue.ToString();
             Bloomthreshold = base.Config.Bind("Bloom", "Threshold", 1.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 10f)));
+            BloomthresholdBuffer = Bloomthreshold.DefaultValue.ToString();
             Bloomclamp = base.Config.Bind("Bloom", "Clamp", 65472f, "");
+            BloomclampBuffer = Bloomclamp.DefaultValue.ToString();
             Bloomdiffusion = base.Config.Bind("Bloom", "Diffusion", 7f, new ConfigDescription("", new AcceptableValueRange<float>(1f, 10f)));
+            BloomdiffusionBuffer = Bloomdiffusion.DefaultValue.ToString();
             Bloomcolor = base.Config.Bind("Bloom", "Color", Color.white, "");
             Bloomfsmd = base.Config.Bind("Bloom", "FastMode", false, "");
             CGenable = base.Config.Bind("Color Grading", "_Color Grading Enable", false, "");
