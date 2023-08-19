@@ -11,6 +11,7 @@ using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
+using KKAPI.Utilities;
 using SobelOutline;
 using SSAOProUtils;
 using Studio;
@@ -19,6 +20,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static GameCursor;
 
 namespace PostProcessingEffectsV3
 {
@@ -125,26 +127,6 @@ namespace PostProcessingEffectsV3
         private global::Studio.Studio studio;
 
         private Dictionary<ChaControl, Transform> CharaList = new Dictionary<ChaControl, Transform>();
-
-
-        private void wall()
-        {
-            myGO = new GameObject();
-            myGO.name = "TestCanvas";
-            myGO.AddComponent<Canvas>();
-            myCanvas = myGO.GetComponent<Canvas>();
-            myCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            myCanvas.sortingOrder = 32767;
-            myGO.AddComponent<CanvasScaler>();
-            myGO.AddComponent<GraphicRaycaster>();
-            GameObject gameObject = new GameObject("Button");
-            Image image = gameObject.AddComponent<Image>();
-            image.transform.SetParent(myCanvas.transform);
-            image.rectTransform.sizeDelta = new Vector2(Screen.width, Screen.height);
-            image.rectTransform.anchoredPosition = Vector3.zero;
-            image.color = new Color(1f, 1f, 1f, 0f);
-            image.raycastTarget = true;
-        }
 
         private void Awake()
         {
@@ -326,14 +308,6 @@ namespace PostProcessingEffectsV3
             if (OpenGUI.Value.IsDown())
             {
                 mainwin = !mainwin;
-                if (mainwin)
-                {
-                    wall();
-                }
-                else
-                {
-                    UnityEngine.Object.Destroy(myGO);
-                }
             }
         }
 
@@ -635,6 +609,8 @@ namespace PostProcessingEffectsV3
 
         #region UI
         private bool mainwin = false;
+        private readonly int uiWindowHash = ('P' << 24) | ('P' << 16) | ('E' << 8);
+        private bool exitOnFocusLoss = true;
         public Rect Rect1 = new Rect(220f, 50f, 520, 420f);
 
         private Canvas myCanvas;
@@ -724,12 +700,14 @@ namespace PostProcessingEffectsV3
         {
             if (mainwin)
             {
-                if (GUI.Button(new Rect(0f, 0f, Screen.width, Screen.height), "", GUI.skin.label))
-                {
-                    mainwin = false;
-                    UnityEngine.Object.Destroy(myGO);
-                }
-                Rect1 = GUILayout.Window(560, Rect1, mainwindow, "PostProcessingEffects");
+                if (exitOnFocusLoss)
+                    if (GUI.Button(new Rect(0f, 0f, Screen.width, Screen.height), "", GUI.skin.label))
+                    {
+                        mainwin = false;
+                        UnityEngine.Object.Destroy(myGO);
+                    }
+                Rect1 = GUILayout.Window(uiWindowHash, Rect1, mainwindow, "PostProcessingEffects");
+                IMGUIUtils.EatInputInRect(Rect1);
             }
         }
 
@@ -787,8 +765,12 @@ namespace PostProcessingEffectsV3
 
         private void mainwindow(int windowID)
         {
-            #region Ambient Occulusion
+            GUILayout.BeginHorizontal();
             onoff.Value = GUILayout.Toggle(onoff.Value, "Enable/Disable All");
+            exitOnFocusLoss = GUILayout.Toggle(exitOnFocusLoss, "Close on focus loss");
+            GUILayout.EndHorizontal();
+
+            #region Ambient Occulusion
             AOb = GUILayout.Toggle(AOb, "AmbientOcculusion ", GUI.skin.button);
             if (AOb)
             {
