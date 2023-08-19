@@ -670,6 +670,10 @@ namespace PostProcessingEffectsV3
         private string cThresBuffer;
         private string AOintensityBuffer;
         private string AOradiusBuffer;
+        private string TAAjittetSpeedBuffer;
+        private string TAAstationaryBlendingBuffer;
+        private string TAAmotionBlendingBuffer;
+        private string TAAsharpenBuffer;
         #endregion
 
 
@@ -900,42 +904,18 @@ namespace PostProcessingEffectsV3
                 }
                 if (AAmode.Value == PostProcessLayer.Antialiasing.TemporalAntialiasing)
                 {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("JitterSpread", GUILayout.Width(120f));
-                    TAAjittetSpeed.Value = GUILayout.HorizontalSlider(TAAjittetSpeed.Value, 0.1f, 1f);
-                    GUILayout.Label(TAAjittetSpeed.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        TAAjittetSpeed.Value = (float)TAAjittetSpeed.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("StationaryBlending", GUILayout.Width(120f));
-                    TAAstationaryBlending.Value = GUILayout.HorizontalSlider(TAAstationaryBlending.Value, 0.1f, 1f);
-                    GUILayout.Label(TAAstationaryBlending.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        TAAstationaryBlending.Value = (float)TAAstationaryBlending.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("MotionBlending", GUILayout.Width(120f));
-                    TAAmotionBlending.Value = GUILayout.HorizontalSlider(TAAmotionBlending.Value, 0.1f, 1f);
-                    GUILayout.Label(TAAmotionBlending.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        TAAmotionBlending.Value = (float)TAAmotionBlending.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Sharpen", GUILayout.Width(120f));
-                    TAAsharpen.Value = GUILayout.HorizontalSlider(TAAsharpen.Value, 0.1f, 1f);
-                    GUILayout.Label(TAAsharpen.Value.ToString("F"), GUILayout.Width(40f));
-                    if (GUILayout.Button("Reset", GUILayout.Width(60f)))
-                    {
-                        TAAsharpen.Value = (float)TAAsharpen.DefaultValue;
-                    }
-                    GUILayout.EndHorizontal();
+                    TAAjittetSpeed.Value = DrawSliderTextBoxCombo(
+                        "JitterSpread", 0.1f, 1f, ref TAAjittetSpeedBuffer, TAAjittetSpeed.Value, (float)TAAjittetSpeed.DefaultValue
+                    );
+                    TAAstationaryBlending.Value = DrawSliderTextBoxCombo(
+                        "StationaryBlending", 0.1f, 1f, ref TAAstationaryBlendingBuffer, TAAstationaryBlending.Value, (float)TAAstationaryBlending.DefaultValue
+                    );
+                    TAAmotionBlending.Value = DrawSliderTextBoxCombo(
+                        "MotionBlending", 0.1f, 1f, ref TAAmotionBlendingBuffer, TAAmotionBlending.Value, (float)TAAmotionBlending.DefaultValue
+                    );
+                    TAAsharpen.Value = DrawSliderTextBoxCombo(
+                        "Sharpen", 0.1f, 1f, ref TAAsharpenBuffer, TAAsharpen.Value, (float)TAAsharpen.DefaultValue
+                    );
                 }
                 GUILayout.EndVertical();
             }
@@ -1745,9 +1725,13 @@ namespace PostProcessingEffectsV3
             AAfxaafm = base.Config.Bind("AntiAliasing", "FXAA FastMode", false, "");
             AAfxaakpa = base.Config.Bind("AntiAliasing", "FXAA KeepAlpha", false, "");
             TAAjittetSpeed = base.Config.Bind("AntiAliasing", "TAA JitterSpeed", 0.75f, new ConfigDescription("", new AcceptableValueRange<float>(0.1f, 1f)));
+            TAAjittetSpeedBuffer = TAAjittetSpeed.DefaultValue.ToString();
             TAAsharpen = base.Config.Bind("AntiAliasing", "TAA Sharpen", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 3f)));
+            TAAsharpenBuffer = TAAsharpen.DefaultValue.ToString();
             TAAstationaryBlending = base.Config.Bind("AntiAliasing", "TAA StationaryBlending", 0.95f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.99f)));
+            TAAstationaryBlendingBuffer = TAAstationaryBlending.DefaultValue.ToString();
             TAAmotionBlending = base.Config.Bind("AntiAliasing", "TAA MotionBlending", 0.85f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.99f)));
+            TAAmotionBlendingBuffer = TAAmotionBlending.DefaultValue.ToString();
             AOmode = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Mode", AmbientOcclusionMode.ScalableAmbientObscurance, "");
             AOenable = base.Config.Bind("Ambient Occulusion", "Ambient Occulusion Enable", false, "");
             AOintensity = base.Config.Bind("Ambient Occulusion", "AOIntensity", 0.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 4f)));
