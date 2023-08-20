@@ -14,10 +14,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.0</LangVersion>
     <DefineConstants>$(DefineConstants)TRACE;KKS</DefineConstants>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>7.0</LangVersion>
     <DefineConstants>$(DefineConstants)TRACE;KKS</DefineConstants>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="bin\**" />
