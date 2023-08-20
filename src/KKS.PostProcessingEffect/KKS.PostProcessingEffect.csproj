@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>KKS_PostProcessingEffect</AssemblyName>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
@@ -23,16 +23,16 @@
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule" Version="2019.4.9" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.UI" Version="2019.4.9" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule" Version="2019.4.9" />
-    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.36.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony" />
+    <Reference Include="KKSAPI">
+      <HintPath>..\..\lib\KKSAPI.dll</HintPath>
+    </Reference>
     <Reference Include="KKS_PostProcessingRuntime">
       <HintPath>..\..\lib\KKS_PostProcessingRuntime.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
+  <Import Project="..\Core.PostProcessingEffect\Core.PostProcessingEffect.projitems" Label="Shared" />
 </Project>

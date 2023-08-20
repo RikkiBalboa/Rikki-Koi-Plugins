@@ -23,9 +23,12 @@ using static GameCursor;
 namespace PostProcessingEffectsV3
 {
     [BepInDependency("org.bepinex.plugins.KKS_PostProcessingRuntime", "1.0.0.0")]
-    [BepInPlugin("org.bepinex.plugins.KKS_PostProcessingEffectsV3", "KKS_PostProcessingEffectsV3", "2.0")]
+    [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class PostProcessingEffectsV3 : BaseUnityPlugin
     {
+        public const string PluginGUID = "org.bepinex.plugins.KKS_PostProcessingEffectsV3";
+        public const string PluginName = "KKS_PostProcessingEffectsV3";
+        public const string PluginVersion = "2.0";
 
         internal static new ManualLogSource Logger;
 

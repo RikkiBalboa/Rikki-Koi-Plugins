@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Core.PostProcessingEffect</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\Patch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\Posterize.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\PostProcessingEffectsV3.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\SengaEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SobelOutline\SobelOutline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SSAOProUtils\ColorUsageAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SSAOProUtils\HelpURLAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SSAOProUtils\SSAOPro.cs" />
+  </ItemGroup>
+</Project>
