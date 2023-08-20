@@ -128,6 +128,7 @@ namespace PostProcessingEffectsV3
         private Vignette VG;
         private ChromaticAberration CA;
         private GlobalFog globalFog;
+        private Grain grain;
         #endregion
 
         #region Setup
@@ -429,6 +430,14 @@ namespace PostProcessingEffectsV3
                 {
                     postProcessVolume.profile.TryGetSettings<ChromaticAberration>(out CA);
                 }
+                if (!postProcessVolume.profile.HasSettings<Grain>())
+                {
+                    grain = postProcessVolume.profile.AddSettings<Grain>();
+                }
+                else
+                {
+                    postProcessVolume.profile.TryGetSettings<Grain>(out grain);
+                }
                 lensDistortion = ScriptableObject.CreateInstance<LensDistortion>();
                 lensDistortion = (LensDistortion)postProcessVolume.profile.AddSettings(lensDistortion);
 
@@ -587,6 +596,12 @@ namespace PostProcessingEffectsV3
                 lensDistortion.centerY.Override(DistortionCenterY.Value);
                 lensDistortion.scale.Override(DistortionScale.Value);
 
+                grain.enabled.Override(GrainEnable.Value);
+                grain.colored.Override(GrainColored.Value);
+                grain.intensity.Override(GrainIntensity.Value);
+                grain.size.Override(GrainSize.Value);
+                grain.lumContrib.Override(GrainLumContrib.Value);
+
                 CA.enabled.Override(CAenable.Value);
                 CA.intensity.Override(CAintensity.Value);
                 sAOPro.enabled = nAOenable;
@@ -661,6 +676,7 @@ namespace PostProcessingEffectsV3
         private bool Sengab = false;
         private bool distortion = false;
         private bool fog = false;
+        private bool grainShown = false;
 
         #region Buffers
         private string DistortionIntensityBuffer;
@@ -730,6 +746,9 @@ namespace PostProcessingEffectsV3
         private string FogStartBuffer;
         private string FogEndBuffer;
         private string FogHeightBuffer;
+        private string GrainIntensityBuffer;
+        private string GrainSizeBuffer;
+        private string GrainLumContribBuffer;
 
         private void UpdateBuffers()
         {
@@ -800,6 +819,9 @@ namespace PostProcessingEffectsV3
             FogStartBuffer = FogStart.Value.ToString();
             FogEndBuffer = FogEnd.Value.ToString();
             FogHeightBuffer = FogHeight.Value.ToString();
+            GrainIntensityBuffer = GrainIntensity.Value.ToString();
+            GrainSizeBuffer = GrainSize.Value.ToString();
+            GrainLumContribBuffer = GrainLumContrib.Value.ToString();
         }
         #endregion
 
@@ -1474,6 +1496,27 @@ namespace PostProcessingEffectsV3
             }
             #endregion
 
+            #region Grain
+            grainShown = GUILayout.Toggle(grainShown, "Grain", GUI.skin.button);
+            if (grainShown)
+            {
+                GUILayout.BeginVertical();
+                GrainEnable.Value = GUILayout.Toggle(GrainEnable.Value, "Enable");
+                GrainColored.Value = GUILayout.Toggle(GrainColored.Value, "Colored");
+
+                GrainIntensity.Value = DrawSliderTextBoxCombo(
+                    "Intensity", 0f, 1f, ref GrainIntensityBuffer, GrainIntensity.Value, (float)GrainIntensity.DefaultValue
+                );
+                GrainSize.Value = DrawSliderTextBoxCombo(
+                    "Size", 0.3f, 3f, ref GrainSizeBuffer, GrainSize.Value, (float)GrainSize.DefaultValue
+                );
+                GrainLumContrib.Value = DrawSliderTextBoxCombo(
+                    "Luminance Contribution", 0f, 1f, ref GrainLumContribBuffer, GrainLumContrib.Value, (float)GrainLumContrib.DefaultValue
+                );
+                GUILayout.EndVertical();
+            }
+            #endregion
+
             GUI.DragWindow();
         }
 
@@ -1674,6 +1717,16 @@ namespace PostProcessingEffectsV3
 
 
         #endregion
+
+        #region Grain
+
+        private ConfigEntry<bool> GrainEnable { get; set; }
+        private ConfigEntry<bool> GrainColored { get; set; }
+        private ConfigEntry<float> GrainIntensity { get; set; }
+        private ConfigEntry<float> GrainSize { get; set; }
+        private ConfigEntry<float> GrainLumContrib { get; set; }
+
+        #endregion
         #endregion
 
         private void BindConfig()
@@ -1795,7 +1848,11 @@ namespace PostProcessingEffectsV3
             FogEnd = base.Config.Bind("Fog", "End", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
             FogHeight = base.Config.Bind("Fog", "Height", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
             FogColor = base.Config.Bind("Fog", "Color", Color.white, "");
-
+            GrainEnable = base.Config.Bind("Grain", "_Enable", false, "");
+            GrainColored = base.Config.Bind("Grain", "Colored", false, "");
+            GrainIntensity = base.Config.Bind("Grain", "Intensity", 0f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            GrainSize = base.Config.Bind("Grain", "Size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.3f, 3f)));
+            GrainLumContrib = base.Config.Bind("Grain", "Luminance Contribution", 0.8f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             UpdateBuffers();
         }
         #endregion
