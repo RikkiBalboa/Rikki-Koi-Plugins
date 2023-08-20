@@ -25,7 +25,7 @@ namespace PostProcessingEffectsV3
 #if KKS
     [BepInDependency("org.bepinex.plugins.KKS_PostProcessingRuntime", "1.0.0.0")]
 #elif KK
-    [BepInDependency("org.bepinex.plugins.KK_PostProcessingRuntime", "1.0.0.0")]
+    [BepInDependency("org.bepinex.plugins.PostProcessingRuntime", "1.0.0.0")]
 #endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class PostProcessingEffectsV3 : BaseUnityPlugin
