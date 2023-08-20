@@ -23,7 +23,7 @@ using static GameCursor;
 namespace PostProcessingEffectsV3
 {
     [BepInDependency("org.bepinex.plugins.KKS_PostProcessingRuntime", "1.0.0.0")]
-    [BepInPlugin("org.bepinex.plugins.KKS_PostProcessingEffectsV3", "KKS_PostProcessingEffectsV3", "1.4.0.0")]
+    [BepInPlugin("org.bepinex.plugins.KKS_PostProcessingEffectsV3", "KKS_PostProcessingEffectsV3", "2.0")]
     public class PostProcessingEffectsV3 : BaseUnityPlugin
     {
 
@@ -1794,7 +1794,7 @@ namespace PostProcessingEffectsV3
             FogStart = base.Config.Bind("Fog", "Start", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
             FogEnd = base.Config.Bind("Fog", "End", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
             FogHeight = base.Config.Bind("Fog", "Height", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
-            FogColor = base.Config.Bind("Fog", "Color", new Color(0f, 0f, 0f, 1f), "");
+            FogColor = base.Config.Bind("Fog", "Color", Color.white, "");
 
             UpdateBuffers();
         }
