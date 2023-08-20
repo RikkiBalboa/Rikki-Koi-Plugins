@@ -12,14 +12,12 @@ using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
-using SobelOutline;
-using SSAOProUtils;
 using Studio;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityStandardAssets.ImageEffects;
 using static GameCursor;
 
 namespace PostProcessingEffectsV3
@@ -88,6 +86,15 @@ namespace PostProcessingEffectsV3
         };
 
         private string[] DOFm2 = new string[4] { "Small", "Medium", "Large", "VeryLarge" };
+
+        private FogMode[] fogModes = new FogMode[3]
+        {
+            FogMode.Linear,
+            FogMode.Exponential,
+            FogMode.ExponentialSquared
+        };
+
+        private string[] fogModes2 = new string[3] { "Linear", "Exponential", "ExponentialSquared" };
         #endregion
 
         #region Post Process Effects Variables
@@ -114,12 +121,13 @@ namespace PostProcessingEffectsV3
         public Texture2D sengaToneTex;
         private Transform charapos = null;
         private AmbientOcclusion AO;
-        private Bloom bloom;
+        private UnityEngine.Rendering.PostProcessing.Bloom bloom;
         private ColorGrading CG;
-        private MotionBlur MB;
-        private DepthOfField DOF;
+        private UnityEngine.Rendering.PostProcessing.MotionBlur MB;
+        private UnityEngine.Rendering.PostProcessing.DepthOfField DOF;
         private Vignette VG;
         private ChromaticAberration CA;
+        private GlobalFog globalFog;
         #endregion
 
         #region Setup
@@ -351,6 +359,9 @@ namespace PostProcessingEffectsV3
                 {
                     postProcessLayer = gameObject.AddComponent<PostProcessLayer>();
                 }
+                globalFog = gameObject.GetComponent<GlobalFog>();
+                if (postProcessLayer == null)
+                    globalFog = gameObject.AddComponent<GlobalFog>();
                 postProcessLayer.Init(postProcessResources);
                 postProcessLayer.InitBundles();
                 postProcessLayer.volumeLayer = LayerMask.GetMask(LayerMask.LayerToName(gameObject.layer));
@@ -370,13 +381,13 @@ namespace PostProcessingEffectsV3
                 {
                     postProcessVolume.profile.TryGetSettings<AmbientOcclusion>(out AO);
                 }
-                if (!postProcessVolume.profile.HasSettings<Bloom>())
+                if (!postProcessVolume.profile.HasSettings<UnityEngine.Rendering.PostProcessing.Bloom>())
                 {
-                    bloom = postProcessVolume.profile.AddSettings<Bloom>();
+                    bloom = postProcessVolume.profile.AddSettings<UnityEngine.Rendering.PostProcessing.Bloom>();
                 }
                 else
                 {
-                    postProcessVolume.profile.TryGetSettings<Bloom>(out bloom);
+                    postProcessVolume.profile.TryGetSettings<UnityEngine.Rendering.PostProcessing.Bloom>(out bloom);
                 }
                 if (!postProcessVolume.profile.HasSettings<ColorGrading>())
                 {
@@ -386,21 +397,21 @@ namespace PostProcessingEffectsV3
                 {
                     postProcessVolume.profile.TryGetSettings<ColorGrading>(out CG);
                 }
-                if (!postProcessVolume.profile.HasSettings<MotionBlur>())
+                if (!postProcessVolume.profile.HasSettings<UnityEngine.Rendering.PostProcessing.MotionBlur>())
                 {
-                    MB = postProcessVolume.profile.AddSettings<MotionBlur>();
+                    MB = postProcessVolume.profile.AddSettings<UnityEngine.Rendering.PostProcessing.MotionBlur>();
                 }
                 else
                 {
-                    postProcessVolume.profile.TryGetSettings<MotionBlur>(out MB);
+                    postProcessVolume.profile.TryGetSettings<UnityEngine.Rendering.PostProcessing.MotionBlur>(out MB);
                 }
-                if (!postProcessVolume.profile.HasSettings<DepthOfField>())
+                if (!postProcessVolume.profile.HasSettings<UnityEngine.Rendering.PostProcessing.DepthOfField>())
                 {
-                    DOF = postProcessVolume.profile.AddSettings<DepthOfField>();
+                    DOF = postProcessVolume.profile.AddSettings<UnityEngine.Rendering.PostProcessing.DepthOfField>();
                 }
                 else
                 {
-                    postProcessVolume.profile.TryGetSettings<DepthOfField>(out DOF);
+                    postProcessVolume.profile.TryGetSettings<UnityEngine.Rendering.PostProcessing.DepthOfField>(out DOF);
                 }
                 if (!postProcessVolume.profile.HasSettings<Vignette>())
                 {
@@ -493,6 +504,27 @@ namespace PostProcessingEffectsV3
                 postProcessLayer.temporalAntialiasing.stationaryBlending = TAAstationaryBlending.Value;
                 postProcessLayer.temporalAntialiasing.sharpness = TAAsharpen.Value;
 
+                postProcessLayer.fog.enabled = FogEnable.Value;
+                RenderSettings.fog = FogEnable.Value;
+                RenderSettings.fogDensity = FogDensity.Value;
+                RenderSettings.fogStartDistance = FogStart.Value;
+                RenderSettings.fogEndDistance = FogEnd.Value;
+                RenderSettings.fogMode = FogModeSelected.Value;
+                RenderSettings.fogColor = FogColor.Value;
+
+                if (studio != null && studio.sceneInfo != null && StudioAPI.InsideStudio)
+                {
+                    studio.sceneInfo.enableFog = FogEnable.Value;
+                    if (FogModeSelected.Value == FogMode.Linear)
+                        studio.sceneInfo.fogStartDistance = FogStart.Value;
+                    else
+                        studio.sceneInfo.fogStartDistance = 0f;
+                    studio.sceneInfo.fogColor = FogColor.Value;
+                    studio.sceneInfo.fogHeight = FogHeight.Value;
+                    globalFog.height = FogHeight.Value;
+                    globalFog.enabled = FogEnable.Value;
+                }
+
                 bloom.enabled.Override(Bloomenable.Value);
                 bloom.intensity.Override(Bloomintensity.Value);
                 bloom.anamorphicRatio.Override(Bloomanamor.Value);
@@ -557,7 +589,6 @@ namespace PostProcessingEffectsV3
 
                 CA.enabled.Override(CAenable.Value);
                 CA.intensity.Override(CAintensity.Value);
-
                 sAOPro.enabled = nAOenable;
                 sAOPro.Bias = cBias.Value;
                 sAOPro.Blur = cBlurType.Value;
@@ -629,6 +660,7 @@ namespace PostProcessingEffectsV3
         private bool Posb = false;
         private bool Sengab = false;
         private bool distortion = false;
+        private bool fog = false;
 
         #region Buffers
         private string DistortionIntensityBuffer;
@@ -694,6 +726,10 @@ namespace PostProcessingEffectsV3
         private string SengaBlurPowBuffer;
         private string SengaBlurThickBuffer;
         private string SengaBlurSampleBuffer;
+        private string FogDensityBuffer;
+        private string FogStartBuffer;
+        private string FogEndBuffer;
+        private string FogHeightBuffer;
 
         private void UpdateBuffers()
         {
@@ -760,7 +796,10 @@ namespace PostProcessingEffectsV3
             DistortionCenterXBuffer = DistortionCenterX.Value.ToString();
             DistortionCenterYBuffer = DistortionCenterY.Value.ToString();
             DistortionScaleBuffer = DistortionScale.Value.ToString();
-
+            FogDensityBuffer = FogDensity.Value.ToString();
+            FogStartBuffer = FogStart.Value.ToString();
+            FogEndBuffer = FogEnd.Value.ToString();
+            FogHeightBuffer = FogHeight.Value.ToString();
         }
         #endregion
 
@@ -1382,6 +1421,59 @@ namespace PostProcessingEffectsV3
             }
             #endregion
 
+            #region Deferred Fog
+            fog = GUILayout.Toggle(fog, "Deferred Fog", GUI.skin.button);
+            if (fog)
+            {
+                GUILayout.BeginVertical();
+                FogEnable.Value = GUILayout.Toggle(FogEnable.Value, "Enable");
+
+                int selectedFogMode = Array.IndexOf(fogModes, FogModeSelected.Value);
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Mode  ", GUILayout.Width(120f));
+                selectedFogMode = GUILayout.SelectionGrid(selectedFogMode, fogModes2, 3, GUI.skin.toggle);
+                FogModeSelected.Value = fogModes[selectedFogMode];
+                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
+                {
+                    FogModeSelected.Value = (FogMode)FogModeSelected.DefaultValue;
+                }
+                GUILayout.EndHorizontal();
+
+                FogHeight.Value = DrawSliderTextBoxCombo(
+                   "Height", 0f, 100f, ref FogHeightBuffer, FogHeight.Value, (float)FogHeight.DefaultValue
+               );
+                if (FogModeSelected.Value == FogMode.Linear)
+                {
+                    FogStart.Value = DrawSliderTextBoxCombo(
+                       "Start", 0f, 100f, ref FogStartBuffer, FogStart.Value, (float)FogStart.DefaultValue
+                   );
+                    FogEnd.Value = DrawSliderTextBoxCombo(
+                       "End", 0f, 100f, ref FogEndBuffer, FogEnd.Value, (float)FogEnd.DefaultValue
+                   );
+                }
+                FogDensity.Value = DrawSliderTextBoxCombo(
+                    "Density", 0f, 100f, ref FogDensityBuffer, FogDensity.Value, (float)FogDensity.DefaultValue
+                );
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Color   ");
+                if (GUILayout.Button("", colorbutton(FogColor.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
+                {
+                    Action<Color> act3 = delegate (Color c)
+                    {
+                        FogColor.Value = c;
+                    };
+                    ColorPicker(FogColor.Value, act3);
+                }
+                if (GUILayout.Button("Reset", GUILayout.Width(60f)))
+                {
+                    FogColor.Value = (Color)FogColor.DefaultValue;
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
+            }
+            #endregion
+
             GUI.DragWindow();
         }
 
@@ -1569,6 +1661,19 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> DistortionCenterY { get; set; }
         private ConfigEntry<float> DistortionScale { get; set; }
         #endregion
+
+        #region Deferred Fog
+
+        private ConfigEntry<bool> FogEnable { get; set; }
+        private ConfigEntry<FogMode> FogModeSelected { get; set; }
+        private ConfigEntry<float> FogDensity { get; set; }
+        private ConfigEntry<float> FogStart { get; set; }
+        private ConfigEntry<float> FogEnd { get; set; }
+        private ConfigEntry<float> FogHeight { get; set; }
+        private ConfigEntry<Color> FogColor { get; set; }
+
+
+        #endregion
         #endregion
 
         private void BindConfig()
@@ -1683,6 +1788,14 @@ namespace PostProcessingEffectsV3
             DistortionCenterX = base.Config.Bind("Lens Distortion", "X Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
             DistortionCenterY = base.Config.Bind("Lens Distortion", "Y Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
             DistortionScale = base.Config.Bind("Lens Distortion", "Scale", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 5f)));
+            FogEnable = base.Config.Bind("Deferred Fog", "_Enable", false, "");
+            FogModeSelected = base.Config.Bind("Deferred Fog", "mode", FogMode.Exponential);
+            FogDensity = base.Config.Bind("Deferred Fog", "Density", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
+            FogStart = base.Config.Bind("Deferred Fog", "Start", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
+            FogEnd = base.Config.Bind("Deferred Fog", "End", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
+            FogHeight = base.Config.Bind("Deferred Fog", "Height", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
+            FogColor = base.Config.Bind("Deferred Fog", "Color", new Color(0f, 0f, 0f, 1f), "");
+
             UpdateBuffers();
         }
         #endregion
