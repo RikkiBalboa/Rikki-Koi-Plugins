@@ -1788,13 +1788,13 @@ namespace PostProcessingEffectsV3
             DistortionCenterX = base.Config.Bind("Lens Distortion", "X Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
             DistortionCenterY = base.Config.Bind("Lens Distortion", "Y Center", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-1f, 1f)));
             DistortionScale = base.Config.Bind("Lens Distortion", "Scale", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 5f)));
-            FogEnable = base.Config.Bind("Deferred Fog", "_Enable", false, "");
-            FogModeSelected = base.Config.Bind("Deferred Fog", "mode", FogMode.Exponential);
-            FogDensity = base.Config.Bind("Deferred Fog", "Density", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
-            FogStart = base.Config.Bind("Deferred Fog", "Start", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
-            FogEnd = base.Config.Bind("Deferred Fog", "End", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
-            FogHeight = base.Config.Bind("Deferred Fog", "Height", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
-            FogColor = base.Config.Bind("Deferred Fog", "Color", new Color(0f, 0f, 0f, 1f), "");
+            FogEnable = base.Config.Bind("Fog", "_Enable", false, "");
+            FogModeSelected = base.Config.Bind("Fog", "mode", FogMode.Exponential);
+            FogDensity = base.Config.Bind("Fog", "Density", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
+            FogStart = base.Config.Bind("Fog", "Start", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
+            FogEnd = base.Config.Bind("Fog", "End", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
+            FogHeight = base.Config.Bind("Fog", "Height", 20f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 100f)));
+            FogColor = base.Config.Bind("Fog", "Color", new Color(0f, 0f, 0f, 1f), "");
 
             UpdateBuffers();
         }
