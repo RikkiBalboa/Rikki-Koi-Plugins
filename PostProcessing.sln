@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.PostProcessingEffect", "src\Core.PostProcessingEffect\Core.PostProcessingEffect.shproj", "{B46DBB11-BBB6-4152-B5B4-AEA6B69F2AD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.PostProcessingEffect", "src\KK.PostProcessingEffect\KK.PostProcessingEffect.csproj", "{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{A43B8D33-5604-4AE0-9099-F8543A36D86D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A43B8D33-5604-4AE0-9099-F8543A36D86D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A43B8D33-5604-4AE0-9099-F8543A36D86D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +36,7 @@ Global
 		SolutionGuid = {265B8694-8C1B-472C-8BCF-4D6224A95EDA}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\Core.PostProcessingEffect\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
 		src\Core.PostProcessingEffect\Core.PostProcessingEffect.projitems*{a43b8d33-5604-4ae0-9099-f8543a36d86d}*SharedItemsImports = 5
 		src\Core.PostProcessingEffect\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
 	EndGlobalSection

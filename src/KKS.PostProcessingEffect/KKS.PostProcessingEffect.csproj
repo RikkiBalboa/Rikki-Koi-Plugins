@@ -8,7 +8,9 @@
     <LangVersion>4</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup />
+  <PropertyGroup>
+    <BaseOutputPath>..\..\bin\</BaseOutputPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.0</LangVersion>
     <DefineConstants>$(DefineConstants)TRACE;KKS</DefineConstants>
@@ -17,6 +19,11 @@
     <LangVersion>7.0</LangVersion>
     <DefineConstants>$(DefineConstants)TRACE;KKS</DefineConstants>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <None Remove="bin\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.20" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.Assembly-CSharp" Version="2021.9.17" />
@@ -30,6 +37,7 @@
     <Reference Include="0Harmony" />
     <Reference Include="KKSAPI">
       <HintPath>..\..\lib\KKSAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="KKS_PostProcessingRuntime">
       <HintPath>..\..\lib\KKS_PostProcessingRuntime.dll</HintPath>
