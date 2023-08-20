@@ -24,8 +24,13 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.shadowcolorswapper";
         public const string PluginName = "ShadowColorSwapper";
         public const string PluginNameInternal = Constants.Prefix + "_ShadowColorSwapper";
-        public const string PluginVersion = "1.1";
+        public const string PluginVersion = "1.2";
         internal static new ManualLogSource Logger;
+
+        private readonly string[] shadowColorNames = new string[3]
+        {
+            "ShadowColor", "shadowcolor", "shadowColor"
+        };
 
         public static ConfigEntry<KeyboardShortcut> KeySwapShadowColors { get; private set; }
         public static ConfigEntry<KeyboardShortcut> KeySwapShadowColorsAlways { get; private set; }
@@ -160,15 +165,17 @@ namespace Plugins
 
         private void UpdateShadowColorsObjects(SceneController controller, int id, Material material)
         {
-            if (material.HasProperty("_ShadowColor"))
-                if ((controller.GetMaterialColorPropertyValue(id, material, "ShadowColor") == null && !updateAll) | updateAll)
-                    controller.SetMaterialColorProperty(id, material, "ShadowColor", shadowColor);
+            foreach (string name in shadowColorNames)
+                if (material.HasProperty($"_{name}"))
+                    if ((controller.GetMaterialColorPropertyValue(id, material, name) == null && !updateAll) | updateAll)
+                     controller.SetMaterialColorProperty(id, material, name, shadowColor);
         }
 
         private void UpdateShadowColorValues(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go)
         {
-            if (mat.HasProperty("_ShadowColor") && ((controller.GetMaterialColorPropertyValue(slot, objectType, mat, "ShadowColor", go) == null && !updateAll) | updateAll))
-                controller.SetMaterialColorProperty(slot, objectType, mat, "ShadowColor", shadowColor, go);
+            foreach (string name in shadowColorNames)
+                if (mat.HasProperty($"_{name}") && ((controller.GetMaterialColorPropertyValue(slot, objectType, mat, name, go) == null && !updateAll) | updateAll))
+                    controller.SetMaterialColorProperty(slot, objectType, mat, name, shadowColor, go);
         }
 
         public static MaterialEditorCharaController GetController(ChaControl chaControl)
