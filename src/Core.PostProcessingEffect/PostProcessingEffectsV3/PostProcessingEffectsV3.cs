@@ -159,7 +159,7 @@ namespace PostProcessingEffectsV3
         private void OnEnable()
         {
             ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, assetFilePath));
-            if (!(ab == null))
+            if (ab != null)
             {
                 depthnormals = ab.LoadAsset<Shader>("Internal-DepthNormalsTexturemod");
                 postProcessResources = ScriptableObject.CreateInstance<PostProcessResources>();
@@ -224,6 +224,11 @@ namespace PostProcessingEffectsV3
                 CharacterApi.CharacterReloaded += CharacterReloaded;
                 StudioSaveLoadApi.ObjectsSelected += ObjectsSelected;
                 onoff_post = onoff.Value;
+            }
+            else
+            {
+                Logger.LogMessage($"Missing asset file, effects will not work. Make sure it's located in 'BepInEx/{assetFilePath}'. Your game WILL crash");
+                Logger.LogError("Asset file not loaded. Effects will not work and game will eventually crash because of this.");
             }
         }
 
