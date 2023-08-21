@@ -294,6 +294,16 @@ namespace PostProcessingEffectsV3
                     {
                         return;
                     }
+#if KK
+                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR && DSold != 1)
+                    {
+                        cam.allowHDR = false;
+                    }
+                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowMSAA)
+                    {
+                        cam.allowMSAA = false;
+                    }
+#endif
                     if (DOFAFmode.Value == 0)
                     {
                         DOF.focusDistance.Override(Vector3.Distance(camtarget.transform.position, cam.transform.position));
