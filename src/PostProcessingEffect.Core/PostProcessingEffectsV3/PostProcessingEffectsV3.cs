@@ -35,8 +35,8 @@ namespace PostProcessingEffectsV3
         private const string assetFilePath = "plugins/KKS_postprocessresources.asset";
 #elif KK
         public const string PluginGUID = "org.bepinex.plugins.PostProcessingEffectsV3";
-        public const string PluginName = "KK_PostProcessingEffectsV3";
-        private const string assetFilePath = "plugins/KK_postprocessresources.asset";
+        public const string PluginName = "PostProcessingEffectsV3";
+        private const string assetFilePath = "plugins/postprocessresources.asset";
 #endif
         public const string PluginVersion = "2.1";
 

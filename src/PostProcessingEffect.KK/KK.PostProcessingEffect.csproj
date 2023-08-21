@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PostProcessingEffectsV3</RootNamespace>
-    <AssemblyName>KK_PostProcessingEffect</AssemblyName>
+    <AssemblyName>PostProcessingEffect</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -59,8 +59,8 @@
       <HintPath>..\..\packages\IllusionModdingAPI.KKAPI.1.36.0\lib\net35\KKAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KK_PostProcessingRuntime">
-      <HintPath>..\..\lib\KK_PostProcessingRuntime.dll</HintPath>
+    <Reference Include="PostProcessingRuntime">
+      <HintPath>..\..\lib\PostProcessingRuntime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
