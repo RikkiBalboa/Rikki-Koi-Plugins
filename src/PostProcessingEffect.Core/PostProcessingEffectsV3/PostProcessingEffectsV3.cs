@@ -38,7 +38,7 @@ namespace PostProcessingEffectsV3
         public const string PluginName = "KK_PostProcessingEffectsV3";
         private const string assetFilePath = "plugins/KK_postprocessresources.asset";
 #endif
-        public const string PluginVersion = "2.0";
+        public const string PluginVersion = "2.1";
 
         internal static new ManualLogSource Logger;
 
