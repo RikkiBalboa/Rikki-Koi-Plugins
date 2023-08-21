@@ -902,7 +902,7 @@ namespace PostProcessingEffectsV3
         private void mainwindow(int windowID)
         {
             GUILayout.BeginHorizontal();
-            onoff.Value = GUILayout.Toggle(onoff.Value, "Enable/Disable All");
+            onoff.Value = GUILayout.Toggle(onoff.Value, "Master swtich (Toggle PPE)");
             exitOnFocusLoss = GUILayout.Toggle(exitOnFocusLoss, "Close on focus loss");
             GUILayout.EndHorizontal();
 
