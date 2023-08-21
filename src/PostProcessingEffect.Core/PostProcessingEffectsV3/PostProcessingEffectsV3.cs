@@ -276,6 +276,10 @@ namespace PostProcessingEffectsV3
                     UnityEngine.Object.Destroy(sobel);
                     UnityEngine.Object.Destroy(posterize);
                     UnityEngine.Object.Destroy(sengaEffect);
+                    if (studio != null && studio.sceneInfo != null && StudioAPI.InsideStudio && FogEnable.Value)
+                    {
+                        studio.sceneInfo.enableFog = false;
+                    }
                 }
             }
             onoff_post = onoff.Value;
