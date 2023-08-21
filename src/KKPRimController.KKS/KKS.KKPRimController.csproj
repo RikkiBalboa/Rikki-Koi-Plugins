@@ -60,10 +60,8 @@
       <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.17.0.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KKS_MaterialEditor, Version=3.1.23.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\mods\KKS_MaterialEditor.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="KKS_MaterialEditor">
+      <HintPath>..\..\lib\KKS_MaterialEditor.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.Serialization, Version=2.1.13.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\lib\net46\Sirenix.Serialization.dll</HintPath>

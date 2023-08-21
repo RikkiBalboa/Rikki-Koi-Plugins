@@ -60,10 +60,8 @@
       <HintPath>..\..\packages\IllusionModdingAPI.KKAPI.1.31.2\lib\net35\KKAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KK_MaterialEditor, Version=3.1.23.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\mods\KK_MaterialEditor.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="KK_MaterialEditor">
+      <HintPath>..\..\lib\KK_MaterialEditor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
