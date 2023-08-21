@@ -496,8 +496,8 @@ namespace PostProcessingEffectsV3
             if (onoff.Value)
             {
                 Settings();
-                UpdateBuffers();
             }
+            UpdateBuffers();
         }
 
         private void Settings()
