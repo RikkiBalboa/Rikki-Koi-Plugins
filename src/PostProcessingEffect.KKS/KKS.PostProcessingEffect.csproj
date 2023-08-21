@@ -46,5 +46,5 @@
     </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
-  <Import Project="..\Core.PostProcessingEffect\Core.PostProcessingEffect.projitems" Label="Shared" />
+  <Import Project="..\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems" Label="Shared" />
 </Project>

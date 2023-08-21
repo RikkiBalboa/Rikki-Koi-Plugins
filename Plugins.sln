@@ -32,11 +32,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShadowColorSwapper", "Shado
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostProcessingEffectsV3", "PostProcessingEffectsV3", "{415FAC7C-8271-4887-A7BB-2F181E913818}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.PostProcessingEffect", "src\Core.PostProcessingEffect\Core.PostProcessingEffect.shproj", "{B46DBB11-BBB6-4152-B5B4-AEA6B69F2AD7}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.PostProcessingEffect", "src\PostProcessingEffect.Core\Core.PostProcessingEffect.shproj", "{B46DBB11-BBB6-4152-B5B4-AEA6B69F2AD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.PostProcessingEffect", "src\KK.PostProcessingEffect\KK.PostProcessingEffect.csproj", "{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.PostProcessingEffect", "src\PostProcessingEffect.KK\KK.PostProcessingEffect.csproj", "{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KKS.PostProcessingEffect", "src\KKS.PostProcessingEffect\KKS.PostProcessingEffect.csproj", "{731F6724-3E02-470C-AA72-0EDF196BB0BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KKS.PostProcessingEffect", "src\PostProcessingEffect.KKS\KKS.PostProcessingEffect.csproj", "{731F6724-3E02-470C-AA72-0EDF196BB0BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,15 +87,15 @@ Global
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\Core.PostProcessingEffect\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
+		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{6d48f885-1d97-4e2a-b3c2-47ab5f8806cd}*SharedItemsImports = 13
-		src\Core.PostProcessingEffect\Core.PostProcessingEffect.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
+		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
-		src\Core.PostProcessingEffect\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
+		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{b98974d5-d331-4e2e-9498-a54dd706c4f2}*SharedItemsImports = 13
 		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{beb828ae-5723-4086-940f-b6eb2465060c}*SharedItemsImports = 13
 		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
