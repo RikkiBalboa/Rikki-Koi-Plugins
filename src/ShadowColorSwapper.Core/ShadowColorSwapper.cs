@@ -1,16 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using ChaCustom;
-using HarmonyLib;
 using KK_Plugins.MaterialEditor;
-using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Studio;
-using KKAPI.Utilities;
 using Studio;
 using System;
-using System.Linq;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialEditorCharaController;
 using static MaterialEditorAPI.MaterialAPI;
@@ -168,7 +163,7 @@ namespace Plugins
             foreach (string name in shadowColorNames)
                 if (material.HasProperty($"_{name}"))
                     if ((controller.GetMaterialColorPropertyValue(id, material, name) == null && !updateAll) | updateAll)
-                     controller.SetMaterialColorProperty(id, material, name, shadowColor);
+                        controller.SetMaterialColorProperty(id, material, name, shadowColor);
         }
 
         private void UpdateShadowColorValues(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go)

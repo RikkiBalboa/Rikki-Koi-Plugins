@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using ChaCustom;
-using HarmonyLib;
 using KK_Plugins.MaterialEditor;
 using KKAPI;
 using KKAPI.Maker;
@@ -73,7 +72,7 @@ namespace Plugins
             KKPRimSoftDefault = Config.Bind("Default Values", "Soft", 1.5f);
             UseKKPRimDefault = Config.Bind("Default Values", "Use", 0f);
             KKPRimColorDefault = Config.Bind("Default Values", "Color", Color.white);
-            KKPRimSoftHairMaxValue= Config.Bind("Misc.", "Max soft value for hair", 20f, new ConfigDescription("Hair shaders react differently to higher soft values. This limits the max value to be used on hair shaders"));
+            KKPRimSoftHairMaxValue = Config.Bind("Misc.", "Max soft value for hair", 20f, new ConfigDescription("Hair shaders react differently to higher soft values. This limits the max value to be used on hair shaders"));
         }
 
         private void Awake()

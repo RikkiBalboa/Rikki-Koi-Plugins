@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
@@ -13,12 +9,15 @@ using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using Studio;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.ImageEffects;
-using static GameCursor;
 
 namespace PostProcessingEffectsV3
 {
@@ -43,7 +42,7 @@ namespace PostProcessingEffectsV3
 
         internal static new ManualLogSource Logger;
 
-#region Constants
+        #region Constants
         private AmbientOcclusionQuality[] AOq = new AmbientOcclusionQuality[5]
         {
             AmbientOcclusionQuality.Lowest,
@@ -109,9 +108,9 @@ namespace PostProcessingEffectsV3
         };
 
         private string[] fogModes2 = new string[3] { "Linear", "Exponential", "ExponentialSquared" };
-#endregion
+        #endregion
 
-#region Post Process Effects Variables
+        #region Post Process Effects Variables
         private PostProcessVolume postProcessVolume;
         public PostProcessResources postProcessResources;
         public PostProcessLayer postProcessLayer;
@@ -143,9 +142,9 @@ namespace PostProcessingEffectsV3
         private ChromaticAberration CA;
         private GlobalFog globalFog;
         private Grain grain;
-#endregion
+        #endregion
 
-#region Setup
+        #region Setup
 
         private global::Studio.Studio studio;
 
@@ -239,7 +238,7 @@ namespace PostProcessingEffectsV3
                 GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
                 GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
             }
-            Harmony.CreateAndPatchAll(typeof(Patch), (string)null);
+            Harmony.CreateAndPatchAll(typeof(Patch), null);
         }
 
         private void ObjectsSelected(object sender, ObjectsSelectedEventArgs e)
@@ -490,7 +489,7 @@ namespace PostProcessingEffectsV3
                 Settings();
             }
         }
-#endregion
+        #endregion
 
         protected void OnSettingChanged(object sender, SettingChangedEventArgs e)
         {
@@ -674,7 +673,7 @@ namespace PostProcessingEffectsV3
         }
 
 
-#region UI
+        #region UI
         private bool mainwin = false;
         private readonly int uiWindowHash = ('P' << 24) | ('P' << 16) | ('E' << 8);
         private bool exitOnFocusLoss = true;
@@ -698,7 +697,7 @@ namespace PostProcessingEffectsV3
         private bool fog = false;
         private bool grainShown = false;
 
-#region Buffers
+        #region Buffers
         private string DistortionIntensityBuffer;
         private string DistortionIntensityXBuffer;
         private string DistortionIntensityYBuffer;
@@ -845,7 +844,7 @@ namespace PostProcessingEffectsV3
             GrainSizeBuffer = GrainSize.Value.ToString();
             GrainLumContribBuffer = GrainLumContrib.Value.ToString();
         }
-#endregion
+        #endregion
 
 
         private void OnGUI()
@@ -906,7 +905,7 @@ namespace PostProcessingEffectsV3
             exitOnFocusLoss = GUILayout.Toggle(exitOnFocusLoss, "Close on focus loss");
             GUILayout.EndHorizontal();
 
-#region Ambient Occulusion
+            #region Ambient Occulusion
             AOb = GUILayout.Toggle(AOb, "AmbientOcculusion ", GUI.skin.button);
             if (AOb)
             {
@@ -1033,9 +1032,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Anti Aliasing
+            #region Anti Aliasing
             AA = GUILayout.Toggle(AA, "AntiAliasing ", GUI.skin.button);
             if (AA)
             {
@@ -1080,9 +1079,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Bloom
+            #region Bloom
             bloomb = GUILayout.Toggle(bloomb, "Bloom ", GUI.skin.button);
             if (bloomb)
             {
@@ -1125,9 +1124,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Chromatic Aberration
+            #region Chromatic Aberration
             CAb = GUILayout.Toggle(CAb, "ChromaticAberration", GUI.skin.button);
             if (CAb)
             {
@@ -1139,9 +1138,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Color Grading
+            #region Color Grading
             CGb = GUILayout.Toggle(CGb, "ColorGrading ", GUI.skin.button);
             if (CGb)
             {
@@ -1218,9 +1217,9 @@ namespace PostProcessingEffectsV3
                 //TODO add trackballs support
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Depth of Field
+            #region Depth of Field
             DOFb = GUILayout.Toggle(DOFb, "DepthOfField ", GUI.skin.button);
             if (DOFb)
             {
@@ -1254,9 +1253,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Motion Blur
+            #region Motion Blur
             MBb = GUILayout.Toggle(MBb, "MotionBlur", GUI.skin.button);
             if (MBb)
             {
@@ -1271,9 +1270,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Vignette
+            #region Vignette
             VGb = GUILayout.Toggle(VGb, "Vignette", GUI.skin.button);
             if (VGb)
             {
@@ -1320,9 +1319,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Sobel Color Outline
+            #region Sobel Color Outline
             SCOb = GUILayout.Toggle(SCOb, "SobelColorOutline", GUI.skin.button);
             if (SCOb)
             {
@@ -1352,9 +1351,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Posterize
+            #region Posterize
             Posb = GUILayout.Toggle(Posb, "Posterize", GUI.skin.button);
             if (Posb)
             {
@@ -1367,9 +1366,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Customizaable Outline
+            #region Customizaable Outline
             Sengab = GUILayout.Toggle(Sengab, "CustomizaableOutline", GUI.skin.button);
             if (Sengab)
             {
@@ -1438,9 +1437,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Distortion
+            #region Distortion
             distortion = GUILayout.Toggle(distortion, "Lens Distortion ", GUI.skin.button);
             if (distortion)
             {
@@ -1467,9 +1466,9 @@ namespace PostProcessingEffectsV3
                );
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Deferred Fog
+            #region Deferred Fog
             fog = GUILayout.Toggle(fog, "Deferred Fog", GUI.skin.button);
             if (fog)
             {
@@ -1520,9 +1519,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
-#region Grain
+            #region Grain
             grainShown = GUILayout.Toggle(grainShown, "Grain", GUI.skin.button);
             if (grainShown)
             {
@@ -1541,7 +1540,7 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-#endregion
+            #endregion
 
             GUI.DragWindow();
         }
@@ -1583,16 +1582,16 @@ namespace PostProcessingEffectsV3
                 }
             }
         }
-#endregion
+        #endregion
 
-#region Config
+        #region Config
 
-#region Define Configs
+        #region Define Configs
         private ConfigEntry<bool> onoff { get; set; }
         private ConfigEntry<KeyboardShortcut> OpenGUI { get; set; }
         private static ConfigEntry<KeyboardShortcut> MasterSwitch { get; set; }
 
-#region Anti-Aliasing
+        #region Anti-Aliasing
         private ConfigEntry<PostProcessLayer.Antialiasing> AAmode { get; set; }
         private ConfigEntry<SubpixelMorphologicalAntialiasing.Quality> AAsmaaq { get; set; }
         private ConfigEntry<bool> AAfxaafm { get; set; }
@@ -1601,9 +1600,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> TAAsharpen { get; set; }
         private ConfigEntry<float> TAAstationaryBlending { get; set; }
         private ConfigEntry<float> TAAmotionBlending { get; set; }
-#endregion
+        #endregion
 
-#region Ambient Occlusion
+        #region Ambient Occlusion
         private ConfigEntry<bool> AOenable { get; set; }
         private ConfigEntry<bool> AOmodesel { get; set; }
         private ConfigEntry<AmbientOcclusionMode> AOmode { get; set; }
@@ -1626,9 +1625,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> cThres { get; set; }
         private ConfigEntry<float> cMaxDistance { get; set; }
         private ConfigEntry<float> cFalloff { get; set; }
-#endregion
+        #endregion
 
-#region Color Grading
+        #region Color Grading
         private ConfigEntry<bool> CGenable { get; set; }
         private ConfigEntry<Tonemapper> CGtoneMapper { get; set; }
         private ConfigEntry<GradingMode> CGgradingmode { get; set; }
@@ -1643,9 +1642,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<Vector4> CGlift { get; set; }
         private ConfigEntry<Vector4> CGgain { get; set; }
         private ConfigEntry<Vector4> CGgamma { get; set; }
-#endregion
+        #endregion
 
-#region Bloom
+        #region Bloom
         private ConfigEntry<bool> Bloomenable { get; set; }
         private ConfigEntry<float> Bloomintensity { get; set; }
         private ConfigEntry<float> Bloomdiffusion { get; set; }
@@ -1658,9 +1657,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<bool> MBenable { get; set; }
         private ConfigEntry<float> MBshutter { get; set; }
         private ConfigEntry<int> MBsamplecnt { get; set; }
-#endregion
+        #endregion
 
-#region Depth of Field
+        #region Depth of Field
         private ConfigEntry<bool> DOFenable { get; set; }
         private ConfigEntry<float> DOFfocall { get; set; }
         private ConfigEntry<float> DOFfocusd { get; set; }
@@ -1668,9 +1667,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<KernelSize> DOFmaxblur { get; set; }
         private ConfigEntry<bool> DOFautofocus { get; set; }
         private ConfigEntry<int> DOFAFmode { get; set; }
-#endregion
+        #endregion
 
-#region Vignette
+        #region Vignette
         private ConfigEntry<bool> VGenable { get; set; }
         private ConfigEntry<Color> VGcol { get; set; }
         private ConfigEntry<VignetteMode> VGmode { get; set; }
@@ -1680,14 +1679,14 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> VGsmoothness { get; set; }
         private ConfigEntry<float> VGintensity { get; set; }
         private ConfigEntry<Vector2> VGcenter { get; set; }
-#endregion
+        #endregion
 
-#region Chromatic Aberration
+        #region Chromatic Aberration
         private ConfigEntry<float> CAintensity { get; set; }
         private ConfigEntry<bool> CAenable { get; set; }
-#endregion
+        #endregion
 
-#region Outline
+        #region Outline
         private ConfigEntry<float> OutlineWidth { get; set; }
         private ConfigEntry<Color> OutlineColor { get; set; }
         private ConfigEntry<float> ColorPower { get; set; }
@@ -1714,15 +1713,15 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> SengaBlurThick { get; set; }
         private ConfigEntry<int> SengaBlurSample { get; set; }
         private ConfigEntry<bool> SengaBlurEnable { get; set; }
-#endregion
+        #endregion
 
-#region Posterize
+        #region Posterize
         private ConfigEntry<int> PosDiv { get; set; }
         private ConfigEntry<bool> PosEnable { get; set; }
         private ConfigEntry<bool> PosHSV { get; set; }
-#endregion
+        #endregion
 
-#region Distortion
+        #region Distortion
         private ConfigEntry<bool> DistortionEnable { get; set; }
         private ConfigEntry<float> DistortionIntensity { get; set; }
         private ConfigEntry<float> DistortionIntensityX { get; set; }
@@ -1730,9 +1729,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> DistortionCenterX { get; set; }
         private ConfigEntry<float> DistortionCenterY { get; set; }
         private ConfigEntry<float> DistortionScale { get; set; }
-#endregion
+        #endregion
 
-#region Deferred Fog
+        #region Deferred Fog
 
         private ConfigEntry<bool> FogEnable { get; set; }
         private ConfigEntry<FogMode> FogModeSelected { get; set; }
@@ -1743,9 +1742,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<Color> FogColor { get; set; }
 
 
-#endregion
+        #endregion
 
-#region Grain
+        #region Grain
 
         private ConfigEntry<bool> GrainEnable { get; set; }
         private ConfigEntry<bool> GrainColored { get; set; }
@@ -1753,8 +1752,8 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> GrainSize { get; set; }
         private ConfigEntry<float> GrainLumContrib { get; set; }
 
-#endregion
-#endregion
+        #endregion
+        #endregion
 
         private void BindConfig()
         {
@@ -1883,6 +1882,6 @@ namespace PostProcessingEffectsV3
             GrainLumContrib = base.Config.Bind("Grain", "Luminance Contribution", 0.8f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             UpdateBuffers();
         }
-#endregion
+        #endregion
     }
 }
