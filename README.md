@@ -10,3 +10,7 @@ Adds a window to control KKPRim on the selected characters/objects in studio. It
 ## ShadowColorSwapper
 
 Swap shadow colors to a configured value at the press of a keybind
+
+## PostProcessingEffects
+
+Massive credit to the original creator [@nHARUKA_KK](https://twitter.com/nHARUKA_KK). I just decompiled their plugin and added features present in the PostProcessingRuntime, but that were not added to the plugin.
