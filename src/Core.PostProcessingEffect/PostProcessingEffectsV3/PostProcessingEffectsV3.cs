@@ -576,6 +576,7 @@ namespace PostProcessingEffectsV3
                 CG.temperature.Override(CGtemp.Value);
                 CG.tint.Override(CGtint.Value);
                 CG.postExposure.Override(CGposte.Value);
+                CG.brightness.Override(CGbrightness.Value);
                 CG.colorFilter.Override(CGcolfilter.Value);
                 CG.hueShift.Override(CGhueShift.Value);
                 CG.saturation.Override(CGsaturation.Value);
@@ -728,6 +729,7 @@ namespace PostProcessingEffectsV3
         private string CGtempBuffer;
         private string CGtintBuffer;
         private string CGposteBuffer;
+        private string CGbrightnessBuffer;
         private string CGhueShiftBuffer;
         private string CGsaturationBuffer;
         private string CGcontrastBuffer;
@@ -792,6 +794,7 @@ namespace PostProcessingEffectsV3
             BloomclampBuffer = Bloomclamp.Value.ToString();
             BloomdiffusionBuffer = Bloomdiffusion.Value.ToString();
             CGposteBuffer = CGposte.Value.ToString();
+            CGbrightnessBuffer = CGbrightness.Value.ToString();
             CGtempBuffer = CGtemp.Value.ToString();
             CGtintBuffer = CGtint.Value.ToString();
             CGhueShiftBuffer = CGhueShift.Value.ToString();
@@ -1176,10 +1179,14 @@ namespace PostProcessingEffectsV3
 
                 GUILayout.Label("Tone  ", GUILayout.Width(120f));
 
-                CGposte.Value = DrawSliderTextBoxCombo(
-                    "PostExposure", 0f, 1f, ref CGposteBuffer, CGposte.Value, (float)CGposte.DefaultValue
-                );
-                //TODO Add brightness slider support
+                if (CGgradingmode.Value == GradingMode.HighDefinitionRange)
+                    CGposte.Value = DrawSliderTextBoxCombo(
+                        "PostExposure", 0f, 1f, ref CGposteBuffer, CGposte.Value, (float)CGposte.DefaultValue
+                    );
+                else
+                    CGbrightness.Value = DrawSliderTextBoxCombo(
+                        "Brightness", -100f, 100f, ref CGbrightnessBuffer, CGbrightness.Value, (float)CGbrightness.DefaultValue
+                    );
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Color   ");
@@ -1626,6 +1633,7 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<Tonemapper> CGtoneMapper { get; set; }
         private ConfigEntry<GradingMode> CGgradingmode { get; set; }
         private ConfigEntry<float> CGposte { get; set; }
+        private ConfigEntry<float> CGbrightness { get; set; }
         private ConfigEntry<Color> CGcolfilter { get; set; }
         private ConfigEntry<float> CGtemp { get; set; }
         private ConfigEntry<float> CGtint { get; set; }
@@ -1793,6 +1801,7 @@ namespace PostProcessingEffectsV3
             CGtoneMapper = base.Config.Bind("Color Grading", "ToneMapper", Tonemapper.None, "");
             CGgradingmode = base.Config.Bind("Color Grading", "GradingMode", GradingMode.LowDefinitionRange, "");
             CGposte = base.Config.Bind("Color Grading", "Tone PostExposure", 0f, "");
+            CGbrightness = base.Config.Bind("Color Grading", "Tone Brightness", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
             CGtemp = base.Config.Bind("Color Grading", "WhiteBalance Temperature", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
             CGtint = base.Config.Bind("Color Grading", "WhiteBalance Tint", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-100f, 100f)));
             CGhueShift = base.Config.Bind("Color Grading", "Tone HueShift", 0f, new ConfigDescription("", new AcceptableValueRange<float>(-180f, 180f)));
