@@ -34,7 +34,7 @@ namespace PostProcessingEffectsV3
         public const string PluginName = "KKS_PostProcessingEffectsV3";
         private const string assetFilePath = "plugins/KKS_postprocessresources.asset";
 #elif KK
-        public const string PluginGUID = "org.bepinex.plugins.KK_PostProcessingEffectsV3";
+        public const string PluginGUID = "org.bepinex.plugins.PostProcessingEffectsV3";
         public const string PluginName = "KK_PostProcessingEffectsV3";
         private const string assetFilePath = "plugins/KK_postprocessresources.asset";
 #endif
@@ -278,7 +278,10 @@ namespace PostProcessingEffectsV3
                     UnityEngine.Object.Destroy(sengaEffect);
                     if (studio != null && studio.sceneInfo != null && StudioAPI.InsideStudio && FogEnable.Value)
                     {
+                        postProcessLayer.fog.enabled = false;
+                        RenderSettings.fog = false;
                         studio.sceneInfo.enableFog = false;
+                        globalFog.enabled = false;
                     }
                 }
             }
