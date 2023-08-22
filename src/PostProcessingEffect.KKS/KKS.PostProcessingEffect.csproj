@@ -30,6 +30,7 @@
     <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.20" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.Assembly-CSharp" Version="2021.9.17" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.Unity.Postprocessing.Runtime" Version="2019.4.9" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule" Version="2019.4.9" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule" Version="2019.4.9" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.UI" Version="2019.4.9" />
@@ -40,9 +41,6 @@
     <Reference Include="KKSAPI">
       <HintPath>..\..\lib\KKSAPI.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="KKS_PostProcessingRuntime">
-      <HintPath>..\..\lib\KKS_PostProcessingRuntime.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
