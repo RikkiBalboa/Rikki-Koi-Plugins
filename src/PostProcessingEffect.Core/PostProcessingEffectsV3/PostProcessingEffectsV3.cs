@@ -294,16 +294,6 @@ namespace PostProcessingEffectsV3
                     {
                         return;
                     }
-#if KK
-                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR)
-                    {
-                        cam.allowHDR = false;
-                    }
-                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowMSAA)
-                    {
-                        cam.allowMSAA = false;
-                    }
-#endif
                     if (DOFAFmode.Value == 0)
                     {
                         DOF.focusDistance.Override(Vector3.Distance(camtarget.transform.position, cam.transform.position));
@@ -340,9 +330,18 @@ namespace PostProcessingEffectsV3
                         DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
                     }
                 }
+#if KK
+                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR)
+                {
+                    cam.allowHDR = false;
+                }
+#endif
                 if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker || KoikatuAPI.GetCurrentGameMode() == GameMode.Unknown)
                 {
                     cam.allowMSAA = false;
+#if KK
+                    postProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+#endif
                 }
             }
             if (MasterSwitch.Value.IsDown())
