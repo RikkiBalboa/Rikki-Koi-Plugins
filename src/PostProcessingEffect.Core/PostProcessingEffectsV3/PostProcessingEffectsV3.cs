@@ -36,7 +36,7 @@ namespace PostProcessingEffectsV3
         public const string PluginName = "PostProcessingEffectsV3";
         private const string assetFilePath = "plugins/postprocessresources.asset";
 #endif
-        public const string PluginVersion = "2.1";
+        public const string PluginVersion = "4.2";
 
         internal static new ManualLogSource Logger;
 
