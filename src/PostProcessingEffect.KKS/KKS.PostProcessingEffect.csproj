@@ -44,9 +44,6 @@
     <Reference Include="KKS_PostProcessingRuntime">
       <HintPath>..\..\lib\KKS_PostProcessingRuntime.dll</HintPath>
     </Reference>
-    <Reference Include="KKS_Screencap">
-      <HintPath>..\..\lib\KKS_Screencap.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
   <Import Project="..\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems" Label="Shared" />
