@@ -917,7 +917,7 @@ namespace PostProcessingEffectsV3
         private void mainwindow(int windowID)
         {
             GUILayout.BeginHorizontal();
-            onoff.Value = GUILayout.Toggle(onoff.Value, "Master swtich (Toggle PPE)");
+            onoff.Value = GUILayout.Toggle(onoff.Value, "Master Switch (Toggle PPE)");
             exitOnFocusLoss = GUILayout.Toggle(exitOnFocusLoss, "Close on focus loss");
             GUILayout.EndHorizontal();
 
@@ -1282,7 +1282,7 @@ namespace PostProcessingEffectsV3
                     "ShutterAngle  ", 0f, 360f, ref MBshutterBuffer, MBshutter.Value, (float)MBshutter.DefaultValue
                 );
                 MBsamplecnt.Value = (int)DrawSliderTextBoxCombo(
-                    "ShutterAngle  ", 4f, 32f, ref MBsamplecntBuffer, MBsamplecnt.Value, (int)MBsamplecnt.DefaultValue, true
+                    "Sample Count  ", 4f, 32f, ref MBsamplecntBuffer, MBsamplecnt.Value, (int)MBsamplecnt.DefaultValue, true
                 );
                 GUILayout.EndVertical();
             }
@@ -1385,7 +1385,7 @@ namespace PostProcessingEffectsV3
             #endregion
 
             #region Customizaable Outline
-            Sengab = GUILayout.Toggle(Sengab, "CustomizaableOutline", GUI.skin.button);
+            Sengab = GUILayout.Toggle(Sengab, "Customizable Outline", GUI.skin.button);
             if (Sengab)
             {
                 GUILayout.BeginVertical();
@@ -1485,7 +1485,7 @@ namespace PostProcessingEffectsV3
             #endregion
 
             #region Deferred Fog
-            fog = GUILayout.Toggle(fog, "Deferred Fog", GUI.skin.button);
+            fog = GUILayout.Toggle(fog, "Fog", GUI.skin.button);
             if (fog)
             {
                 GUILayout.BeginVertical();
