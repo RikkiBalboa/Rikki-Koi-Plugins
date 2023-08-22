@@ -295,7 +295,7 @@ namespace PostProcessingEffectsV3
                         return;
                     }
 #if KK
-                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR && DSold != 1)
+                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR)
                     {
                         cam.allowHDR = false;
                     }
