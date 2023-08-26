@@ -38,12 +38,24 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.PostProcessingEffect", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KKS.PostProcessingEffect", "src\PostProcessingEffect.KKS\KKS.PostProcessingEffect.csproj", "{731F6724-3E02-470C-AA72-0EDF196BB0BC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SaveCameraObjectFov", "SaveCameraObjectFov", "{890CB8D8-D336-4038-9511-FAA81BCDAF50}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SaveCameraObjectFov.Core", "src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.shproj", "{DAF47FDD-DF83-4A52-B198-0D097840D65F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveCameraObjectFov.KKS", "src\SaveCameraObjectFov.KKS\SaveCameraObjectFov.KKS.csproj", "{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E6EF7A17-9328-4821-AF19-BC2C175BF4DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6EF7A17-9328-4821-AF19-BC2C175BF4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{841FFFF7-1940-4B7B-B21F-83E2F16333D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{841FFFF7-1940-4B7B-B21F-83E2F16333D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEB828AE-5723-4086-940F-B6EB2465060C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEB828AE-5723-4086-940F-B6EB2465060C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73CED555-9406-453D-98F5-39BA332647A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73CED555-9406-453D-98F5-39BA332647A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73CED555-9406-453D-98F5-39BA332647A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -52,6 +64,8 @@ Global
 		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B98974D5-D331-4E2E-9498-A54DD706C4F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B98974D5-D331-4E2E-9498-A54DD706C4F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA9B57E6-576D-4971-9147-1032D0150B0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FA9B57E6-576D-4971-9147-1032D0150B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA9B57E6-576D-4971-9147-1032D0150B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,6 +74,8 @@ Global
 		{9588E76A-723E-47BE-8250-25E1E206634D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9588E76A-723E-47BE-8250-25E1E206634D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9588E76A-723E-47BE-8250-25E1E206634D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B46DBB11-BBB6-4152-B5B4-AEA6B69F2AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B46DBB11-BBB6-4152-B5B4-AEA6B69F2AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -68,6 +84,10 @@ Global
 		{731F6724-3E02-470C-AA72-0EDF196BB0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{731F6724-3E02-470C-AA72-0EDF196BB0BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{731F6724-3E02-470C-AA72-0EDF196BB0BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +102,8 @@ Global
 		{B46DBB11-BBB6-4152-B5B4-AEA6B69F2AD7} = {415FAC7C-8271-4887-A7BB-2F181E913818}
 		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5} = {415FAC7C-8271-4887-A7BB-2F181E913818}
 		{731F6724-3E02-470C-AA72-0EDF196BB0BC} = {415FAC7C-8271-4887-A7BB-2F181E913818}
+		{DAF47FDD-DF83-4A52-B198-0D097840D65F} = {890CB8D8-D336-4038-9511-FAA81BCDAF50}
+		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B} = {890CB8D8-D336-4038-9511-FAA81BCDAF50}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -98,6 +120,9 @@ Global
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{b98974d5-d331-4e2e-9498-a54dd706c4f2}*SharedItemsImports = 13
 		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{beb828ae-5723-4086-940f-b6eb2465060c}*SharedItemsImports = 13
+		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
+		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{daf47fdd-df83-4a52-b198-0d097840d65f}*SharedItemsImports = 13
 		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
