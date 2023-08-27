@@ -22,35 +22,49 @@ namespace Plugins
                 savedFovs[id] = SaveCameraObjectFov.cameras[(OCICamera)dicObjectCtrl[id]];
 
             if (savedFovs.Count > 0)
-                data.data.Add("FovData", MessagePackSerializer.Serialize(savedFovs));
+                data.data.Add("cameras", MessagePackSerializer.Serialize(savedFovs));
             else
-                data.data.Add("FovData", null);
+                data.data.Add("cameras", null);
+
+            data.data.Add("mainFov", SaveCameraObjectFov.mainFov);
+            data.data.Add("previousCameraIndex", SaveCameraObjectFov.previousCameraIndex);
+            data.data.Add("cameraIndex", SaveCameraObjectFov.cameraIndex);
+
             SetExtendedData(data);
         }
 
         protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {
-            SaveCameraObjectFov.Logger.LogInfo("Start loading");
             var data = GetExtendedData();
-            if (data?.data == null) return;
-            SaveCameraObjectFov.Logger.LogInfo("Found data!");
-
-            data.data.TryGetValue("FovData", out var temp);
-            if (temp == null)
+            if (data?.data == null)
             {
-
-                SaveCameraObjectFov.Logger.LogInfo("No data!");
+                if (operation == SceneOperationKind.Load)
+                    SaveCameraObjectFov.ResetValues();
+                return;
             }
 
+            data.data.TryGetValue("cameras", out var cameras);
+            data.data.TryGetValue("mainFov", out var mainFov);
+            data.data.TryGetValue("previousCameraIndex", out var previousCameraIndex);
+            data.data.TryGetValue("cameraIndex", out var cameraIndex);
+
             if (operation == SceneOperationKind.Clear)
-                SaveCameraObjectFov.cameras.Clear();
-            else if (operation == SceneOperationKind.Load && temp != null)
+                SaveCameraObjectFov.ResetValues();
+            else if (operation == SceneOperationKind.Load && cameras != null)
             {
-                SaveCameraObjectFov.cameras.Clear();
-                var savedFovs = MessagePackSerializer.Deserialize<Dictionary<int, float>>((byte[])temp);
+                SaveCameraObjectFov.ResetValues();
+
+                var savedFovs = MessagePackSerializer.Deserialize<Dictionary<int, float>>((byte[])cameras);
                 SaveCameraObjectFov.Logger.LogInfo(string.Join(Environment.NewLine, savedFovs));
                 foreach (var entry in savedFovs)
                     SaveCameraObjectFov.cameras[(OCICamera)loadedItems[entry.Key]] = entry.Value;
+
+                if (mainFov != null)
+                    SaveCameraObjectFov.mainFov = (float)mainFov;
+                if (previousCameraIndex != null)
+                    SaveCameraObjectFov.previousCameraIndex = (int)previousCameraIndex;
+                if (cameraIndex != null)
+                    SaveCameraObjectFov.cameraIndex = (int)cameraIndex;
             }
         }
     }

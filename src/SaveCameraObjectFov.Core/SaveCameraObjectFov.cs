@@ -39,6 +39,15 @@ namespace Plugins
             Studio.Studio.Instance.cameraCtrl.fieldOfView = fov;
         }
 
+        internal static void ResetValues()
+        {
+            cameras = new Dictionary<OCICamera, float>();
+            mainFov = 23;
+            previousCamera = null;
+            previousCameraIndex = 0;
+            cameraIndex = 0;
+        }
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(Studio.Studio), "ChangeCamera", new Type[] { typeof(OCICamera), typeof(bool), typeof(bool) })]
         private static void ChangeCameraPostfix(OCICamera _ociCamera, bool _active)
