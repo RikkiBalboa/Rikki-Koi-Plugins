@@ -22,6 +22,7 @@ namespace Plugins
         internal static Dictionary<OCICamera, float> cameras = new Dictionary<OCICamera, float>();
         internal static float mainFov = 23;
         internal static OCICamera previousCamera;
+        internal static OCICamera currentCamera;
         internal static int previousCameraIndex = 0;
         internal static int cameraIndex = 0;
 
@@ -43,6 +44,7 @@ namespace Plugins
             cameras = new Dictionary<OCICamera, float>();
             mainFov = 23;
             previousCamera = null;
+            currentCamera = null;
             previousCameraIndex = 0;
             cameraIndex = 0;
         }
@@ -62,6 +64,7 @@ namespace Plugins
 
             if (_ociCamera != null)
             {
+                currentCamera= _ociCamera;
                 if (previousCamera != null && cameras.ContainsKey(previousCamera) && previousCamera != _ociCamera)
                 {
 #if DEBUG

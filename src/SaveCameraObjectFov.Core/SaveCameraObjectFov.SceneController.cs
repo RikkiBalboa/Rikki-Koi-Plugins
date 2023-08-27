@@ -15,6 +15,9 @@ namespace Plugins
         {
             var data = new PluginData();
 
+            if (SaveCameraObjectFov.cameraIndex > 0 && SaveCameraObjectFov.currentCamera != null)
+                SaveCameraObjectFov.cameras[SaveCameraObjectFov.currentCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
+
             Dictionary<int, ObjectCtrlInfo> dicObjectCtrl = Studio.Studio.Instance.dicObjectCtrl;
             Dictionary<int, float> savedFovs = new Dictionary<int, float>();
 
