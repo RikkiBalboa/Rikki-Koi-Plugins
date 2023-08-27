@@ -1,17 +1,10 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
-using ChaCustom;
-using KKAPI;
-using KKAPI.Maker;
-using KKAPI.Studio;
-using KKAPI.Utilities;
 using Studio;
 using System;
-using System.Linq;
-using UnityEngine;
 using HarmonyLib;
 using System.Collections.Generic;
+using KKAPI.Studio.SaveLoad;
 
 namespace Plugins
 {
@@ -37,6 +30,7 @@ namespace Plugins
         {
             Logger = base.Logger;
             _harmony.PatchAll();
+            StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(PluginGUID);
         }
 
         private static void SetFOV(float fov)
@@ -49,17 +43,18 @@ namespace Plugins
         [HarmonyPatch(typeof(Studio.Studio), "ChangeCamera", new Type[] { typeof(OCICamera), typeof(bool), typeof(bool) })]
         private static void ChangeCameraPostfix(OCICamera _ociCamera, bool _active)
         {
-            if (previousCamera != null && cameras.ContainsKey(previousCamera))
-                cameras[previousCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
+            if (_ociCamera != null)
+            {
+                if (previousCamera != null && cameras.ContainsKey(previousCamera))
+                    cameras[previousCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
+                if (cameras.ContainsKey(_ociCamera))
+                    SetFOV(cameras[_ociCamera]);
+                else
+                    cameras[_ociCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
 
-            SaveCameraObjectFov.Logger.LogInfo($"Switching Camera {cameraIndex}");
-            if (cameras.ContainsKey(_ociCamera))
-                SaveCameraObjectFov.SetFOV(cameras[_ociCamera]);
-            else
-                cameras[_ociCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
-
-            if (cameraIndex == 0)
-                SaveCameraObjectFov.SetFOV(mainFov);
+                if (cameraIndex == 0)
+                    SetFOV(mainFov);
+            }
         }
 
         [HarmonyPrefix]

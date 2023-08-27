@@ -11,5 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SaveCameraObjectFov.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SaveCameraObjectFov.SceneController.cs" />
   </ItemGroup>
 </Project>
