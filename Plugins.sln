@@ -44,6 +44,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SaveCameraObjectFov.Core", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveCameraObjectFov.KKS", "src\SaveCameraObjectFov.KKS\SaveCameraObjectFov.KKS.csproj", "{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveCameraObjectFov.KK", "src\SaveCameraObjectFov.KK\SaveCameraObjectFov.KK.csproj", "{F113381A-AA2C-4AA9-8EE3-A7A01255A642}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,10 @@ Global
 		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F113381A-AA2C-4AA9-8EE3-A7A01255A642}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F113381A-AA2C-4AA9-8EE3-A7A01255A642}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F113381A-AA2C-4AA9-8EE3-A7A01255A642}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F113381A-AA2C-4AA9-8EE3-A7A01255A642}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +110,7 @@ Global
 		{731F6724-3E02-470C-AA72-0EDF196BB0BC} = {415FAC7C-8271-4887-A7BB-2F181E913818}
 		{DAF47FDD-DF83-4A52-B198-0D097840D65F} = {890CB8D8-D336-4038-9511-FAA81BCDAF50}
 		{D14138E1-6593-4B53-872A-A1B3B6FD2B2B} = {890CB8D8-D336-4038-9511-FAA81BCDAF50}
+		{F113381A-AA2C-4AA9-8EE3-A7A01255A642} = {890CB8D8-D336-4038-9511-FAA81BCDAF50}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -124,6 +131,8 @@ Global
 		src\Shared\Shared.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{daf47fdd-df83-4a52-b198-0d097840d65f}*SharedItemsImports = 13
 		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
+		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{ff395052-c2b4-4555-b335-5c71a7cde58d}*SharedItemsImports = 4
