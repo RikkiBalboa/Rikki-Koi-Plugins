@@ -61,7 +61,7 @@ namespace Plugins
                 else
                     cameras[_ociCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
 
-                if (cameraIndex == 0)
+                if (cameraIndex == 0 && previousCameraIndex != cameraIndex)
                     SetFOV(mainFov);
             }
         }
