@@ -55,7 +55,6 @@ namespace Plugins
                 SaveCameraObjectFov.ResetValues();
 
                 var savedFovs = MessagePackSerializer.Deserialize<Dictionary<int, float>>((byte[])cameras);
-                SaveCameraObjectFov.Logger.LogInfo(string.Join(Environment.NewLine, savedFovs));
                 foreach (var entry in savedFovs)
                     SaveCameraObjectFov.cameras[(OCICamera)loadedItems[entry.Key]] = entry.Value;
 
@@ -65,6 +64,12 @@ namespace Plugins
                     SaveCameraObjectFov.previousCameraIndex = (int)previousCameraIndex;
                 if (cameraIndex != null)
                     SaveCameraObjectFov.cameraIndex = (int)cameraIndex;
+            }
+            else if (operation == SceneOperationKind.Import && cameras != null)
+            {
+                var savedFovs = MessagePackSerializer.Deserialize<Dictionary<int, float>>((byte[])cameras);
+                foreach (var entry in savedFovs)
+                    SaveCameraObjectFov.cameras[(OCICamera)loadedItems[entry.Key]] = entry.Value;
             }
         }
     }
