@@ -5,7 +5,6 @@ using System;
 using HarmonyLib;
 using System.Collections.Generic;
 using KKAPI.Studio.SaveLoad;
-
 namespace Plugins
 {
     [HarmonyPatch]
@@ -52,17 +51,46 @@ namespace Plugins
         [HarmonyPatch(typeof(Studio.Studio), "ChangeCamera", new Type[] { typeof(OCICamera), typeof(bool), typeof(bool) })]
         private static void ChangeCameraPostfix(OCICamera _ociCamera, bool _active)
         {
+#if DEBUG
+            Logger.LogInfo("-----------------");
+            Logger.LogInfo($"previous index: {previousCameraIndex}");
+            Logger.LogInfo($"current index: {cameraIndex}");
+            Logger.LogInfo($"active: {_active}");
+            Logger.LogInfo($"has camera: {_ociCamera!=null}");
+            Logger.LogInfo($"is same: {_ociCamera == previousCamera}");
+#endif
+
             if (_ociCamera != null)
             {
-                if (previousCamera != null && cameras.ContainsKey(previousCamera))
+                if (previousCamera != null && cameras.ContainsKey(previousCamera) && previousCamera != _ociCamera)
+                {
+#if DEBUG
+                    Logger.LogInfo($"Saving previous camera FoV: {Studio.Studio.Instance.cameraCtrl.cameraData.parse}");
+#endif
                     cameras[previousCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
+                }
                 if (cameras.ContainsKey(_ociCamera))
+                {
+#if DEBUG
+                    Logger.LogInfo($"Loading Fov: {cameras[_ociCamera]}");
+#endif
                     SetFOV(cameras[_ociCamera]);
+                }
                 else
+                {
+#if DEBUG
+                    Logger.LogInfo($"Saving camera FoV: {Studio.Studio.Instance.cameraCtrl.cameraData.parse}");
+#endif
                     cameras[_ociCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
+                }
 
                 if (cameraIndex == 0 && previousCameraIndex != cameraIndex)
+                {
+#if DEBUG
+                    Logger.LogInfo($"Loading Main Fov: {cameras[_ociCamera]}");
+#endif
                     SetFOV(mainFov);
+                }
             }
         }
 
@@ -70,12 +98,15 @@ namespace Plugins
         [HarmonyPatch(typeof(Studio.CameraSelector), "OnValueChanged")]
         private static void OnValueChangedPrefix(int _index)
         {
-            previousCamera = Studio.Studio.instance.ociCamera;
-            previousCameraIndex = cameraIndex;
-            cameraIndex = _index;
+            if (cameraIndex != _index)
+            {
+                previousCamera = Studio.Studio.instance.ociCamera;
+                previousCameraIndex = cameraIndex;
+                cameraIndex = _index;
 
-            if (previousCameraIndex == 0)
-                mainFov = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
+                if (previousCameraIndex == 0)
+                    mainFov = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
+            }
         }
     }
 }
