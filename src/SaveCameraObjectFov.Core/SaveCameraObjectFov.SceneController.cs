@@ -38,6 +38,12 @@ namespace Plugins
 
         protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {
+            if (operation == SceneOperationKind.Clear) 
+            {
+                SaveCameraObjectFov.ResetValues();
+                return;
+            }
+            
             var data = GetExtendedData();
             if (data?.data == null)
             {
@@ -51,9 +57,7 @@ namespace Plugins
             data.data.TryGetValue("previousCameraIndex", out var previousCameraIndex);
             data.data.TryGetValue("cameraIndex", out var cameraIndex);
 
-            if (operation == SceneOperationKind.Clear)
-                SaveCameraObjectFov.ResetValues();
-            else if (operation == SceneOperationKind.Load && cameras != null)
+            if (operation == SceneOperationKind.Load && cameras != null)
             {
                 SaveCameraObjectFov.ResetValues();
 

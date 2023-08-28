@@ -87,7 +87,7 @@ namespace Plugins
                     cameras[_ociCamera] = Studio.Studio.Instance.cameraCtrl.cameraData.parse;
                 }
 
-                if (cameraIndex == 0 && previousCameraIndex != cameraIndex)
+                if (cameraIndex == 0 && previousCameraIndex != cameraIndex && !_active)
                 {
 #if DEBUG
                     Logger.LogInfo($"Loading Main Fov: {cameras[_ociCamera]}");
