@@ -155,88 +155,102 @@ namespace PostProcessingEffectsV3
 
         private void OnEnable()
         {
-            ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, assetFilePath));
-            if (ab != null)
+#if KK
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
             {
-                depthnormals = ab.LoadAsset<Shader>("Internal-DepthNormalsTexturemod");
-                postProcessResources = ScriptableObject.CreateInstance<PostProcessResources>();
-                postProcessResources.shaders = new PostProcessResources.Shaders();
-                postProcessResources.computeShaders = new PostProcessResources.ComputeShaders();
-                postProcessResources.smaaLuts = new PostProcessResources.SMAALuts();
-                postProcessResources.shaders.bloom = ab.LoadAsset<Shader>("bloom");
-                postProcessResources.shaders.copy = ab.LoadAsset<Shader>("copy");
-                postProcessResources.shaders.copyStd = ab.LoadAsset<Shader>("copyStd");
-                postProcessResources.shaders.copyStdFromTexArray = ab.LoadAsset<Shader>("copyStdFromTexArray");
-                postProcessResources.shaders.copyStdFromDoubleWide = ab.LoadAsset<Shader>("copyStdFromDoubleWide");
-                postProcessResources.shaders.discardAlpha = ab.LoadAsset<Shader>("discardAlpha");
-                postProcessResources.shaders.depthOfField = ab.LoadAsset<Shader>("depthOfField");
-                postProcessResources.shaders.finalPass = ab.LoadAsset<Shader>("finalPass");
-                postProcessResources.shaders.grainBaker = ab.LoadAsset<Shader>("grainBaker");
-                postProcessResources.shaders.motionBlur = ab.LoadAsset<Shader>("motionBlur");
-                postProcessResources.shaders.temporalAntialiasing = ab.LoadAsset<Shader>("temporalAntialiasing");
-                postProcessResources.shaders.subpixelMorphologicalAntialiasing = ab.LoadAsset<Shader>("subpixelMorphologicalAntialiasing");
-                postProcessResources.shaders.texture2dLerp = ab.LoadAsset<Shader>("texture2dLerp");
-                postProcessResources.shaders.uber = ab.LoadAsset<Shader>("uber");
-                postProcessResources.shaders.lut2DBaker = ab.LoadAsset<Shader>("lut2DBaker");
-                postProcessResources.shaders.lightMeter = ab.LoadAsset<Shader>("lightMeter");
-                postProcessResources.shaders.gammaHistogram = ab.LoadAsset<Shader>("gammaHistogram");
-                postProcessResources.shaders.waveform = ab.LoadAsset<Shader>("waveform");
-                postProcessResources.shaders.vectorscope = ab.LoadAsset<Shader>("vectorscope");
-                postProcessResources.shaders.debugOverlays = ab.LoadAsset<Shader>("debugOverlays");
-                postProcessResources.shaders.deferredFog = ab.LoadAsset<Shader>("deferredFog");
-                postProcessResources.shaders.scalableAO = ab.LoadAsset<Shader>("scalableAO");
-                postProcessResources.shaders.multiScaleAO = ab.LoadAsset<Shader>("multiScaleAO");
-                postProcessResources.shaders.screenSpaceReflections = ab.LoadAsset<Shader>("screenSpaceReflections");
-                postProcessResources.computeShaders.autoExposure = ab.LoadAsset<ComputeShader>("AutoExposure.compute");
-                postProcessResources.computeShaders.exposureHistogram = ab.LoadAsset<ComputeShader>("ExposureHistogram.compute");
-                postProcessResources.computeShaders.lut3DBaker = ab.LoadAsset<ComputeShader>("Lut3DBaker.compute");
-                postProcessResources.computeShaders.texture3dLerp = ab.LoadAsset<ComputeShader>("Texture3DLerp.compute");
-                postProcessResources.computeShaders.multiScaleAODownsample1 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample1.compute.");
-                postProcessResources.computeShaders.multiScaleAODownsample2 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample2.compute");
-                postProcessResources.computeShaders.multiScaleAORender = ab.LoadAsset<ComputeShader>("MultiScaleVORender.compute");
-                postProcessResources.computeShaders.multiScaleAOUpsample = ab.LoadAsset<ComputeShader>("MultiScaleVOUpsample.compute");
-                postProcessResources.computeShaders.gaussianDownsample = ab.LoadAsset<ComputeShader>("GaussianDownsample.compute");
-                postProcessResources.smaaLuts.area = ab.LoadAsset<Texture2D>("areaTex");
-                postProcessResources.smaaLuts.search = ab.LoadAsset<Texture2D>("searchTex");
-                postProcessResources.blueNoise64 = new Texture2D[64];
-                for (int i = 0; i < 64; i++)
+#endif
+                ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, assetFilePath));
+                if (ab != null)
                 {
-                    postProcessResources.blueNoise64[i] = ab.LoadAsset<Texture2D>("LDR_LLL1_" + i + ".png");
+                    depthnormals = ab.LoadAsset<Shader>("Internal-DepthNormalsTexturemod");
+                    postProcessResources = ScriptableObject.CreateInstance<PostProcessResources>();
+                    postProcessResources.shaders = new PostProcessResources.Shaders();
+                    postProcessResources.computeShaders = new PostProcessResources.ComputeShaders();
+                    postProcessResources.smaaLuts = new PostProcessResources.SMAALuts();
+                    postProcessResources.shaders.bloom = ab.LoadAsset<Shader>("bloom");
+                    postProcessResources.shaders.copy = ab.LoadAsset<Shader>("copy");
+                    postProcessResources.shaders.copyStd = ab.LoadAsset<Shader>("copyStd");
+                    postProcessResources.shaders.copyStdFromTexArray = ab.LoadAsset<Shader>("copyStdFromTexArray");
+                    postProcessResources.shaders.copyStdFromDoubleWide = ab.LoadAsset<Shader>("copyStdFromDoubleWide");
+                    postProcessResources.shaders.discardAlpha = ab.LoadAsset<Shader>("discardAlpha");
+                    postProcessResources.shaders.depthOfField = ab.LoadAsset<Shader>("depthOfField");
+                    postProcessResources.shaders.finalPass = ab.LoadAsset<Shader>("finalPass");
+                    postProcessResources.shaders.grainBaker = ab.LoadAsset<Shader>("grainBaker");
+                    postProcessResources.shaders.motionBlur = ab.LoadAsset<Shader>("motionBlur");
+                    postProcessResources.shaders.temporalAntialiasing = ab.LoadAsset<Shader>("temporalAntialiasing");
+                    postProcessResources.shaders.subpixelMorphologicalAntialiasing = ab.LoadAsset<Shader>("subpixelMorphologicalAntialiasing");
+                    postProcessResources.shaders.texture2dLerp = ab.LoadAsset<Shader>("texture2dLerp");
+                    postProcessResources.shaders.uber = ab.LoadAsset<Shader>("uber");
+                    postProcessResources.shaders.lut2DBaker = ab.LoadAsset<Shader>("lut2DBaker");
+                    postProcessResources.shaders.lightMeter = ab.LoadAsset<Shader>("lightMeter");
+                    postProcessResources.shaders.gammaHistogram = ab.LoadAsset<Shader>("gammaHistogram");
+                    postProcessResources.shaders.waveform = ab.LoadAsset<Shader>("waveform");
+                    postProcessResources.shaders.vectorscope = ab.LoadAsset<Shader>("vectorscope");
+                    postProcessResources.shaders.debugOverlays = ab.LoadAsset<Shader>("debugOverlays");
+                    postProcessResources.shaders.deferredFog = ab.LoadAsset<Shader>("deferredFog");
+                    postProcessResources.shaders.scalableAO = ab.LoadAsset<Shader>("scalableAO");
+                    postProcessResources.shaders.multiScaleAO = ab.LoadAsset<Shader>("multiScaleAO");
+                    postProcessResources.shaders.screenSpaceReflections = ab.LoadAsset<Shader>("screenSpaceReflections");
+                    postProcessResources.computeShaders.autoExposure = ab.LoadAsset<ComputeShader>("AutoExposure.compute");
+                    postProcessResources.computeShaders.exposureHistogram = ab.LoadAsset<ComputeShader>("ExposureHistogram.compute");
+                    postProcessResources.computeShaders.lut3DBaker = ab.LoadAsset<ComputeShader>("Lut3DBaker.compute");
+                    postProcessResources.computeShaders.texture3dLerp = ab.LoadAsset<ComputeShader>("Texture3DLerp.compute");
+                    postProcessResources.computeShaders.multiScaleAODownsample1 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample1.compute.");
+                    postProcessResources.computeShaders.multiScaleAODownsample2 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample2.compute");
+                    postProcessResources.computeShaders.multiScaleAORender = ab.LoadAsset<ComputeShader>("MultiScaleVORender.compute");
+                    postProcessResources.computeShaders.multiScaleAOUpsample = ab.LoadAsset<ComputeShader>("MultiScaleVOUpsample.compute");
+                    postProcessResources.computeShaders.gaussianDownsample = ab.LoadAsset<ComputeShader>("GaussianDownsample.compute");
+                    postProcessResources.smaaLuts.area = ab.LoadAsset<Texture2D>("areaTex");
+                    postProcessResources.smaaLuts.search = ab.LoadAsset<Texture2D>("searchTex");
+                    postProcessResources.blueNoise64 = new Texture2D[64];
+                    for (int i = 0; i < 64; i++)
+                    {
+                        postProcessResources.blueNoise64[i] = ab.LoadAsset<Texture2D>("LDR_LLL1_" + i + ".png");
+                    }
+                    postProcessResources.blueNoise256 = new Texture2D[8];
+                    for (int j = 0; j < 8; j++)
+                    {
+                        postProcessResources.blueNoise256[j] = ab.LoadAsset<Texture2D>("LDR_LLL2_" + j + ".png");
+                    }
+                    SSAOshader = ab.LoadAsset<Shader>("SSAOPro_v2");
+                    noiseTex = ab.LoadAsset<Texture2D>("noise");
+                    SobelShader = ab.LoadAsset<Shader>("RealToon_Sobel_Outline_FX.shader");
+                    posShader = ab.LoadAsset<Shader>("Posterize");
+                    sengaShader = ab.LoadAsset<Shader>("senga");
+                    sengaToneTex = ab.LoadAsset<Texture2D>("dot_03.bmp");
+                    ab.Unload(false);
+                    BindConfig();
+                    SceneManager.sceneLoaded += OnSceneLoaded;
+                    base.Config.SettingChanged += OnSettingChanged;
+                    CharacterApi.CharacterReloaded += CharacterReloaded;
+                    StudioSaveLoadApi.ObjectsSelected += ObjectsSelected;
+                    onoff_post = onoff.Value;
                 }
-                postProcessResources.blueNoise256 = new Texture2D[8];
-                for (int j = 0; j < 8; j++)
+                else
                 {
-                    postProcessResources.blueNoise256[j] = ab.LoadAsset<Texture2D>("LDR_LLL2_" + j + ".png");
+                    Logger.LogMessage($"Missing asset file, effects will not work. Make sure it's located in 'BepInEx/{assetFilePath}'. Your game WILL crash");
+                    Logger.LogError("Asset file not loaded. Effects will not work and game will eventually crash because of this.");
                 }
-                SSAOshader = ab.LoadAsset<Shader>("SSAOPro_v2");
-                noiseTex = ab.LoadAsset<Texture2D>("noise");
-                SobelShader = ab.LoadAsset<Shader>("RealToon_Sobel_Outline_FX.shader");
-                posShader = ab.LoadAsset<Shader>("Posterize");
-                sengaShader = ab.LoadAsset<Shader>("senga");
-                sengaToneTex = ab.LoadAsset<Texture2D>("dot_03.bmp");
-                ab.Unload(false);
-                BindConfig();
-                SceneManager.sceneLoaded += OnSceneLoaded;
-                base.Config.SettingChanged += OnSettingChanged;
-                CharacterApi.CharacterReloaded += CharacterReloaded;
-                StudioSaveLoadApi.ObjectsSelected += ObjectsSelected;
-                onoff_post = onoff.Value;
+#if KK
             }
-            else
-            {
-                Logger.LogMessage($"Missing asset file, effects will not work. Make sure it's located in 'BepInEx/{assetFilePath}'. Your game WILL crash");
-                Logger.LogError("Asset file not loaded. Effects will not work and game will eventually crash because of this.");
-            }
+#endif
         }
 
         private void Start()
         {
-            if (onoff.Value)
+#if KK
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
             {
-                GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
-                GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
+#endif
+                if (onoff.Value)
+                {
+                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
+                    GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
+                }
+                Harmony.CreateAndPatchAll(typeof(Patch), null);
+#if KK
             }
-            Harmony.CreateAndPatchAll(typeof(Patch), null);
+#endif
         }
 
         private void ObjectsSelected(object sender, ObjectsSelectedEventArgs e)
@@ -257,99 +271,106 @@ namespace PostProcessingEffectsV3
 
         private void Update()
         {
-            if (onoff.Value != onoff_post)
+#if KK
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
             {
+#endif
+            if (onoff.Value != onoff_post)
+                {
+                    if (onoff.Value)
+                    {
+                        GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
+                        GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
+                        Setup();
+                    }
+                    else
+                    {
+                        GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseBuiltin);
+                        RuntimeUtilities.DestroyVolume(postProcessVolume, true, true);
+                        UnityEngine.Object.Destroy(postProcessLayer);
+                        UnityEngine.Object.Destroy(sAOPro);
+                        UnityEngine.Object.Destroy(sobel);
+                        UnityEngine.Object.Destroy(posterize);
+                        UnityEngine.Object.Destroy(sengaEffect);
+                        if (studio != null && studio.sceneInfo != null && StudioAPI.InsideStudio && FogEnable.Value)
+                        {
+                            postProcessLayer.fog.enabled = false;
+                            RenderSettings.fog = false;
+                            studio.sceneInfo.enableFog = false;
+                            globalFog.enabled = false;
+                        }
+                    }
+                }
+                onoff_post = onoff.Value;
                 if (onoff.Value)
                 {
-                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
-                    GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
-                    Setup();
-                }
-                else
-                {
-                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseBuiltin);
-                    RuntimeUtilities.DestroyVolume(postProcessVolume, true, true);
-                    UnityEngine.Object.Destroy(postProcessLayer);
-                    UnityEngine.Object.Destroy(sAOPro);
-                    UnityEngine.Object.Destroy(sobel);
-                    UnityEngine.Object.Destroy(posterize);
-                    UnityEngine.Object.Destroy(sengaEffect);
-                    if (studio != null && studio.sceneInfo != null && StudioAPI.InsideStudio && FogEnable.Value)
+                    if (DOFautofocus.Value && DOFenable.Value)
                     {
-                        postProcessLayer.fog.enabled = false;
-                        RenderSettings.fog = false;
-                        studio.sceneInfo.enableFog = false;
-                        globalFog.enabled = false;
-                    }
-                }
-            }
-            onoff_post = onoff.Value;
-            if (onoff.Value)
-            {
-                if (DOFautofocus.Value && DOFenable.Value)
-                {
-                    if (cam == null)
-                    {
-                        return;
-                    }
-                    if (DOFAFmode.Value == 0)
-                    {
-                        DOF.focusDistance.Override(Vector3.Distance(camtarget.transform.position, cam.transform.position));
-                    }
-                    else if (DOFAFmode.Value == 1 && KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
-                    {
-                        if (charapos != null)
+                        if (cam == null)
                         {
-                            float x = Vector3.Distance(charapos.position, cam.transform.position);
-                            DOF.focusDistance.Override(x);
+                            return;
                         }
-                    }
-                    else if (DOFAFmode.Value == 2 && CharaList.Keys.Count() != 0)
-                    {
-                        Dictionary<float, Transform> dictionary = new Dictionary<float, Transform>();
-                        foreach (ChaControl key3 in CharaList.Keys)
+                        if (DOFAFmode.Value == 0)
                         {
-                            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+                            DOF.focusDistance.Override(Vector3.Distance(camtarget.transform.position, cam.transform.position));
+                        }
+                        else if (DOFAFmode.Value == 1 && KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+                        {
+                            if (charapos != null)
                             {
-                                if (key3.GetOCIChar().treeNodeObject.visible)
+                                float x = Vector3.Distance(charapos.position, cam.transform.position);
+                                DOF.focusDistance.Override(x);
+                            }
+                        }
+                        else if (DOFAFmode.Value == 2 && CharaList.Keys.Count() != 0)
+                        {
+                            Dictionary<float, Transform> dictionary = new Dictionary<float, Transform>();
+                            foreach (ChaControl key3 in CharaList.Keys)
+                            {
+                                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
                                 {
-                                    Vector3 vector = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
-                                    float key = Vector2.Distance(new Vector2(vector.x, vector.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                    dictionary.Add(key, CharaList[key3]);
+                                    if (key3.GetOCIChar().treeNodeObject.visible)
+                                    {
+                                        Vector3 vector = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
+                                        float key = Vector2.Distance(new Vector2(vector.x, vector.y), new Vector2(Screen.width / 2, Screen.height / 2));
+                                        dictionary.Add(key, CharaList[key3]);
+                                    }
+                                }
+                                else
+                                {
+                                    Vector3 vector2 = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
+                                    float key2 = Vector2.Distance(new Vector2(vector2.x, vector2.y), new Vector2(Screen.width / 2, Screen.height / 2));
+                                    dictionary.Add(key2, CharaList[key3]);
                                 }
                             }
-                            else
-                            {
-                                Vector3 vector2 = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
-                                float key2 = Vector2.Distance(new Vector2(vector2.x, vector2.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                dictionary.Add(key2, CharaList[key3]);
-                            }
+                            DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
                         }
-                        DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
+                    }
+#if KK
+                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR)
+                    {
+                        cam.allowHDR = false;
+                    }
+#endif
+                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker || KoikatuAPI.GetCurrentGameMode() == GameMode.Unknown)
+                    {
+                        cam.allowMSAA = false;
+#if KK
+                        postProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+#endif
                     }
                 }
-#if KK
-                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR)
+                if (MasterSwitch.Value.IsDown())
                 {
-                    cam.allowHDR = false;
+                    onoff.Value = !onoff.Value;
                 }
-#endif
-                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker || KoikatuAPI.GetCurrentGameMode() == GameMode.Unknown)
+                if (OpenGUI.Value.IsDown())
                 {
-                    cam.allowMSAA = false;
-#if KK
-                    postProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
-#endif
+                    mainwin = !mainwin;
                 }
+#if KK
             }
-            if (MasterSwitch.Value.IsDown())
-            {
-                onoff.Value = !onoff.Value;
-            }
-            if (OpenGUI.Value.IsDown())
-            {
-                mainwin = !mainwin;
-            }
+#endif
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -503,7 +524,7 @@ namespace PostProcessingEffectsV3
                 Settings();
             }
         }
-        #endregion
+#endregion
 
         protected void OnSettingChanged(object sender, SettingChangedEventArgs e)
         {
@@ -687,7 +708,7 @@ namespace PostProcessingEffectsV3
         }
 
 
-        #region UI
+#region UI
         private bool mainwin = false;
         private readonly int uiWindowHash = ('P' << 24) | ('P' << 16) | ('E' << 8);
         private bool exitOnFocusLoss = true;
@@ -711,7 +732,7 @@ namespace PostProcessingEffectsV3
         private bool fog = false;
         private bool grainShown = false;
 
-        #region Buffers
+#region Buffers
         private string DistortionIntensityBuffer;
         private string DistortionIntensityXBuffer;
         private string DistortionIntensityYBuffer;
@@ -858,7 +879,7 @@ namespace PostProcessingEffectsV3
             GrainSizeBuffer = GrainSize.Value.ToString();
             GrainLumContribBuffer = GrainLumContrib.Value.ToString();
         }
-        #endregion
+#endregion
 
 
         private void OnGUI()
@@ -919,7 +940,7 @@ namespace PostProcessingEffectsV3
             exitOnFocusLoss = GUILayout.Toggle(exitOnFocusLoss, "Close on focus loss");
             GUILayout.EndHorizontal();
 
-            #region Ambient Occulusion
+#region Ambient Occulusion
             AOb = GUILayout.Toggle(AOb, "AmbientOcculusion ", GUI.skin.button);
             if (AOb)
             {
@@ -1046,9 +1067,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Anti Aliasing
+#region Anti Aliasing
             AA = GUILayout.Toggle(AA, "AntiAliasing ", GUI.skin.button);
             if (AA)
             {
@@ -1093,9 +1114,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Bloom
+#region Bloom
             bloomb = GUILayout.Toggle(bloomb, "Bloom ", GUI.skin.button);
             if (bloomb)
             {
@@ -1138,9 +1159,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Chromatic Aberration
+#region Chromatic Aberration
             CAb = GUILayout.Toggle(CAb, "ChromaticAberration", GUI.skin.button);
             if (CAb)
             {
@@ -1152,9 +1173,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Color Grading
+#region Color Grading
             CGb = GUILayout.Toggle(CGb, "ColorGrading ", GUI.skin.button);
             if (CGb)
             {
@@ -1231,9 +1252,9 @@ namespace PostProcessingEffectsV3
                 //TODO add trackballs support
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Depth of Field
+#region Depth of Field
             DOFb = GUILayout.Toggle(DOFb, "DepthOfField ", GUI.skin.button);
             if (DOFb)
             {
@@ -1267,9 +1288,9 @@ namespace PostProcessingEffectsV3
                 }
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Motion Blur
+#region Motion Blur
             MBb = GUILayout.Toggle(MBb, "MotionBlur", GUI.skin.button);
             if (MBb)
             {
@@ -1284,9 +1305,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Vignette
+#region Vignette
             VGb = GUILayout.Toggle(VGb, "Vignette", GUI.skin.button);
             if (VGb)
             {
@@ -1333,9 +1354,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Sobel Color Outline
+#region Sobel Color Outline
             SCOb = GUILayout.Toggle(SCOb, "SobelColorOutline", GUI.skin.button);
             if (SCOb)
             {
@@ -1365,9 +1386,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Posterize
+#region Posterize
             Posb = GUILayout.Toggle(Posb, "Posterize", GUI.skin.button);
             if (Posb)
             {
@@ -1380,9 +1401,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Customizaable Outline
+#region Customizaable Outline
             Sengab = GUILayout.Toggle(Sengab, "Customizable Outline", GUI.skin.button);
             if (Sengab)
             {
@@ -1451,9 +1472,9 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Distortion
+#region Distortion
             distortion = GUILayout.Toggle(distortion, "Lens Distortion ", GUI.skin.button);
             if (distortion)
             {
@@ -1480,9 +1501,9 @@ namespace PostProcessingEffectsV3
                );
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Deferred Fog
+#region Deferred Fog
             fog = GUILayout.Toggle(fog, "Fog", GUI.skin.button);
             if (fog)
             {
@@ -1533,9 +1554,9 @@ namespace PostProcessingEffectsV3
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
-            #region Grain
+#region Grain
             grainShown = GUILayout.Toggle(grainShown, "Grain", GUI.skin.button);
             if (grainShown)
             {
@@ -1554,7 +1575,7 @@ namespace PostProcessingEffectsV3
                 );
                 GUILayout.EndVertical();
             }
-            #endregion
+#endregion
 
             GUI.DragWindow();
         }
@@ -1596,16 +1617,16 @@ namespace PostProcessingEffectsV3
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region Config
+#region Config
 
-        #region Define Configs
+#region Define Configs
         private ConfigEntry<bool> onoff { get; set; }
         private ConfigEntry<KeyboardShortcut> OpenGUI { get; set; }
         private static ConfigEntry<KeyboardShortcut> MasterSwitch { get; set; }
 
-        #region Anti-Aliasing
+#region Anti-Aliasing
         private ConfigEntry<PostProcessLayer.Antialiasing> AAmode { get; set; }
         private ConfigEntry<SubpixelMorphologicalAntialiasing.Quality> AAsmaaq { get; set; }
         private ConfigEntry<bool> AAfxaafm { get; set; }
@@ -1614,9 +1635,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> TAAsharpen { get; set; }
         private ConfigEntry<float> TAAstationaryBlending { get; set; }
         private ConfigEntry<float> TAAmotionBlending { get; set; }
-        #endregion
+#endregion
 
-        #region Ambient Occlusion
+#region Ambient Occlusion
         private ConfigEntry<bool> AOenable { get; set; }
         private ConfigEntry<bool> AOmodesel { get; set; }
         private ConfigEntry<AmbientOcclusionMode> AOmode { get; set; }
@@ -1639,9 +1660,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> cThres { get; set; }
         private ConfigEntry<float> cMaxDistance { get; set; }
         private ConfigEntry<float> cFalloff { get; set; }
-        #endregion
+#endregion
 
-        #region Color Grading
+#region Color Grading
         private ConfigEntry<bool> CGenable { get; set; }
         private ConfigEntry<Tonemapper> CGtoneMapper { get; set; }
         private ConfigEntry<GradingMode> CGgradingmode { get; set; }
@@ -1656,9 +1677,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<Vector4> CGlift { get; set; }
         private ConfigEntry<Vector4> CGgain { get; set; }
         private ConfigEntry<Vector4> CGgamma { get; set; }
-        #endregion
+#endregion
 
-        #region Bloom
+#region Bloom
         private ConfigEntry<bool> Bloomenable { get; set; }
         private ConfigEntry<float> Bloomintensity { get; set; }
         private ConfigEntry<float> Bloomdiffusion { get; set; }
@@ -1671,9 +1692,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<bool> MBenable { get; set; }
         private ConfigEntry<float> MBshutter { get; set; }
         private ConfigEntry<int> MBsamplecnt { get; set; }
-        #endregion
+#endregion
 
-        #region Depth of Field
+#region Depth of Field
         private ConfigEntry<bool> DOFenable { get; set; }
         private ConfigEntry<float> DOFfocall { get; set; }
         private ConfigEntry<float> DOFfocusd { get; set; }
@@ -1681,9 +1702,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<KernelSize> DOFmaxblur { get; set; }
         private ConfigEntry<bool> DOFautofocus { get; set; }
         private ConfigEntry<int> DOFAFmode { get; set; }
-        #endregion
+#endregion
 
-        #region Vignette
+#region Vignette
         private ConfigEntry<bool> VGenable { get; set; }
         private ConfigEntry<Color> VGcol { get; set; }
         private ConfigEntry<VignetteMode> VGmode { get; set; }
@@ -1693,14 +1714,14 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> VGsmoothness { get; set; }
         private ConfigEntry<float> VGintensity { get; set; }
         private ConfigEntry<Vector2> VGcenter { get; set; }
-        #endregion
+#endregion
 
-        #region Chromatic Aberration
+#region Chromatic Aberration
         private ConfigEntry<float> CAintensity { get; set; }
         private ConfigEntry<bool> CAenable { get; set; }
-        #endregion
+#endregion
 
-        #region Outline
+#region Outline
         private ConfigEntry<float> OutlineWidth { get; set; }
         private ConfigEntry<Color> OutlineColor { get; set; }
         private ConfigEntry<float> ColorPower { get; set; }
@@ -1727,15 +1748,15 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> SengaBlurThick { get; set; }
         private ConfigEntry<int> SengaBlurSample { get; set; }
         private ConfigEntry<bool> SengaBlurEnable { get; set; }
-        #endregion
+#endregion
 
-        #region Posterize
+#region Posterize
         private ConfigEntry<int> PosDiv { get; set; }
         private ConfigEntry<bool> PosEnable { get; set; }
         private ConfigEntry<bool> PosHSV { get; set; }
-        #endregion
+#endregion
 
-        #region Distortion
+#region Distortion
         private ConfigEntry<bool> DistortionEnable { get; set; }
         private ConfigEntry<float> DistortionIntensity { get; set; }
         private ConfigEntry<float> DistortionIntensityX { get; set; }
@@ -1743,9 +1764,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> DistortionCenterX { get; set; }
         private ConfigEntry<float> DistortionCenterY { get; set; }
         private ConfigEntry<float> DistortionScale { get; set; }
-        #endregion
+#endregion
 
-        #region Deferred Fog
+#region Deferred Fog
 
         private ConfigEntry<bool> FogEnable { get; set; }
         private ConfigEntry<FogMode> FogModeSelected { get; set; }
@@ -1756,9 +1777,9 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<Color> FogColor { get; set; }
 
 
-        #endregion
+#endregion
 
-        #region Grain
+#region Grain
 
         private ConfigEntry<bool> GrainEnable { get; set; }
         private ConfigEntry<bool> GrainColored { get; set; }
@@ -1766,8 +1787,8 @@ namespace PostProcessingEffectsV3
         private ConfigEntry<float> GrainSize { get; set; }
         private ConfigEntry<float> GrainLumContrib { get; set; }
 
-        #endregion
-        #endregion
+#endregion
+#endregion
 
         private void BindConfig()
         {
@@ -1896,6 +1917,6 @@ namespace PostProcessingEffectsV3
             GrainLumContrib = base.Config.Bind("Grain", "Luminance Contribution", 0.8f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             UpdateBuffers();
         }
-        #endregion
+#endregion
     }
 }
