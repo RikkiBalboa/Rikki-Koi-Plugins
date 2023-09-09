@@ -1036,7 +1036,7 @@ namespace PostProcessingEffectsV3
                         "Intensity", 0f, 4f, ref AOintensityBuffer, AOintensity.Value, (float)AOintensity.DefaultValue
                     );
                     AOradius.Value = DrawSliderTextBoxCombo(
-                        "Radius   ", 0f, 3f, ref AOradiusBuffer, AOradius.Value, (float)AOradius.DefaultValue
+                        "Radius   ", 0.0001f, 3f, ref AOradiusBuffer, AOradius.Value, (float)AOradius.DefaultValue
                     );
 
                     int selected = Array.IndexOf(AOq, AOquality.Value);
