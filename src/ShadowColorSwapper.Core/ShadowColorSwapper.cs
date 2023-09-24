@@ -22,9 +22,9 @@ namespace Plugins
         public const string PluginVersion = "1.2";
         internal static new ManualLogSource Logger;
 
-        private readonly string[] shadowColorNames = new string[3]
+        private readonly string[] shadowColorNames = new string[]
         {
-            "ShadowColor", "shadowcolor", "shadowColor"
+            "ShadowColor", "shadowcolor", "shadowColor", "1st_ShadeColor"
         };
 
         public static ConfigEntry<KeyboardShortcut> KeySwapShadowColors { get; private set; }
