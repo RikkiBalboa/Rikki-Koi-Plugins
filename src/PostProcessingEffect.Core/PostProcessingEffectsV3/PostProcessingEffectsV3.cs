@@ -156,7 +156,7 @@ namespace PostProcessingEffectsV3
         private void OnEnable()
         {
 #if KK
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && enabledInMaker.Value))
             {
 #endif
                 ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, assetFilePath));
@@ -239,7 +239,7 @@ namespace PostProcessingEffectsV3
         private void Start()
         {
 #if KK
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && enabledInMaker.Value))
             {
 #endif
                 if (onoff.Value)
@@ -272,7 +272,7 @@ namespace PostProcessingEffectsV3
         private void Update()
         {
 #if KK
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && enabledInMaker.Value))
             {
 #endif
             if (onoff.Value != onoff_post)
@@ -1623,6 +1623,7 @@ namespace PostProcessingEffectsV3
 
 #region Define Configs
         private ConfigEntry<bool> onoff { get; set; }
+        private ConfigEntry<bool> enabledInMaker { get; set; }
         private ConfigEntry<KeyboardShortcut> OpenGUI { get; set; }
         private static ConfigEntry<KeyboardShortcut> MasterSwitch { get; set; }
 
@@ -1793,6 +1794,9 @@ namespace PostProcessingEffectsV3
         private void BindConfig()
         {
             onoff = base.Config.Bind("_MasterSwitch", "OnOff", false, "");
+#if KK
+            enabledInMaker = base.Config.Bind("_MasterSwitch", "Enabled In Maker", false, "");
+#endif
             AAmode = base.Config.Bind("AntiAliasing", "AntiAliasing Mode", PostProcessLayer.Antialiasing.None, "");
             AAsmaaq = base.Config.Bind("AntiAliasing", "SMAA Quality", SubpixelMorphologicalAntialiasing.Quality.Medium, "");
             AAfxaafm = base.Config.Bind("AntiAliasing", "FXAA FastMode", false, "");
