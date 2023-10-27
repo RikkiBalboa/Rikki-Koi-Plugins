@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\Posterize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\PostProcessingEffectsV3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\SengaEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\TimelineCompatibilityHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SobelOutline\SobelOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SSAOProUtils\ColorUsageAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SSAOProUtils\HelpURLAttribute.cs" />

@@ -39,6 +39,7 @@ namespace PostProcessingEffectsV3
         public const string PluginVersion = "4.2";
 
         internal static new ManualLogSource Logger;
+        internal static PostProcessingEffectsV3 ppe;
 
         #region Constants
         private AmbientOcclusionQuality[] AOq = new AmbientOcclusionQuality[5]
@@ -151,6 +152,7 @@ namespace PostProcessingEffectsV3
         private void Awake()
         {
             Logger = base.Logger;
+            ppe = this;
         }
 
         private void OnEnable()
@@ -251,6 +253,7 @@ namespace PostProcessingEffectsV3
 #if KK
             }
 #endif
+            TimelineCompatibilityHelper.PopulateTimeline();
         }
 
         private void ObjectsSelected(object sender, ObjectsSelectedEventArgs e)
