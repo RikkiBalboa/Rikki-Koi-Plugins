@@ -9,7 +9,6 @@
     <Import_RootNamespace>Core.PostProcessingEffect</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\Patch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\Posterize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\PostProcessingEffectsV3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingEffectsV3\SengaEffect.cs" />
