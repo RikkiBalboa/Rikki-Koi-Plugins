@@ -325,22 +325,22 @@ namespace PostProcessingEffectsV3
                         else if (DOFAFmode.Value == 2 && CharaList.Keys.Count() != 0)
                         {
                             Dictionary<float, Transform> dictionary = new Dictionary<float, Transform>();
-                            foreach (ChaControl key3 in CharaList.Keys)
+                            foreach (ChaControl cha in CharaList.Keys.Where(key => key != null).ToList())
                             {
                                 if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
                                 {
-                                    if (key3.GetOCIChar().treeNodeObject.visible)
+                                    if (cha.GetOCIChar().treeNodeObject.visible)
                                     {
-                                        Vector3 vector = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
+                                        Vector3 vector = cam.WorldToScreenPoint(CharaList[cha].gameObject.transform.position);
                                         float key = Vector2.Distance(new Vector2(vector.x, vector.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                        dictionary.Add(key, CharaList[key3]);
+                                        dictionary.Add(key, CharaList[cha]);
                                     }
                                 }
                                 else
                                 {
-                                    Vector3 vector2 = cam.WorldToScreenPoint(CharaList[key3].gameObject.transform.position);
+                                    Vector3 vector2 = cam.WorldToScreenPoint(CharaList[cha].gameObject.transform.position);
                                     float key2 = Vector2.Distance(new Vector2(vector2.x, vector2.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                    dictionary.Add(key2, CharaList[key3]);
+                                    dictionary.Add(key2, CharaList[cha]);
                                 }
                             }
                             DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
