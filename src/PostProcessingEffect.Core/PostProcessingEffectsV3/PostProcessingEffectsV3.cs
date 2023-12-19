@@ -1795,7 +1795,7 @@ namespace PostProcessingEffectsV3
         {
             onoff = base.Config.Bind("_MasterSwitch", "OnOff", false, "");
 #if KK
-            enabledInMaker = base.Config.Bind("_MasterSwitch", "Enabled In Maker", false, "");
+            enabledInMaker = base.Config.Bind("_MasterSwitch", "Enabled In Maker (USE WITH CAUTION!)", false, "USE AT OWN RISK! PPE has some bugs (only visual) in maker that I can't solve. No bug reports");
 #endif
             AAmode = base.Config.Bind("AntiAliasing", "AntiAliasing Mode", PostProcessLayer.Antialiasing.None, "");
             AAsmaaq = base.Config.Bind("AntiAliasing", "SMAA Quality", SubpixelMorphologicalAntialiasing.Quality.Medium, "");
