@@ -155,102 +155,88 @@ namespace PostProcessingEffectsV3
 
         private void OnEnable()
         {
-#if KK
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && enabledInMaker.Value))
+            ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, assetFilePath));
+            if (ab != null)
             {
-#endif
-                ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, assetFilePath));
-                if (ab != null)
+                depthnormals = ab.LoadAsset<Shader>("Internal-DepthNormalsTexturemod");
+                postProcessResources = ScriptableObject.CreateInstance<PostProcessResources>();
+                postProcessResources.shaders = new PostProcessResources.Shaders();
+                postProcessResources.computeShaders = new PostProcessResources.ComputeShaders();
+                postProcessResources.smaaLuts = new PostProcessResources.SMAALuts();
+                postProcessResources.shaders.bloom = ab.LoadAsset<Shader>("bloom");
+                postProcessResources.shaders.copy = ab.LoadAsset<Shader>("copy");
+                postProcessResources.shaders.copyStd = ab.LoadAsset<Shader>("copyStd");
+                postProcessResources.shaders.copyStdFromTexArray = ab.LoadAsset<Shader>("copyStdFromTexArray");
+                postProcessResources.shaders.copyStdFromDoubleWide = ab.LoadAsset<Shader>("copyStdFromDoubleWide");
+                postProcessResources.shaders.discardAlpha = ab.LoadAsset<Shader>("discardAlpha");
+                postProcessResources.shaders.depthOfField = ab.LoadAsset<Shader>("depthOfField");
+                postProcessResources.shaders.finalPass = ab.LoadAsset<Shader>("finalPass");
+                postProcessResources.shaders.grainBaker = ab.LoadAsset<Shader>("grainBaker");
+                postProcessResources.shaders.motionBlur = ab.LoadAsset<Shader>("motionBlur");
+                postProcessResources.shaders.temporalAntialiasing = ab.LoadAsset<Shader>("temporalAntialiasing");
+                postProcessResources.shaders.subpixelMorphologicalAntialiasing = ab.LoadAsset<Shader>("subpixelMorphologicalAntialiasing");
+                postProcessResources.shaders.texture2dLerp = ab.LoadAsset<Shader>("texture2dLerp");
+                postProcessResources.shaders.uber = ab.LoadAsset<Shader>("uber");
+                postProcessResources.shaders.lut2DBaker = ab.LoadAsset<Shader>("lut2DBaker");
+                postProcessResources.shaders.lightMeter = ab.LoadAsset<Shader>("lightMeter");
+                postProcessResources.shaders.gammaHistogram = ab.LoadAsset<Shader>("gammaHistogram");
+                postProcessResources.shaders.waveform = ab.LoadAsset<Shader>("waveform");
+                postProcessResources.shaders.vectorscope = ab.LoadAsset<Shader>("vectorscope");
+                postProcessResources.shaders.debugOverlays = ab.LoadAsset<Shader>("debugOverlays");
+                postProcessResources.shaders.deferredFog = ab.LoadAsset<Shader>("deferredFog");
+                postProcessResources.shaders.scalableAO = ab.LoadAsset<Shader>("scalableAO");
+                postProcessResources.shaders.multiScaleAO = ab.LoadAsset<Shader>("multiScaleAO");
+                postProcessResources.shaders.screenSpaceReflections = ab.LoadAsset<Shader>("screenSpaceReflections");
+                postProcessResources.computeShaders.autoExposure = ab.LoadAsset<ComputeShader>("AutoExposure.compute");
+                postProcessResources.computeShaders.exposureHistogram = ab.LoadAsset<ComputeShader>("ExposureHistogram.compute");
+                postProcessResources.computeShaders.lut3DBaker = ab.LoadAsset<ComputeShader>("Lut3DBaker.compute");
+                postProcessResources.computeShaders.texture3dLerp = ab.LoadAsset<ComputeShader>("Texture3DLerp.compute");
+                postProcessResources.computeShaders.multiScaleAODownsample1 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample1.compute.");
+                postProcessResources.computeShaders.multiScaleAODownsample2 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample2.compute");
+                postProcessResources.computeShaders.multiScaleAORender = ab.LoadAsset<ComputeShader>("MultiScaleVORender.compute");
+                postProcessResources.computeShaders.multiScaleAOUpsample = ab.LoadAsset<ComputeShader>("MultiScaleVOUpsample.compute");
+                postProcessResources.computeShaders.gaussianDownsample = ab.LoadAsset<ComputeShader>("GaussianDownsample.compute");
+                postProcessResources.smaaLuts.area = ab.LoadAsset<Texture2D>("areaTex");
+                postProcessResources.smaaLuts.search = ab.LoadAsset<Texture2D>("searchTex");
+                postProcessResources.blueNoise64 = new Texture2D[64];
+                for (int i = 0; i < 64; i++)
                 {
-                    depthnormals = ab.LoadAsset<Shader>("Internal-DepthNormalsTexturemod");
-                    postProcessResources = ScriptableObject.CreateInstance<PostProcessResources>();
-                    postProcessResources.shaders = new PostProcessResources.Shaders();
-                    postProcessResources.computeShaders = new PostProcessResources.ComputeShaders();
-                    postProcessResources.smaaLuts = new PostProcessResources.SMAALuts();
-                    postProcessResources.shaders.bloom = ab.LoadAsset<Shader>("bloom");
-                    postProcessResources.shaders.copy = ab.LoadAsset<Shader>("copy");
-                    postProcessResources.shaders.copyStd = ab.LoadAsset<Shader>("copyStd");
-                    postProcessResources.shaders.copyStdFromTexArray = ab.LoadAsset<Shader>("copyStdFromTexArray");
-                    postProcessResources.shaders.copyStdFromDoubleWide = ab.LoadAsset<Shader>("copyStdFromDoubleWide");
-                    postProcessResources.shaders.discardAlpha = ab.LoadAsset<Shader>("discardAlpha");
-                    postProcessResources.shaders.depthOfField = ab.LoadAsset<Shader>("depthOfField");
-                    postProcessResources.shaders.finalPass = ab.LoadAsset<Shader>("finalPass");
-                    postProcessResources.shaders.grainBaker = ab.LoadAsset<Shader>("grainBaker");
-                    postProcessResources.shaders.motionBlur = ab.LoadAsset<Shader>("motionBlur");
-                    postProcessResources.shaders.temporalAntialiasing = ab.LoadAsset<Shader>("temporalAntialiasing");
-                    postProcessResources.shaders.subpixelMorphologicalAntialiasing = ab.LoadAsset<Shader>("subpixelMorphologicalAntialiasing");
-                    postProcessResources.shaders.texture2dLerp = ab.LoadAsset<Shader>("texture2dLerp");
-                    postProcessResources.shaders.uber = ab.LoadAsset<Shader>("uber");
-                    postProcessResources.shaders.lut2DBaker = ab.LoadAsset<Shader>("lut2DBaker");
-                    postProcessResources.shaders.lightMeter = ab.LoadAsset<Shader>("lightMeter");
-                    postProcessResources.shaders.gammaHistogram = ab.LoadAsset<Shader>("gammaHistogram");
-                    postProcessResources.shaders.waveform = ab.LoadAsset<Shader>("waveform");
-                    postProcessResources.shaders.vectorscope = ab.LoadAsset<Shader>("vectorscope");
-                    postProcessResources.shaders.debugOverlays = ab.LoadAsset<Shader>("debugOverlays");
-                    postProcessResources.shaders.deferredFog = ab.LoadAsset<Shader>("deferredFog");
-                    postProcessResources.shaders.scalableAO = ab.LoadAsset<Shader>("scalableAO");
-                    postProcessResources.shaders.multiScaleAO = ab.LoadAsset<Shader>("multiScaleAO");
-                    postProcessResources.shaders.screenSpaceReflections = ab.LoadAsset<Shader>("screenSpaceReflections");
-                    postProcessResources.computeShaders.autoExposure = ab.LoadAsset<ComputeShader>("AutoExposure.compute");
-                    postProcessResources.computeShaders.exposureHistogram = ab.LoadAsset<ComputeShader>("ExposureHistogram.compute");
-                    postProcessResources.computeShaders.lut3DBaker = ab.LoadAsset<ComputeShader>("Lut3DBaker.compute");
-                    postProcessResources.computeShaders.texture3dLerp = ab.LoadAsset<ComputeShader>("Texture3DLerp.compute");
-                    postProcessResources.computeShaders.multiScaleAODownsample1 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample1.compute.");
-                    postProcessResources.computeShaders.multiScaleAODownsample2 = ab.LoadAsset<ComputeShader>("MultiScaleVODownsample2.compute");
-                    postProcessResources.computeShaders.multiScaleAORender = ab.LoadAsset<ComputeShader>("MultiScaleVORender.compute");
-                    postProcessResources.computeShaders.multiScaleAOUpsample = ab.LoadAsset<ComputeShader>("MultiScaleVOUpsample.compute");
-                    postProcessResources.computeShaders.gaussianDownsample = ab.LoadAsset<ComputeShader>("GaussianDownsample.compute");
-                    postProcessResources.smaaLuts.area = ab.LoadAsset<Texture2D>("areaTex");
-                    postProcessResources.smaaLuts.search = ab.LoadAsset<Texture2D>("searchTex");
-                    postProcessResources.blueNoise64 = new Texture2D[64];
-                    for (int i = 0; i < 64; i++)
-                    {
-                        postProcessResources.blueNoise64[i] = ab.LoadAsset<Texture2D>("LDR_LLL1_" + i + ".png");
-                    }
-                    postProcessResources.blueNoise256 = new Texture2D[8];
-                    for (int j = 0; j < 8; j++)
-                    {
-                        postProcessResources.blueNoise256[j] = ab.LoadAsset<Texture2D>("LDR_LLL2_" + j + ".png");
-                    }
-                    SSAOshader = ab.LoadAsset<Shader>("SSAOPro_v2");
-                    noiseTex = ab.LoadAsset<Texture2D>("noise");
-                    SobelShader = ab.LoadAsset<Shader>("RealToon_Sobel_Outline_FX.shader");
-                    posShader = ab.LoadAsset<Shader>("Posterize");
-                    sengaShader = ab.LoadAsset<Shader>("senga");
-                    sengaToneTex = ab.LoadAsset<Texture2D>("dot_03.bmp");
-                    ab.Unload(false);
-                    BindConfig();
-                    SceneManager.sceneLoaded += OnSceneLoaded;
-                    base.Config.SettingChanged += OnSettingChanged;
-                    CharacterApi.CharacterReloaded += CharacterReloaded;
-                    StudioSaveLoadApi.ObjectsSelected += ObjectsSelected;
-                    onoff_post = onoff.Value;
+                    postProcessResources.blueNoise64[i] = ab.LoadAsset<Texture2D>("LDR_LLL1_" + i + ".png");
                 }
-                else
+                postProcessResources.blueNoise256 = new Texture2D[8];
+                for (int j = 0; j < 8; j++)
                 {
-                    Logger.LogMessage($"Missing asset file, effects will not work. Make sure it's located in 'BepInEx/{assetFilePath}'. Your game WILL crash");
-                    Logger.LogError("Asset file not loaded. Effects will not work and game will eventually crash because of this.");
+                    postProcessResources.blueNoise256[j] = ab.LoadAsset<Texture2D>("LDR_LLL2_" + j + ".png");
                 }
-#if KK
+                SSAOshader = ab.LoadAsset<Shader>("SSAOPro_v2");
+                noiseTex = ab.LoadAsset<Texture2D>("noise");
+                SobelShader = ab.LoadAsset<Shader>("RealToon_Sobel_Outline_FX.shader");
+                posShader = ab.LoadAsset<Shader>("Posterize");
+                sengaShader = ab.LoadAsset<Shader>("senga");
+                sengaToneTex = ab.LoadAsset<Texture2D>("dot_03.bmp");
+                ab.Unload(false);
+                BindConfig();
+                SceneManager.sceneLoaded += OnSceneLoaded;
+                base.Config.SettingChanged += OnSettingChanged;
+                CharacterApi.CharacterReloaded += CharacterReloaded;
+                StudioSaveLoadApi.ObjectsSelected += ObjectsSelected;
+                onoff_post = onoff.Value;
             }
-#endif
+            else
+            {
+                Logger.LogMessage($"Missing asset file, effects will not work. Make sure it's located in 'BepInEx/{assetFilePath}'. Your game WILL crash");
+                Logger.LogError("Asset file not loaded. Effects will not work and game will eventually crash because of this.");
+            }
         }
 
         private void Start()
         {
-#if KK
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && enabledInMaker.Value))
+            if (onoff.Value)
             {
-#endif
-                if (onoff.Value)
-                {
-                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
-                    GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
-                }
-                Harmony.CreateAndPatchAll(typeof(Patch), null);
-#if KK
+                GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
+                GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
             }
-#endif
+            Harmony.CreateAndPatchAll(typeof(Patch), null);
         }
 
         private void ObjectsSelected(object sender, ObjectsSelectedEventArgs e)
@@ -272,98 +258,102 @@ namespace PostProcessingEffectsV3
         private void Update()
         {
 #if KK
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && !enabledInMaker.Value)
+                onoff.Value = false;
+#endif
+            if (onoff.Value != onoff_post)
+            {
+                if (onoff.Value)
+                {
+                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
+                    GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
+                    Setup();
+                }
+                else
+                {
+                    GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseBuiltin);
+                    RuntimeUtilities.DestroyVolume(postProcessVolume, true, true);
+                    UnityEngine.Object.Destroy(postProcessLayer);
+                    UnityEngine.Object.Destroy(sAOPro);
+                    UnityEngine.Object.Destroy(sobel);
+                    UnityEngine.Object.Destroy(posterize);
+                    UnityEngine.Object.Destroy(sengaEffect);
+                    if (studio != null && studio.sceneInfo != null && StudioAPI.InsideStudio && FogEnable.Value)
+                    {
+                        postProcessLayer.fog.enabled = false;
+                        RenderSettings.fog = false;
+                        studio.sceneInfo.enableFog = false;
+                        globalFog.enabled = false;
+                    }
+                }
+            }
+            onoff_post = onoff.Value;
+            if (onoff.Value)
+            {
+                if (DOFautofocus.Value && DOFenable.Value)
+                {
+                    if (cam == null)
+                    {
+                        return;
+                    }
+                    if (DOFAFmode.Value == 0)
+                    {
+                        DOF.focusDistance.Override(Vector3.Distance(camtarget.transform.position, cam.transform.position));
+                    }
+                    else if (DOFAFmode.Value == 1 && KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+                    {
+                        if (charapos != null)
+                        {
+                            float x = Vector3.Distance(charapos.position, cam.transform.position);
+                            DOF.focusDistance.Override(x);
+                        }
+                    }
+                    else if (DOFAFmode.Value == 2 && CharaList.Keys.Count() != 0)
+                    {
+                        Dictionary<float, Transform> dictionary = new Dictionary<float, Transform>();
+                        foreach (ChaControl cha in CharaList.Keys.Where(key => key != null).ToList())
+                        {
+                            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
+                            {
+                                if (cha.GetOCIChar().treeNodeObject.visible)
+                                {
+                                    Vector3 vector = cam.WorldToScreenPoint(CharaList[cha].gameObject.transform.position);
+                                    float key = Vector2.Distance(new Vector2(vector.x, vector.y), new Vector2(Screen.width / 2, Screen.height / 2));
+                                    dictionary.Add(key, CharaList[cha]);
+                                }
+                            }
+                            else
+                            {
+                                Vector3 vector2 = cam.WorldToScreenPoint(CharaList[cha].gameObject.transform.position);
+                                float key2 = Vector2.Distance(new Vector2(vector2.x, vector2.y), new Vector2(Screen.width / 2, Screen.height / 2));
+                                dictionary.Add(key2, CharaList[cha]);
+                            }
+                        }
+                        DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
+                    }
+                }
+#if KK
+                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR)
+                {
+                    cam.allowHDR = false;
+                }
+#endif
+                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker || KoikatuAPI.GetCurrentGameMode() == GameMode.Unknown)
+                {
+                    cam.allowMSAA = false;
+#if KK
+                    postProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+#endif
+                }
+            }
+            if (MasterSwitch.Value.IsDown())
+            {
+                onoff.Value = !onoff.Value;
+            }
+#if KK
             if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && enabledInMaker.Value))
             {
 #endif
-            if (onoff.Value != onoff_post)
-                {
-                    if (onoff.Value)
-                    {
-                        GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseCustom);
-                        GraphicsSettings.SetCustomShader(BuiltinShaderType.DepthNormals, depthnormals);
-                        Setup();
-                    }
-                    else
-                    {
-                        GraphicsSettings.SetShaderMode(BuiltinShaderType.DepthNormals, BuiltinShaderMode.UseBuiltin);
-                        RuntimeUtilities.DestroyVolume(postProcessVolume, true, true);
-                        UnityEngine.Object.Destroy(postProcessLayer);
-                        UnityEngine.Object.Destroy(sAOPro);
-                        UnityEngine.Object.Destroy(sobel);
-                        UnityEngine.Object.Destroy(posterize);
-                        UnityEngine.Object.Destroy(sengaEffect);
-                        if (studio != null && studio.sceneInfo != null && StudioAPI.InsideStudio && FogEnable.Value)
-                        {
-                            postProcessLayer.fog.enabled = false;
-                            RenderSettings.fog = false;
-                            studio.sceneInfo.enableFog = false;
-                            globalFog.enabled = false;
-                        }
-                    }
-                }
-                onoff_post = onoff.Value;
-                if (onoff.Value)
-                {
-                    if (DOFautofocus.Value && DOFenable.Value)
-                    {
-                        if (cam == null)
-                        {
-                            return;
-                        }
-                        if (DOFAFmode.Value == 0)
-                        {
-                            DOF.focusDistance.Override(Vector3.Distance(camtarget.transform.position, cam.transform.position));
-                        }
-                        else if (DOFAFmode.Value == 1 && KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
-                        {
-                            if (charapos != null)
-                            {
-                                float x = Vector3.Distance(charapos.position, cam.transform.position);
-                                DOF.focusDistance.Override(x);
-                            }
-                        }
-                        else if (DOFAFmode.Value == 2 && CharaList.Keys.Count() != 0)
-                        {
-                            Dictionary<float, Transform> dictionary = new Dictionary<float, Transform>();
-                            foreach (ChaControl cha in CharaList.Keys.Where(key => key != null).ToList())
-                            {
-                                if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
-                                {
-                                    if (cha.GetOCIChar().treeNodeObject.visible)
-                                    {
-                                        Vector3 vector = cam.WorldToScreenPoint(CharaList[cha].gameObject.transform.position);
-                                        float key = Vector2.Distance(new Vector2(vector.x, vector.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                        dictionary.Add(key, CharaList[cha]);
-                                    }
-                                }
-                                else
-                                {
-                                    Vector3 vector2 = cam.WorldToScreenPoint(CharaList[cha].gameObject.transform.position);
-                                    float key2 = Vector2.Distance(new Vector2(vector2.x, vector2.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                    dictionary.Add(key2, CharaList[cha]);
-                                }
-                            }
-                            DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
-                        }
-                    }
-#if KK
-                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker && cam.allowHDR)
-                    {
-                        cam.allowHDR = false;
-                    }
-#endif
-                    if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker || KoikatuAPI.GetCurrentGameMode() == GameMode.Unknown)
-                    {
-                        cam.allowMSAA = false;
-#if KK
-                        postProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
-#endif
-                    }
-                }
-                if (MasterSwitch.Value.IsDown())
-                {
-                    onoff.Value = !onoff.Value;
-                }
                 if (OpenGUI.Value.IsDown())
                 {
                     mainwin = !mainwin;
@@ -371,7 +361,7 @@ namespace PostProcessingEffectsV3
 #if KK
             }
 #endif
-        }
+            }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
