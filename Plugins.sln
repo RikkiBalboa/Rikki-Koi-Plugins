@@ -47,17 +47,34 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.ShadowColorSwapper", "src\ShadowColorSwapper.KKS\KKS.ShadowColorSwapper.csproj", "{9588E76A-723E-47BE-8250-25E1E206634D}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
+		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{6d48f885-1d97-4e2a-b3c2-47ab5f8806cd}*SharedItemsImports = 13
+		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
+		src\KKPRimController.Core\KKPRimController.Core.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
+		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
+		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
+		src\KKPRimController.Core\KKPRimController.Core.projitems*{b98974d5-d331-4e2e-9498-a54dd706c4f2}*SharedItemsImports = 13
+		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{beb828ae-5723-4086-940f-b6eb2465060c}*SharedItemsImports = 13
+		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
+		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{daf47fdd-df83-4a52-b198-0d097840d65f}*SharedItemsImports = 13
+		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
+		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
+		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
+		src\KKPRimController.Core\KKPRimController.Core.projitems*{ff395052-c2b4-4555-b335-5c71a7cde58d}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{ff395052-c2b4-4555-b335-5c71a7cde58d}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E6EF7A17-9328-4821-AF19-BC2C175BF4DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6EF7A17-9328-4821-AF19-BC2C175BF4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{841FFFF7-1940-4B7B-B21F-83E2F16333D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{841FFFF7-1940-4B7B-B21F-83E2F16333D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BEB828AE-5723-4086-940F-B6EB2465060C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BEB828AE-5723-4086-940F-B6EB2465060C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73CED555-9406-453D-98F5-39BA332647A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73CED555-9406-453D-98F5-39BA332647A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73CED555-9406-453D-98F5-39BA332647A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -66,10 +83,6 @@ Global
 		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF395052-C2B4-4555-B335-5C71A7CDE58D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B98974D5-D331-4E2E-9498-A54DD706C4F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B98974D5-D331-4E2E-9498-A54DD706C4F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B46DBB11-BBB6-4152-B5B4-AEA6B69F2AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B46DBB11-BBB6-4152-B5B4-AEA6B69F2AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{079DF383-C1E8-4D30-95AC-6C0892DDC2F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -114,28 +127,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
-		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{6d48f885-1d97-4e2a-b3c2-47ab5f8806cd}*SharedItemsImports = 13
-		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
-		src\KKPRimController.Core\KKPRimController.Core.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
-		src\Shared\Shared.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
-		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
-		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
-		src\Shared\Shared.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
-		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
-		src\KKPRimController.Core\KKPRimController.Core.projitems*{b98974d5-d331-4e2e-9498-a54dd706c4f2}*SharedItemsImports = 13
-		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{beb828ae-5723-4086-940f-b6eb2465060c}*SharedItemsImports = 13
-		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
-		src\Shared\Shared.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
-		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{daf47fdd-df83-4a52-b198-0d097840d65f}*SharedItemsImports = 13
-		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
-		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
-		src\Shared\Shared.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
-		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
-		src\Shared\Shared.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
-		src\KKPRimController.Core\KKPRimController.Core.projitems*{ff395052-c2b4-4555-b335-5c71a7cde58d}*SharedItemsImports = 4
-		src\Shared\Shared.projitems*{ff395052-c2b4-4555-b335-5c71a7cde58d}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
