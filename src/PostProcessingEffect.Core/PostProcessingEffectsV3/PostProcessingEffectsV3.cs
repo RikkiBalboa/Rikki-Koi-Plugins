@@ -319,17 +319,18 @@ namespace PostProcessingEffectsV3
                                 {
                                     Vector3 vector = cam.WorldToScreenPoint(CharaList[cha].gameObject.transform.position);
                                     float key = Vector2.Distance(new Vector2(vector.x, vector.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                    dictionary.Add(key, CharaList[cha]);
+                                    dictionary[key] = CharaList[cha];
                                 }
                             }
                             else
                             {
                                 Vector3 vector2 = cam.WorldToScreenPoint(CharaList[cha].gameObject.transform.position);
                                 float key2 = Vector2.Distance(new Vector2(vector2.x, vector2.y), new Vector2(Screen.width / 2, Screen.height / 2));
-                                dictionary.Add(key2, CharaList[cha]);
+                                dictionary[key2] = CharaList[cha];
                             }
                         }
-                        DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
+                        if(dictionary.Count > 0)
+                            DOF.focusDistance.Override(Vector3.Distance(dictionary[dictionary.Keys.Min()].position, cam.transform.position));
                     }
                 }
 #if KK
