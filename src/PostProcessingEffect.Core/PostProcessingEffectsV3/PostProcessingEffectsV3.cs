@@ -1573,11 +1573,14 @@ namespace PostProcessingEffectsV3
 
         private GUIStyle colorbutton(Color col)
         {
-            GUIStyle gUIStyle = new GUIStyle();
+            GUIStyle gUIStyle = new GUIStyle(GUI.skin.button);
             Texture2D texture2D = new Texture2D(1, 1, TextureFormat.RGBAFloat, false);
             texture2D.SetPixel(0, 0, col);
             texture2D.Apply();
             gUIStyle.normal.background = texture2D;
+            gUIStyle.hover = gUIStyle.normal;
+            gUIStyle.onHover = gUIStyle.normal;
+            gUIStyle.onActive = gUIStyle.normal;
             return gUIStyle;
         }
 
