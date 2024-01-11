@@ -103,8 +103,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{6d48f885-1d97-4e2a-b3c2-47ab5f8806cd}*SharedItemsImports = 13
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
+		src\Shared\Shared.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13

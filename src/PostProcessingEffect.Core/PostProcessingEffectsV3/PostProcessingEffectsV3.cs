@@ -8,6 +8,7 @@ using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
+using Shared;
 using Studio;
 using System;
 using System.Collections.Generic;
@@ -976,7 +977,7 @@ namespace PostProcessingEffectsV3
                         {
                             cOccColor.Value = c;
                         };
-                        ColorPicker(cOccColor.Value, act);
+                        ColorPicker.OpenColorPicker(cOccColor.Value, act);
                     }
                     if (GUILayout.Button("Reset", GUILayout.Width(60f)))
                     {
@@ -1048,7 +1049,7 @@ namespace PostProcessingEffectsV3
                         {
                             AOcolor.Value = c;
                         };
-                        ColorPicker(AOcolor.Value, act2);
+                        ColorPicker.OpenColorPicker(AOcolor.Value, act2);
                     }
                     if (GUILayout.Button("Reset", GUILayout.Width(60f)))
                     {
@@ -1141,7 +1142,7 @@ namespace PostProcessingEffectsV3
                     {
                         Bloomcolor.Value = c;
                     };
-                    ColorPicker(Bloomcolor.Value, act3);
+                    ColorPicker.OpenColorPicker(Bloomcolor.Value, act3);
                 }
                 if (GUILayout.Button("Reset", GUILayout.Width(60f)))
                 {
@@ -1221,7 +1222,7 @@ namespace PostProcessingEffectsV3
                     {
                         CGcolfilter.Value = c;
                     };
-                    ColorPicker(CGcolfilter.Value, act4);
+                    ColorPicker.OpenColorPicker(CGcolfilter.Value, act4);
                 }
                 if (GUILayout.Button("Reset", GUILayout.Width(60f)))
                 {
@@ -1312,7 +1313,7 @@ namespace PostProcessingEffectsV3
                     {
                         VGcol.Value = c;
                     };
-                    ColorPicker(VGcol.Value, act5);
+                    ColorPicker.OpenColorPicker(VGcol.Value, act5);
                 }
                 if (GUILayout.Button("Reset", GUILayout.Width(60f)))
                 {
@@ -1361,7 +1362,7 @@ namespace PostProcessingEffectsV3
                     {
                         OutlineColor.Value = c;
                     };
-                    ColorPicker(OutlineColor.Value, act6);
+                    ColorPicker.OpenColorPicker(OutlineColor.Value, act6);
                 }
                 if (GUILayout.Button("Reset", GUILayout.Width(60f)))
                 {
@@ -1536,7 +1537,7 @@ namespace PostProcessingEffectsV3
                     {
                         FogColor.Value = c;
                     };
-                    ColorPicker(FogColor.Value, act3);
+                    ColorPicker.OpenColorPicker(FogColor.Value, act3);
                 }
                 if (GUILayout.Button("Reset", GUILayout.Width(60f)))
                 {
@@ -1582,39 +1583,6 @@ namespace PostProcessingEffectsV3
             gUIStyle.onHover = gUIStyle.normal;
             gUIStyle.onActive = gUIStyle.normal;
             return gUIStyle;
-        }
-
-        public void ColorPicker(Color col, Action<Color> act)
-        {
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
-            {
-                var setup = AccessTools.Method(typeof(ColorPalette), nameof(ColorPalette.Setup));
-                if (studio.colorPalette.visible)
-                {
-                    studio.colorPalette.visible = false;
-                }
-                else
-                {
-                    setup.Invoke(studio.colorPalette, new object[] { "ColorPicker", col, act, true });
-                    studio.colorPalette.visible = true;
-                }
-            }
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker)
-            {
-                CvsColor component = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsColor/Top").GetComponent<CvsColor>();
-                var setup = AccessTools.Method(typeof(CvsColor), nameof(CvsColor.Setup));
-                if (component.isOpen)
-                {
-                    component.Close();
-                }
-                else
-                {
-                    if (setup.GetParameters().Length == 5)
-                        setup.Invoke(component, new object[] { "ColorPicker", CvsColor.ConnectColorKind.None, col, act, true });
-                    else
-                        setup.Invoke(component, new object[] { "ColorPicker", CvsColor.ConnectColorKind.None, col, act, null, true });
-                }
-            }
         }
 #endregion
 
