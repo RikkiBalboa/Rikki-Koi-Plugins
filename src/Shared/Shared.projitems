@@ -9,11 +9,6 @@
     <Import_RootNamespace>Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Shared.CommonCode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Shared.ConfigurationManagerAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared.Constants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Shared.Extensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Shared.TimelineCompatibility.cs" />
   </ItemGroup>
 </Project>
