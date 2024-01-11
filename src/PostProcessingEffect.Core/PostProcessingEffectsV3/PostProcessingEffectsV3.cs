@@ -970,7 +970,7 @@ namespace PostProcessingEffectsV3
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Color   ");
-                    if (GUILayout.Button("", colorbutton(cOccColor.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
+                    if (GUILayout.Button("", colorbutton(cOccColor.Value)))
                     {
                         Action<Color> act = delegate (Color c)
                         {
@@ -1042,7 +1042,7 @@ namespace PostProcessingEffectsV3
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Color   ");
-                    if (GUILayout.Button("", colorbutton(AOcolor.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
+                    if (GUILayout.Button("", colorbutton(AOcolor.Value)))
                     {
                         Action<Color> act2 = delegate (Color c)
                         {
@@ -1135,7 +1135,7 @@ namespace PostProcessingEffectsV3
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Color   ");
-                if (GUILayout.Button("", colorbutton(Bloomcolor.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
+                if (GUILayout.Button("", colorbutton(Bloomcolor.Value)))
                 {
                     Action<Color> act3 = delegate (Color c)
                     {
@@ -1215,7 +1215,7 @@ namespace PostProcessingEffectsV3
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Color   ");
-                if (GUILayout.Button("", colorbutton(CGcolfilter.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
+                if (GUILayout.Button("", colorbutton(CGcolfilter.Value)))
                 {
                     Action<Color> act4 = delegate (Color c)
                     {
@@ -1306,7 +1306,7 @@ namespace PostProcessingEffectsV3
                 VGenable.Value = GUILayout.Toggle(VGenable.Value, "Enable");
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Color   ");
-                if (GUILayout.Button("", colorbutton(VGcol.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
+                if (GUILayout.Button("", colorbutton(VGcol.Value)))
                 {
                     Action<Color> act5 = delegate (Color c)
                     {
@@ -1355,7 +1355,7 @@ namespace PostProcessingEffectsV3
                 SoutlineEnable.Value = GUILayout.Toggle(SoutlineEnable.Value, "Enable");
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("OutlineColor   ");
-                if (GUILayout.Button("", colorbutton(OutlineColor.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
+                if (GUILayout.Button("", colorbutton(OutlineColor.Value)))
                 {
                     Action<Color> act6 = delegate (Color c)
                     {
@@ -1530,7 +1530,7 @@ namespace PostProcessingEffectsV3
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Color   ");
-                if (GUILayout.Button("", colorbutton(FogColor.Value)) && (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio || KoikatuAPI.GetCurrentGameMode() != GameMode.Maker))
+                if (GUILayout.Button("", colorbutton(FogColor.Value)))
                 {
                     Action<Color> act3 = delegate (Color c)
                     {
@@ -1588,26 +1588,31 @@ namespace PostProcessingEffectsV3
         {
             if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
             {
+                var setup = AccessTools.Method(typeof(ColorPalette), nameof(ColorPalette.Setup));
                 if (studio.colorPalette.visible)
                 {
                     studio.colorPalette.visible = false;
                 }
                 else
                 {
-                    studio.colorPalette.Setup("ColorPicker", col, act, true);
+                    setup.Invoke(studio.colorPalette, new object[] { "ColorPicker", col, act, true });
                     studio.colorPalette.visible = true;
                 }
             }
             if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker)
             {
                 CvsColor component = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsColor/Top").GetComponent<CvsColor>();
+                var setup = AccessTools.Method(typeof(CvsColor), nameof(CvsColor.Setup));
                 if (component.isOpen)
                 {
                     component.Close();
                 }
                 else
                 {
-                    component.Setup("ColorPicker", CvsColor.ConnectColorKind.None, col, act, true);
+                    if (setup.GetParameters().Length == 5)
+                        setup.Invoke(component, new object[] { "ColorPicker", CvsColor.ConnectColorKind.None, col, act, true });
+                    else
+                        setup.Invoke(component, new object[] { "ColorPicker", CvsColor.ConnectColorKind.None, col, act, null, true });
                 }
             }
         }
