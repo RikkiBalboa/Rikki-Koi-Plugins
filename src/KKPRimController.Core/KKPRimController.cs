@@ -1,12 +1,12 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using ChaCustom;
 using KK_Plugins.MaterialEditor;
 using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Studio;
 using KKAPI.Utilities;
+using Shared;
 using Studio;
 using System;
 using System.Linq;
@@ -375,7 +375,7 @@ namespace Plugins
                                 UpdateKKPRim();
                             }
                         }
-                        ColorPicker(KKPRimColor, act3);
+                        ColorPicker.OpenColorPicker(KKPRimColor, act3);
                     }
 
                     if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
@@ -493,38 +493,6 @@ namespace Plugins
             texture2D.Apply();
             guistyle.normal.background = texture2D;
             return guistyle;
-        }
-
-        public void ColorPicker(Color col, Action<Color> act)
-        {
-            bool flag = KoikatuAPI.GetCurrentGameMode() == GameMode.Studio;
-            if (flag)
-            {
-                bool visible = this.studio.colorPalette.visible;
-                if (visible)
-                {
-                    this.studio.colorPalette.visible = false;
-                }
-                else
-                {
-                    this.studio.colorPalette.Setup("ColorPicker", col, act, true);
-                    this.studio.colorPalette.visible = true;
-                }
-            }
-            bool flag2 = KoikatuAPI.GetCurrentGameMode() == GameMode.Maker;
-            if (flag2)
-            {
-                CvsColor component = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsColor/Top").GetComponent<CvsColor>();
-                bool isOpen = component.isOpen;
-                if (isOpen)
-                {
-                    component.Close();
-                }
-                else
-                {
-                    component.Setup("ColorPicker", 0, col, act, true);
-                }
-            }
         }
         #endregion UI
     }
