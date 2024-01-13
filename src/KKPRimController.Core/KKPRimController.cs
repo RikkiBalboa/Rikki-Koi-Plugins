@@ -23,7 +23,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.kkprimcontroller";
         public const string PluginName = "KKPRim Controller";
         public const string PluginNameInternal = Constants.Prefix + "_KKPRimController";
-        public const string PluginVersion = "1.7";
+        public const string PluginVersion = "1.8";
         internal static new ManualLogSource Logger;
         private Studio.Studio studio;
 
@@ -33,6 +33,7 @@ namespace Plugins
         public static ConfigEntry<float> KKPRimRotateXDefault { get; private set; }
         public static ConfigEntry<float> KKPRimRotateYDefault { get; private set; }
         public static ConfigEntry<float> KKPRimSoftDefault { get; private set; }
+        public static ConfigEntry<float> RimReflectModeDefault { get; private set; }
         public static ConfigEntry<float> UseKKPRimDefault { get; private set; }
         public static ConfigEntry<Color> KKPRimColorDefault { get; private set; }
         public static ConfigEntry<float> KKPRimSoftHairMaxValue { get; private set; }
@@ -47,6 +48,7 @@ namespace Plugins
         private float KKPRimRotateX = 0;
         private float KKPRimRotateY = 0;
         private float KKPRimSoft = 0;
+        private float RimReflectMode = 0;
         private float UseKKPRim = 0;
         private Color KKPRimColor = Color.white;
 
@@ -70,6 +72,7 @@ namespace Plugins
             KKPRimRotateXDefault = Config.Bind("Default Values", "Rotate X", 0f);
             KKPRimRotateYDefault = Config.Bind("Default Values", "Rotate Y", 0f);
             KKPRimSoftDefault = Config.Bind("Default Values", "Soft", 1.5f);
+            RimReflectModeDefault = Config.Bind("Default Values", "Reflect Mode", 0f);
             UseKKPRimDefault = Config.Bind("Default Values", "Use", 0f);
             KKPRimColorDefault = Config.Bind("Default Values", "Color", Color.white);
             KKPRimSoftHairMaxValue = Config.Bind("Misc.", "Max soft value for hair", 20f, new ConfigDescription("Hair shaders react differently to higher soft values. This limits the max value to be used on hair shaders"));
@@ -92,6 +95,8 @@ namespace Plugins
             KKPRimRotateYBuffer = KKPRimRotateYDefault.Value.ToString();
             KKPRimSoft = KKPRimSoftDefault.Value;
             KKPRimSoftBuffer = KKPRimSoftDefault.Value.ToString();
+            RimReflectMode = RimReflectModeDefault.Value;
+            RimReflectModeBuffer = RimReflectModeDefault.Value.ToString();
             UseKKPRim = UseKKPRimDefault.Value;
             UseKKPRimBuffer = UseKKPRimDefault.Value.ToString();
             KKPRimColor = KKPRimColorDefault.Value;
@@ -208,6 +213,7 @@ namespace Plugins
                 KKPRimRotateX = KKPRimRotateXDefault.Value;
                 KKPRimRotateY = KKPRimRotateYDefault.Value;
                 KKPRimSoft = KKPRimSoftDefault.Value;
+                RimReflectMode = RimReflectModeDefault.Value;
                 UseKKPRim = UseKKPRimDefault.Value;
                 KKPRimColor = KKPRimColorDefault.Value;
 
@@ -216,6 +222,7 @@ namespace Plugins
                 KKPRimRotateXBuffer = KKPRimRotateX.ToString();
                 KKPRimRotateYBuffer = KKPRimRotateY.ToString();
                 KKPRimSoftBuffer = KKPRimSoft.ToString();
+                RimReflectModeBuffer = RimReflectMode.ToString();
                 UseKKPRimBuffer = UseKKPRim.ToString();
 
                 UpdateKKPRim();
@@ -249,6 +256,7 @@ namespace Plugins
                     (mat.shader.name.ToLower().Contains("hair") && KKPRimSoft > KKPRimSoftHairMaxValue.Value) ? KKPRimSoftHairMaxValue.Value : KKPRimSoft,
                     go
                 );
+                controller.SetMaterialFloatProperty(slot, objectType, mat, "rimReflectMode", RimReflectMode, go);
                 controller.SetMaterialFloatProperty(slot, objectType, mat, "UseKKPRim", UseKKPRim, go);
                 controller.SetMaterialColorProperty(slot, objectType, mat, "KKPRimColor", KKPRimColor, go);
             }
@@ -330,6 +338,7 @@ namespace Plugins
         private string KKPRimRotateXBuffer = "";
         private string KKPRimRotateYBuffer = "";
         private string KKPRimSoftBuffer = "";
+        private string RimReflectModeBuffer = "";
         private string UseKKPRimBuffer = "";
 
         protected void OnGUI()
@@ -351,6 +360,7 @@ namespace Plugins
                 DrawSlider(ref KKPRimRotateX, -2f, 2f, KKPRimRotateXDefault.Value, ref KKPRimRotateXBuffer, "Rotate X");
                 DrawSlider(ref KKPRimRotateY, -2f, 2f, KKPRimRotateYDefault.Value, ref KKPRimRotateYBuffer, "Rotate Y");
                 DrawSlider(ref KKPRimSoft, 0, 10f, KKPRimSoftDefault.Value, ref KKPRimSoftBuffer, "Soft");
+                DrawSlider(ref RimReflectMode, -1, 1, RimReflectModeDefault.Value, ref RimReflectModeBuffer, "rimReflectMode");
                 DrawSlider(ref UseKKPRim, 0, 1f, UseKKPRimDefault.Value, ref UseKKPRimBuffer, "Use KKPRim");
 
                 GUILayout.Label("Color", new GUIStyle
