@@ -166,6 +166,7 @@ namespace Plugins
                     KKPRimRotateXBuffer = KKPRimRotateX.ToString();
                     KKPRimRotateYBuffer = KKPRimRotateY.ToString();
                     KKPRimSoftBuffer = KKPRimSoft.ToString();
+                    RimReflectModeBuffer = RimReflectMode.ToString();
                     UseKKPRimBuffer = UseKKPRim.ToString();
                 }
 
@@ -180,6 +181,7 @@ namespace Plugins
                     KKPRimRotateX = controller.GetMaterialFloatPropertyValue(0, ObjectType.Character, material, "KKPRimRotateX", controller.ChaControl.gameObject) ?? KKPRimRotateXDefault.Value;
                     KKPRimRotateY = controller.GetMaterialFloatPropertyValue(0, ObjectType.Character, material, "KKPRimRotateY", controller.ChaControl.gameObject) ?? KKPRimRotateYDefault.Value;
                     KKPRimSoft = controller.GetMaterialFloatPropertyValue(0, ObjectType.Character, material, "KKPRimSoft", controller.ChaControl.gameObject) ?? KKPRimSoftDefault.Value;
+                    RimReflectMode = controller.GetMaterialFloatPropertyValue(0, ObjectType.Character, material, "rimReflectMode", controller.ChaControl.gameObject) ?? KKPRimSoftDefault.Value;
                     UseKKPRim = controller.GetMaterialFloatPropertyValue(0, ObjectType.Character, material, "UseKKPRim", controller.ChaControl.gameObject) ?? UseKKPRimDefault.Value;
                     KKPRimColor = controller.GetMaterialColorPropertyValue(0, ObjectType.Character, material, "KKPRimColor", controller.ChaControl.gameObject) ?? KKPRimColorDefault.Value;
                     update();
@@ -196,6 +198,7 @@ namespace Plugins
                     KKPRimRotateX = controller.GetMaterialFloatPropertyValue(objectId, material, "KKPRimRotateX") ?? KKPRimRotateXDefault.Value;
                     KKPRimRotateY = controller.GetMaterialFloatPropertyValue(objectId, material, "KKPRimRotateY") ?? KKPRimRotateYDefault.Value;
                     KKPRimSoft = controller.GetMaterialFloatPropertyValue(objectId, material, "KKPRimSoft") ?? KKPRimSoftDefault.Value;
+                    RimReflectMode = controller.GetMaterialFloatPropertyValue(objectId, material, "rimReflectMode") ?? KKPRimSoftDefault.Value;
                     UseKKPRim = controller.GetMaterialFloatPropertyValue(objectId, material, "UseKKPRim") ?? UseKKPRimDefault.Value;
                     KKPRimColor = controller.GetMaterialColorPropertyValue(objectId, material, "KKPRimColor") ?? KKPRimColorDefault.Value;
                     update();
@@ -236,6 +239,7 @@ namespace Plugins
             KKPRimRotateXDefault.Value = KKPRimRotateX;
             KKPRimRotateYDefault.Value = KKPRimRotateY;
             KKPRimSoftDefault.Value = KKPRimSoft;
+            RimReflectModeDefault.Value = RimReflectMode;
             UseKKPRimDefault.Value = UseKKPRim;
             KKPRimColorDefault.Value = KKPRimColor;
         }
@@ -320,6 +324,7 @@ namespace Plugins
                     controller.SetMaterialFloatProperty(id, material, "KKPRimRotateX", KKPRimRotateX);
                     controller.SetMaterialFloatProperty(id, material, "KKPRimRotateY", KKPRimRotateY);
                     controller.SetMaterialFloatProperty(id, material, "KKPRimSoft", KKPRimSoft);
+                    controller.SetMaterialFloatProperty(id, material, "rimReflectMode", RimReflectMode);
                     controller.SetMaterialFloatProperty(id, material, "UseKKPRim", UseKKPRim);
                     controller.SetMaterialColorProperty(id, material, "KKPRimColor", KKPRimColor);
                 }
