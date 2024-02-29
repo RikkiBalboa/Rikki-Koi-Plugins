@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
-using static Plugins.StudioSkinColor;
 
 namespace Plugins
 {
@@ -34,7 +33,6 @@ namespace Plugins
                 "Keyboard Shortcuts", "Reset All",
                 new KeyboardShortcut(KeyCode.G, KeyCode.RightControl)
             );
-            StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(PluginGUID);
         }
 
         private void Update()
@@ -62,6 +60,7 @@ namespace Plugins
             if (StudioAPI.InsideStudio)
             {
                 DefaultValues = new Dictionary<OCIChar, Dictionary<ModifiedValue, object>>();
+                StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(PluginGUID);
                 RegisterStudioControls();
             }
         }
@@ -72,12 +71,6 @@ namespace Plugins
             catBody.AddControl(new CurrentStateColorSlider("Main Skin", c => SetDefaultValue(c, MethodType.UpdateTexture, (int)TextureColor.SkinMain, c.GetChaControl().fileBody.skinMainColor), c => UpdateTextureColor(c, TextureColor.SkinMain)));
             catBody.AddControl(new CurrentStateColorSlider("Sub Skin", c => SetDefaultValue(c, MethodType.UpdateTexture, (int)TextureColor.SkinSub, c.GetChaControl().fileBody.skinSubColor), c => UpdateTextureColor(c, TextureColor.SkinSub)));
             catBody.AddControl(new CurrentStateColorSlider("Tan", c => SetDefaultValue(c, MethodType.UpdateTexture, (int)TextureColor.Tan, c.GetChaControl().fileBody.sunburnColor), c => UpdateTextureColor(c, TextureColor.Tan)));
-
-            catBody.AddControl(new CurrentStateCategorySwitch("Detail Line", c => SetDefaultValue(c, MethodType.UpdateCustomBody, (int)CustomBody.DrawAddLine, c.GetChaControl().fileBody.drawAddLine))).Value.Subscribe(value => UpdateCustomBody(value, CustomBody.DrawAddLine));
-            catBody.AddControl(new CurrentStateCategorySlider("Detail Power", c => SetDefaultValue(c, MethodType.UpdateCustomBody, (int)CustomBody.DetailPower, c.GetChaControl().fileBody.detailPower), 0, 1)).Value.Subscribe(value => UpdateCustomBody(value, CustomBody.DetailPower));
-            catBody.AddControl(new CurrentStateColorSlider("Pubic hair", c => SetDefaultValue(c, MethodType.UpdateCustomBody, (int)CustomBody.PubicHairColor, c.GetChaControl().fileBody.underhairColor), value => UpdateCustomBody(value, CustomBody.PubicHairColor)));
-            catBody.AddControl(new CurrentStateColorSlider("Nipple", c => SetDefaultValue(c, MethodType.UpdateCustomBody, (int)CustomBody.NippleColor, c.GetChaControl().fileBody.nipColor), value => UpdateCustomBody(value, CustomBody.NippleColor)));
-            catBody.AddControl(new CurrentStateCategorySlider("Nipple size", c => SetDefaultValue(c, MethodType.UpdateCustomBody, (int)CustomBody.AreolaSize, c.GetChaControl().fileBody.areolaSize), 0, 1)).Value.Subscribe(value => UpdateCustomBody(value, CustomBody.AreolaSize));
 
             var catBust = StudioAPI.GetOrCreateCurrentStateCategory("Bust");
             catBust.AddControl(new CurrentStateCategorySlider("Softness", c => SetDefaultValue(c, MethodType.UpdateBust, (int)Bust.Softness, c.GetChaControl().fileBody.bustSoftness), 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, Bust.Softness));
@@ -140,33 +133,6 @@ namespace Plugins
             return value;
         }
 
-        private void UpdateCustomBody(object value, CustomBody customBody)
-        {
-            foreach (var cha in StudioAPI.GetSelectedCharacters())
-            {
-                var chaCtrl = cha.GetChaControl();
-                switch (customBody)
-                {
-                    case CustomBody.DrawAddLine:
-                        chaCtrl.fileBody.drawAddLine = (bool)value;
-                        break;
-                    case CustomBody.DetailPower:
-                        chaCtrl.fileBody.detailPower = (float)value;
-                        break;
-                    case CustomBody.PubicHairColor:
-                        chaCtrl.fileBody.underhairColor = (Color)value;
-                        break;
-                    case CustomBody.NippleColor:
-                        chaCtrl.fileBody.nipColor = (Color)value;
-                        break;
-                    case CustomBody.AreolaSize:
-                        chaCtrl.fileBody.areolaSize = (float)value;
-                        break;
-                }
-                chaCtrl.ChangeCustomBodyWithoutCustomTexture();
-            }
-        }
-
         private void UpdateBustSoftness(float value, Bust bust)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
@@ -227,15 +193,6 @@ namespace Plugins
             SkinMain,
             SkinSub,
             Tan,
-        }
-
-        internal enum CustomBody
-        {
-            DrawAddLine,
-            DetailPower,
-            PubicHairColor,
-            NippleColor,
-            AreolaSize,
         }
 
         internal enum Bust
