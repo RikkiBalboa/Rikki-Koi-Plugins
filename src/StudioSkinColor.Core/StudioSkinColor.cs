@@ -212,7 +212,6 @@ namespace Plugins
         public enum MethodType
         {
             UpdateTexture,
-            UpdateCustomBody,
             UpdateBust,
             UpdateHairColor,
         }
