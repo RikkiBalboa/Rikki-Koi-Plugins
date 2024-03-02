@@ -17,9 +17,9 @@ namespace Plugins
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class StudioSkinColor : BaseUnityPlugin
     {
-        public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColor";
-        public const string PluginName = "StudioSkinColor";
-        public const string PluginNameInternal = Constants.Prefix + "_StudioSkinColor";
+        public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColorControl";
+        public const string PluginName = "StudioSkinColorControl";
+        public const string PluginNameInternal = Constants.Prefix + "_StudioSkinColorControl";
         public const string PluginVersion = "1.0";
         internal static new ManualLogSource Logger;
 
