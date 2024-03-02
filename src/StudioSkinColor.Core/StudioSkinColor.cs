@@ -20,7 +20,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColor";
         public const string PluginName = "StudioSkinColor";
         public const string PluginNameInternal = Constants.Prefix + "_StudioSkinColor";
-        public const string PluginVersion = "0.3";
+        public const string PluginVersion = "1.0";
         internal static new ManualLogSource Logger;
 
         private void Awake()
@@ -176,12 +176,6 @@ namespace Plugins
             End,
             Gloss,
             Eyebrow,
-        }
-        public enum MethodType
-        {
-            UpdateTexture,
-            UpdateBust,
-            UpdateHairColor,
         }
     }
 }
