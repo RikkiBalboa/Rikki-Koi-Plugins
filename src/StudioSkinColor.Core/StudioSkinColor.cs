@@ -33,6 +33,7 @@ namespace Plugins
             if (StudioAPI.InsideStudio)
             {
                 RegisterStudioControls();
+                TimelineCompatibilityHelper.PopulateTimeline();
             }
         }
 
@@ -57,7 +58,7 @@ namespace Plugins
             catHair.AddControl(new CurrentStateColorSlider("Eyebrow", c => c.GetChaControl().fileFace.eyebrowColor, color => UpdateHairColor(color, HairColor.Eyebrow)));
         }
 
-        private void UpdateTextures(ChaControl chaCtrl)
+        private static void UpdateTextures(ChaControl chaCtrl)
         {
             chaCtrl.AddUpdateCMFaceTexFlags(true, true, true, true, true, true, true);
             chaCtrl.AddUpdateCMFaceColorFlags(true, true, true, true, true, true, true);
@@ -70,80 +71,89 @@ namespace Plugins
             chaCtrl.SetBodyBaseMaterial();
         }
 
-        private void UpdateTextureColor(Color color, TextureColor textureColor)
+        internal static void UpdateTextureColor(Color color, TextureColor textureColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
+                UpdateTextureColor(cha, color, textureColor);
+        }
+
+        internal static void UpdateTextureColor(OCIChar ociChar, Color color, TextureColor textureColor)
+        {
+            var chaCtrl = ociChar.GetChaControl();
+            switch (textureColor)
             {
-                var chaCtrl = cha.GetChaControl();
-                switch (textureColor)
-                {
-                    case TextureColor.SkinMain:
-                        chaCtrl.fileBody.skinMainColor = color;
-                        break;
-                    case TextureColor.SkinSub:
-                        chaCtrl.fileBody.skinSubColor = color;
-                        break;
-                    case TextureColor.Tan:
-                        chaCtrl.fileBody.sunburnColor = color;
-                        break;
-                }
-                UpdateTextures(chaCtrl);
+                case TextureColor.SkinMain:
+                    chaCtrl.fileBody.skinMainColor = color;
+                    break;
+                case TextureColor.SkinSub:
+                    chaCtrl.fileBody.skinSubColor = color;
+                    break;
+                case TextureColor.Tan:
+                    chaCtrl.fileBody.sunburnColor = color;
+                    break;
+            }
+            UpdateTextures(chaCtrl);
+        }
+
+        internal static void UpdateBustSoftness(float value, Bust bust)
+        {
+            foreach (var cha in StudioAPI.GetSelectedCharacters())
+                UpdateBustSoftness(cha, value, bust);
+        }
+
+        internal static void UpdateBustSoftness(OCIChar ociChar, float value, Bust bust)
+        {
+            var chaCtrl = ociChar.GetChaControl();
+            switch (bust)
+            {
+                case Bust.Softness:
+                    chaCtrl.ChangeBustSoftness(value);
+                    break;
+                case Bust.Weight:
+                    chaCtrl.ChangeBustGravity(value);
+                    break;
             }
         }
 
-        private void UpdateBustSoftness(float value, Bust bust)
+        internal static void UpdateHairColor(Color color, HairColor hairColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-            {
-                var chaCtrl = cha.GetChaControl();
-                switch (bust)
-                {
-                    case Bust.Softness:
-                        chaCtrl.ChangeBustSoftness(value);
-                        break;
-                    case Bust.Weight:
-                        chaCtrl.ChangeBustGravity(value);
-                        break;
-                }
-            }
+                UpdateHairColor(cha, color, hairColor);
         }
 
-        private void UpdateHairColor(Color color, HairColor hairColor)
+        internal static void UpdateHairColor(OCIChar ociChar, Color color, HairColor hairColor)
         {
-            foreach (var cha in StudioAPI.GetSelectedCharacters())
+            var chaCtrl = ociChar.GetChaControl();
+            switch (hairColor)
             {
-                var chaCtrl = cha.GetChaControl();
-                switch (hairColor)
-                {
-                    case HairColor.Base:
-                        for(int i = 0;i < 4; i++)
-                            chaCtrl.fileHair.parts[i].baseColor = color;
-                        break;
-                    case HairColor.Start:
-                        for (int i = 0; i < 4; i++)
-                            chaCtrl.fileHair.parts[i].startColor = color;
-                        break;
-                    case HairColor.End:
-                        for (int i = 0; i < 4; i++)
-                            chaCtrl.fileHair.parts[i].endColor = color;
-                        break;
+                case HairColor.Base:
+                    for(int i = 0;i < 4; i++)
+                        chaCtrl.fileHair.parts[i].baseColor = color;
+                    break;
+                case HairColor.Start:
+                    for (int i = 0; i < 4; i++)
+                        chaCtrl.fileHair.parts[i].startColor = color;
+                    break;
+                case HairColor.End:
+                    for (int i = 0; i < 4; i++)
+                        chaCtrl.fileHair.parts[i].endColor = color;
+                    break;
 #if KKS
-                    case HairColor.Gloss:
-                        for (int i = 0; i < 4; i++)
-                        {
-                            chaCtrl.fileHair.parts[i].glossColor = color;
-                            chaCtrl.ChangeSettingHairGlossColor(i);
-                        }
-                        break;
+                case HairColor.Gloss:
+                    for (int i = 0; i < 4; i++)
+                    {
+                        chaCtrl.fileHair.parts[i].glossColor = color;
+                        chaCtrl.ChangeSettingHairGlossColor(i);
+                    }
+                    break;
 #endif
-                    case HairColor.Eyebrow:
-                        chaCtrl.fileFace.eyebrowColor = color;
-                        chaCtrl.ChangeSettingEyebrowColor();
-                        break;
-                }
-                for (int i = 0; i < 4; i++)
-                    chaCtrl.ChangeSettingHairColor(i, true, true, true);
+                case HairColor.Eyebrow:
+                    chaCtrl.fileFace.eyebrowColor = color;
+                    chaCtrl.ChangeSettingEyebrowColor();
+                    break;
             }
+            for (int i = 0; i < 4; i++)
+                chaCtrl.ChangeSettingHairColor(i, true, true, true);
         }
 
         internal enum TextureColor

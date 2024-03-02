@@ -12,5 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CurrentStateColorSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibilityHelper.cs" />
   </ItemGroup>
 </Project>
