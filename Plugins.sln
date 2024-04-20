@@ -50,6 +50,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioSkinColor", "src\
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioSkinColor", "src\StudioSkinColor.Core\Core.StudioSkinColor.shproj", "{15089A5B-2887-47AA-B444-52F2E5987D37}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectorUtils", "ProjectorUtils", "{B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ProjectorUtils.Core", "src\ProjectorUtils.Core\ProjectorUtils.Core.shproj", "{B3DF7E28-B2C1-41C7-8844-EC6B194BCA08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.KKS", "src\ProjectorUtils.KKS\ProjectorUtils.KKS.csproj", "{28D5DF02-59BC-4572-B345-A19E81B57DBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +102,10 @@ Global
 		{494E4E72-DC3A-4691-93B9-3245A6825B0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{494E4E72-DC3A-4691-93B9-3245A6825B0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{494E4E72-DC3A-4691-93B9-3245A6825B0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +126,8 @@ Global
 		{E2151100-2A2D-497F-A4EA-0D938FE630E0} = {46C251DF-D506-47F9-8C56-E3B9FA56C116}
 		{494E4E72-DC3A-4691-93B9-3245A6825B0A} = {46C251DF-D506-47F9-8C56-E3B9FA56C116}
 		{15089A5B-2887-47AA-B444-52F2E5987D37} = {46C251DF-D506-47F9-8C56-E3B9FA56C116}
+		{B3DF7E28-B2C1-41C7-8844-EC6B194BCA08} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
+		{28D5DF02-59BC-4572-B345-A19E81B57DBB} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -124,6 +136,8 @@ Global
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
 		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{15089a5b-2887-47aa-b444-52f2e5987d37}*SharedItemsImports = 13
+		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
 		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{6d48f885-1d97-4e2a-b3c2-47ab5f8806cd}*SharedItemsImports = 13
@@ -134,6 +148,7 @@ Global
 		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
+		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{b3df7e28-b2c1-41c7-8844-ec6b194bca08}*SharedItemsImports = 13
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{b98974d5-d331-4e2e-9498-a54dd706c4f2}*SharedItemsImports = 13
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
