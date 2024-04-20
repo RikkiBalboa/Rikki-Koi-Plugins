@@ -32,8 +32,7 @@ namespace Plugins
             foreach (var objectCtrlInfo in StudioAPI.GetSelectedObjects())
                 if (objectCtrlInfo is OCIItem item)
                 {
-                    var projector = item.objectItem.GetComponent<Projector>();
-                    if (projector != null)
+                    if (item.objectItem.TryGetComponent<Projector>(out var projector))
                         LightLine.DrawSpotLight(item.objectItem.transform.rotation, item.objectItem.transform.position, projector.fieldOfView, projector.farClipPlane, 1f, 1f);
                 }
         }
