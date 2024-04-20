@@ -5,6 +5,10 @@ using HarmonyLib;
 using KKAPI.Studio;
 using UnityEngine;
 using KKAPI.Studio.SaveLoad;
+using System;
+using ADV.Commands.Object;
+using ADV.Commands.Base;
+using static Cysharp.Threading.Tasks.Linq.Range;
 
 namespace Plugins
 {
@@ -33,8 +37,92 @@ namespace Plugins
                 if (objectCtrlInfo is OCIItem item)
                 {
                     if (item.objectItem.TryGetComponent<Projector>(out var projector))
-                        LightLine.DrawSpotLight(item.objectItem.transform.rotation, item.objectItem.transform.position, projector.fieldOfView, projector.farClipPlane, 1f, 1f);
+                        DrawProjectionWireframe(item.objectItem.transform.rotation, item.objectItem.transform.position, projector.orthographic ? projector.orthographicSize : projector.fieldOfView, projector.nearClipPlane, projector.farClipPlane, projector.aspectRatio, projector.orthographic);
                 }
+        }
+
+        private static void DrawProjectionWireframe(Quaternion rotation, Vector3 position, float angle, float nearClipPlane, float farClipPlane, float aspectRatio, bool orthographic)
+        {
+            Material material = LightLine.material;
+
+            float startRange, endRange;
+            if (orthographic)
+            {
+                startRange = angle;
+                endRange = angle;
+            }
+            else
+            {
+                startRange = nearClipPlane * Mathf.Tan(Mathf.PI / 180f * angle / 2f);
+                endRange = farClipPlane * Mathf.Tan(Mathf.PI / 180f * angle / 2f);
+            }
+
+            Vector3 forward = rotation * Vector3.forward;
+            Vector3 up = rotation * Vector3.up;
+            Vector3 right = rotation * Vector3.right;
+
+            Vector3 startTopRight, startBottomRight, startTopLeft, startBottomLeft, endTopRight, endBottomRight, endTopLeft, endBottomLeft;
+            startTopRight = position + forward * nearClipPlane + (up + right * aspectRatio) * startRange;
+            startBottomRight = position + forward * nearClipPlane + (-up + right * aspectRatio) * startRange;
+            startTopLeft = position + forward * nearClipPlane + (up - right * aspectRatio) * startRange;
+            startBottomLeft = position + forward * nearClipPlane + (-up - right * aspectRatio) * startRange;
+
+            endTopRight = position + forward * farClipPlane + (up + right * aspectRatio) * endRange;
+            endBottomRight = position + forward * farClipPlane + (-up + right * aspectRatio) * endRange;
+            endTopLeft = position + forward * farClipPlane + (up - right * aspectRatio) * endRange;
+            endBottomLeft = position + forward * farClipPlane + (-up - right * aspectRatio) * endRange;
+
+            //Draw near clip plane
+            DrawLine(startTopRight, startBottomRight);
+            DrawLine(startBottomRight, startBottomLeft);
+            DrawLine(startBottomLeft, startTopLeft);
+            DrawLine(startTopLeft, startTopRight);
+
+            //Draw far clip plane
+            DrawLine(endTopRight, endBottomRight);
+            DrawLine(endBottomRight, endBottomLeft);
+            DrawLine(endBottomLeft, endTopLeft);
+            DrawLine(endTopLeft, endTopRight);
+
+            //Draw connection between near and far clip planes
+            DrawLine(startTopRight, endTopRight);
+            DrawLine(startBottomRight, endBottomRight);
+            DrawLine(startTopLeft, endTopLeft);
+            DrawLine(startBottomLeft, endBottomLeft);
+
+            void DrawLine(Vector3 p1, Vector3 p2, Color? color = null)
+            {
+                if (BeginLineDrawing(Matrix4x4.identity, color))
+                {
+                    GL.Vertex(p1);
+                    GL.Vertex(p2);
+                    EndLineDrawing();
+                }
+            }
+
+            bool BeginLineDrawing(Matrix4x4 matrix, Color? color = null)
+            {
+                if (color == null)
+                    color = Color.white;
+
+                if (material == null)
+                {
+                    return false;
+                }
+                Color value = (Color)color * new Color(1f, 1f, 1f, 0.75f);
+                material.SetPass(0);
+                material.SetColor("_Color", value);
+                GL.PushMatrix();
+                GL.MultMatrix(matrix);
+                GL.Begin(1);
+                return true;
+            }
+
+            void EndLineDrawing()
+            {
+                GL.End();
+                GL.PopMatrix();
+            }
         }
     }
 }
