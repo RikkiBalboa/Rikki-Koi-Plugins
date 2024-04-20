@@ -5,6 +5,7 @@ using HarmonyLib;
 using KKAPI.Studio;
 using UnityEngine;
 using KKAPI.Studio.SaveLoad;
+using BepInEx.Configuration;
 
 namespace Plugins
 {
@@ -19,11 +20,14 @@ namespace Plugins
         internal static new ManualLogSource Logger;
         private readonly Harmony _harmony = new Harmony(PluginGUID);
 
+        public static ConfigEntry<Color> LineColor { get; private set; }
+
         private void Awake()
         {
             Logger = base.Logger;
             _harmony.PatchAll();
             StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(PluginGUID);
+            LineColor = Config.Bind("Settings", "Line Color", new Color(1,1,1,0.75f));
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(DrawLightLine), nameof(DrawLightLine.OnPostRender))]
@@ -100,15 +104,14 @@ namespace Plugins
             bool BeginLineDrawing(Matrix4x4 matrix, Color? color = null)
             {
                 if (color == null)
-                    color = Color.white;
+                    color = LineColor.Value;
 
                 if (material == null)
                 {
                     return false;
                 }
-                Color value = (Color)color * new Color(1f, 1f, 1f, 0.75f);
                 material.SetPass(0);
-                material.SetColor("_Color", value);
+                material.SetColor("_Color", (Color)color);
                 GL.PushMatrix();
                 GL.MultMatrix(matrix);
                 GL.Begin(1);
