@@ -3,7 +3,6 @@ using BepInEx.Logging;
 using Studio;
 using HarmonyLib;
 using KKAPI.Studio;
-using System.Linq;
 using UnityEngine;
 using KKAPI.Studio.SaveLoad;
 
@@ -33,11 +32,9 @@ namespace Plugins
             foreach (var objectCtrlInfo in StudioAPI.GetSelectedObjects())
                 if (objectCtrlInfo is OCIItem item)
                 {
-                    var projectors = item.objectItem.GetComponentsInChildren<Projector>();
-                    if (projectors.Count() > 0)
-                    {
-                        LightLine.DrawSpotLight(item.objectItem.transform.rotation, item.objectItem.transform.position, projectors.First().fieldOfView, projectors.First().farClipPlane, 1f, 1f);
-                    }
+                    var projector = item.objectItem.GetComponent<Projector>();
+                    if (projector != null)
+                        LightLine.DrawSpotLight(item.objectItem.transform.rotation, item.objectItem.transform.position, projector.fieldOfView, projector.farClipPlane, 1f, 1f);
                 }
         }
     }
