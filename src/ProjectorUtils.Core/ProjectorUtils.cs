@@ -5,10 +5,6 @@ using HarmonyLib;
 using KKAPI.Studio;
 using UnityEngine;
 using KKAPI.Studio.SaveLoad;
-using System;
-using ADV.Commands.Object;
-using ADV.Commands.Base;
-using static Cysharp.Threading.Tasks.Linq.Range;
 
 namespace Plugins
 {
@@ -36,7 +32,8 @@ namespace Plugins
             foreach (var objectCtrlInfo in StudioAPI.GetSelectedObjects())
                 if (objectCtrlInfo is OCIItem item)
                 {
-                    if (item.objectItem.TryGetComponent<Projector>(out var projector))
+                    var projector = item.objectItem.GetComponent<Projector>();
+                    if (projector != null)
                         DrawProjectionWireframe(item.objectItem.transform.rotation, item.objectItem.transform.position, projector.orthographic ? projector.orthographicSize : projector.fieldOfView, projector.nearClipPlane, projector.farClipPlane, projector.aspectRatio, projector.orthographic);
                 }
         }

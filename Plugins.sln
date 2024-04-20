@@ -56,6 +56,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ProjectorUtils.Core", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.KKS", "src\ProjectorUtils.KKS\ProjectorUtils.KKS.csproj", "{28D5DF02-59BC-4572-B345-A19E81B57DBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.KK", "ProjectorUtils.KK\ProjectorUtils.KK.csproj", "{E1D00783-5462-46DF-A724-C1CDFF5C549B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,10 @@ Global
 		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1D00783-5462-46DF-A724-C1CDFF5C549B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1D00783-5462-46DF-A724-C1CDFF5C549B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1D00783-5462-46DF-A724-C1CDFF5C549B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1D00783-5462-46DF-A724-C1CDFF5C549B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +134,7 @@ Global
 		{15089A5B-2887-47AA-B444-52F2E5987D37} = {46C251DF-D506-47F9-8C56-E3B9FA56C116}
 		{B3DF7E28-B2C1-41C7-8844-EC6B194BCA08} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
 		{28D5DF02-59BC-4572-B345-A19E81B57DBB} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
+		{E1D00783-5462-46DF-A724-C1CDFF5C549B} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -154,6 +161,8 @@ Global
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{daf47fdd-df83-4a52-b198-0d097840d65f}*SharedItemsImports = 13
+		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{e1d00783-5462-46df-a724-c1cdff5c549b}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{e1d00783-5462-46df-a724-c1cdff5c549b}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{e2151100-2a2d-497f-a4ea-0d938fe630e0}*SharedItemsImports = 4
 		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{e2151100-2a2d-497f-a4ea-0d938fe630e0}*SharedItemsImports = 4
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
