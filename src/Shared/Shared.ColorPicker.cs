@@ -1,4 +1,5 @@
-﻿using ChaCustom;
+﻿# if KK || KKS
+using ChaCustom;
 using HarmonyLib;
 using KKAPI;
 using Studio;
@@ -45,3 +46,4 @@ namespace Shared
         }
     }
 }
+#endif
