@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>KKS_PostProcessingEffect</AssemblyName>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
@@ -50,4 +50,7 @@
   </ItemGroup>
   <Import Project="..\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y $(ProjectDir)$(OutDir)KKS_PostProcessingEffect.dll $(ProjectDir)$(OutDir)KKS\BepInEx\plugins&#xD;&#xA;xcopy /y $(SolutionDir)lib\PostProcessResources.asset $(ProjectDir)$(OutDir)KKS\BepInEx\plugins" />
+  </Target>
 </Project>
