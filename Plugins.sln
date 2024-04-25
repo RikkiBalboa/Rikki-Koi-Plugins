@@ -56,7 +56,11 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ProjectorUtils.Core", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.KKS", "src\ProjectorUtils.KKS\ProjectorUtils.KKS.csproj", "{28D5DF02-59BC-4572-B345-A19E81B57DBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.KK", "ProjectorUtils.KK\ProjectorUtils.KK.csproj", "{E1D00783-5462-46DF-A724-C1CDFF5C549B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.KK", "src\ProjectorUtils.KK\ProjectorUtils.KK.csproj", "{7BB5565F-7EB2-45A7-AC8F-9DAD225BC666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.HS2", "src\ProjectorUtils.HS2\ProjectorUtils.HS2.csproj", "{85DA0CD3-5F18-4BBA-9427-A68DB6AC958E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.AI", "src\ProjectorUtils.AI\ProjectorUtils.AI.csproj", "{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,10 +112,18 @@ Global
 		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28D5DF02-59BC-4572-B345-A19E81B57DBB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1D00783-5462-46DF-A724-C1CDFF5C549B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1D00783-5462-46DF-A724-C1CDFF5C549B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1D00783-5462-46DF-A724-C1CDFF5C549B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1D00783-5462-46DF-A724-C1CDFF5C549B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BB5565F-7EB2-45A7-AC8F-9DAD225BC666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BB5565F-7EB2-45A7-AC8F-9DAD225BC666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BB5565F-7EB2-45A7-AC8F-9DAD225BC666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BB5565F-7EB2-45A7-AC8F-9DAD225BC666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85DA0CD3-5F18-4BBA-9427-A68DB6AC958E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85DA0CD3-5F18-4BBA-9427-A68DB6AC958E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85DA0CD3-5F18-4BBA-9427-A68DB6AC958E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85DA0CD3-5F18-4BBA-9427-A68DB6AC958E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,7 +146,9 @@ Global
 		{15089A5B-2887-47AA-B444-52F2E5987D37} = {46C251DF-D506-47F9-8C56-E3B9FA56C116}
 		{B3DF7E28-B2C1-41C7-8844-EC6B194BCA08} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
 		{28D5DF02-59BC-4572-B345-A19E81B57DBB} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
-		{E1D00783-5462-46DF-A724-C1CDFF5C549B} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
+		{7BB5565F-7EB2-45A7-AC8F-9DAD225BC666} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
+		{85DA0CD3-5F18-4BBA-9427-A68DB6AC958E} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
+		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -147,12 +161,18 @@ Global
 		src\Shared\Shared.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
 		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
+		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{5eacf7ac-4989-4bde-ab51-d3822f9a4ced}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{5eacf7ac-4989-4bde-ab51-d3822f9a4ced}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{6d48f885-1d97-4e2a-b3c2-47ab5f8806cd}*SharedItemsImports = 13
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{73ced555-9406-453d-98f5-39ba332647a7}*SharedItemsImports = 4
+		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{7bb5565f-7eb2-45a7-ac8f-9dad225bc666}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{7bb5565f-7eb2-45a7-ac8f-9dad225bc666}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
+		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{85da0cd3-5f18-4bba-9427-a68db6ac958e}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{85da0cd3-5f18-4bba-9427-a68db6ac958e}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
 		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{b3df7e28-b2c1-41c7-8844-ec6b194bca08}*SharedItemsImports = 13
@@ -161,8 +181,6 @@ Global
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{daf47fdd-df83-4a52-b198-0d097840d65f}*SharedItemsImports = 13
-		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{e1d00783-5462-46df-a724-c1cdff5c549b}*SharedItemsImports = 4
-		src\Shared\Shared.projitems*{e1d00783-5462-46df-a724-c1cdff5c549b}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{e2151100-2a2d-497f-a4ea-0d938fe630e0}*SharedItemsImports = 4
 		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{e2151100-2a2d-497f-a4ea-0d938fe630e0}*SharedItemsImports = 4
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
