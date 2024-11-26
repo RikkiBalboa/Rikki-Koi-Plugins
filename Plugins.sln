@@ -62,6 +62,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.HS2", "src\P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectorUtils.AI", "src\ProjectorUtils.AI\ProjectorUtils.AI.csproj", "{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioVoiceControl", "StudioVoiceControl", "{1F398214-22AF-401E-A502-019B8E15D955}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioVoiceControl", "src\StudioVoiceControl.Core\Core.StudioVoiceControl\Core.StudioVoiceControl.shproj", "{5C4142C8-54F4-471A-98E9-0F44E0C5F37F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioVoiceControl", "src\StudioVoiceControl.KKS\KKS.StudioVoiceControl.csproj", "{1E399EAF-E2B1-4C3B-A609-F7CC1A9AAEC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioVoiceControl", "src\StudioVoiceControl.KK\KK.StudioVoiceControl.csproj", "{67EB6BBB-D986-4784-9149-DF5CC4F83F36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +132,14 @@ Global
 		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E399EAF-E2B1-4C3B-A609-F7CC1A9AAEC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E399EAF-E2B1-4C3B-A609-F7CC1A9AAEC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E399EAF-E2B1-4C3B-A609-F7CC1A9AAEC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E399EAF-E2B1-4C3B-A609-F7CC1A9AAEC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67EB6BBB-D986-4784-9149-DF5CC4F83F36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67EB6BBB-D986-4784-9149-DF5CC4F83F36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67EB6BBB-D986-4784-9149-DF5CC4F83F36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67EB6BBB-D986-4784-9149-DF5CC4F83F36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +165,9 @@ Global
 		{7BB5565F-7EB2-45A7-AC8F-9DAD225BC666} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
 		{85DA0CD3-5F18-4BBA-9427-A68DB6AC958E} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
 		{5EACF7AC-4989-4BDE-AB51-D3822F9A4CED} = {B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}
+		{5C4142C8-54F4-471A-98E9-0F44E0C5F37F} = {1F398214-22AF-401E-A502-019B8E15D955}
+		{1E399EAF-E2B1-4C3B-A609-F7CC1A9AAEC5} = {1F398214-22AF-401E-A502-019B8E15D955}
+		{67EB6BBB-D986-4784-9149-DF5CC4F83F36} = {1F398214-22AF-401E-A502-019B8E15D955}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -157,12 +176,17 @@ Global
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
 		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{15089a5b-2887-47aa-b444-52f2e5987d37}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{1e399eaf-e2b1-4c3b-a609-f7cc1a9aaec5}*SharedItemsImports = 4
+		src\StudioVoiceControl.Core\Core.StudioVoiceControl\Core.StudioVoiceControl.projitems*{1e399eaf-e2b1-4c3b-a609-f7cc1a9aaec5}*SharedItemsImports = 4
 		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
 		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
+		src\StudioVoiceControl.Core\Core.StudioVoiceControl\Core.StudioVoiceControl.projitems*{5c4142c8-54f4-471a-98e9-0f44e0c5f37f}*SharedItemsImports = 13
 		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{5eacf7ac-4989-4bde-ab51-d3822f9a4ced}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{5eacf7ac-4989-4bde-ab51-d3822f9a4ced}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{67eb6bbb-d986-4784-9149-df5cc4f83f36}*SharedItemsImports = 4
+		src\StudioVoiceControl.Core\Core.StudioVoiceControl\Core.StudioVoiceControl.projitems*{67eb6bbb-d986-4784-9149-df5cc4f83f36}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{6d48f885-1d97-4e2a-b3c2-47ab5f8806cd}*SharedItemsImports = 13
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{731f6724-3e02-470c-aa72-0edf196bb0bc}*SharedItemsImports = 5
