@@ -23,11 +23,25 @@ namespace Plugins
 
                 if (_lastPlaybackTime < currentTime && currentTime - _lastPlaybackTime < 0.5f)
                 {
-                    foreach (var keyframe in GetAllKeyframes())
+                    foreach (var keyframe in GetAllKeyframes("voiceMulti"))
                     {
                         var keyframeTime = keyframe.Key;
                         if (keyframeTime > _lastPlaybackTime && keyframeTime <= currentTime)
                             PlayVoice(keyframe.Value.parent.oci as OCIChar, keyframe.Value.value as VoiceCtrl.VoiceInfo);
+                    }
+
+                    foreach (var keyframe in GetAllKeyframes("voiceSingle"))
+                    {
+                        var keyframeTime = keyframe.Key;
+                        if (keyframeTime > _lastPlaybackTime && keyframeTime <= currentTime)
+                            PlayVoice(keyframe.Value.parent.oci as OCIChar, keyframe.Value.value as VoiceCtrl.VoiceInfo);
+                    }
+
+                    foreach (var keyframe in GetAllKeyframes("stopVoice"))
+                    {
+                        var keyframeTime = keyframe.Key;
+                        if (keyframeTime > _lastPlaybackTime && keyframeTime <= currentTime)
+                            StopVoice(keyframe.Value.parent.oci as OCIChar);
                     }
                 }
 
@@ -123,16 +137,18 @@ namespace Plugins
             ociChar.StopVoice();
         }
 
-        internal static IEnumerable<KeyValuePair<float, Timeline.Keyframe>> GetAllKeyframes()
+        internal static IEnumerable<KeyValuePair<float, Timeline.Keyframe>> GetAllKeyframes(string id = "")
         {
             return Timeline.Timeline.GetAllInterpolables(true)
-                           .Where(x => x.owner == "TimelineVoiceControl")
+                           .Where(x => x.owner == "TimelineVoiceControl" && x.id == id)
                            .SelectMany(x => x.keyframes);
         }
 
         internal static IEnumerable<OCIChar> GetAllCharacters()
         {
-            return GetAllKeyframes()
+            return Timeline.Timeline.GetAllInterpolables(true)
+                           .Where(x => x.owner == "TimelineVoiceControl")
+                           .SelectMany(x => x.keyframes)
                            .Select(x => x.Value.parent.oci as OCIChar)
                            .Distinct();
         }
