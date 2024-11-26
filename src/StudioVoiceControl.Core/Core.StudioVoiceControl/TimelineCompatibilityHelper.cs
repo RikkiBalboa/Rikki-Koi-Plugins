@@ -3,7 +3,6 @@ using Studio;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using UnityEngine;
 
 namespace Plugins
 {
@@ -12,7 +11,7 @@ namespace Plugins
         private static float _lastPlaybackTime;
         private static bool stoppedPlayback;
 
-        internal static void Update()
+    internal static void Update()
         {
             // Stolen code from TimelineFlowControl
             // Makes a keyframe only trigger once when it's passed in playback
@@ -24,18 +23,11 @@ namespace Plugins
 
                 if (_lastPlaybackTime < currentTime && currentTime - _lastPlaybackTime < 0.5f)
                 {
-                    foreach (var keyframe in GetAllKeyframes("voice"))
+                    foreach (var keyframe in GetAllKeyframes())
                     {
                         var keyframeTime = keyframe.Key;
                         if (keyframeTime > _lastPlaybackTime && keyframeTime <= currentTime)
                             PlayVoice(keyframe.Value.parent.oci as OCIChar, keyframe.Value.value as VoiceCtrl.VoiceInfo);
-                    }
-
-                    foreach (var keyframe in GetAllKeyframes("stopVoice"))
-                    {
-                        var keyframeTime = keyframe.Key;
-                        if (keyframeTime > _lastPlaybackTime && keyframeTime <= currentTime)
-                            StopVoice(keyframe.Value.parent.oci as OCIChar);
                     }
                 }
 
@@ -55,8 +47,26 @@ namespace Plugins
 
             TimelineCompatibility.AddInterpolableModelDynamic(
                 owner: "TimelineVoiceControl",
-                id: "voice",
-                name: "Play voice",
+                id: "voiceMulti",
+                name: "Play voice (Multi interoperable)",
+                interpolateBefore: null,
+                interpolateAfter: null,
+                getValue: (oci, parameter) => parameter,
+                readValueFromXml: (parameter, node) => parameter,
+                writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", XmlConvert.ToString(true)),
+                getParameter: oci => ((OCIChar)oci).voiceCtrl.list.LastOrDefault(),
+                readParameterFromXml: ReadVoiceInfoXML,
+                writeParameterToXml: WriteVoiceInfoXML,
+                isCompatibleWithTarget: oci => oci is OCIChar,
+                checkIntegrity: null,
+                getFinalName: (currentName, oci, parameter) => $"Voice ({Singleton<Info>.Instance.dicVoiceGroupCategory[parameter.group].name} - {Singleton<Info>.Instance.dicVoiceGroupCategory[parameter.group].dicCategory[parameter.category]} - {Singleton<Info>.Instance.dicVoiceLoadInfo[parameter.group][parameter.category][parameter.no].name})",
+                useOciInHash: true
+            );
+
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                owner: "TimelineVoiceControl",
+                id: "voiceSingle",
+                name: "Play voice (Single interoperable)",
                 interpolateBefore: null,
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).voiceCtrl.list.LastOrDefault(),
@@ -64,8 +74,7 @@ namespace Plugins
                 writeValueToXml: WriteVoiceInfoXML,
                 getParameter: oci => oci,
                 isCompatibleWithTarget: oci => oci is OCIChar,
-                checkIntegrity: null,
-                getFinalName: (currentName, oci, parameter) => $"{currentName} ({((OCIChar)oci).charInfo.fileParam.fullname})"
+                checkIntegrity: null
             );
 
             TimelineCompatibility.AddInterpolableModelDynamic(
@@ -114,18 +123,16 @@ namespace Plugins
             ociChar.StopVoice();
         }
 
-        internal static IEnumerable<KeyValuePair<float, Timeline.Keyframe>> GetAllKeyframes(string id)
+        internal static IEnumerable<KeyValuePair<float, Timeline.Keyframe>> GetAllKeyframes()
         {
             return Timeline.Timeline.GetAllInterpolables(true)
-                           .Where(x => x.id == id && x.owner == "TimelineVoiceControl")
+                           .Where(x => x.owner == "TimelineVoiceControl")
                            .SelectMany(x => x.keyframes);
         }
 
         internal static IEnumerable<OCIChar> GetAllCharacters()
         {
-            return Timeline.Timeline.GetAllInterpolables(true)
-                           .Where(x => x.id == "voice" && x.owner == "TimelineVoiceControl")
-                           .SelectMany(x => x.keyframes)
+            return GetAllKeyframes()
                            .Select(x => x.Value.parent.oci as OCIChar)
                            .Distinct();
         }
