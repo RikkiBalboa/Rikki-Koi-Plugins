@@ -6,6 +6,7 @@ using KKAPI.Studio;
 namespace Plugins
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInProcess(Constants.StudioProcessName)]
     public class StudioVoiceControl : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioVoiceControl";

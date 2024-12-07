@@ -9,6 +9,7 @@ namespace Plugins
 {
     [HarmonyPatch]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInProcess(Constants.StudioProcessName)]
     internal class SaveCameraObjectFov : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.savecameraobjectfov";

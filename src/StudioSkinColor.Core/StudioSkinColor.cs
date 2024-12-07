@@ -15,6 +15,7 @@ using UnityEngine;
 namespace Plugins
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInProcess(Constants.StudioProcessName)]
     public class StudioSkinColor : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColorControl";
