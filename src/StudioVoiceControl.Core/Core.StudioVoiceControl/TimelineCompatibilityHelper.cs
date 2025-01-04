@@ -106,20 +106,68 @@ namespace Plugins
                 getFinalName: (currentName, oci, parameter) => $"{currentName} ({((OCIChar)oci).charInfo.fileParam.fullname})"
             );
         }
+		
+		/**
+         * For modded voices the beginning key of the no values can be a arbitrary large number that changes with each loading of the game.
+         * Its unclear why that is!
+         * 
+         * This function corrects that behavior by asuming the first entry in the dictionary marks the 0 position of the provided list. 
+         * The corrected value is then calculated relative position in the list of voice samples by difference between the first and the current No.
+         */
+        private static int toRelativeVoiceInfoNo(int group, int category, int absNo)
+        {
+            Dictionary<int, Info.LoadCommonInfo> noDic = Singleton<Info>.Instance.dicVoiceLoadInfo[group][category];
+            if(noDic.Count > 0)
+            {
+                return absNo - noDic.First().Key;
+            }else
+            {
+                return 0;
+            }
+        }
+
+        /**
+         * The inverse function of toRelativeVoiceInfoNo.
+         */
+        private static int toAbsoluteVoiceInfoNo(int group, int category, int relNo)
+        {
+            Dictionary<int, Info.LoadCommonInfo> noDic = Singleton<Info>.Instance.dicVoiceLoadInfo[group][category];
+            if (noDic.Count > 0)
+            {
+                return noDic.First().Key + relNo;
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
         private static void WriteVoiceInfoXML(ObjectCtrlInfo oci, XmlTextWriter writer, VoiceCtrl.VoiceInfo value)
         {
+            //StudioVoiceControl.Logger.LogInfo("Writing to timeline");
             writer.WriteAttributeString("group", XmlConvert.ToString(value.group));
             writer.WriteAttributeString("category", XmlConvert.ToString(value.category));
-            writer.WriteAttributeString("no", XmlConvert.ToString(value.no));
+
+            int relativeNo = TimelineCompatibilityHelper.toRelativeVoiceInfoNo(value.group, value.category, value.no);
+            writer.WriteAttributeString("no", XmlConvert.ToString( relativeNo ));
+
+            //StudioVoiceControl.Logger.LogInfo("ToRelative No [" + value.no + "]: " + relativeNo);
         }
 
         private static VoiceCtrl.VoiceInfo ReadVoiceInfoXML(ObjectCtrlInfo oci, XmlNode node)
         {
+            //StudioVoiceControl.Logger.LogInfo("Reading from timeline");
+            int group = XmlConvert.ToInt32(node.Attributes["group"].Value);
+            int category = XmlConvert.ToInt32(node.Attributes["category"].Value);
+            int relNo = XmlConvert.ToInt32(node.Attributes["no"].Value);
+            int absoNo = TimelineCompatibilityHelper.toAbsoluteVoiceInfoNo(group, category, relNo);
+
+            //StudioVoiceControl.Logger.LogInfo("ToAbsolute No [" + relNo + "]: " + absoNo);
+
             return new VoiceCtrl.VoiceInfo(
-                XmlConvert.ToInt32(node.Attributes["group"].Value),
-                XmlConvert.ToInt32(node.Attributes["category"].Value),
-                XmlConvert.ToInt32(node.Attributes["no"].Value)
+                group,
+                category,
+                absoNo
             );
         }
 
