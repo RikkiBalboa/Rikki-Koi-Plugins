@@ -12,7 +12,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioVoiceControl";
         public const string PluginName = "StudioVoiceControl";
         public const string PluginNameInternal = Constants.Prefix + "_StudioVoiceControl";
-        public const string PluginVersion = "1.0";
+        public const string PluginVersion = "1.1";
         internal static new ManualLogSource Logger;
 
         private void Awake()
