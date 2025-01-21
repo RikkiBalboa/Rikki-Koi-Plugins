@@ -1,32 +1,49 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using KK_Plugins.MaterialEditor;
 using KKAPI.Maker;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Studio.UI;
+using KKAPI.Utilities;
 using MessagePack;
 using Studio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 
 namespace Plugins
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInProcess(Constants.StudioProcessName)]
     public class StudioSkinColor : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColorControl";
         public const string PluginName = "StudioSkinColorControl";
         public const string PluginNameInternal = Constants.Prefix + "_StudioSkinColorControl";
-        public const string PluginVersion = "1.0";
+        public const string PluginVersion = "1.1.0";
         internal static new ManualLogSource Logger;
+
+        internal static ChaControl selectedCharacter;
+        public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
+
+        private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
+        private Rect uiRect = new Rect(20, Screen.height / 2 - 150, 160, 223);
+        private bool uiShow = false;
 
         private void Awake()
         {
             Logger = base.Logger;
+
+            KeyToggleGui = Config.Bind(
+                "Keyboard Shortcuts", "Open settings window",
+                new KeyboardShortcut(KeyCode.Q, KeyCode.RightControl),
+                new ConfigDescription("Open a window to control KKPRim values on selected characters/objects")
+            );
         }
 
         private void Start()
@@ -35,6 +52,30 @@ namespace Plugins
             {
                 RegisterStudioControls();
                 TimelineCompatibilityHelper.PopulateTimeline();
+            }
+        }
+
+        protected void OnGUI()
+        {
+            var skin = GUI.skin;
+            GUI.skin = IMGUIUtils.SolidBackgroundGuiSkin;
+
+            if (uiShow)
+            {
+                //IMGUIUtils.DrawSolidBox(uiRect);
+                uiRect = GUILayout.Window(uiWindowHash, uiRect, ControlGUI.DrawWindow, "KKPRim Controller");
+                IMGUIUtils.EatInputInRect(uiRect);
+            }
+            GUI.skin = skin;
+        }
+
+        private void Update()
+        {
+            selectedCharacter = StudioAPI.GetSelectedCharacters().FirstOrDefault()?.GetChaControl();
+
+            if (KeyToggleGui.Value.IsDown() && selectedCharacter != null)
+            {
+                uiShow = !uiShow;
             }
         }
 
