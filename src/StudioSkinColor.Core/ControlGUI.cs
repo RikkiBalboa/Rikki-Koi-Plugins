@@ -70,9 +70,12 @@ namespace Plugins
                     {
                         if (c != colorInfo.baseColor)
                         {
-                            var MEController = StudioSkinColor.selectedCharacter.GetComponent<MaterialEditorCharaController>();
+                            var MEController = MaterialEditorPlugin.GetCharaController(StudioSkinColor.selectedCharacter);
                             if (MEController != null)
+                            {
+                                MEController.CustomClothesOverride = true;
                                 MEController.RefreshClothesMainTex();
+                            }
                             colorInfo.baseColor = c;
                             StudioSkinColor.selectedCharacter.ChangeCustomClothes(true, kind, true, true, true, true, true);
                         }
