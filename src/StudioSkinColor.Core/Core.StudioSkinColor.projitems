@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColorCharaController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CurrentStateColorSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ControlGUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColor.cs" />

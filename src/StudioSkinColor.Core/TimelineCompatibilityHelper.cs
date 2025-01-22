@@ -1,6 +1,7 @@
 ﻿using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Utilities;
+using plugins;
 using Studio;
 using System;
 using System.Collections.Generic;
@@ -21,12 +22,12 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "mainSkin",
                 name: "Main Skin",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateTextureColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), TextureColor.SkinMain),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateTextureColor(Color.LerpUnclamped(leftValue, rightValue, factor), TextureColor.SkinMain),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileBody.skinMainColor,
-                readValueFromXml: ReadColorXML,
-                writeValueToXml: WriteColorXML,
-                getParameter: oci => oci,
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -35,12 +36,12 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "subSkin",
                 name: "Sub Skin",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateTextureColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), TextureColor.SkinSub),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateTextureColor(Color.LerpUnclamped(leftValue, rightValue, factor), TextureColor.SkinSub),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileBody.skinSubColor,
-                readValueFromXml: ReadColorXML,
-                writeValueToXml: WriteColorXML,
-                getParameter: oci => oci,
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -49,12 +50,12 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "tan",
                 name: "Tan Color",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateTextureColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), TextureColor.Tan),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateTextureColor(Color.LerpUnclamped(leftValue, rightValue, factor), TextureColor.Tan),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileBody.sunburnColor,
-                readValueFromXml: ReadColorXML,
-                writeValueToXml: WriteColorXML,
-                getParameter: oci => oci,
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -68,7 +69,7 @@ namespace Plugins
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileBody.bustSoftness,
                 readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
                 writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
-                getParameter: oci => oci,
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -82,7 +83,7 @@ namespace Plugins
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileBody.bustWeight,
                 readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
                 writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
-                getParameter: oci => oci,
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -94,9 +95,9 @@ namespace Plugins
                 interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Base),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileHair.parts[0].baseColor,
-                readValueFromXml: ReadColorXML,
-                writeValueToXml: WriteColorXML,
-                getParameter: oci => oci,
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -108,9 +109,9 @@ namespace Plugins
                 interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Start),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileHair.parts[0].startColor,
-                readValueFromXml: ReadColorXML,
-                writeValueToXml: WriteColorXML,
-                getParameter: oci => oci,
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -122,9 +123,9 @@ namespace Plugins
                 interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.End),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileHair.parts[0].endColor,
-                readValueFromXml: ReadColorXML,
-                writeValueToXml: WriteColorXML,
-                getParameter: oci => oci,
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -137,9 +138,9 @@ namespace Plugins
                 interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Gloss),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileHair.parts[0].glossColor,
-                readValueFromXml: ReadColorXML,
-                writeValueToXml: WriteColorXML,
-                getParameter: oci => oci,
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
@@ -152,15 +153,15 @@ namespace Plugins
                 interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Eyebrow),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileFace.eyebrowColor,
-                readValueFromXml: ReadColorXML,
-                writeValueToXml: WriteColorXML,
-                getParameter: oci => oci,
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: GetParameter,
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
         }
 
-        private static void WriteColorXML(ObjectCtrlInfo oci, XmlTextWriter writer, Color value)
+        private static void WriteColorXML(XmlTextWriter writer, Color value)
         {
             writer.WriteAttributeString("R", XmlConvert.ToString(value.r));
             writer.WriteAttributeString("G", XmlConvert.ToString(value.g));
@@ -168,7 +169,7 @@ namespace Plugins
             writer.WriteAttributeString("A", XmlConvert.ToString(value.a));
         }
 
-        private static Color ReadColorXML(ObjectCtrlInfo oci, XmlNode node)
+        private static Color ReadColorXML(XmlNode node)
         {
             return new Color(
                 XmlConvert.ToSingle(node.Attributes["R"].Value),
@@ -176,6 +177,11 @@ namespace Plugins
                 XmlConvert.ToSingle(node.Attributes["B"].Value),
                 XmlConvert.ToSingle(node.Attributes["A"].Value)
             );
+        }
+
+        private static StudioSkinColorCharaController GetParameter(ObjectCtrlInfo oci)
+        {
+            return StudioSkinColorCharaController.GetController(((OCIChar)oci).GetChaControl());
         }
     }
 }

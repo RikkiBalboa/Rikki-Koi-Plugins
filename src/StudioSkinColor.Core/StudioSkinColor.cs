@@ -3,12 +3,14 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using KK_Plugins.MaterialEditor;
+using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
 using MessagePack;
+using plugins;
 using Studio;
 using System;
 using System.Collections.Generic;
@@ -45,6 +47,7 @@ namespace Plugins
                 new KeyboardShortcut(KeyCode.Q, KeyCode.RightControl),
                 new ConfigDescription("Open a window to control KKPRim values on selected characters/objects")
             );
+            CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
         }
 
         private void Start()
@@ -101,102 +104,22 @@ namespace Plugins
             catHair.AddControl(new CurrentStateColorSlider("Eyebrow", c => c.GetChaControl().fileFace.eyebrowColor, color => UpdateHairColor(color, HairColor.Eyebrow)));
         }
 
-        private static void UpdateTextures(ChaControl chaCtrl)
-        {
-            chaCtrl.AddUpdateCMFaceTexFlags(true, true, true, true, true, true, true);
-            chaCtrl.AddUpdateCMFaceColorFlags(true, true, true, true, true, true, true);
-            chaCtrl.CreateFaceTexture();
-            chaCtrl.SetFaceBaseMaterial();
-
-            chaCtrl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
-            chaCtrl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
-            chaCtrl.CreateBodyTexture();
-            chaCtrl.SetBodyBaseMaterial();
-        }
-
         internal static void UpdateTextureColor(Color color, TextureColor textureColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                UpdateTextureColor(cha, color, textureColor);
-        }
-
-        internal static void UpdateTextureColor(OCIChar ociChar, Color color, TextureColor textureColor)
-        {
-            var chaCtrl = ociChar.GetChaControl();
-            switch (textureColor)
-            {
-                case TextureColor.SkinMain:
-                    chaCtrl.fileBody.skinMainColor = color;
-                    break;
-                case TextureColor.SkinSub:
-                    chaCtrl.fileBody.skinSubColor = color;
-                    break;
-                case TextureColor.Tan:
-                    chaCtrl.fileBody.sunburnColor = color;
-                    break;
-            }
-            UpdateTextures(chaCtrl);
+                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateTextureColor(color, textureColor);
         }
 
         internal static void UpdateBustSoftness(float value, Bust bust)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                UpdateBustSoftness(cha, value, bust);
-        }
-
-        internal static void UpdateBustSoftness(OCIChar ociChar, float value, Bust bust)
-        {
-            var chaCtrl = ociChar.GetChaControl();
-            switch (bust)
-            {
-                case Bust.Softness:
-                    chaCtrl.ChangeBustSoftness(value);
-                    break;
-                case Bust.Weight:
-                    chaCtrl.ChangeBustGravity(value);
-                    break;
-            }
+                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateBustSoftness(value, bust);
         }
 
         internal static void UpdateHairColor(Color color, HairColor hairColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                UpdateHairColor(cha, color, hairColor);
-        }
-
-        internal static void UpdateHairColor(OCIChar ociChar, Color color, HairColor hairColor)
-        {
-            var chaCtrl = ociChar.GetChaControl();
-            switch (hairColor)
-            {
-                case HairColor.Base:
-                    for(int i = 0;i < 4; i++)
-                        chaCtrl.fileHair.parts[i].baseColor = color;
-                    break;
-                case HairColor.Start:
-                    for (int i = 0; i < 4; i++)
-                        chaCtrl.fileHair.parts[i].startColor = color;
-                    break;
-                case HairColor.End:
-                    for (int i = 0; i < 4; i++)
-                        chaCtrl.fileHair.parts[i].endColor = color;
-                    break;
-#if KKS
-                case HairColor.Gloss:
-                    for (int i = 0; i < 4; i++)
-                    {
-                        chaCtrl.fileHair.parts[i].glossColor = color;
-                        chaCtrl.ChangeSettingHairGlossColor(i);
-                    }
-                    break;
-#endif
-                case HairColor.Eyebrow:
-                    chaCtrl.fileFace.eyebrowColor = color;
-                    chaCtrl.ChangeSettingEyebrowColor();
-                    break;
-            }
-            for (int i = 0; i < 4; i++)
-                chaCtrl.ChangeSettingHairColor(i, true, true, true);
+                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateHairColor(color, hairColor);
         }
 
         internal enum TextureColor
