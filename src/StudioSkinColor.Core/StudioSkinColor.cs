@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using HarmonyLib;
 using KK_Plugins.MaterialEditor;
 using KKAPI.Maker;
 using KKAPI.Studio;
@@ -25,7 +26,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColorControl";
         public const string PluginName = "StudioSkinColorControl";
         public const string PluginNameInternal = Constants.Prefix + "_StudioSkinColorControl";
-        public const string PluginVersion = "1.1.0";
+        public const string PluginVersion = "1.1.1";
         internal static new ManualLogSource Logger;
 
         internal static ChaControl selectedCharacter;
