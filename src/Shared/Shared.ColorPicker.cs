@@ -17,15 +17,8 @@ namespace Shared
             if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
             {
                 var setup = AccessTools.Method(typeof(ColorPalette), nameof(ColorPalette.Setup));
-                if (studio.colorPalette.visible)
-                {
-                    studio.colorPalette.visible = false;
-                }
-                else
-                {
-                    setup.Invoke(studio.colorPalette, new object[] { "ColorPicker", col, act, true });
-                    studio.colorPalette.visible = true;
-                }
+                setup.Invoke(studio.colorPalette, new object[] { "ColorPicker", col, act, true });
+                studio.colorPalette.visible = true;
             }
             if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker)
             {

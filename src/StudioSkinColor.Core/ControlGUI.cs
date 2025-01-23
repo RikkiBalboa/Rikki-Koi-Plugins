@@ -55,7 +55,7 @@ namespace Plugins
                     controller.InitBaseCustomTextureClothesIfNotExists(selectedKind);
 
                     GUILayout.BeginVertical(GUI.skin.box);
-                    GUILayout.Label(infoClothes.Name, new GUIStyle
+                    GUILayout.Label(infoClothes.Name, new GUIStyle(GUI.skin.label)
                     {
                         alignment = TextAnchor.MiddleCenter,
                         wordWrap = true,
@@ -82,21 +82,20 @@ namespace Plugins
 
         private static void DrawColorRow(int colorNr, string name, int kind)
         {
-            GUILayout.Label(name, new GUIStyle
+            GUILayout.Label(name, new GUIStyle(GUI.skin.label)
             {
                 alignment = TextAnchor.MiddleLeft,
-                normal = new GUIStyleState
-                {
-                    textColor = Color.white,
-                },
                 fontStyle = FontStyle.Bold,
+                margin = new RectOffset(GUI.skin.label.margin.left, GUI.skin.label.margin.right, GUI.skin.label.margin.top, 0)
             }, GUILayout.ExpandWidth(false));
-            GUILayout.Space(2);
 
             GUILayout.BeginHorizontal();
             {
                 var currentColor = controller.GetClothingColor(kind, colorNr);
-                bool colorOpened = GUILayout.Button("", Colorbutton(currentColor));
+                bool colorOpened = GUILayout.Button("", new GUIStyle(Colorbutton(currentColor))
+                {
+                    margin = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom)
+                });
                 if (colorOpened)
                 {
                     void ChangeColorAction(Color c)
@@ -106,25 +105,30 @@ namespace Plugins
                     }
                     ColorPicker.OpenColorPicker(currentColor, ChangeColorAction);
                 }
-                if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button("Reset", new GUIStyle(GUI.skin.button)
+                {
+                    margin = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom)
+                }, GUILayout.ExpandWidth(false)))
                 {
                     controller.ResetClothingColor(kind, colorNr);
                 }
             }
             GUILayout.EndHorizontal();
-            GUILayout.Space(5);
-
-                //if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
-                //    KKPRimColor = KKPRimColorDefault.Value;
         }
 
         private static GUIStyle Colorbutton(Color col)
         {
-            GUIStyle guistyle = new GUIStyle();
+            GUIStyle guistyle = new GUIStyle(GUI.skin.button);
             Texture2D texture2D = new Texture2D(1, 1, (TextureFormat)20, false);
             texture2D.SetPixel(0, 0, col);
             texture2D.Apply();
             guistyle.normal.background = texture2D;
+            guistyle.hover = guistyle.normal;
+            guistyle.onHover = guistyle.normal;
+            guistyle.onActive = guistyle.normal;
+            guistyle.onFocused = guistyle.normal;
+            guistyle.active = guistyle.normal;
+            guistyle.margin = new RectOffset(guistyle.margin.left, guistyle.margin.right, 0, guistyle.margin.bottom);
             return guistyle;
         }
     }

@@ -55,6 +55,7 @@ namespace Plugins
         {
             var skin = GUI.skin;
             GUI.skin = IMGUIUtils.SolidBackgroundGuiSkin;
+            GUI.skin.label.normal.textColor = Color.white;
 
             if (uiShow)
             {
@@ -73,6 +74,8 @@ namespace Plugins
             {
                 uiShow = !uiShow;
             }
+            if (selectedCharacter == null)
+                uiShow = false;
         }
 
         private void RegisterStudioControls()
