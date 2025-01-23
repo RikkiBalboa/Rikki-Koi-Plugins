@@ -2,7 +2,9 @@
 using Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static RootMotion.FinalIK.GrounderQuadruped;
 
 namespace Plugins
 {
@@ -38,12 +40,15 @@ namespace Plugins
 
             GUILayout.BeginHorizontal();
             {
-                if (GUILayout.Button("Clothes"))
-                    selectedTab = SelectedTab.Clothes;
-                if (GUILayout.Button("Body"))
-                    selectedTab = SelectedTab.Body;
-                if (GUILayout.Button("Hair"))
-                    selectedTab = SelectedTab.Hair;
+                Color c = GUI.color;
+                foreach (var value in Enum.GetValues(typeof(SelectedTab)).Cast<SelectedTab>())
+                {
+                    if (selectedTab == value)
+                        GUI.color = Color.cyan;
+                    if (GUILayout.Button(value.ToString()))
+                        selectedTab = value;
+                    GUI.color = c;
+                }
             }
             GUILayout.EndHorizontal();
 
