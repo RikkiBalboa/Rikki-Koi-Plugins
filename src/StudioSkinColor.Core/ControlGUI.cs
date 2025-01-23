@@ -1,10 +1,9 @@
-﻿using Illusion.Game;
-using Shared;
+﻿using Shared;
 using System;
 using System.Collections.Generic;
+using static Plugins.StudioSkinColor;
 using System.Linq;
 using UnityEngine;
-using static RootMotion.FinalIK.GrounderQuadruped;
 
 namespace Plugins
 {
@@ -37,7 +36,6 @@ namespace Plugins
         private static int selectedKind = 0;
 
         private static StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
-        private static ChaControl selectedCharacter => StudioSkinColor.selectedCharacter;
         private static ListInfoBase infoClothes => selectedCharacter.infoClothes[selectedKind];
         private static ChaClothesComponent clothesComponent => selectedCharacter.GetCustomClothesComponent(selectedKind);
 

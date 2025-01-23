@@ -5,7 +5,6 @@ using static Plugins.StudioSkinColor;
 using UnityEngine;
 using KK_Plugins.MaterialEditor;
 using System.Linq;
-using Illusion.Game;
 
 namespace Plugins
 {
