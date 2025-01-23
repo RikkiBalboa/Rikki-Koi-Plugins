@@ -5,6 +5,7 @@ using static Plugins.StudioSkinColor;
 using UnityEngine;
 using KK_Plugins.MaterialEditor;
 using System.Linq;
+using Illusion.Game;
 
 namespace Plugins
 {
@@ -13,7 +14,9 @@ namespace Plugins
         internal static readonly Dictionary<ChaControl, StudioSkinColorCharaController> allControllers = new Dictionary<ChaControl, StudioSkinColorCharaController>();
 
         #region Save Lists
-        private readonly List<ClothingColors> defaultClothingColors = new List<ClothingColors>();
+        private readonly List<ClothingColors> originalClothingColors = new List<ClothingColors>();
+        private readonly List<HairColors> originalHairColors = new List<HairColors>();
+        private readonly List<BodyColors> originalBodyColors = new List<BodyColors>();
         #endregion
 
         #region Character Properties shortcuts
@@ -29,7 +32,9 @@ namespace Plugins
         protected override void OnReload(GameMode currentGameMode)
         {
             allControllers[ChaControl] = this;
-            defaultClothingColors.Clear();
+            originalClothingColors.Clear();
+            originalHairColors.Clear();
+            originalBodyColors.Clear();
         }
 
         public static StudioSkinColorCharaController GetController(ChaControl chaCtrl)
@@ -58,6 +63,9 @@ namespace Plugins
 
         public void UpdateTextureColor(Color color, TextureColor textureColor)
         {
+            if (!originalBodyColors.Exists(x => x.ColorType == textureColor))
+                originalBodyColors.Add(new BodyColors(textureColor, GetBodyColor(textureColor)));
+
             switch (textureColor)
             {
                 case TextureColor.SkinMain:
@@ -88,6 +96,9 @@ namespace Plugins
 
         public void UpdateHairColor(Color color, HairColor hairColor)
         {
+            if (!originalHairColors.Exists(x => x.HairColor == hairColor))
+                originalHairColors.Add(new HairColors(hairColor, GetHairColor(hairColor)));
+
             switch (hairColor)
             {
                 case HairColor.Base:
@@ -118,6 +129,13 @@ namespace Plugins
             }
             for (int i = 0; i < 4; i++)
                 ChaControl.ChangeSettingHairColor(i, true, true, true);
+        }
+
+        public void ResetHairColor(HairColor hairColor)
+        {
+            var color = originalHairColors.FirstOrDefault(x => x.HairColor == hairColor);
+            if (color != null)
+                UpdateHairColor(color.Color, hairColor);
         }
 
         public Color GetHairColor(HairColor color)
@@ -153,6 +171,13 @@ namespace Plugins
             }
             return Color.white;
         }
+
+        public void ResetBodyColor(TextureColor colorType)
+        {
+            var color = originalBodyColors.FirstOrDefault(x => x.ColorType == colorType);
+            if (color != null)
+                UpdateTextureColor(color.Color, colorType);
+        }
         #endregion
 
         #region Clothes
@@ -176,9 +201,9 @@ namespace Plugins
                 MEController.RefreshClothesMainTex();
             }
 
-            if (!defaultClothingColors.Exists(x => x.Compare(CurrentOutfitSlot, kind, colorNr)))
+            if (!originalClothingColors.Exists(x => x.Compare(CurrentOutfitSlot, kind, colorNr)))
             {
-                defaultClothingColors.Add(new ClothingColors(CurrentOutfitSlot, kind, colorNr, GetClothingColor(kind, colorNr)));
+                originalClothingColors.Add(new ClothingColors(CurrentOutfitSlot, kind, colorNr, GetClothingColor(kind, colorNr)));
             }
 
             Clothes.parts[kind].colorInfo[colorNr].baseColor = color;
@@ -193,7 +218,7 @@ namespace Plugins
 
         public void ResetClothingColor(int kind, int colorNr)
         {
-            var color = defaultClothingColors.FirstOrDefault(x => x.Compare(CurrentOutfitSlot, kind, colorNr));
+            var color = originalClothingColors.FirstOrDefault(x => x.Compare(CurrentOutfitSlot, kind, colorNr));
             if (color != null)
                 SetClothingColor(kind, colorNr, color.Color);
         }
@@ -224,6 +249,30 @@ namespace Plugins
             )
                 return true;
             return false;
+        }
+    }
+
+    internal class HairColors
+    {
+        public HairColor HairColor { get; set; }
+        public Color Color { get; set; }
+
+        public HairColors(HairColor hairColor, Color color)
+        {
+            HairColor = hairColor;
+            Color = color;
+        }
+    }
+
+    internal class BodyColors
+    {
+        public TextureColor ColorType { get; set; }
+        public Color Color { get; set; }
+
+        public BodyColors(TextureColor colorType, Color color)
+        {
+            ColorType = colorType;
+            Color = color;
         }
     }
 }

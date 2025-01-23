@@ -159,19 +159,19 @@ namespace Plugins
                             "Main Skin Color:",
                             controller.GetBodyColor(TextureColor.SkinMain),
                             c => controller.UpdateTextureColor(c, TextureColor.SkinMain),
-                            () => controller.ResetClothingColor(selectedKind, 0)
+                            () => controller.ResetBodyColor(TextureColor.SkinMain)
                         );
                         DrawColorRow(
                             "Sub Skin Color:",
                             controller.GetBodyColor(TextureColor.SkinSub),
                             c => controller.UpdateTextureColor(c, TextureColor.SkinSub),
-                            () => controller.ResetClothingColor(selectedKind, 0)
+                            () => controller.ResetBodyColor(TextureColor.SkinSub)
                         );
                         DrawColorRow(
                             "Tan Color:",
                             controller.GetBodyColor(TextureColor.Tan),
                             c => controller.UpdateTextureColor(c, TextureColor.Tan),
-                            () => controller.ResetClothingColor(selectedKind, 0)
+                            () => controller.ResetBodyColor(TextureColor.Tan)
                         );
                     }
                 }
@@ -188,19 +188,19 @@ namespace Plugins
                     "Color 1:",
                     controller.GetHairColor(HairColor.Base),
                     c => controller.UpdateHairColor(c, HairColor.Base),
-                    () => controller.ResetClothingColor(selectedKind, 0)
+                    () => controller.ResetHairColor(HairColor.Base)
                 );
                 DrawColorRow(
                     "Color 2:",
                     controller.GetHairColor(HairColor.Start),
                     c => controller.UpdateHairColor(c, HairColor.Start),
-                    () => controller.ResetClothingColor(selectedKind, 0)
+                    () => controller.ResetHairColor(HairColor.Start)
                 );
                 DrawColorRow(
                     "Color 3:",
                     controller.GetHairColor(HairColor.End),
                     c => controller.UpdateHairColor(c, HairColor.End),
-                    () => controller.ResetClothingColor(selectedKind, 0)
+                    () => controller.ResetHairColor(HairColor.End)
                 );
 #if KKS
                 DrawColorRow(
