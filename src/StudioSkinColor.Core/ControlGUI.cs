@@ -1,16 +1,5 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.Logging;
-using KK_Plugins.MaterialEditor;
-using KKAPI;
-using KKAPI.Maker;
-using KKAPI.Studio;
-using KKAPI.Utilities;
-using Shared;
-using Studio;
-using System;
+﻿using Shared;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Plugins
@@ -35,6 +24,11 @@ namespace Plugins
         };
         private static int selectedKind = 0;
 
+        private static StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
+        private static ChaControl selectedCharacter => StudioSkinColor.selectedCharacter;
+        private static ListInfoBase infoClothes => selectedCharacter.infoClothes[selectedKind];
+        private static ChaClothesComponent clothesComponent => selectedCharacter.GetCustomClothesComponent(selectedKind);
+
         internal static void DrawWindow(int id)
         {
             GUILayout.BeginHorizontal();
@@ -43,12 +37,10 @@ namespace Plugins
                 {
                     foreach (var kind in clothingKinds)
                     {
-                        var kindNotExists = StudioSkinColor.selectedCharacter.infoClothes[kind.Value].Name == "None";
-
                         Color c = GUI.color;
                         if (selectedKind == kind.Value)
                             GUI.color = Color.cyan;
-                        if (kindNotExists)
+                        if (controller.ClothingKindExists(kind.Value))
                             GUI.enabled = false;
                         if (GUILayout.Button(kind.Key))
                             selectedKind = kind.Value;
@@ -60,12 +52,7 @@ namespace Plugins
 
                 GUILayout.BeginVertical(GUI.skin.box);
                 {
-                    var infoClothes = StudioSkinColor.selectedCharacter.infoClothes[selectedKind];
-                    var clothingPart = StudioSkinColor.selectedCharacter.nowCoordinate.clothes.parts[selectedKind];
-                    var clothesComponent = StudioSkinColor.selectedCharacter.GetCustomClothesComponent(selectedKind);
-
-                    if (StudioSkinColor.selectedCharacter.ctCreateClothes[selectedKind, 0] == null)
-                        StudioSkinColor.selectedCharacter.InitBaseCustomTextureClothes(true, selectedKind);
+                    controller.InitBaseCustomTextureClothesIfNotExists(selectedKind);
 
                     GUILayout.BeginVertical(GUI.skin.box);
                     GUILayout.Label(infoClothes.Name, new GUIStyle
@@ -79,11 +66,11 @@ namespace Plugins
                     if (clothesComponent != null)
                     {
                         if (clothesComponent.useColorN01)
-                            DrawColorRow(clothingPart.colorInfo[0], "Color 1:", selectedKind);
+                            DrawColorRow(0, "Color 1:", selectedKind);
                         if (clothesComponent.useColorN02)
-                            DrawColorRow(clothingPart.colorInfo[1], "Color 2:", selectedKind);
+                            DrawColorRow(1, "Color 2:", selectedKind);
                         if (clothesComponent.useColorN03)
-                            DrawColorRow(clothingPart.colorInfo[2], "Color 3:", selectedKind);
+                            DrawColorRow(2, "Color 3:", selectedKind);
 
                     }
                 }
@@ -93,7 +80,7 @@ namespace Plugins
             GUI.DragWindow();
         }
 
-        private static void DrawColorRow(ChaFileClothes.PartsInfo.ColorInfo colorInfo, string name, int kind)
+        private static void DrawColorRow(int colorNr, string name, int kind)
         {
             GUILayout.Label(name, new GUIStyle
             {
@@ -106,25 +93,25 @@ namespace Plugins
             }, GUILayout.ExpandWidth(false));
             GUILayout.Space(2);
 
-            bool colorOpened = GUILayout.Button("", Colorbutton(colorInfo.baseColor));
-            if (colorOpened)
+            GUILayout.BeginHorizontal();
             {
-                void ChangeColorAction(Color c)
+                var currentColor = controller.GetClothingColor(kind, colorNr);
+                bool colorOpened = GUILayout.Button("", Colorbutton(currentColor));
+                if (colorOpened)
                 {
-                    if (c != colorInfo.baseColor)
+                    void ChangeColorAction(Color c)
                     {
-                        var MEController = MaterialEditorPlugin.GetCharaController(StudioSkinColor.selectedCharacter);
-                        if (MEController != null)
-                        {
-                            MEController.CustomClothesOverride = true;
-                            MEController.RefreshClothesMainTex();
-                        }
-                        colorInfo.baseColor = c;
-                        StudioSkinColor.selectedCharacter.ChangeCustomClothes(true, kind, true, true, true, true, true);
+                        if (c != currentColor)
+                            controller.SetClothingColor(kind, colorNr, c);
                     }
+                    ColorPicker.OpenColorPicker(currentColor, ChangeColorAction);
                 }
-                ColorPicker.OpenColorPicker(colorInfo.baseColor, ChangeColorAction);
+                if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
+                {
+                    controller.ResetClothingColor(kind, colorNr);
+                }
             }
+            GUILayout.EndHorizontal();
             GUILayout.Space(5);
 
                 //if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))

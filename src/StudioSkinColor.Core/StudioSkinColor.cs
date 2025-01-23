@@ -1,19 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using HarmonyLib;
 using KK_Plugins.MaterialEditor;
 using KKAPI.Chara;
-using KKAPI.Maker;
 using KKAPI.Studio;
-using KKAPI.Studio.SaveLoad;
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
-using MessagePack;
-using plugins;
-using Studio;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
@@ -142,6 +134,10 @@ namespace Plugins
             End,
             Gloss,
             Eyebrow,
+        }
+        private void OnDestroy()
+        {
+            StudioSkinColorCharaController.allControllers.Clear();
         }
     }
 }

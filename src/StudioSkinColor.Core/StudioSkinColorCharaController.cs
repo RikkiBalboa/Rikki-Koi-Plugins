@@ -1,18 +1,26 @@
 ﻿using KKAPI;
 using KKAPI.Chara;
-using KKAPI.Studio;
-using Studio;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using static Plugins.StudioSkinColor;
 using UnityEngine;
+using KK_Plugins.MaterialEditor;
+using System.Linq;
 
-namespace plugins
+namespace Plugins
 {
     internal class StudioSkinColorCharaController : CharaCustomFunctionController
     {
-        private static readonly Dictionary<ChaControl, StudioSkinColorCharaController> allControllers = new Dictionary<ChaControl, StudioSkinColorCharaController>();
+        internal static readonly Dictionary<ChaControl, StudioSkinColorCharaController> allControllers = new Dictionary<ChaControl, StudioSkinColorCharaController>();
+
+        #region Save Lists
+        private readonly List<ClothingColors> defaultClothingColors = new List<ClothingColors>();
+        #endregion
+
+        #region Character Properties shortcuts
+        private int CurrentOutfitSlot => ChaControl.fileStatus.coordinateType;
+        private ChaFileClothes Clothes => ChaControl.nowCoordinate.clothes;
+        private ChaFileClothes SetClothes => ChaControl.chaFile.coordinate[ChaControl.chaFile.status.coordinateType].clothes;
+        #endregion
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
@@ -21,15 +29,20 @@ namespace plugins
         protected override void OnReload(GameMode currentGameMode)
         {
             allControllers[ChaControl] = this;
+            defaultClothingColors.Clear();
         }
 
         public static StudioSkinColorCharaController GetController(ChaControl chaCtrl)
         {
+            StudioSkinColorCharaController controller = null;
             if (allControllers.ContainsKey(chaCtrl))
-                return allControllers[chaCtrl];
-            return null;
+                controller = allControllers[chaCtrl];
+            if (controller == null)
+                controller = chaCtrl.gameObject.GetOrAddComponent<StudioSkinColorCharaController>();
+            return controller;
         }
 
+        #region body
         public void UpdateBodyAndFaceTextures()
         {
             ChaControl.AddUpdateCMFaceTexFlags(true, true, true, true, true, true, true);
@@ -105,6 +118,78 @@ namespace plugins
             }
             for (int i = 0; i < 4; i++)
                 ChaControl.ChangeSettingHairColor(i, true, true, true);
+        }
+        #endregion
+
+        #region Clothes
+        public bool ClothingKindExists(int kind)
+        {
+            return ChaControl.infoClothes[kind].Name == "None";
+        }
+
+        public void InitBaseCustomTextureClothesIfNotExists(int kind)
+        {
+            if (selectedCharacter.ctCreateClothes[kind, 0] == null)
+                selectedCharacter.InitBaseCustomTextureClothes(true, kind);
+        }
+
+        public void SetClothingColor(int kind, int colorNr, Color color)
+        {
+            var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
+            if (MEController != null)
+            {
+                MEController.CustomClothesOverride = true;
+                MEController.RefreshClothesMainTex();
+            }
+
+            if (!defaultClothingColors.Exists(x => x.Compare(CurrentOutfitSlot, kind, colorNr)))
+            {
+                defaultClothingColors.Add(new ClothingColors(CurrentOutfitSlot, kind, colorNr, GetClothingColor(kind, colorNr)));
+            }
+
+            Clothes.parts[kind].colorInfo[colorNr].baseColor = color;
+            SetClothes.parts[kind].colorInfo[colorNr].baseColor = color;
+            selectedCharacter.ChangeCustomClothes(true, kind, true, true, true, true, true);
+        }
+
+        public Color GetClothingColor(int kind, int colorNr)
+        {
+            return Clothes.parts[kind].colorInfo[colorNr].baseColor;
+        }
+
+        public void ResetClothingColor(int kind, int colorNr)
+        {
+            var color = defaultClothingColors.FirstOrDefault(x => x.Compare(CurrentOutfitSlot, kind, colorNr));
+            if (color != null)
+                SetClothingColor(kind, colorNr, color.Color);
+        }
+        #endregion
+    }
+
+    internal class ClothingColors
+    {
+        public int OutfitSlot { get; set; }
+        public int ClothingKind { get; set; }
+        public int ColorNr { get; set; }
+        public Color Color { get; set; }
+
+        public ClothingColors(int outfitSlot, int kind, int colorNr, Color color)
+        {
+            OutfitSlot = outfitSlot;
+            ClothingKind = kind;
+            ColorNr = colorNr;
+            Color = color;
+        }
+
+        public bool Compare(int outfitSlot, int kind, int colorNr)
+        {
+            if (
+                OutfitSlot == outfitSlot
+                && ClothingKind == kind
+                && ColorNr == colorNr
+            )
+                return true;
+            return false;
         }
     }
 }
