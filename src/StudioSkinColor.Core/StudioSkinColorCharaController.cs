@@ -5,6 +5,7 @@ using static Plugins.StudioSkinColor;
 using UnityEngine;
 using KK_Plugins.MaterialEditor;
 using System.Linq;
+using static KKAPI.Maker.MakerConstants;
 
 namespace Plugins
 {
@@ -207,7 +208,51 @@ namespace Plugins
 
             Clothes.parts[kind].colorInfo[colorNr].baseColor = color;
             SetClothes.parts[kind].colorInfo[colorNr].baseColor = color;
-            selectedCharacter.ChangeCustomClothes(true, kind, true, true, true, true, true);
+            if (!IsMultiPartTop(kind))
+                selectedCharacter.ChangeCustomClothes(true, kind, true, true, true, true, true);
+            else
+                for (int i = 0; i < Clothes.subPartsId.Length; i++)
+                {
+                    ChaControl.ChangeCustomClothes(main: false, i, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: false);
+                }
+        }
+
+        public bool[] CheckClothingUseColor(int kind)
+        {
+            bool[] useCols = new bool[4] { false, false, false, false };
+
+            if (!IsMultiPartTop(kind))
+            {
+                var clothesComponent = ChaControl.GetCustomClothesComponent(kind);
+                if (clothesComponent != null)
+                {
+                    useCols[0] = clothesComponent.useColorN01;
+                    useCols[1] = clothesComponent.useColorN02;
+                    useCols[2] = clothesComponent.useColorN03;
+                }
+            }
+            else
+            {
+                foreach (var clothesComponent in ChaControl.cusClothesSubCmp)
+                {
+                    if (clothesComponent != null)
+                    {
+                        useCols[0] |= clothesComponent.useColorN01;
+                        useCols[1] |= clothesComponent.useColorN02;
+                        useCols[2] |= clothesComponent.useColorN03;
+                        useCols[3] |= clothesComponent.rendAccessory != null;
+                    }
+                }
+            }
+
+            return useCols;
+        }
+
+        public bool IsMultiPartTop(int kind)
+        {
+            if (kind == 0 && (ChaControl.infoClothes[kind].Kind == 1 || ChaControl.infoClothes[kind].Kind == 2))
+                return true;
+            return false;
         }
 
         public Color GetClothingColor(int kind, int colorNr)

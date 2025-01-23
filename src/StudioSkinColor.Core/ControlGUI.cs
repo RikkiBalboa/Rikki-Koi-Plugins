@@ -100,31 +100,28 @@ namespace Plugins
                     }, GUILayout.Width(150));
                     GUILayout.EndVertical();
 
-                    if (clothesComponent != null)
-                    {
-                        if (clothesComponent.useColorN01)
-                            DrawColorRow(
-                                "Color 1:",
-                                controller.GetClothingColor(selectedKind, 0),
-                                c => controller.SetClothingColor(selectedKind, 0, c),
-                                () => controller.ResetClothingColor(selectedKind, 0)
-                            );
-                        if (clothesComponent.useColorN02)
-                            DrawColorRow(
-                                "Color 2:",
-                                controller.GetClothingColor(selectedKind, 1),
-                                c => controller.SetClothingColor(selectedKind, 1, c),
-                                () => controller.ResetClothingColor(selectedKind, 1)
-                            );
-                        if (clothesComponent.useColorN03)
-                            DrawColorRow(
-                                "Color 3:",
-                                controller.GetClothingColor(selectedKind, 2),
-                                c => controller.SetClothingColor(selectedKind, 2, c),
-                                () => controller.ResetClothingColor(selectedKind, 2)
-                            );
-
-                    }
+                    var usedCols = controller.CheckClothingUseColor(selectedKind);
+                    if (usedCols[0])
+                        DrawColorRow(
+                            "Color 1:",
+                            controller.GetClothingColor(selectedKind, 0),
+                            c => controller.SetClothingColor(selectedKind, 0, c),
+                            () => controller.ResetClothingColor(selectedKind, 0)
+                        );
+                    if (usedCols[1])
+                        DrawColorRow(
+                            "Color 2:",
+                            controller.GetClothingColor(selectedKind, 1),
+                            c => controller.SetClothingColor(selectedKind, 1, c),
+                            () => controller.ResetClothingColor(selectedKind, 1)
+                        );
+                    if (usedCols[2])
+                        DrawColorRow(
+                            "Color 3:",
+                            controller.GetClothingColor(selectedKind, 2),
+                            c => controller.SetClothingColor(selectedKind, 2, c),
+                            () => controller.ResetClothingColor(selectedKind, 2)
+                        );
                 }
                 GUILayout.EndVertical();
             }
@@ -178,6 +175,7 @@ namespace Plugins
             GUILayout.EndHorizontal();
 
         }
+
         private static void DrawHairWindow()
         {
             GUILayout.BeginVertical(GUI.skin.box);
