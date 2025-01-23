@@ -22,6 +22,8 @@ namespace Plugins
             { "Shoes", 8 }
 #endif
         };
+
+        private static SelectedTab selectedTab = SelectedTab.Clothes;
         private static int selectedKind = 0;
 
         private static StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
@@ -30,6 +32,28 @@ namespace Plugins
         private static ChaClothesComponent clothesComponent => selectedCharacter.GetCustomClothesComponent(selectedKind);
 
         internal static void DrawWindow(int id)
+        {
+
+            GUILayout.BeginHorizontal();
+            {
+                if (GUILayout.Button("Clothes"))
+                    selectedTab = SelectedTab.Clothes;
+                if (GUILayout.Button("Body"))
+                    selectedTab = SelectedTab.Body;
+                if (GUILayout.Button("Hair"))
+                    selectedTab = SelectedTab.Hair;
+            }
+            GUILayout.EndHorizontal();
+
+            if (selectedTab == SelectedTab.Clothes)
+                DrawClothesWindow();
+            else if (selectedTab == SelectedTab.Body)
+                DrawBodyWindow();
+            else if (selectedTab == SelectedTab.Hair)
+                DrawHairWindow();
+        }
+
+        private static void DrawClothesWindow()
         {
             GUILayout.BeginHorizontal();
             {
@@ -78,6 +102,17 @@ namespace Plugins
             }
             GUILayout.EndHorizontal();
             GUI.DragWindow();
+        }
+
+        private static void DrawBodyWindow()
+        {
+
+        }
+        private static void DrawHairWindow()
+        {
+            DrawColorRow(0, "Color 1:", selectedKind);
+            DrawColorRow(0, "Color 1:", selectedKind);
+            DrawColorRow(0, "Color 1:", selectedKind);
         }
 
         private static void DrawColorRow(int colorNr, string name, int kind)
@@ -130,6 +165,13 @@ namespace Plugins
             guistyle.active = guistyle.normal;
             guistyle.margin = new RectOffset(guistyle.margin.left, guistyle.margin.right, 0, guistyle.margin.bottom);
             return guistyle;
+        }
+
+        private enum SelectedTab
+        {
+            Clothes,
+            Body,
+            Hair,
         }
     }
 }
