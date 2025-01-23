@@ -59,8 +59,7 @@ namespace Plugins
 
             if (uiShow)
             {
-                //IMGUIUtils.DrawSolidBox(uiRect);
-                uiRect = GUILayout.Window(uiWindowHash, uiRect, ControlGUI.DrawWindow, "KKPRim Controller");
+                uiRect = GUILayout.Window(uiWindowHash, uiRect, ControlGUI.DrawWindow, "Studio Pseudo Maker");
                 IMGUIUtils.EatInputInRect(uiRect);
             }
             GUI.skin = skin;
@@ -116,31 +115,31 @@ namespace Plugins
             foreach (var cha in StudioAPI.GetSelectedCharacters())
                 StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateHairColor(color, hairColor);
         }
-
-        internal enum TextureColor
-        {
-            SkinMain,
-            SkinSub,
-            Tan,
-        }
-
-        internal enum Bust
-        {
-            Softness,
-            Weight,
-        }
-
-        internal enum HairColor
-        {
-            Base,
-            Start,
-            End,
-            Gloss,
-            Eyebrow,
-        }
         private void OnDestroy()
         {
             StudioSkinColorCharaController.allControllers.Clear();
         }
+    }
+
+    internal enum TextureColor
+    {
+        SkinMain,
+        SkinSub,
+        Tan,
+    }
+
+    internal enum Bust
+    {
+        Softness,
+        Weight,
+    }
+
+    internal enum HairColor
+    {
+        Base,
+        Start,
+        End,
+        Gloss,
+        Eyebrow,
     }
 }

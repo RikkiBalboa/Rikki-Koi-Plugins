@@ -1,4 +1,6 @@
-﻿using Shared;
+﻿using Illusion.Game;
+using Shared;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,6 +53,8 @@ namespace Plugins
                 DrawBodyWindow();
             else if (selectedTab == SelectedTab.Hair)
                 DrawHairWindow();
+
+            GUI.DragWindow();
         }
 
         private static void DrawClothesWindow()
@@ -90,18 +94,32 @@ namespace Plugins
                     if (clothesComponent != null)
                     {
                         if (clothesComponent.useColorN01)
-                            DrawColorRow(0, "Color 1:", selectedKind);
+                            DrawColorRow(
+                                "Color 1:",
+                                controller.GetClothingColor(selectedKind, 0),
+                                c => controller.SetClothingColor(selectedKind, 0, c),
+                                () => controller.ResetClothingColor(selectedKind, 0)
+                            );
                         if (clothesComponent.useColorN02)
-                            DrawColorRow(1, "Color 2:", selectedKind);
+                            DrawColorRow(
+                                "Color 2:",
+                                controller.GetClothingColor(selectedKind, 1),
+                                c => controller.SetClothingColor(selectedKind, 1, c),
+                                () => controller.ResetClothingColor(selectedKind, 1)
+                            );
                         if (clothesComponent.useColorN03)
-                            DrawColorRow(2, "Color 3:", selectedKind);
+                            DrawColorRow(
+                                "Color 3:",
+                                controller.GetClothingColor(selectedKind, 2),
+                                c => controller.SetClothingColor(selectedKind, 2, c),
+                                () => controller.ResetClothingColor(selectedKind, 2)
+                            );
 
                     }
                 }
                 GUILayout.EndVertical();
             }
             GUILayout.EndHorizontal();
-            GUI.DragWindow();
         }
 
         private static void DrawBodyWindow()
@@ -110,12 +128,45 @@ namespace Plugins
         }
         private static void DrawHairWindow()
         {
-            DrawColorRow(0, "Color 1:", selectedKind);
-            DrawColorRow(0, "Color 1:", selectedKind);
-            DrawColorRow(0, "Color 1:", selectedKind);
+            GUILayout.BeginVertical(GUI.skin.box);
+            {
+                DrawColorRow(
+                    "Color 1:",
+                    controller.GetHairColor(HairColor.Base),
+                    c => controller.UpdateHairColor(c, HairColor.Base),
+                    () => controller.ResetClothingColor(selectedKind, 0)
+                );
+                DrawColorRow(
+                    "Color 2:",
+                    controller.GetHairColor(HairColor.Start),
+                    c => controller.UpdateHairColor(c, HairColor.Start),
+                    () => controller.ResetClothingColor(selectedKind, 0)
+                );
+                DrawColorRow(
+                    "Color 3:",
+                    controller.GetHairColor(HairColor.End),
+                    c => controller.UpdateHairColor(c, HairColor.End),
+                    () => controller.ResetClothingColor(selectedKind, 0)
+                );
+#if KKS
+                DrawColorRow(
+                    "Gloss color:",
+                    controller.GetHairColor(HairColor.Gloss),
+                    c => controller.UpdateHairColor(c, HairColor.Gloss),
+                    () => controller.ResetClothingColor(selectedKind, 0)
+                );
+#endif
+                DrawColorRow(
+                    "Eyebrow color:",
+                    controller.GetHairColor(HairColor.Eyebrow),
+                    c => controller.UpdateHairColor(c, HairColor.Eyebrow),
+                    () => controller.ResetClothingColor(selectedKind, 0)
+                );
+            }
+            GUILayout.EndVertical();
         }
 
-        private static void DrawColorRow(int colorNr, string name, int kind)
+        private static void DrawColorRow(string name, Color currentColor, Action<Color> setColorAction, Action resetColorAction)
         {
             GUILayout.Label(name, new GUIStyle(GUI.skin.label)
             {
@@ -126,27 +177,20 @@ namespace Plugins
 
             GUILayout.BeginHorizontal();
             {
-                var currentColor = controller.GetClothingColor(kind, colorNr);
                 bool colorOpened = GUILayout.Button("", new GUIStyle(Colorbutton(currentColor))
                 {
                     margin = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom)
                 });
                 if (colorOpened)
-                {
-                    void ChangeColorAction(Color c)
-                    {
+                    ColorPicker.OpenColorPicker(currentColor, (c) => {
                         if (c != currentColor)
-                            controller.SetClothingColor(kind, colorNr, c);
-                    }
-                    ColorPicker.OpenColorPicker(currentColor, ChangeColorAction);
-                }
+                            setColorAction(c);
+                    });
                 if (GUILayout.Button("Reset", new GUIStyle(GUI.skin.button)
                 {
                     margin = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom)
                 }, GUILayout.ExpandWidth(false)))
-                {
-                    controller.ResetClothingColor(kind, colorNr);
-                }
+                    resetColorAction();
             }
             GUILayout.EndHorizontal();
         }

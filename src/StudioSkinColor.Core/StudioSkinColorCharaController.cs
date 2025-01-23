@@ -119,6 +119,26 @@ namespace Plugins
             for (int i = 0; i < 4; i++)
                 ChaControl.ChangeSettingHairColor(i, true, true, true);
         }
+
+        public Color GetHairColor(HairColor color)
+        {
+            switch (color)
+            {
+                case HairColor.Base:
+                    return ChaControl.fileHair.parts[0].baseColor;
+                case HairColor.Start:
+                    return ChaControl.fileHair.parts[0].startColor;
+                case HairColor.End:
+                    return ChaControl.fileHair.parts[0].endColor;
+#if KKS
+                case HairColor.Gloss:
+                    return ChaControl.fileHair.parts[0].glossColor;
+#endif
+                case HairColor.Eyebrow:
+                    return ChaControl.fileFace.eyebrowColor;
+            }
+            return Color.white;
+        }
         #endregion
 
         #region Clothes
