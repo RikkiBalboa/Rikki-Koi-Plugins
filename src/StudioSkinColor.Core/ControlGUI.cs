@@ -26,8 +26,14 @@ namespace Plugins
             { "Shoes", 8 }
 #endif
         };
+        private static readonly List<string> bodyTabs = new List<string>()
+        {
+            "General",
+            "Bust"
+        };
 
         private static SelectedTab selectedTab = SelectedTab.Clothes;
+        private static string selectedBodyTab = bodyTabs[0];
         private static int selectedKind = 0;
 
         private static StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
@@ -129,6 +135,49 @@ namespace Plugins
 
         private static void DrawBodyWindow()
         {
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.BeginVertical(GUI.skin.box);
+                {
+                    foreach (var tab in bodyTabs)
+                    {
+                        Color c = GUI.color;
+                        if (selectedBodyTab == tab)
+                            GUI.color = Color.cyan;
+                        if (GUILayout.Button(tab))
+                            selectedBodyTab = tab;
+                        GUI.color = c;
+                    }
+                }
+                GUILayout.EndVertical();
+
+                GUILayout.BeginVertical(GUI.skin.box);
+                {
+                    if (selectedBodyTab == "General")
+                    {
+                        DrawColorRow(
+                            "Main Skin Color:",
+                            controller.GetBodyColor(TextureColor.SkinMain),
+                            c => controller.UpdateTextureColor(c, TextureColor.SkinMain),
+                            () => controller.ResetClothingColor(selectedKind, 0)
+                        );
+                        DrawColorRow(
+                            "Sub Skin Color:",
+                            controller.GetBodyColor(TextureColor.SkinSub),
+                            c => controller.UpdateTextureColor(c, TextureColor.SkinSub),
+                            () => controller.ResetClothingColor(selectedKind, 0)
+                        );
+                        DrawColorRow(
+                            "Tan Color:",
+                            controller.GetBodyColor(TextureColor.Tan),
+                            c => controller.UpdateTextureColor(c, TextureColor.Tan),
+                            () => controller.ResetClothingColor(selectedKind, 0)
+                        );
+                    }
+                }
+                GUILayout.EndVertical();
+            }
+            GUILayout.EndHorizontal();
 
         }
         private static void DrawHairWindow()

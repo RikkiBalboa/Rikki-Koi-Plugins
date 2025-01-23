@@ -139,6 +139,20 @@ namespace Plugins
             }
             return Color.white;
         }
+
+        public Color GetBodyColor(TextureColor color)
+        {
+            switch (color)
+            {
+                case TextureColor.SkinMain:
+                    return ChaControl.fileBody.skinMainColor;
+                case TextureColor.SkinSub:
+                    return ChaControl.fileBody.skinSubColor;
+                case TextureColor.Tan:
+                    return ChaControl.fileBody.sunburnColor;
+            }
+            return Color.white;
+        }
         #endregion
 
         #region Clothes
