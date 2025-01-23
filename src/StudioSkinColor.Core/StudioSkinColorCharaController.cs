@@ -17,6 +17,7 @@ namespace Plugins
         private readonly List<ClothingColors> originalClothingColors = new List<ClothingColors>();
         private readonly List<HairColors> originalHairColors = new List<HairColors>();
         private readonly List<BodyColors> originalBodyColors = new List<BodyColors>();
+        private readonly List<BustValues> originalBustValues = new List<BustValues>();
         #endregion
 
         #region Character Properties shortcuts
@@ -35,6 +36,7 @@ namespace Plugins
             originalClothingColors.Clear();
             originalHairColors.Clear();
             originalBodyColors.Clear();
+            originalBustValues.Clear();
         }
 
         public static StudioSkinColorCharaController GetController(ChaControl chaCtrl)
@@ -81,8 +83,11 @@ namespace Plugins
             UpdateBodyAndFaceTextures();
         }
 
-        public void UpdateBustSoftness(float value, Bust bust)
+        public void SetBustValue(float value, Bust bust)
         {
+            if (!originalBustValues.Exists(x => x.Bust == bust))
+                originalBustValues.Add(new BustValues(bust, value));
+
             switch (bust)
             {
                 case Bust.Softness:
@@ -92,6 +97,22 @@ namespace Plugins
                     ChaControl.ChangeBustGravity(value);
                     break;
             }
+        }
+
+        public void ResetBustValue(Bust bust)
+        {
+            var value = originalBustValues.FirstOrDefault(x => x.Bust == bust);
+            if(value != null)
+                SetBustValue(value.Value, bust);
+        }
+
+        public float GetBustValue(Bust bust)
+        {
+            if (bust == Bust.Softness)
+                return ChaControl.fileBody.bustSoftness;
+            else if (bust == Bust.Weight)
+                return ChaControl.fileBody.bustWeight;
+            return 1f;
         }
 
         public void UpdateHairColor(Color color, HairColor hairColor)
@@ -317,6 +338,18 @@ namespace Plugins
         {
             ColorType = colorType;
             Color = color;
+        }
+    }
+
+    internal class BustValues
+    {
+        public Bust Bust { get; set; }
+        public float Value { get; set; }
+
+        public BustValues(Bust bust, float value)
+        {
+            Bust = bust;
+            Value = value;
         }
     }
 }

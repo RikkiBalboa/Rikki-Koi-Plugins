@@ -34,6 +34,7 @@ namespace Plugins
         private static SelectedTab selectedTab = SelectedTab.Clothes;
         private static string selectedBodyTab = bodyTabs[0];
         private static int selectedKind = 0;
+        private static readonly Dictionary<string, InputBuffer> inputBuffers = new Dictionary<string, InputBuffer>();
 
         private static StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
         private static ListInfoBase infoClothes => selectedCharacter.infoClothes[selectedKind];
@@ -169,6 +170,27 @@ namespace Plugins
                             () => controller.ResetBodyColor(TextureColor.Tan)
                         );
                     }
+                    else if (selectedBodyTab == "Bust")
+                    {
+                        DrawSliderRow(
+                            "Softness",
+                            "BustSoftness",
+                            controller.GetBustValue(Bust.Softness),
+                            0,
+                            1,
+                            f => controller.SetBustValue(f, Bust.Softness),
+                            () => controller.ResetBustValue(Bust.Softness)
+                        );
+                        DrawSliderRow(
+                            "Weight",
+                            "BustWeight",
+                            controller.GetBustValue(Bust.Weight),
+                            0,
+                            1,
+                            f => controller.SetBustValue(f, Bust.Weight),
+                            () => controller.ResetBustValue(Bust.Weight)
+                        );
+                    }
                 }
                 GUILayout.EndVertical();
             }
@@ -245,6 +267,31 @@ namespace Plugins
             GUILayout.EndHorizontal();
         }
 
+        private static void DrawSliderRow(string name, string key, float currentValue, float min, float max, Action<float> setValueAction, Action resetValueAction)
+        {
+            inputBuffers.TryGetValue(key, out var buffer);
+            if (buffer == null)
+            {
+                buffer = new InputBuffer(currentValue);
+                inputBuffers[key] = buffer;
+            }
+            else if (buffer.SliderValue != currentValue)
+                buffer.SliderValue = currentValue;
+
+            GUILayout.Label(name, GUI.skin.label);
+            GUILayout.BeginHorizontal();
+            {
+                buffer.SliderValue = GUILayout.HorizontalSlider(buffer.SliderValue, min, max, GUILayout.ExpandWidth(true));
+                buffer.InputValue = GUILayout.TextField(buffer.InputValue, GUILayout.Width(40));
+                if (GUILayout.Button("Reset"))
+                    resetValueAction();
+            }
+
+            if (buffer.SliderValue != currentValue)
+                setValueAction(buffer.SliderValue);
+            GUILayout.EndHorizontal();
+        }
+
         private static GUIStyle Colorbutton(Color col)
         {
             GUIStyle guistyle = new GUIStyle(GUI.skin.button);
@@ -266,6 +313,45 @@ namespace Plugins
             Clothes,
             Body,
             Hair,
+        }
+
+        internal static void ClearBuffers()
+        {
+            inputBuffers.Clear();
+        }
+
+        private class InputBuffer
+        {
+            private float sliderValue;
+            public float SliderValue {
+                get { return sliderValue; }
+                set
+                {
+                    if (sliderValue != value)
+                    {
+                        sliderValue = value;
+                        inputValue = value.ToString("0.000");
+                    }
+                }
+            }
+
+            private string inputValue;
+            public string InputValue
+            {
+                get { return inputValue; }
+                set
+                {
+                    if(float.TryParse(value, out float inputValueFloat))
+                        inputValue = value;
+                    sliderValue = inputValueFloat;
+                }
+            }
+
+            public InputBuffer(float value)
+            {
+                SliderValue = value;
+                InputValue = value.ToString("0.000");
+            }
         }
     }
 }

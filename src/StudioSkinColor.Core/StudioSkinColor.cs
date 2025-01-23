@@ -67,7 +67,10 @@ namespace Plugins
 
         private void Update()
         {
-            selectedCharacter = StudioAPI.GetSelectedCharacters().FirstOrDefault()?.GetChaControl();
+            var newChar = StudioAPI.GetSelectedCharacters().FirstOrDefault()?.GetChaControl();
+            if (newChar != selectedCharacter && newChar != null)
+                ControlGUI.ClearBuffers();
+            selectedCharacter = newChar;
 
             if (KeyToggleGui.Value.IsDown() && selectedCharacter != null)
             {
@@ -107,7 +110,7 @@ namespace Plugins
         internal static void UpdateBustSoftness(float value, Bust bust)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateBustSoftness(value, bust);
+                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.SetBustValue(value, bust);
         }
 
         internal static void UpdateHairColor(Color color, HairColor hairColor)
