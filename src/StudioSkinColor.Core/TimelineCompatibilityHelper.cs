@@ -1,11 +1,7 @@
 ﻿using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Utilities;
-using plugins;
 using Studio;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using UnityEngine;
 using static Plugins.StudioSkinColor;
@@ -64,7 +60,7 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "bustSoftness",
                 name: "Bust Softness",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateBustSoftness((OCIChar)oci, Mathf.LerpUnclamped(leftValue, rightValue, factor), Bust.Softness),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateBustSoftness(Mathf.LerpUnclamped(leftValue, rightValue, factor), Bust.Softness),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileBody.bustSoftness,
                 readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
@@ -78,7 +74,7 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "bustWeight",
                 name: "Bust Weight",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateBustSoftness((OCIChar)oci, Mathf.LerpUnclamped(leftValue, rightValue, factor), Bust.Weight),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateBustSoftness(Mathf.LerpUnclamped(leftValue, rightValue, factor), Bust.Weight),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileBody.bustWeight,
                 readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
@@ -92,7 +88,7 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "hairColor1",
                 name: "Hair Color 1",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Base),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateHairColor(Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Base),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileHair.parts[0].baseColor,
                 readValueFromXml: (parameter, node) => ReadColorXML(node),
@@ -106,7 +102,7 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "hairColor2",
                 name: "Hair Color 2",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Start),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateHairColor(Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Start),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileHair.parts[0].startColor,
                 readValueFromXml: (parameter, node) => ReadColorXML(node),
@@ -120,7 +116,7 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "hairColor3",
                 name: "Hair Color 3",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.End),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateHairColor(Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.End),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileHair.parts[0].endColor,
                 readValueFromXml: (parameter, node) => ReadColorXML(node),
@@ -135,7 +131,7 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "hairGloss",
                 name: "Hair Gloss Color",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Gloss),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateHairColor(Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Gloss),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileHair.parts[0].glossColor,
                 readValueFromXml: (parameter, node) => ReadColorXML(node),
@@ -150,7 +146,7 @@ namespace Plugins
                 owner: "StudioSkinColor",
                 id: "eyebrow",
                 name: "Eyebrow Color",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => UpdateHairColor((OCIChar)oci, Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Eyebrow),
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateHairColor(Color.LerpUnclamped(leftValue, rightValue, factor), HairColor.Eyebrow),
                 interpolateAfter: null,
                 getValue: (oci, parameter) => ((OCIChar)oci).GetChaControl().fileFace.eyebrowColor,
                 readValueFromXml: (parameter, node) => ReadColorXML(node),
