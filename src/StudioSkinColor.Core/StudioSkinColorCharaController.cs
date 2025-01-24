@@ -19,6 +19,7 @@ namespace Plugins
         private readonly List<BodyColors> originalBodyColors = new List<BodyColors>();
         private readonly List<BustValues> originalBustValues = new List<BustValues>();
         private readonly Dictionary<int, float> originalBodyShapeValues = new Dictionary<int, float>();
+        private readonly Dictionary<int, float> originalFaceShapeValues = new Dictionary<int, float>();
         #endregion
 
         #region Character Properties shortcuts
@@ -210,16 +211,31 @@ namespace Plugins
 
         public float GetCurrentBodyValue(int index)
         {
-            var shapeValueBody = ChaControl.chaFile.custom.body.shapeValueBody;
-            if (index < shapeValueBody.Length)
-                return shapeValueBody[index];
-            return 0;
+            return ChaControl.GetShapeBodyValue(index);
         }
 
         public void ResetBodyShapeValue(int index)
         {
             if (originalBodyShapeValues.TryGetValue(index, out var shapeValueBody))
                 UpdateBodyShapeValue(index, shapeValueBody);
+        }
+
+        public void UpdateFaceShapeValue(int index, float value)
+        {
+            if (!originalFaceShapeValues.ContainsKey(index))
+                originalFaceShapeValues[index] = GetCurrentFaceValue(index);
+            ChaControl.SetShapeFaceValue(index, value);
+        }
+
+        public float GetCurrentFaceValue(int index)
+        {
+            return ChaControl.GetShapeFaceValue(index);
+        }
+
+        public void ResetFaceShapeValue(int index)
+        {
+            if (originalFaceShapeValues.TryGetValue(index, out var shapeValue))
+                UpdateFaceShapeValue(index, shapeValue);
         }
         #endregion
 

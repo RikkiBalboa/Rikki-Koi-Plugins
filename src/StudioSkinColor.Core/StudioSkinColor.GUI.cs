@@ -108,10 +108,106 @@ namespace Plugins
                 }
             },
         };
+        private static Dictionary<string, Dictionary<int, string>> shapeFaceValueMap = new Dictionary<string, Dictionary<int, string>>()
+        {
+            {
+                "General", new Dictionary<int, string>()
+                {
+                    {0, "Face Width"},
+                    {1, "Upper Face Depth"},
+                    {2, "Upper Face Height"},
+                    {3, "Upper Face Size"},
+                    {4, "Lower Face Depth"},
+                    {5, "Lower Face Width"},
+                }
+            },
+            {
+                "Ears", new Dictionary<int, string>()
+                {
+                    {47, "Ear Size"},
+                    {48, "Ear Angle Y Axis"},
+                    {49, "Ear Angle Z Axis"},
+                    {50, "Upper Ear Shape"},
+                    {51, "Lower Ear Shape"},
+                }
+            },
+            {
+                "Jaw", new Dictionary<int, string>()
+                {
+                    {6, "Lower Jaw Vertical Position"},
+                    {7, "Lower Jaw Depth"},
+                    {8, "Jaw Vertical Position"},
+                    {9, "Jaw Width"},
+                    {10, "Jaw Depth"},
+                    {11, "Chin Vertical Position"},
+                    {12, "Chin Depth"},
+                    {13, "Chin Width"},
+                }
+            },
+            {
+                "Cheeks", new Dictionary<int, string>()
+                {
+                    {14, "Cheekbone Width"},
+                    {15, "Cheekbone Depth"},
+                    {16, "Cheek Width"},
+                    {17, "Cheek Depth"},
+                    {18, "Cheek Vertical Position"},
+                }
+            },
+            {
+                "Eyebrows", new Dictionary<int, string>()
+                {
+                    {19, "Eyebrow Vertical Position"},
+                    {20, "Eyebrow Spacing"},
+                    {21, "Eyebrow Angle"},
+                    {22, "Inner Eyebrow Shape"},
+                    {23, "Outer Eyebrow Shape"},
+                }
+            },
+            {
+                "Eyes", new Dictionary<int, string>()
+                {
+                    {24, "Upper Eyelid Shape 1"},
+                    {25, "Upper Eyelid Shape 2"},
+                    {26, "Upper Eyelid Shape 3"},
+                    {27, "Lower Eyelid Shape 1"},
+                    {28, "Lower Eyelid Shape 2"},
+                    {29, "Lower Eyelid Shape 3"},
+                    {30, "Eye Vertical Position"},
+                    {31, "Eye Spacing"},
+                    {32, "Eye Depth"},
+                    {33, "Eye Rotation"},
+                    {34, "Eye Height"},
+                    {35, "Eye Width"},
+                    {36, "Inner Eye Corner Height"},
+                    {37, "Outer Eye Corner Height"},
+                }
+            },
+            {
+                "Nose", new Dictionary<int, string>()
+                {
+                    {38, "Nose Tip Height"},
+                    {39, "Nose Vertical Position"},
+                    {40, "Nose Ridge Height"},
+                }
+            },
+            {
+                "Mouth", new Dictionary<int, string>()
+                {
+                    {41, "Mouse Vertical Position"},
+                    {42, "Mouth Width"},
+                    {43, "Mouth Depth"},
+                    {44, "Upper Lip Depth"},
+                    {45, "Lower Lip Depth"},
+                    {46, "Mouth Corner Shape"},
+                }
+            },
+        };
         #endregion
 
         private SelectedTab selectedTab = SelectedTab.Clothes;
         private string selectedBodyTab = "General";
+        private string selectedFaceTab = "General";
         private int selectedKind = 0;
         private readonly Dictionary<string, InputBuffer> inputBuffers = new Dictionary<string, InputBuffer>();
 
@@ -140,6 +236,8 @@ namespace Plugins
                 DrawClothesWindow();
             else if (selectedTab == SelectedTab.Body)
                 DrawBodyWindow();
+            else if (selectedTab == SelectedTab.Face)
+                DrawFaceWindow();
             else if (selectedTab == SelectedTab.Hair)
                 DrawHairWindow();
 
@@ -291,7 +389,42 @@ namespace Plugins
                 GUILayout.EndScrollView();
             }
             GUILayout.EndHorizontal();
+        }
 
+        private void DrawFaceWindow()
+        {
+            GUILayout.BeginHorizontal();
+            {
+                leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(leftPanelWidth));
+                {
+                    foreach (var category in shapeFaceValueMap)
+                    {
+                        Color c = GUI.color;
+                        if (selectedFaceTab == category.Key)
+                            GUI.color = Color.cyan;
+                        if (GUILayout.Button(category.Key))
+                            selectedFaceTab = category.Key;
+                        GUI.color = c;
+                    }
+                }
+                GUILayout.EndScrollView();
+
+                rightPanelScroll = GUILayout.BeginScrollView(rightPanelScroll, GUI.skin.box);
+                {
+                    foreach (var bodyValue in shapeFaceValueMap[selectedFaceTab])
+                        DrawSliderRow(
+                            bodyValue.Value,
+                            bodyValue.Value + bodyValue.Key,
+                            controller.GetCurrentFaceValue(bodyValue.Key),
+                            -1f,
+                            2f,
+                            (f) => controller.UpdateFaceShapeValue(bodyValue.Key, f),
+                            () => controller.ResetFaceShapeValue(bodyValue.Key)
+                        );
+                }
+                GUILayout.EndScrollView();
+            }
+            GUILayout.EndHorizontal();
         }
 
         private void DrawHairWindow()
@@ -409,6 +542,7 @@ namespace Plugins
         {
             Clothes,
             Body,
+            Face,
             Hair,
         }
 
