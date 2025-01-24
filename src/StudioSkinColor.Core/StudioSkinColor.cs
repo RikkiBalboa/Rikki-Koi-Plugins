@@ -53,10 +53,9 @@ namespace Plugins
             );
             CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
 
-            WindowWidth.SettingChanged += (e, a) => uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
-            WindowHeight.SettingChanged += (e, a) => uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
-
             uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
+            WindowWidth.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
+            WindowHeight.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
         }
 
         private void Start()
