@@ -29,7 +29,7 @@ namespace Plugins
         public static ConfigEntry<float> WindowHeight { get; private set; }
 
         private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
-        private Rect uiRect;
+        internal static Rect uiRect;
         private bool uiShow = false;
 
         private void Awake()

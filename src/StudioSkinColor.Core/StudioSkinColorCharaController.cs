@@ -18,6 +18,7 @@ namespace Plugins
         private readonly List<HairColors> originalHairColors = new List<HairColors>();
         private readonly List<BodyColors> originalBodyColors = new List<BodyColors>();
         private readonly List<BustValues> originalBustValues = new List<BustValues>();
+        private readonly Dictionary<int, float> originalBodyShapeValues = new Dictionary<int, float>();
         #endregion
 
         #region Character Properties shortcuts
@@ -86,7 +87,7 @@ namespace Plugins
         public void SetBustValue(float value, Bust bust)
         {
             if (!originalBustValues.Exists(x => x.Bust == bust))
-                originalBustValues.Add(new BustValues(bust, value));
+                originalBustValues.Add(new BustValues(bust, GetBustValue(bust)));
 
             switch (bust)
             {
@@ -102,7 +103,7 @@ namespace Plugins
         public void ResetBustValue(Bust bust)
         {
             var value = originalBustValues.FirstOrDefault(x => x.Bust == bust);
-            if(value != null)
+            if (value != null)
                 SetBustValue(value.Value, bust);
         }
 
@@ -198,6 +199,27 @@ namespace Plugins
             var color = originalBodyColors.FirstOrDefault(x => x.ColorType == colorType);
             if (color != null)
                 UpdateTextureColor(color.Color, colorType);
+        }
+
+        public void UpdateBodyShapeValue(int index, float value)
+        {
+            if (!originalBodyShapeValues.ContainsKey(index))
+                originalBodyShapeValues[index] = GetCurrentBodyValue(index);
+            ChaControl.SetShapeBodyValue(index, value);
+        }
+
+        public float GetCurrentBodyValue(int index)
+        {
+            var shapeValueBody = ChaControl.chaFile.custom.body.shapeValueBody;
+            if (index < shapeValueBody.Length)
+                return shapeValueBody[index];
+            return 0;
+        }
+
+        public void ResetBodyShapeValue(int index)
+        {
+            if (originalBodyShapeValues.TryGetValue(index, out var shapeValueBody))
+                UpdateBodyShapeValue(index, shapeValueBody);
         }
         #endregion
 
