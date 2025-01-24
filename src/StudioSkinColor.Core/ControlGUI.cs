@@ -9,6 +9,10 @@ namespace Plugins
 {
     internal class ControlGUI
     {
+        private static readonly float leftPanelWidth = 140;
+        private static Vector2 leftPanelScroll = Vector2.zero;
+        private static Vector2 rightPanelScroll = Vector2.zero;
+
         private static readonly Dictionary<string, int> clothingKinds = new Dictionary<string, int>
         {
             { "Top", 0 },
@@ -22,7 +26,7 @@ namespace Plugins
             { "Shoes", 7 },
             { "Shoes (Outdoors)", 8 }
 #elif KKS
-            { "Shoes", 8 }
+            { "Shoes (Outdoors)", 8 }
 #endif
         };
         private static readonly List<string> bodyTabs = new List<string>()
@@ -71,7 +75,7 @@ namespace Plugins
         {
             GUILayout.BeginHorizontal();
             {
-                GUILayout.BeginVertical(GUI.skin.box);
+                leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(leftPanelWidth));
                 {
                     foreach (var kind in clothingKinds)
                     {
@@ -86,9 +90,9 @@ namespace Plugins
                         GUI.enabled = true;
                     }
                 }
-                GUILayout.EndVertical();
+                GUILayout.EndScrollView();
 
-                GUILayout.BeginVertical(GUI.skin.box);
+                rightPanelScroll = GUILayout.BeginScrollView(rightPanelScroll, GUI.skin.box);
                 {
                     controller.InitBaseCustomTextureClothesIfNotExists(selectedKind);
 
@@ -124,7 +128,7 @@ namespace Plugins
                             () => controller.ResetClothingColor(selectedKind, 2)
                         );
                 }
-                GUILayout.EndVertical();
+                GUILayout.EndScrollView();
             }
             GUILayout.EndHorizontal();
         }
@@ -133,7 +137,7 @@ namespace Plugins
         {
             GUILayout.BeginHorizontal();
             {
-                GUILayout.BeginVertical(GUI.skin.box);
+                leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(leftPanelWidth));
                 {
                     foreach (var tab in bodyTabs)
                     {
@@ -145,9 +149,9 @@ namespace Plugins
                         GUI.color = c;
                     }
                 }
-                GUILayout.EndVertical();
+                GUILayout.EndScrollView();
 
-                GUILayout.BeginVertical(GUI.skin.box);
+                rightPanelScroll = GUILayout.BeginScrollView(rightPanelScroll, GUI.skin.box);
                 {
                     if (selectedBodyTab == "General")
                     {
@@ -192,7 +196,7 @@ namespace Plugins
                         );
                     }
                 }
-                GUILayout.EndVertical();
+                GUILayout.EndScrollView();
             }
             GUILayout.EndHorizontal();
 

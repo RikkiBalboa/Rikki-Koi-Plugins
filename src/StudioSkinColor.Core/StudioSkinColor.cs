@@ -25,9 +25,11 @@ namespace Plugins
 
         internal static ChaControl selectedCharacter;
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
+        public static ConfigEntry<float> WindowWidth { get; private set; }
+        public static ConfigEntry<float> WindowHeight { get; private set; }
 
         private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
-        private Rect uiRect = new Rect(20, Screen.height / 2 - 150, 160, 223);
+        private Rect uiRect;
         private bool uiShow = false;
 
         private void Awake()
@@ -35,11 +37,26 @@ namespace Plugins
             Logger = base.Logger;
 
             KeyToggleGui = Config.Bind(
-                "Keyboard Shortcuts", "Open settings window",
+                "Keyboard Shortcuts", "Open editor window",
                 new KeyboardShortcut(KeyCode.Q, KeyCode.RightControl),
                 new ConfigDescription("Open a window to control KKPRim values on selected characters/objects")
             );
+            WindowWidth = Config.Bind(
+                "UI", "Window Width",
+                400f,
+                new ConfigDescription("", new AcceptableValueRange<float>(200f, 800f))
+            );
+            WindowHeight = Config.Bind(
+                "UI", "Window Height",
+                260f,
+                new ConfigDescription("", new AcceptableValueRange<float>(200f, 800f))
+            );
             CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
+
+            WindowWidth.SettingChanged += (e, a) => uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
+            WindowHeight.SettingChanged += (e, a) => uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
+
+            uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
         }
 
         private void Start()
