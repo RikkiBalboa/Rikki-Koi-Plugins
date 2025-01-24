@@ -94,6 +94,11 @@ namespace Plugins
             }
             if (selectedCharacter == null)
                 uiShow = false;
+
+            if (uiRect.width != WindowWidth.Value)
+                WindowWidth.Value = uiRect.width;
+            if (uiRect.height != WindowHeight.Value)
+                WindowHeight.Value = uiRect.height;
         }
 
         private void RegisterStudioControls()

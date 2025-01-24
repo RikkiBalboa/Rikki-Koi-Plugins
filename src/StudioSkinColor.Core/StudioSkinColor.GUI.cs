@@ -241,7 +241,6 @@ namespace Plugins
             else if (selectedTab == SelectedTab.Hair)
                 DrawHairWindow();
 
-            GUI.DragWindow();
             uiRect = KKAPI.Utilities.IMGUIUtils.DragResizeEatWindow(id, uiRect);
         }
 
