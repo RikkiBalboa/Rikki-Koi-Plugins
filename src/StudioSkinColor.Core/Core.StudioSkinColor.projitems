@@ -12,7 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColorCharaController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CurrentStateColorSlider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ControlGUI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColor.GUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibilityHelper.cs" />
   </ItemGroup>

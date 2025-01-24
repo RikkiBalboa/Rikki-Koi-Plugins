@@ -15,7 +15,7 @@ namespace Plugins
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInProcess(Constants.StudioProcessName)]
-    public class StudioSkinColor : BaseUnityPlugin
+    public partial class StudioSkinColor : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColorControl";
         public const string PluginName = "StudioSkinColorControl";
@@ -29,7 +29,7 @@ namespace Plugins
         public static ConfigEntry<float> WindowHeight { get; private set; }
 
         private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
-        internal static Rect uiRect;
+        internal Rect uiRect;
         private bool uiShow = false;
 
         private void Awake()
@@ -75,7 +75,7 @@ namespace Plugins
 
             if (uiShow)
             {
-                uiRect = GUILayout.Window(uiWindowHash, uiRect, ControlGUI.DrawWindow, "Studio Pseudo Maker");
+                uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "Studio Pseudo Maker");
                 IMGUIUtils.EatInputInRect(uiRect);
             }
             GUI.skin = skin;
@@ -85,7 +85,7 @@ namespace Plugins
         {
             var newChar = StudioAPI.GetSelectedCharacters().FirstOrDefault()?.GetChaControl();
             if (newChar != selectedCharacter && newChar != null)
-                ControlGUI.ClearBuffers();
+                ClearBuffers();
             selectedCharacter = newChar;
 
             if (KeyToggleGui.Value.IsDown() && selectedCharacter != null)

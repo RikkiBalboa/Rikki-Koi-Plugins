@@ -1,17 +1,17 @@
 ﻿using Shared;
 using System;
 using System.Collections.Generic;
-using static Plugins.StudioSkinColor;
 using System.Linq;
 using UnityEngine;
+using BepInEx;
 
 namespace Plugins
 {
-    internal class ControlGUI
+    public partial class StudioSkinColor : BaseUnityPlugin
     {
         private static readonly float leftPanelWidth = 140;
-        private static Vector2 leftPanelScroll = Vector2.zero;
-        private static Vector2 rightPanelScroll = Vector2.zero;
+        private Vector2 leftPanelScroll = Vector2.zero;
+        private Vector2 rightPanelScroll = Vector2.zero;
 
         #region Static Readonly References
         private static readonly Dictionary<string, int> clothingKinds = new Dictionary<string, int>
@@ -110,16 +110,16 @@ namespace Plugins
         };
         #endregion
 
-        private static SelectedTab selectedTab = SelectedTab.Clothes;
-        private static string selectedBodyTab = "General";
-        private static int selectedKind = 0;
-        private static readonly Dictionary<string, InputBuffer> inputBuffers = new Dictionary<string, InputBuffer>();
+        private SelectedTab selectedTab = SelectedTab.Clothes;
+        private string selectedBodyTab = "General";
+        private int selectedKind = 0;
+        private readonly Dictionary<string, InputBuffer> inputBuffers = new Dictionary<string, InputBuffer>();
 
-        private static StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
-        private static ListInfoBase infoClothes => selectedCharacter.infoClothes[selectedKind];
-        private static ChaClothesComponent clothesComponent => selectedCharacter.GetCustomClothesComponent(selectedKind);
+        private StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
+        private ListInfoBase infoClothes => selectedCharacter.infoClothes[selectedKind];
+        private ChaClothesComponent clothesComponent => selectedCharacter.GetCustomClothesComponent(selectedKind);
 
-        internal static void DrawWindow(int id)
+        internal void DrawWindow(int id)
         {
 
             GUILayout.BeginHorizontal();
@@ -147,7 +147,7 @@ namespace Plugins
             uiRect = KKAPI.Utilities.IMGUIUtils.DragResizeEatWindow(id, uiRect);
         }
 
-        private static void DrawClothesWindow()
+        private void DrawClothesWindow()
         {
             GUILayout.BeginHorizontal();
             {
@@ -209,7 +209,7 @@ namespace Plugins
             GUILayout.EndHorizontal();
         }
 
-        private static void DrawBodyWindow()
+        private void DrawBodyWindow()
         {
             GUILayout.BeginHorizontal();
             {
@@ -294,7 +294,7 @@ namespace Plugins
 
         }
 
-        private static void DrawHairWindow()
+        private void DrawHairWindow()
         {
             GUILayout.BeginVertical(GUI.skin.box);
             {
@@ -334,7 +334,7 @@ namespace Plugins
             GUILayout.EndVertical();
         }
 
-        private static void DrawColorRow(string name, Color currentColor, Action<Color> setColorAction, Action resetColorAction)
+        private void DrawColorRow(string name, Color currentColor, Action<Color> setColorAction, Action resetColorAction)
         {
             GUILayout.Label(name, new GUIStyle(GUI.skin.label)
             {
@@ -364,7 +364,7 @@ namespace Plugins
             GUILayout.EndHorizontal();
         }
 
-        private static void DrawSliderRow(string name, string key, float currentValue, float min, float max, Action<float> setValueAction, Action resetValueAction)
+        private void DrawSliderRow(string name, string key, float currentValue, float min, float max, Action<float> setValueAction, Action resetValueAction)
         {
             inputBuffers.TryGetValue(key, out var buffer);
             if (buffer == null)
@@ -389,7 +389,7 @@ namespace Plugins
             GUILayout.EndHorizontal();
         }
 
-        private static GUIStyle Colorbutton(Color col)
+        private GUIStyle Colorbutton(Color col)
         {
             GUIStyle guistyle = new GUIStyle(GUI.skin.button);
             Texture2D texture2D = new Texture2D(1, 1, (TextureFormat)20, false);
@@ -412,7 +412,7 @@ namespace Plugins
             Hair,
         }
 
-        internal static void ClearBuffers()
+        internal void ClearBuffers()
         {
             inputBuffers.Clear();
         }
