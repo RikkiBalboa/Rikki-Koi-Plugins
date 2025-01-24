@@ -39,6 +39,8 @@ namespace Plugins
             originalHairColors.Clear();
             originalBodyColors.Clear();
             originalBustValues.Clear();
+            originalBodyShapeValues.Clear();
+            originalFaceShapeValues.Clear();
         }
 
         public static StudioSkinColorCharaController GetController(ChaControl chaCtrl)
