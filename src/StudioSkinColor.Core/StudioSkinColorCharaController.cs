@@ -7,6 +7,7 @@ using KK_Plugins.MaterialEditor;
 using System.Linq;
 using System.Collections;
 using System;
+using MessagePack;
 
 namespace Plugins
 {
@@ -15,12 +16,12 @@ namespace Plugins
         internal static readonly Dictionary<ChaControl, StudioSkinColorCharaController> allControllers = new Dictionary<ChaControl, StudioSkinColorCharaController>();
 
         #region Save Lists
-        private readonly List<ClothingColors> originalClothingColors = new List<ClothingColors>();
-        private readonly List<HairColors> originalHairColors = new List<HairColors>();
-        private readonly List<BodyColors> originalBodyColors = new List<BodyColors>();
-        private readonly List<BustValues> originalBustValues = new List<BustValues>();
-        private readonly Dictionary<int, float> originalBodyShapeValues = new Dictionary<int, float>();
-        private readonly Dictionary<int, float> originalFaceShapeValues = new Dictionary<int, float>();
+        private readonly Dictionary<ClothingColors, ColorStorage> originalClothingColors = new Dictionary<ClothingColors, ColorStorage>();
+        private readonly Dictionary<HairColor, ColorStorage> originalHairColors = new Dictionary<HairColor, ColorStorage>();
+        private readonly Dictionary<TextureColor, ColorStorage> originalBodyColors = new Dictionary<TextureColor, ColorStorage>();
+        private readonly Dictionary<Bust, FloatStorage> originalBustValues = new Dictionary<Bust, FloatStorage>();
+        private readonly Dictionary<int, FloatStorage> originalBodyShapeValues = new Dictionary<int, FloatStorage>();
+        private readonly Dictionary<int, FloatStorage> originalFaceShapeValues = new Dictionary<int, FloatStorage>();
         #endregion
 
         #region Character Properties shortcuts
@@ -35,8 +36,11 @@ namespace Plugins
         {
         }
 
-        protected override void OnReload(GameMode currentGameMode)
+        protected override void OnReload(GameMode currentGameMode, bool maintainState)
         {
+            if (maintainState)
+                return;
+
             allControllers[ChaControl] = this;
             originalClothingColors.Clear();
             originalHairColors.Clear();
@@ -73,8 +77,10 @@ namespace Plugins
 
         public void UpdateTextureColor(Color color, TextureColor textureColor)
         {
-            if (!originalBodyColors.Exists(x => x.ColorType == textureColor))
-                originalBodyColors.Add(new BodyColors(textureColor, GetBodyColor(textureColor)));
+            if (!originalBodyColors.ContainsKey(textureColor))
+                originalBodyColors[textureColor] = new ColorStorage(GetBodyColor(textureColor), color);
+            else
+                originalBodyColors[textureColor].Value = color;
 
             switch (textureColor)
             {
@@ -93,8 +99,10 @@ namespace Plugins
 
         public void SetBustValue(float value, Bust bust)
         {
-            if (!originalBustValues.Exists(x => x.Bust == bust))
-                originalBustValues.Add(new BustValues(bust, GetBustValue(bust)));
+            if (!originalBustValues.ContainsKey(bust))
+                originalBustValues[bust] = new FloatStorage(GetBustValue(bust), value);
+            else
+                originalBustValues[bust].Value = value;
 
             switch (bust)
             {
@@ -109,9 +117,8 @@ namespace Plugins
 
         public void ResetBustValue(Bust bust)
         {
-            var value = originalBustValues.FirstOrDefault(x => x.Bust == bust);
-            if (value != null)
-                SetBustValue(value.Value, bust);
+            if (originalBustValues.TryGetValue(bust, out var value))
+                SetBustValue(value.OriginalValue, bust);
         }
 
         public float GetBustValue(Bust bust)
@@ -125,8 +132,10 @@ namespace Plugins
 
         public void UpdateHairColor(Color color, HairColor hairColor)
         {
-            if (!originalHairColors.Exists(x => x.HairColor == hairColor))
-                originalHairColors.Add(new HairColors(hairColor, GetHairColor(hairColor)));
+            if (!originalHairColors.ContainsKey(hairColor))
+                originalHairColors[hairColor] = new ColorStorage(GetHairColor(hairColor), color);
+            else
+                originalHairColors[hairColor].Value = color;
 
             switch (hairColor)
             {
@@ -162,9 +171,8 @@ namespace Plugins
 
         public void ResetHairColor(HairColor hairColor)
         {
-            var color = originalHairColors.FirstOrDefault(x => x.HairColor == hairColor);
-            if (color != null)
-                UpdateHairColor(color.Color, hairColor);
+            if (originalHairColors.TryGetValue(hairColor, out var color))
+                UpdateHairColor(color.OriginalValue, hairColor);
         }
 
         public Color GetHairColor(HairColor color)
@@ -203,15 +211,16 @@ namespace Plugins
 
         public void ResetBodyColor(TextureColor colorType)
         {
-            var color = originalBodyColors.FirstOrDefault(x => x.ColorType == colorType);
-            if (color != null)
-                UpdateTextureColor(color.Color, colorType);
+            if (originalBodyColors.TryGetValue(colorType, out var color))
+                UpdateTextureColor(color.OriginalValue, colorType);
         }
 
         public void UpdateBodyShapeValue(int index, float value)
         {
             if (!originalBodyShapeValues.ContainsKey(index))
-                originalBodyShapeValues[index] = GetCurrentBodyValue(index);
+                originalBodyShapeValues[index] = new FloatStorage(GetCurrentBodyValue(index), value);
+            else
+                originalBodyShapeValues[index].Value = value;
             ChaControl.SetShapeBodyValue(index, value);
         }
 
@@ -223,13 +232,15 @@ namespace Plugins
         public void ResetBodyShapeValue(int index)
         {
             if (originalBodyShapeValues.TryGetValue(index, out var shapeValueBody))
-                UpdateBodyShapeValue(index, shapeValueBody);
+                UpdateBodyShapeValue(index, shapeValueBody.OriginalValue);
         }
 
         public void UpdateFaceShapeValue(int index, float value)
         {
             if (!originalFaceShapeValues.ContainsKey(index))
-                originalFaceShapeValues[index] = GetCurrentFaceValue(index);
+                originalFaceShapeValues[index] = new FloatStorage(GetCurrentFaceValue(index), value);
+            else
+                originalFaceShapeValues[index].Value = value;
             ChaControl.SetShapeFaceValue(index, value);
         }
 
@@ -241,7 +252,7 @@ namespace Plugins
         public void ResetFaceShapeValue(int index)
         {
             if (originalFaceShapeValues.TryGetValue(index, out var shapeValue))
-                UpdateFaceShapeValue(index, shapeValue);
+                UpdateFaceShapeValue(index, shapeValue.OriginalValue);
         }
         #endregion
 
@@ -273,10 +284,12 @@ namespace Plugins
                 MEController.RefreshClothesMainTex();
             }
 
-            if (!originalClothingColors.Exists(x => x.Compare(CurrentOutfitSlot, kind, colorNr, slotNr)))
-            {
-                originalClothingColors.Add(new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr, GetClothingColor(kind, colorNr)));
-            }
+            var clothingColors = new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr);
+            if (!originalClothingColors.Any(x => x.Key.Compare(CurrentOutfitSlot, kind, colorNr, slotNr)))
+                originalClothingColors[clothingColors] = new ColorStorage(GetClothingColor(kind, colorNr, slotNr), color);
+            else
+                originalClothingColors[clothingColors].Value = color;
+
 
             if (slotNr < 0)
             {
@@ -355,9 +368,9 @@ namespace Plugins
 
         public void ResetClothingColor(int kind, int colorNr, int slotNr)
         {
-            var color = originalClothingColors.FirstOrDefault(x => x.Compare(CurrentOutfitSlot, kind, colorNr, slotNr));
-            if (color != null)
-                SetClothingColor(kind, colorNr, color.Color, slotNr);
+            var clothingColors = new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr);
+            if (originalClothingColors.TryGetValue(clothingColors, out var color))
+                SetClothingColor(kind, colorNr, color.OriginalValue, slotNr);
         }
 
         internal void ChangeCoordinateEvent()
@@ -408,36 +421,6 @@ namespace Plugins
         }
     }
 
-    internal class ClothingColors
-    {
-        public int OutfitSlot { get; set; }
-        public int ClothingKind { get; set; }
-        public int ColorNr { get; set; }
-        public int SlotNr { get; set; }
-        public Color Color { get; set; }
-
-        public ClothingColors(int outfitSlot, int kind, int colorNr, int slotNr, Color color)
-        {
-            OutfitSlot = outfitSlot;
-            ClothingKind = kind;
-            ColorNr = colorNr;
-            SlotNr = slotNr;
-            Color = color;
-        }
-
-        public bool Compare(int outfitSlot, int kind, int colorNr, int slotNr)
-        {
-            if (
-                OutfitSlot == outfitSlot
-                && ClothingKind == kind
-                && ColorNr == colorNr
-                && SlotNr == slotNr
-            )
-                return true;
-            return false;
-        }
-    }
-
     internal class CharacterClothing
     {
         public int Kind { get; set; }
@@ -456,38 +439,68 @@ namespace Plugins
         }
     }
 
-    internal class HairColors
+    [Serializable]
+    [MessagePackObject]
+    internal struct ClothingColors
     {
-        public HairColor HairColor { get; set; }
-        public Color Color { get; set; }
+        [Key("OutfitSlot")]
+        public int OutfitSlot { get; set; }
+        [Key("ClothingKind")]
+        public int ClothingKind { get; set; }
+        [Key("ColorNr")]
+        public int ColorNr { get; set; }
+        [Key("SlotNr")]
+        public int SlotNr { get; set; }
 
-        public HairColors(HairColor hairColor, Color color)
+        public ClothingColors(int outfitSlot, int kind, int colorNr, int slotNr)
         {
-            HairColor = hairColor;
-            Color = color;
+            OutfitSlot = outfitSlot;
+            ClothingKind = kind;
+            ColorNr = colorNr;
+            SlotNr = slotNr;
+        }
+
+        public bool Compare(int outfitSlot, int kind, int colorNr, int slotNr)
+        {
+            if (
+                OutfitSlot == outfitSlot
+                && ClothingKind == kind
+                && ColorNr == colorNr
+                && SlotNr == slotNr
+            )
+                return true;
+            return false;
         }
     }
 
-    internal class BodyColors
+    [Serializable]
+    [MessagePackObject]
+    public class FloatStorage
     {
-        public TextureColor ColorType { get; set; }
-        public Color Color { get; set; }
-
-        public BodyColors(TextureColor colorType, Color color)
-        {
-            ColorType = colorType;
-            Color = color;
-        }
-    }
-
-    internal class BustValues
-    {
-        public Bust Bust { get; set; }
+        [Key("OriginalValue")]
+        public float OriginalValue { get; set; }
+        [Key("Value")]
         public float Value { get; set; }
 
-        public BustValues(Bust bust, float value)
+        public FloatStorage(float originalValue, float value)
         {
-            Bust = bust;
+            OriginalValue = originalValue;
+            Value = value;
+        }
+    }
+
+    [Serializable]
+    [MessagePackObject]
+    public class ColorStorage
+    {
+        [Key("OriginalValue")]
+        public Color OriginalValue { get; set; }
+        [Key("Value")]
+        public Color Value { get; set; }
+
+        public ColorStorage(Color originalValue, Color value)
+        {
+            OriginalValue = originalValue;
             Value = value;
         }
     }
