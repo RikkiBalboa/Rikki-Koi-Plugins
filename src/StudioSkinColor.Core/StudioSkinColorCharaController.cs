@@ -273,9 +273,9 @@ namespace Plugins
                 MEController.RefreshClothesMainTex();
             }
 
-            if (!originalClothingColors.Exists(x => x.Compare(CurrentOutfitSlot, kind, colorNr)))
+            if (!originalClothingColors.Exists(x => x.Compare(CurrentOutfitSlot, kind, colorNr, slotNr)))
             {
-                originalClothingColors.Add(new ClothingColors(CurrentOutfitSlot, kind, colorNr, GetClothingColor(kind, colorNr)));
+                originalClothingColors.Add(new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr, GetClothingColor(kind, colorNr)));
             }
 
             if (slotNr < 0)
@@ -353,11 +353,11 @@ namespace Plugins
             return Accessories.parts[slotNr].color[colorNr];
         }
 
-        public void ResetClothingColor(int kind, int colorNr)
+        public void ResetClothingColor(int kind, int colorNr, int slotNr)
         {
-            var color = originalClothingColors.FirstOrDefault(x => x.Compare(CurrentOutfitSlot, kind, colorNr));
+            var color = originalClothingColors.FirstOrDefault(x => x.Compare(CurrentOutfitSlot, kind, colorNr, slotNr));
             if (color != null)
-                SetClothingColor(kind, colorNr, color.Color);
+                SetClothingColor(kind, colorNr, color.Color, slotNr);
         }
 
         internal void ChangeCoordinateEvent()
@@ -413,22 +413,25 @@ namespace Plugins
         public int OutfitSlot { get; set; }
         public int ClothingKind { get; set; }
         public int ColorNr { get; set; }
+        public int SlotNr { get; set; }
         public Color Color { get; set; }
 
-        public ClothingColors(int outfitSlot, int kind, int colorNr, Color color)
+        public ClothingColors(int outfitSlot, int kind, int colorNr, int slotNr, Color color)
         {
             OutfitSlot = outfitSlot;
             ClothingKind = kind;
             ColorNr = colorNr;
+            SlotNr = slotNr;
             Color = color;
         }
 
-        public bool Compare(int outfitSlot, int kind, int colorNr)
+        public bool Compare(int outfitSlot, int kind, int colorNr, int slotNr)
         {
             if (
                 OutfitSlot == outfitSlot
                 && ClothingKind == kind
                 && ColorNr == colorNr
+                && SlotNr == slotNr
             )
                 return true;
             return false;

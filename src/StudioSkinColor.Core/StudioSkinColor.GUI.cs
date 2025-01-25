@@ -294,21 +294,21 @@ namespace Plugins
                                 "Color 1:",
                                 controller.GetClothingColor(selectedKind, 0, clothing.SlotNr),
                                 c => controller.SetClothingColor(selectedKind, 0, c, clothing.SlotNr),
-                                () => controller.ResetClothingColor(selectedKind, 0)
+                                () => controller.ResetClothingColor(selectedKind, 0, clothing.SlotNr)
                             );
                         if (clothing.UseColors[1])
                             DrawColorRow(
                                 "Color 2:",
                                 controller.GetClothingColor(selectedKind, 1, clothing.SlotNr),
                                 c => controller.SetClothingColor(selectedKind, 1, c, clothing.SlotNr),
-                                () => controller.ResetClothingColor(selectedKind, 1)
+                                () => controller.ResetClothingColor(selectedKind, 1, clothing.SlotNr)
                             );
                         if (clothing.UseColors[2])
                             DrawColorRow(
                                 "Color 3:",
                                 controller.GetClothingColor(selectedKind, 2, clothing.SlotNr),
                                 c => controller.SetClothingColor(selectedKind, 2, c, clothing.SlotNr),
-                                () => controller.ResetClothingColor(selectedKind, 2)
+                                () => controller.ResetClothingColor(selectedKind, 2, clothing.SlotNr)
                             );
                     }
                 }
@@ -464,14 +464,14 @@ namespace Plugins
                     "Gloss color:",
                     controller.GetHairColor(HairColor.Gloss),
                     c => controller.UpdateHairColor(c, HairColor.Gloss),
-                    () => controller.ResetClothingColor(selectedKind, 0)
+                    () => controller.ResetHairColor(HairColor.Gloss)
                 );
 #endif
                 DrawColorRow(
                     "Eyebrow color:",
                     controller.GetHairColor(HairColor.Eyebrow),
                     c => controller.UpdateHairColor(c, HairColor.Eyebrow),
-                    () => controller.ResetClothingColor(selectedKind, 0)
+                    () => controller.ResetHairColor(HairColor.Eyebrow)
                 );
             }
             GUILayout.EndVertical();
