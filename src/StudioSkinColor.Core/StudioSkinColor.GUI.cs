@@ -14,7 +14,7 @@ namespace Plugins
         private Vector2 rightPanelScroll = Vector2.zero;
 
         #region Static Readonly References
-        private static readonly Dictionary<string, int> clothingKinds = new Dictionary<string, int>
+        internal static readonly Dictionary<string, int> clothingKinds = new Dictionary<string, int>
         {
             { "Top", 0 },
             { "Bottom", 1 },
@@ -24,10 +24,10 @@ namespace Plugins
             { "Pantyhose", 5 },
             { "Legwear", 6 },
 #if KK
-            { "Shoes", 7 },
+            { "Shoes (Indoors)", 7 },
             { "Shoes (Outdoors)", 8 }
 #elif KKS
-            { "Shoes (Outdoors)", 8 }
+            { "Shoes", 8 }
 #endif
         };
 
@@ -246,8 +246,14 @@ namespace Plugins
 
         private void DrawClothesWindow()
         {
+            if (!selectedCharacterClothing.ContainsKey(selectedCharacter))
+            {
+                controller.ChangeCoordinateEvent();
+                return;
+            }
             GUILayout.BeginHorizontal();
             {
+
                 leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(leftPanelWidth));
                 {
                     foreach (var kind in clothingKinds)
@@ -255,7 +261,7 @@ namespace Plugins
                         Color c = GUI.color;
                         if (selectedKind == kind.Value)
                             GUI.color = Color.cyan;
-                        if (controller.ClothingKindExists(kind.Value))
+                        if (!controller.ClothingKindExists(kind.Value))
                             GUI.enabled = false;
                         if (GUILayout.Button(kind.Key))
                             selectedKind = kind.Value;
@@ -268,38 +274,43 @@ namespace Plugins
                 rightPanelScroll = GUILayout.BeginScrollView(rightPanelScroll, GUI.skin.box);
                 {
                     controller.InitBaseCustomTextureClothesIfNotExists(selectedKind);
+                    var clothingList = selectedCharacterClothing[selectedCharacter]?.Where(c => c.Kind == selectedKind);
 
-                    GUILayout.BeginVertical(GUI.skin.box);
-                    GUILayout.Label(infoClothes.Name, new GUIStyle(GUI.skin.label)
+                    foreach (var clothing in clothingList)
                     {
-                        alignment = TextAnchor.MiddleCenter,
-                        wordWrap = true,
-                        fontStyle = FontStyle.Bold,
-                    }, GUILayout.Width(150));
-                    GUILayout.EndVertical();
+                        GUILayout.BeginHorizontal(GUI.skin.box);
+                        if (clothing.IsC2a)
+                            GUILayout.Label($"(Acc {clothing.SlotNr})", new GUIStyle(GUI.skin.label));
+                        GUILayout.Label(clothing.Name, new GUIStyle(GUI.skin.label)
+                        {
+                            wordWrap = true,
+                            fontStyle = FontStyle.Bold,
+                        });
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
 
-                    var usedCols = controller.CheckClothingUseColor(selectedKind);
-                    if (usedCols[0])
-                        DrawColorRow(
-                            "Color 1:",
-                            controller.GetClothingColor(selectedKind, 0),
-                            c => controller.SetClothingColor(selectedKind, 0, c),
-                            () => controller.ResetClothingColor(selectedKind, 0)
-                        );
-                    if (usedCols[1])
-                        DrawColorRow(
-                            "Color 2:",
-                            controller.GetClothingColor(selectedKind, 1),
-                            c => controller.SetClothingColor(selectedKind, 1, c),
-                            () => controller.ResetClothingColor(selectedKind, 1)
-                        );
-                    if (usedCols[2])
-                        DrawColorRow(
-                            "Color 3:",
-                            controller.GetClothingColor(selectedKind, 2),
-                            c => controller.SetClothingColor(selectedKind, 2, c),
-                            () => controller.ResetClothingColor(selectedKind, 2)
-                        );
+                        if (clothing.UseColors[0])
+                            DrawColorRow(
+                                "Color 1:",
+                                controller.GetClothingColor(selectedKind, 0, clothing.SlotNr),
+                                c => controller.SetClothingColor(selectedKind, 0, c, clothing.SlotNr),
+                                () => controller.ResetClothingColor(selectedKind, 0)
+                            );
+                        if (clothing.UseColors[1])
+                            DrawColorRow(
+                                "Color 2:",
+                                controller.GetClothingColor(selectedKind, 1, clothing.SlotNr),
+                                c => controller.SetClothingColor(selectedKind, 1, c, clothing.SlotNr),
+                                () => controller.ResetClothingColor(selectedKind, 1)
+                            );
+                        if (clothing.UseColors[2])
+                            DrawColorRow(
+                                "Color 3:",
+                                controller.GetClothingColor(selectedKind, 2, clothing.SlotNr),
+                                c => controller.SetClothingColor(selectedKind, 2, c, clothing.SlotNr),
+                                () => controller.ResetClothingColor(selectedKind, 2)
+                            );
+                    }
                 }
                 GUILayout.EndScrollView();
             }

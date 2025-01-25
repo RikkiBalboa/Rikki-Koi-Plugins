@@ -5,7 +5,8 @@ using static Plugins.StudioSkinColor;
 using UnityEngine;
 using KK_Plugins.MaterialEditor;
 using System.Linq;
-using static KKAPI.Maker.MakerConstants;
+using System.Collections;
+using System;
 
 namespace Plugins
 {
@@ -26,6 +27,8 @@ namespace Plugins
         private int CurrentOutfitSlot => ChaControl.fileStatus.coordinateType;
         private ChaFileClothes Clothes => ChaControl.nowCoordinate.clothes;
         private ChaFileClothes SetClothes => ChaControl.chaFile.coordinate[ChaControl.chaFile.status.coordinateType].clothes;
+        private ChaFileAccessory Accessories => ChaControl.nowCoordinate.accessory;
+        private ChaFileAccessory SetAccessories => ChaControl.chaFile.coordinate[ChaControl.chaFile.status.coordinateType].accessory;
         #endregion
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)
@@ -45,12 +48,13 @@ namespace Plugins
 
         public static StudioSkinColorCharaController GetController(ChaControl chaCtrl)
         {
-            StudioSkinColorCharaController controller = null;
             if (allControllers.ContainsKey(chaCtrl))
-                controller = allControllers[chaCtrl];
-            if (controller == null)
-                controller = chaCtrl.gameObject.GetOrAddComponent<StudioSkinColorCharaController>();
-            return controller;
+                return allControllers[chaCtrl];
+#if DEBUG
+            return chaCtrl.gameObject.GetOrAddComponent<StudioSkinColorCharaController>();
+#else
+            return chaCtrl.gameObject.GetComponent<StudioSkinColorCharaController>();
+#endif
         }
 
         #region body
@@ -244,7 +248,14 @@ namespace Plugins
         #region Clothes
         public bool ClothingKindExists(int kind)
         {
-            return ChaControl.infoClothes[kind].Name == "None";
+            return selectedCharacterClothing[ChaControl].Any(c => c.Kind == kind);
+        }
+
+        public string GetclothingName(int kind, int slotNr = -1)
+        {
+            if (slotNr < 0)
+                return ChaControl.infoClothes[kind].Name;
+            return ChaControl.infoAccessory[slotNr].Name;
         }
 
         public void InitBaseCustomTextureClothesIfNotExists(int kind)
@@ -253,7 +264,7 @@ namespace Plugins
                 selectedCharacter.InitBaseCustomTextureClothes(true, kind);
         }
 
-        public void SetClothingColor(int kind, int colorNr, Color color)
+        public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1)
         {
             var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
             if (MEController != null)
@@ -267,22 +278,31 @@ namespace Plugins
                 originalClothingColors.Add(new ClothingColors(CurrentOutfitSlot, kind, colorNr, GetClothingColor(kind, colorNr)));
             }
 
-            Clothes.parts[kind].colorInfo[colorNr].baseColor = color;
-            SetClothes.parts[kind].colorInfo[colorNr].baseColor = color;
-            if (!IsMultiPartTop(kind))
-                selectedCharacter.ChangeCustomClothes(true, kind, true, true, true, true, true);
+            if (slotNr < 0)
+            {
+                Clothes.parts[kind].colorInfo[colorNr].baseColor = color;
+                SetClothes.parts[kind].colorInfo[colorNr].baseColor = color;
+                if (!IsMultiPartTop(kind))
+                    ChaControl.ChangeCustomClothes(true, kind, true, true, true, true, true);
+                else
+                    for (int i = 0; i < Clothes.subPartsId.Length; i++)
+                    {
+                        ChaControl.ChangeCustomClothes(main: false, i, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: false);
+                    }
+            }
             else
-                for (int i = 0; i < Clothes.subPartsId.Length; i++)
-                {
-                    ChaControl.ChangeCustomClothes(main: false, i, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: false);
-                }
+            {
+                Accessories.parts[slotNr].color[colorNr] = color;
+                SetAccessories.parts[slotNr].color[colorNr] = color;
+                ChaControl.ChangeAccessoryColor(slotNr);
+            }
         }
 
-        public bool[] CheckClothingUseColor(int kind)
+        public bool[] CheckClothingUseColor(int kind, int slotNr = -1)
         {
             bool[] useCols = new bool[4] { false, false, false, false };
 
-            if (!IsMultiPartTop(kind))
+            if (slotNr < 0 && !IsMultiPartTop(kind))
             {
                 var clothesComponent = ChaControl.GetCustomClothesComponent(kind);
                 if (clothesComponent != null)
@@ -290,6 +310,16 @@ namespace Plugins
                     useCols[0] = clothesComponent.useColorN01;
                     useCols[1] = clothesComponent.useColorN02;
                     useCols[2] = clothesComponent.useColorN03;
+                }
+            }
+            else if (slotNr >= 0)
+            {
+                var accessoryComponent = ChaControl.GetAccessoryComponent(slotNr);
+                if (accessoryComponent != null)
+                {
+                    useCols[0] = accessoryComponent.useColor01;
+                    useCols[1] = accessoryComponent.useColor02;
+                    useCols[2] = accessoryComponent.useColor03;
                 }
             }
             else
@@ -316,9 +346,11 @@ namespace Plugins
             return false;
         }
 
-        public Color GetClothingColor(int kind, int colorNr)
+        public Color GetClothingColor(int kind, int colorNr, int slotNr = -1)
         {
-            return Clothes.parts[kind].colorInfo[colorNr].baseColor;
+            if (slotNr < 0)
+                return Clothes.parts[kind].colorInfo[colorNr].baseColor;
+            return Accessories.parts[slotNr].color[colorNr];
         }
 
         public void ResetClothingColor(int kind, int colorNr)
@@ -327,7 +359,53 @@ namespace Plugins
             if (color != null)
                 SetClothingColor(kind, colorNr, color.Color);
         }
+
+        internal void ChangeCoordinateEvent()
+        {
+            StartCoroutine(ChangeCoordinateTypeCoroutine());
+        }
+
+        private IEnumerator ChangeCoordinateTypeCoroutine()
+        {
+            yield return null;
+
+            selectedCharacterClothing.Remove(ChaControl);
+            var characterClothing = new List<CharacterClothing>();
+
+            foreach (var kind in clothingKinds)
+            {
+                var name = GetclothingName(kind.Value);
+                if (name != "None")
+                    characterClothing.Add(new CharacterClothing(kind.Value, name, CheckClothingUseColor(kind.Value)));
+            }
+
+            if (c2aAIlnstances != null && c2aAIlnstances.Contains(ChaControl))
+            {
+                foreach (var adapterList in c2aAIlnstances[ChaControl] as IEnumerable)
+                {
+                    for (int i = 0; i < ((IList)adapterList).Count; i++)
+                    {
+                        var adapter = ((IList)adapterList)[i];
+
+                        var kind = (int)c2aClothingKindField.GetValue(adapter);
+                        var name = ((MonoBehaviour)adapter).gameObject.name;
+                        var slotNr = -1;
+                        if (name.Contains("ca_slot"))
+                            slotNr = Int32.Parse(name.Substring(7));
+
+                        characterClothing.Add(new CharacterClothing(kind, GetclothingName(kind, slotNr), CheckClothingUseColor(kind, slotNr), slotNr));
+                    }
+                }
+            }
+
+            selectedCharacterClothing[ChaControl] = characterClothing;
+        }
         #endregion
+
+        private new void OnDestroy()
+        {
+            allControllers.Remove(ChaControl);
+        }
     }
 
     internal class ClothingColors
@@ -354,6 +432,24 @@ namespace Plugins
             )
                 return true;
             return false;
+        }
+    }
+
+    internal class CharacterClothing
+    {
+        public int Kind { get; set; }
+        public string Name { get; set; }
+        public bool IsC2a { get; }
+        public int SlotNr { get; set; }
+        public bool[] UseColors { get; set; }
+
+        public CharacterClothing(int kind, string name, bool[] useCols, int slotNr = -1)
+        {
+            Kind = kind;
+            Name = name;
+            SlotNr = slotNr;
+            UseColors = useCols;
+            IsC2a = slotNr >= 0;
         }
     }
 

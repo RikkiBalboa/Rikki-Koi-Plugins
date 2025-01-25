@@ -1,18 +1,24 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using HarmonyLib;
 using KK_Plugins.MaterialEditor;
 using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UniRx;
 using UnityEngine;
 
 namespace Plugins
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInProcess(Constants.StudioProcessName)]
     public partial class StudioSkinColor : BaseUnityPlugin
@@ -22,11 +28,22 @@ namespace Plugins
         public const string PluginNameInternal = Constants.Prefix + "_StudioSkinColorControl";
         public const string PluginVersion = "1.1.1";
         internal static new ManualLogSource Logger;
+        private static Harmony harmony;
 
         internal static ChaControl selectedCharacter;
+        internal static Dictionary<ChaControl, List<CharacterClothing>> selectedCharacterClothing = new Dictionary<ChaControl, List<CharacterClothing>>();
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<float> WindowWidth { get; private set; }
         public static ConfigEntry<float> WindowHeight { get; private set; }
+
+        internal static IDictionary c2aAIlnstances = null;
+        internal static Type c2aAdapterType = null;
+        internal static FieldInfo c2aClothingKindField = null;
+
+
+        /// <summary>
+        /// NEED TO KNOW ACCESSORY INDEX
+        /// </summary>
 
         private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
         internal Rect uiRect;
@@ -35,6 +52,7 @@ namespace Plugins
         private void Awake()
         {
             Logger = base.Logger;
+            harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
             KeyToggleGui = Config.Bind(
                 "Keyboard Shortcuts", "Open editor window",
@@ -56,6 +74,14 @@ namespace Plugins
             uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
             WindowWidth.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
             WindowHeight.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
+
+            c2aAdapterType = Type.GetType("KK_Plugins.ClothesToAccessoriesAdapter, KKS_ClothesToAccessories", throwOnError: false);
+            if (c2aAdapterType != null)
+            {
+                var field = c2aAdapterType.GetField("AllInstances", AccessTools.all);
+                c2aAIlnstances = field.GetValue(c2aAdapterType) as IDictionary;
+                c2aClothingKindField = c2aAdapterType.GetField("_clothingKind", AccessTools.all);
+            }
         }
 
         private void Start()
@@ -142,6 +168,14 @@ namespace Plugins
         private void OnDestroy()
         {
             StudioSkinColorCharaController.allControllers.Clear();
+            harmony.UnpatchSelf();
+        }
+
+        internal static object GetC2aAdapter(ChaControl chaControl, int kind, int index)
+        {
+            var kindArray = c2aAIlnstances[chaControl] as object[];
+            var adapterList = kindArray[kind] as IList;
+            return adapterList[index];
         }
     }
 
