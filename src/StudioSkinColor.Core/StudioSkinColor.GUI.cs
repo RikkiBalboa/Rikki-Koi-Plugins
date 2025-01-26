@@ -379,24 +379,38 @@ namespace Plugins
                     {
                         DrawColorRow(
                             "Main Skin Color:",
-                            controller.GetBodyColor(TextureColor.SkinMain),
-                            controller.GetOriginalBodyColor(TextureColor.SkinMain),
-                            c => controller.UpdateTextureColor(c, TextureColor.SkinMain),
-                            () => controller.ResetBodyColor(TextureColor.SkinMain)
+                            controller.GetBodyColor(BodyColor.SkinMain),
+                            controller.GetOriginalBodyColor(BodyColor.SkinMain),
+                            c => controller.UpdateBodyColor(c, BodyColor.SkinMain),
+                            () => controller.ResetBodyColor(BodyColor.SkinMain)
                         );
                         DrawColorRow(
                             "Sub Skin Color:",
-                            controller.GetBodyColor(TextureColor.SkinSub),
-                            controller.GetOriginalBodyColor(TextureColor.SkinSub),
-                            c => controller.UpdateTextureColor(c, TextureColor.SkinSub),
-                            () => controller.ResetBodyColor(TextureColor.SkinSub)
+                            controller.GetBodyColor(BodyColor.SkinSub),
+                            controller.GetOriginalBodyColor(BodyColor.SkinSub),
+                            c => controller.UpdateBodyColor(c, BodyColor.SkinSub),
+                            () => controller.ResetBodyColor(BodyColor.SkinSub)
                         );
                         DrawColorRow(
                             "Tan Color:",
-                            controller.GetBodyColor(TextureColor.Tan),
-                            controller.GetOriginalBodyColor(TextureColor.Tan),
-                            c => controller.UpdateTextureColor(c, TextureColor.Tan),
-                            () => controller.ResetBodyColor(TextureColor.Tan)
+                            controller.GetBodyColor(BodyColor.SkinTan),
+                            controller.GetOriginalBodyColor(BodyColor.SkinTan),
+                            c => controller.UpdateBodyColor(c, BodyColor.SkinTan),
+                            () => controller.ResetBodyColor(BodyColor.SkinTan)
+                        );
+                        DrawColorRow(
+                            "Pubic Hair Color:",
+                            controller.GetBodyColor(BodyColor.PubicHairColor),
+                            controller.GetOriginalBodyColor(BodyColor.PubicHairColor),
+                            c => controller.UpdateBodyColor(c, BodyColor.PubicHairColor),
+                            () => controller.ResetBodyColor(BodyColor.PubicHairColor)
+                        );
+                        DrawColorRow(
+                            "Nail Color:",
+                            controller.GetBodyColor(BodyColor.NailColor),
+                            controller.GetOriginalBodyColor(BodyColor.NailColor),
+                            c => controller.UpdateBodyColor(c, BodyColor.NailColor),
+                            () => controller.ResetBodyColor(BodyColor.NailColor)
                         );
                     }
                     else if (selectedBodyTab == "Chest")
@@ -420,6 +434,13 @@ namespace Plugins
                             1,
                             f => controller.SetBustValue(f, Bust.Weight),
                             () => controller.ResetBustValue(Bust.Weight)
+                        );
+                        DrawColorRow(
+                            "Nipple Color:",
+                            controller.GetBodyColor(BodyColor.NippleColor),
+                            controller.GetOriginalBodyColor(BodyColor.NippleColor),
+                            c => controller.UpdateBodyColor(c, BodyColor.NippleColor),
+                            () => controller.ResetBodyColor(BodyColor.NippleColor)
                         );
                     }
 

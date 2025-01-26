@@ -20,7 +20,8 @@ namespace Plugins
         #region Save Lists
         private Dictionary<ClothingColors, ColorStorage> OriginalClothingColors = new Dictionary<ClothingColors, ColorStorage>();
         private Dictionary<HairColor, ColorStorage> OriginalHairColors = new Dictionary<HairColor, ColorStorage>();
-        private Dictionary<TextureColor, ColorStorage> OriginalBodyColors = new Dictionary<TextureColor, ColorStorage>();
+        private Dictionary<BodyColor, ColorStorage> OriginalBodyColors = new Dictionary<BodyColor, ColorStorage>();
+        private Dictionary<FaceColor, ColorStorage> OriginalFaceColors = new Dictionary<FaceColor, ColorStorage>();
         private Dictionary<Bust, FloatStorage> OriginalBustValues = new Dictionary<Bust, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalBodyShapeValues = new Dictionary<int, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalFaceShapeValues = new Dictionary<int, FloatStorage>();
@@ -53,6 +54,11 @@ namespace Plugins
             else
                 data.data.Add(nameof(OriginalBodyColors), null);
 
+            if (OriginalFaceColors.Count > 0)
+                data.data.Add(nameof(OriginalFaceColors), MessagePackSerializer.Serialize(OriginalFaceColors));
+            else
+                data.data.Add(nameof(OriginalFaceColors), null);
+
             if (OriginalBustValues.Count > 0)
                 data.data.Add(nameof(OriginalBustValues), MessagePackSerializer.Serialize(OriginalBustValues));
             else
@@ -80,6 +86,7 @@ namespace Plugins
             OriginalClothingColors.Clear();
             OriginalHairColors.Clear();
             OriginalBodyColors.Clear();
+            OriginalFaceColors.Clear();
             OriginalBustValues.Clear();
             OriginalBodyShapeValues.Clear();
             OriginalFaceShapeValues.Clear();
@@ -95,7 +102,10 @@ namespace Plugins
                 OriginalHairColors = MessagePackSerializer.Deserialize<Dictionary<HairColor, ColorStorage>>((byte[])originalHairColors);
 
             if (data.data.TryGetValue(nameof(OriginalBodyColors), out var originalBodyColors) && originalBodyColors != null)
-                OriginalBodyColors = MessagePackSerializer.Deserialize<Dictionary<TextureColor, ColorStorage>>((byte[])originalBodyColors);
+                OriginalBodyColors = MessagePackSerializer.Deserialize<Dictionary<BodyColor, ColorStorage>>((byte[])originalBodyColors);
+
+            if (data.data.TryGetValue(nameof(OriginalFaceColors), out var originalFaceColors) && originalFaceColors != null)
+                OriginalFaceColors = MessagePackSerializer.Deserialize<Dictionary<FaceColor, ColorStorage>>((byte[])originalFaceColors);
 
             if (data.data.TryGetValue(nameof(OriginalBustValues), out var originalBustValues) && originalBustValues != null)
                 OriginalBustValues = MessagePackSerializer.Deserialize<Dictionary<Bust, FloatStorage>>((byte[])originalBustValues);
@@ -133,7 +143,7 @@ namespace Plugins
             ChaControl.SetBodyBaseMaterial();
         }
 
-        public void UpdateTextureColor(Color color, TextureColor textureColor)
+        public void UpdateBodyColor(Color color, BodyColor textureColor)
         {
             if (!OriginalBodyColors.ContainsKey(textureColor))
                 OriginalBodyColors[textureColor] = new ColorStorage(GetBodyColor(textureColor), color);
@@ -142,40 +152,60 @@ namespace Plugins
 
             switch (textureColor)
             {
-                case TextureColor.SkinMain:
+                case BodyColor.SkinMain:
                     ChaControl.fileBody.skinMainColor = color;
+                    UpdateBodyAndFaceTextures();
                     break;
-                case TextureColor.SkinSub:
+                case BodyColor.SkinSub:
                     ChaControl.fileBody.skinSubColor = color;
+                    UpdateBodyAndFaceTextures();
                     break;
-                case TextureColor.Tan:
+                case BodyColor.SkinTan:
                     ChaControl.fileBody.sunburnColor = color;
+                    UpdateBodyAndFaceTextures();
+                    break;
+                case BodyColor.NippleColor:
+                    ChaControl.fileBody.nipColor = color;
+                    ChaControl.ChangeSettingNipColor();
+                    break;
+                case BodyColor.NailColor:
+                    ChaControl.fileBody.nailColor = color;
+                    UpdateBodyAndFaceTextures();
+                    break;
+                case BodyColor.PubicHairColor:
+                    ChaControl.fileBody.underhairColor = color;
+                    ChaControl.ChangeSettingUnderhairColor();
                     break;
             }
-            UpdateBodyAndFaceTextures();
         }
 
-        public Color GetBodyColor(TextureColor color)
+        public Color GetBodyColor(BodyColor color)
         {
             switch (color)
             {
-                case TextureColor.SkinMain:
+                case BodyColor.SkinMain:
                     return ChaControl.fileBody.skinMainColor;
-                case TextureColor.SkinSub:
+                case BodyColor.SkinSub:
                     return ChaControl.fileBody.skinSubColor;
-                case TextureColor.Tan:
+                case BodyColor.SkinTan:
                     return ChaControl.fileBody.sunburnColor;
+                case BodyColor.NippleColor:
+                    return ChaControl.fileBody.nipColor;
+                case BodyColor.NailColor:
+                    return ChaControl.fileBody.nailColor;
+                case BodyColor.PubicHairColor:
+                    return ChaControl.fileBody.underhairColor;
             }
             return Color.white;
         }
 
-        public void ResetBodyColor(TextureColor colorType)
+        public void ResetBodyColor(BodyColor colorType)
         {
             if (OriginalBodyColors.TryGetValue(colorType, out var color))
-                UpdateTextureColor(color.OriginalValue, colorType);
+                UpdateBodyColor(color.OriginalValue, colorType);
         }
 
-        public Color GetOriginalBodyColor(TextureColor colorType)
+        public Color GetOriginalBodyColor(BodyColor colorType)
         {
             if (OriginalBodyColors.TryGetValue(colorType, out var color))
                 return color.OriginalValue;
@@ -271,6 +301,126 @@ namespace Plugins
                 isEdited |= OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
 
             return isEdited;
+        }
+        #endregion
+
+        #region Face
+        public void UpdateFaceColor(Color color, FaceColor faceColor)
+        {
+            if (!OriginalFaceColors.ContainsKey(faceColor))
+                OriginalFaceColors[faceColor] = new ColorStorage(GetFaceColor(faceColor), color);
+            else
+                OriginalFaceColors[faceColor].Value = color;
+
+            switch (faceColor)
+            {
+                case FaceColor.EyebrowColor:
+                    ChaControl.fileFace.eyebrowColor = color;
+                    ChaControl.ChangeSettingEyebrowColor();
+                    break;
+                case FaceColor.EyelineColor:
+                    ChaControl.fileFace.eyelineColor = color;
+                    ChaControl.ChangeSettingEyelineColor();
+                    break;
+                case FaceColor.ScleraColor1:
+                    ChaControl.fileFace.whiteBaseColor = color;
+                    ChaControl.ChangeSettingWhiteOfEye(false, true);
+                    break;
+                case FaceColor.ScleraColor2:
+                    ChaControl.fileFace.whiteSubColor = color;
+                    ChaControl.ChangeSettingWhiteOfEye(false, true);
+                    break;
+                case FaceColor.UpperHighlightColor:
+                    ChaControl.fileFace.hlUpColor = color;
+                    ChaControl.ChangeSettingEyeHiUpColor();
+                    break;
+                case FaceColor.LowerHightlightColor:
+                    ChaControl.fileFace.hlDownColor = color;
+                    ChaControl.ChangeSettingEyeHiDownColor();
+                    break;
+                case FaceColor.EyeColor1Left:
+                    ChaControl.fileFace.pupil[0].baseColor = color;
+                    ChaControl.ChangeSettingEyeL(true, true, false);
+                    break;
+                case FaceColor.EyeColor2Left:
+                    ChaControl.fileFace.pupil[0].subColor = color;
+                    ChaControl.ChangeSettingEyeL(true, true, false);
+                    break;
+                case FaceColor.EyeColor1Right:
+                    ChaControl.fileFace.pupil[1].baseColor = color;
+                    ChaControl.ChangeSettingEyeR(true, true, false);
+                    break;
+                case FaceColor.EyeColor2Right:
+                    ChaControl.fileFace.pupil[2].subColor = color;
+                    ChaControl.ChangeSettingEyeR(true, true, false);
+                    break;
+                case FaceColor.LipLineColor:
+                    ChaControl.fileFace.lipLineColor = color;
+                    UpdateBodyAndFaceTextures();
+                    break;
+                case FaceColor.EyeShadowColor:
+                    ChaControl.fileFace.baseMakeup.eyeshadowColor = color;
+                    ChaControl.ChangeSettingEyeShadowColor();
+                    break;
+                case FaceColor.CheekColor:
+                    ChaControl.fileFace.baseMakeup.cheekColor = color;
+                    UpdateBodyAndFaceTextures();
+                    break;
+                case FaceColor.LipColor:
+                    ChaControl.fileFace.baseMakeup.lipColor = color;
+                    ChaControl.ChangeSettingLipColor();
+                    break;
+            }
+        }
+
+        public Color GetFaceColor(FaceColor color)
+        {
+            switch (color)
+            {
+                case FaceColor.EyebrowColor:
+                    return ChaControl.fileFace.eyebrowColor;
+                case FaceColor.EyelineColor:
+                    return ChaControl.fileFace.eyelineColor;
+                case FaceColor.ScleraColor1:
+                    return ChaControl.fileFace.whiteBaseColor;
+                case FaceColor.ScleraColor2:
+                    return ChaControl.fileFace.whiteSubColor;
+                case FaceColor.UpperHighlightColor:
+                    return ChaControl.fileFace.hlUpColor;
+                case FaceColor.LowerHightlightColor:
+                    return ChaControl.fileFace.hlDownColor;
+                case FaceColor.EyeColor1Left:
+                    return ChaControl.fileFace.pupil[0].baseColor;
+                case FaceColor.EyeColor2Left:
+                    return ChaControl.fileFace.pupil[0].subColor;
+                case FaceColor.EyeColor1Right:
+                    return ChaControl.fileFace.pupil[1].baseColor;
+                case FaceColor.EyeColor2Right:
+                    return ChaControl.fileFace.pupil[2].subColor;
+                case FaceColor.LipLineColor:
+                    return ChaControl.fileFace.lipLineColor;
+                case FaceColor.EyeShadowColor:
+                    return ChaControl.fileFace.baseMakeup.eyeshadowColor;
+                case FaceColor.CheekColor:
+                    return ChaControl.fileFace.baseMakeup.cheekColor;
+                case FaceColor.LipColor:
+                    return ChaControl.fileFace.baseMakeup.lipColor;
+            }
+            return Color.white;
+        }
+
+        public void ResetFaceColor(FaceColor colorType)
+        {
+            if (OriginalFaceColors.TryGetValue(colorType, out var color))
+                UpdateFaceColor(color.OriginalValue, colorType);
+        }
+
+        public Color GetOriginalFaceColor(FaceColor colorType)
+        {
+            if (OriginalFaceColors.TryGetValue(colorType, out var color))
+                return color.OriginalValue;
+            return GetFaceColor(colorType);
+
         }
         #endregion
 

@@ -134,9 +134,9 @@ namespace Plugins
         private void RegisterStudioControls()
         {
             var catBody = StudioAPI.GetOrCreateCurrentStateCategory("Body");
-            catBody.AddControl(new CurrentStateColorSlider("Main Skin", c => c.GetChaControl().fileBody.skinMainColor, c => UpdateTextureColor(c, TextureColor.SkinMain)));
-            catBody.AddControl(new CurrentStateColorSlider("Sub Skin", c => c.GetChaControl().fileBody.skinSubColor, c => UpdateTextureColor(c, TextureColor.SkinSub)));
-            catBody.AddControl(new CurrentStateColorSlider("Tan", c => c.GetChaControl().fileBody.sunburnColor, c => UpdateTextureColor(c, TextureColor.Tan)));
+            catBody.AddControl(new CurrentStateColorSlider("Main Skin", c => c.GetChaControl().fileBody.skinMainColor, c => UpdateTextureColor(c, BodyColor.SkinMain)));
+            catBody.AddControl(new CurrentStateColorSlider("Sub Skin", c => c.GetChaControl().fileBody.skinSubColor, c => UpdateTextureColor(c, BodyColor.SkinSub)));
+            catBody.AddControl(new CurrentStateColorSlider("Tan", c => c.GetChaControl().fileBody.sunburnColor, c => UpdateTextureColor(c, BodyColor.SkinTan)));
 
             var catBust = StudioAPI.GetOrCreateCurrentStateCategory("Bust");
             catBust.AddControl(new CurrentStateCategorySlider("Softness", c => c.GetChaControl().fileBody.bustSoftness, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, Bust.Softness));
@@ -152,10 +152,10 @@ namespace Plugins
             catHair.AddControl(new CurrentStateColorSlider("Eyebrow", c => c.GetChaControl().fileFace.eyebrowColor, color => UpdateHairColor(color, HairColor.Eyebrow)));
         }
 
-        internal static void UpdateTextureColor(Color color, TextureColor textureColor)
+        internal static void UpdateTextureColor(Color color, BodyColor textureColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateTextureColor(color, textureColor);
+                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateBodyColor(color, textureColor);
         }
 
         internal static void UpdateBustSoftness(float value, Bust bust)
@@ -186,11 +186,14 @@ namespace Plugins
         }
     }
 
-    internal enum TextureColor
+    internal enum BodyColor
     {
         SkinMain,
         SkinSub,
-        Tan,
+        SkinTan,
+        NippleColor,
+        NailColor,
+        PubicHairColor,
     }
 
     internal enum Bust
@@ -206,5 +209,23 @@ namespace Plugins
         End,
         Gloss,
         Eyebrow,
+    }
+
+    internal enum FaceColor
+    {
+        EyebrowColor,
+        EyelineColor,
+        ScleraColor1,
+        ScleraColor2,
+        UpperHighlightColor,
+        LowerHightlightColor,
+        EyeColor1Left,
+        EyeColor2Left,
+        EyeColor1Right,
+        EyeColor2Right,
+        LipLineColor,
+        EyeShadowColor,
+        CheekColor,
+        LipColor,
     }
 }
