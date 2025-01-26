@@ -155,6 +155,38 @@ namespace Plugins
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
+
+            foreach (var category in shapeBodyValueMap)
+                foreach (var shape in category.Value)
+                    TimelineCompatibility.AddInterpolableModelDynamic(
+                        owner: "StudioSkinColor",
+                        id: $"{category.Key}-{shape.Key}",
+                        name: $"Body {category.Key} - {shape.Value}",
+                        interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateBodyShapeValue(shape.Key, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
+                        interpolateAfter: null,
+                        getValue: (oci, parameter) => parameter.GetCurrentBodyValue(shape.Key),
+                        readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                        writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                        getParameter: GetParameter,
+                        isCompatibleWithTarget: oci => oci is OCIChar,
+                        checkIntegrity: null
+                    );
+
+            foreach (var category in shapeFaceValueMap)
+                foreach (var shape in category.Value)
+                    TimelineCompatibility.AddInterpolableModelDynamic(
+                        owner: "StudioSkinColor",
+                        id: $"{category.Key}-{shape.Key}",
+                        name: $"Face {category.Key} - {shape.Value}",
+                        interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.UpdateBodyShapeValue(shape.Key, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
+                        interpolateAfter: null,
+                        getValue: (oci, parameter) => parameter.GetCurrentBodyValue(shape.Key),
+                        readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                        writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                        getParameter: GetParameter,
+                        isCompatibleWithTarget: oci => oci is OCIChar,
+                        checkIntegrity: null
+                    );
         }
 
         private static void WriteColorXML(XmlTextWriter writer, Color value)
