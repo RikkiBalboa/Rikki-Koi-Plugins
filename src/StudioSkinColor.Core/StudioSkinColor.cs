@@ -34,6 +34,7 @@ namespace Plugins
         internal static ChaControl selectedCharacter;
         internal static Dictionary<ChaControl, List<CharacterClothing>> selectedCharacterClothing = new Dictionary<ChaControl, List<CharacterClothing>>();
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
+        public static ConfigEntry<bool> UseWideLayout { get; private set; }
         public static ConfigEntry<float> WindowWidth { get; private set; }
         public static ConfigEntry<float> WindowHeight { get; private set; }
 
@@ -64,6 +65,11 @@ namespace Plugins
                 "UI", "Window Height",
                 260f,
                 new ConfigDescription("", new AcceptableValueRange<float>(200f, 800f))
+            );
+            UseWideLayout = Config.Bind(
+                "UI", "Use wide layout",
+                true,
+                new ConfigDescription("Labels are next to sliders/color pickers, instead of above them")
             );
             CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
 

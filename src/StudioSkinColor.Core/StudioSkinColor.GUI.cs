@@ -555,15 +555,24 @@ namespace Plugins
         private void DrawColorRow(string name, Color currentColor, Color originalColor, Action<Color> setColorAction, Action resetColorAction)
         {
             Color _c = GUI.color;
-            GUILayout.Label(name, new GUIStyle(GUI.skin.label)
-            {
-                alignment = TextAnchor.MiddleLeft,
-                fontStyle = FontStyle.Bold,
-                margin = new RectOffset(GUI.skin.label.margin.left, GUI.skin.label.margin.right, GUI.skin.label.margin.top, 0)
-            }, GUILayout.ExpandWidth(false));
+            if (!UseWideLayout.Value)
+                GUILayout.Label(name, new GUIStyle(GUI.skin.label)
+                {
+                    alignment = TextAnchor.MiddleLeft,
+                    margin = new RectOffset(GUI.skin.label.margin.left, GUI.skin.label.margin.right, GUI.skin.label.margin.top, 0)
+                }, GUILayout.ExpandWidth(false));
 
             GUILayout.BeginHorizontal();
             {
+                if (UseWideLayout.Value)
+                    GUILayout.Label(name, new GUIStyle(GUI.skin.label)
+                    {
+                        alignment = TextAnchor.MiddleLeft,
+                        margin = new RectOffset(GUI.skin.label.margin.left, GUI.skin.label.margin.right, GUI.skin.label.margin.top, 0),
+                        fixedWidth = 160,
+                        wordWrap = false,
+                    }, GUILayout.ExpandWidth(false));
+
                 bool colorOpened = GUILayout.Button("", new GUIStyle(Colorbutton(currentColor))
                 {
                     margin = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom)
@@ -586,6 +595,7 @@ namespace Plugins
             }
             GUI.color = _c;
             GUILayout.EndHorizontal();
+            GUILayout.Space(5);
         }
 
         private void DrawSliderRow(string name, string key, float currentValue, float originalValue, float min, float max, Action<float> setValueAction, Action resetValueAction)
@@ -602,9 +612,16 @@ namespace Plugins
             else if (Mathf.Abs(buffer.SliderValue - currentValue) > 0.001f)
                 buffer.SliderValue = currentValue;
 
-            GUILayout.Label(name, GUI.skin.label);
+            if (!UseWideLayout.Value)
+                GUILayout.Label(name, GUI.skin.label);
             GUILayout.BeginHorizontal();
             {
+                if (UseWideLayout.Value)
+                    GUILayout.Label(name, new GUIStyle(GUI.skin.label)
+                    {
+                        fixedWidth = 160,
+                        wordWrap = false,
+                    });
                 buffer.SliderValue = GUILayout.HorizontalSlider(buffer.SliderValue, min, max, GUILayout.ExpandWidth(true));
 
                 if (valueChanged)
@@ -619,6 +636,7 @@ namespace Plugins
                 setValueAction(buffer.SliderValue);
             GUI.color = c;
             GUILayout.EndHorizontal();
+            GUILayout.Space(5);
         }
 
         private GUIStyle Colorbutton(Color col)
