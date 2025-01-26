@@ -130,17 +130,20 @@ namespace Plugins
 
         #region Body
         #region Body color
-        public void UpdateBodyAndFaceTextures()
+        public void UpdateBodyTextures(bool inpBase = false, bool inpSub = false, bool inpPaint01 = false, bool inpPaint02 = false, bool inpSunburn = false, bool inpNail = false)
         {
-            ChaControl.AddUpdateCMFaceTexFlags(true, true, true, true, true, true, true);
-            ChaControl.AddUpdateCMFaceColorFlags(true, true, true, true, true, true, true);
-            ChaControl.CreateFaceTexture();
-            ChaControl.SetFaceBaseMaterial();
-
-            ChaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
-            ChaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
+            //ChaControl.AddUpdateCMBodyTexFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpSunburn);
+            ChaControl.AddUpdateCMBodyColorFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpSunburn, inpNail);
             ChaControl.CreateBodyTexture();
             ChaControl.SetBodyBaseMaterial();
+        }
+
+        public void UpdateFaceTextures(bool inpBase = false, bool inpSub = false, bool inpPaint01 = false, bool inpPaint02 = false, bool inpCheek = false, bool inpLipLine = false, bool inpMole = false)
+        {
+            //ChaControl.AddUpdateCMFaceTexFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpCheek, inpLipLine, inpMole);
+            ChaControl.AddUpdateCMFaceColorFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpCheek, inpLipLine, inpMole);
+            ChaControl.CreateFaceTexture();
+            ChaControl.SetFaceBaseMaterial();
         }
 
         public void UpdateBodyColor(Color color, BodyColor textureColor)
@@ -154,15 +157,15 @@ namespace Plugins
             {
                 case BodyColor.SkinMain:
                     ChaControl.fileBody.skinMainColor = color;
-                    UpdateBodyAndFaceTextures();
+                    UpdateBodyTextures(inpBase: true);
                     break;
                 case BodyColor.SkinSub:
                     ChaControl.fileBody.skinSubColor = color;
-                    UpdateBodyAndFaceTextures();
+                    UpdateBodyTextures(inpSub: true);
                     break;
                 case BodyColor.SkinTan:
                     ChaControl.fileBody.sunburnColor = color;
-                    UpdateBodyAndFaceTextures();
+                    UpdateBodyTextures(inpSunburn: true);
                     break;
                 case BodyColor.NippleColor:
                     ChaControl.fileBody.nipColor = color;
@@ -170,7 +173,7 @@ namespace Plugins
                     break;
                 case BodyColor.NailColor:
                     ChaControl.fileBody.nailColor = color;
-                    UpdateBodyAndFaceTextures();
+                    UpdateBodyTextures(inpNail: true);
                     break;
                 case BodyColor.PubicHairColor:
                     ChaControl.fileBody.underhairColor = color;
@@ -356,7 +359,7 @@ namespace Plugins
                     break;
                 case FaceColor.LipLineColor:
                     ChaControl.fileFace.lipLineColor = color;
-                    UpdateBodyAndFaceTextures();
+                    UpdateFaceTextures(inpLipLine: true);
                     break;
                 case FaceColor.EyeShadowColor:
                     ChaControl.fileFace.baseMakeup.eyeshadowColor = color;
@@ -364,7 +367,7 @@ namespace Plugins
                     break;
                 case FaceColor.CheekColor:
                     ChaControl.fileFace.baseMakeup.cheekColor = color;
-                    UpdateBodyAndFaceTextures();
+                    UpdateFaceTextures(inpCheek: true);
                     break;
                 case FaceColor.LipColor:
                     ChaControl.fileFace.baseMakeup.lipColor = color;
