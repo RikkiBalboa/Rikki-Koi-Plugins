@@ -183,6 +183,7 @@ namespace Plugins
                     {37, "Outer Eye Corner Height"},
                 }
             },
+            { "Iris", new Dictionary<int, string>() },
             {
                 "Nose", new Dictionary<int, string>()
                 {
@@ -202,6 +203,7 @@ namespace Plugins
                     {46, "Mouth Corner Shape"},
                 }
             },
+            { "Makeup", new Dictionary<int, string>() },
         };
         #endregion
 
@@ -343,6 +345,17 @@ namespace Plugins
 
         private void DrawBodyWindow()
         {
+            void BodyColorRow(string name, BodyColor bodyColor)
+            {
+                DrawColorRow(
+                    $"{name}:",
+                    controller.GetBodyColor(bodyColor),
+                    controller.GetOriginalBodyColor(bodyColor),
+                    c => controller.UpdateBodyColor(c, bodyColor),
+                    () => controller.ResetBodyColor(bodyColor)
+                );
+            }
+
             GUILayout.BeginHorizontal();
             {
                 leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(leftPanelWidth));
@@ -377,41 +390,11 @@ namespace Plugins
 
                     if (selectedBodyTab == "General")
                     {
-                        DrawColorRow(
-                            "Main Skin Color:",
-                            controller.GetBodyColor(BodyColor.SkinMain),
-                            controller.GetOriginalBodyColor(BodyColor.SkinMain),
-                            c => controller.UpdateBodyColor(c, BodyColor.SkinMain),
-                            () => controller.ResetBodyColor(BodyColor.SkinMain)
-                        );
-                        DrawColorRow(
-                            "Sub Skin Color:",
-                            controller.GetBodyColor(BodyColor.SkinSub),
-                            controller.GetOriginalBodyColor(BodyColor.SkinSub),
-                            c => controller.UpdateBodyColor(c, BodyColor.SkinSub),
-                            () => controller.ResetBodyColor(BodyColor.SkinSub)
-                        );
-                        DrawColorRow(
-                            "Tan Color:",
-                            controller.GetBodyColor(BodyColor.SkinTan),
-                            controller.GetOriginalBodyColor(BodyColor.SkinTan),
-                            c => controller.UpdateBodyColor(c, BodyColor.SkinTan),
-                            () => controller.ResetBodyColor(BodyColor.SkinTan)
-                        );
-                        DrawColorRow(
-                            "Pubic Hair Color:",
-                            controller.GetBodyColor(BodyColor.PubicHairColor),
-                            controller.GetOriginalBodyColor(BodyColor.PubicHairColor),
-                            c => controller.UpdateBodyColor(c, BodyColor.PubicHairColor),
-                            () => controller.ResetBodyColor(BodyColor.PubicHairColor)
-                        );
-                        DrawColorRow(
-                            "Nail Color:",
-                            controller.GetBodyColor(BodyColor.NailColor),
-                            controller.GetOriginalBodyColor(BodyColor.NailColor),
-                            c => controller.UpdateBodyColor(c, BodyColor.NailColor),
-                            () => controller.ResetBodyColor(BodyColor.NailColor)
-                        );
+                        BodyColorRow("Main Skin Color", BodyColor.SkinMain);
+                        BodyColorRow("Sub Skin Color", BodyColor.SkinSub);
+                        BodyColorRow("Tan Color", BodyColor.SkinTan);
+                        BodyColorRow("Pubic Hair Color", BodyColor.PubicHairColor);
+                        BodyColorRow("Nail Color", BodyColor.NailColor);
                     }
                     else if (selectedBodyTab == "Chest")
                     {
@@ -435,13 +418,7 @@ namespace Plugins
                             f => controller.SetBustValue(f, Bust.Weight),
                             () => controller.ResetBustValue(Bust.Weight)
                         );
-                        DrawColorRow(
-                            "Nipple Color:",
-                            controller.GetBodyColor(BodyColor.NippleColor),
-                            controller.GetOriginalBodyColor(BodyColor.NippleColor),
-                            c => controller.UpdateBodyColor(c, BodyColor.NippleColor),
-                            () => controller.ResetBodyColor(BodyColor.NippleColor)
-                        );
+                        BodyColorRow("Nipple Color", BodyColor.NippleColor);
                     }
 
                     foreach (var category in shapeBodyValueMap)
@@ -456,6 +433,17 @@ namespace Plugins
 
         private void DrawFaceWindow()
         {
+            void FaceColorRow(string name, FaceColor faceColor)
+            {
+                DrawColorRow(
+                    $"{name}:",
+                    controller.GetFaceColor(faceColor),
+                    controller.GetOriginalFaceColor(faceColor),
+                    c => controller.UpdateFaceColor(c, faceColor),
+                    () => controller.ResetFaceColor(faceColor)
+                );
+            }
+
             GUILayout.BeginHorizontal();
             {
                 leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(leftPanelWidth));
@@ -476,17 +464,43 @@ namespace Plugins
 
                 rightPanelScroll = GUILayout.BeginScrollView(rightPanelScroll, GUI.skin.box);
                 {
-                    foreach (var bodyValue in shapeFaceValueMap[selectedFaceTab])
+                    foreach (var faceValue in shapeFaceValueMap[selectedFaceTab])
                         DrawSliderRow(
-                            bodyValue.Value,
-                            bodyValue.Value + bodyValue.Key,
-                            controller.GetCurrentFaceValue(bodyValue.Key),
-                            controller.GetOriginalFaceShapeValue(bodyValue.Key),
+                            faceValue.Value,
+                            faceValue.Value + faceValue.Key,
+                            controller.GetCurrentFaceValue(faceValue.Key),
+                            controller.GetOriginalFaceShapeValue(faceValue.Key),
                             - 1f,
                             2f,
-                            (f) => controller.UpdateFaceShapeValue(bodyValue.Key, f),
-                            () => controller.ResetFaceShapeValue(bodyValue.Key)
+                            (f) => controller.UpdateFaceShapeValue(faceValue.Key, f),
+                            () => controller.ResetFaceShapeValue(faceValue.Key)
                         );
+
+                    if (selectedFaceTab == "Eyebrows")
+                        FaceColorRow("Eyebrow Color", FaceColor.EyebrowColor);
+                    else if (selectedFaceTab == "Eyes")
+                        FaceColorRow("Eyeline Color", FaceColor.EyelineColor);
+                    else if (selectedFaceTab == "Iris")
+                    {
+                        FaceColorRow("Sclera Color 1", FaceColor.ScleraColor1);
+                        FaceColorRow("Sclera Color 2", FaceColor.ScleraColor2);
+                        FaceColorRow("Upper Highlight Color", FaceColor.UpperHighlightColor);
+                        FaceColorRow("Lower Highlight Color", FaceColor.LowerHightlightColor);
+                        FaceColorRow("Eye Color 1 (Left)", FaceColor.EyeColor1Left);
+                        FaceColorRow("Eye Color 2 (Left)", FaceColor.EyeColor2Left);
+                        FaceColorRow("Eye Color 1 (Right)", FaceColor.EyeColor1Right);
+                        FaceColorRow("Eye Color 2 (Right)", FaceColor.EyeColor2Right);
+                    }
+                    else if (selectedFaceTab == "Mouth")
+                    {
+                        FaceColorRow("Lip Line Color", FaceColor.LipLineColor);
+                    }
+                    else if (selectedFaceTab == "Makeup")
+                    {
+                        FaceColorRow("Eye Shadow Color", FaceColor.EyeShadowColor);
+                        FaceColorRow("Cheek Color", FaceColor.CheekColor);
+                        FaceColorRow("Lip Color", FaceColor.LipColor);
+                    }
                 }
                 GUILayout.EndScrollView();
             }

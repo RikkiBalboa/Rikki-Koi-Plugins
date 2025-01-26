@@ -396,7 +396,7 @@ namespace Plugins
                 case FaceColor.EyeColor1Right:
                     return ChaControl.fileFace.pupil[1].baseColor;
                 case FaceColor.EyeColor2Right:
-                    return ChaControl.fileFace.pupil[2].subColor;
+                    return ChaControl.fileFace.pupil[1].subColor;
                 case FaceColor.LipLineColor:
                     return ChaControl.fileFace.lipLineColor;
                 case FaceColor.EyeShadowColor:
