@@ -141,6 +141,8 @@ namespace Plugins
         public void UpdateFaceTextures(bool inpBase = false, bool inpSub = false, bool inpPaint01 = false, bool inpPaint02 = false, bool inpCheek = false, bool inpLipLine = false, bool inpMole = false)
         {
             //ChaControl.AddUpdateCMFaceTexFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpCheek, inpLipLine, inpMole);
+            // For some reason the face doesn't update texture if these aren't all true
+            ChaControl.AddUpdateCMFaceTexFlags(true, true, true, true, true, true, true);
             ChaControl.AddUpdateCMFaceColorFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpCheek, inpLipLine, inpMole);
             ChaControl.CreateFaceTexture();
             ChaControl.SetFaceBaseMaterial();
@@ -157,10 +159,12 @@ namespace Plugins
             {
                 case BodyColor.SkinMain:
                     ChaControl.fileBody.skinMainColor = color;
+                    UpdateFaceTextures(inpBase: true);
                     UpdateBodyTextures(inpBase: true);
                     break;
                 case BodyColor.SkinSub:
                     ChaControl.fileBody.skinSubColor = color;
+                    UpdateFaceTextures(inpSub: true);
                     UpdateBodyTextures(inpSub: true);
                     break;
                 case BodyColor.SkinTan:
