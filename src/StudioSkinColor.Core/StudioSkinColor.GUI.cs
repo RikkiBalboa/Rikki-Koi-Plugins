@@ -31,7 +31,7 @@ namespace Plugins
 #endif
         };
 
-        private static Dictionary<string, Dictionary<int, string>> shapeBodyValueMap = new Dictionary<string, Dictionary<int, string>>()
+        public static readonly Dictionary<string, Dictionary<int, string>> shapeBodyValueMap = new Dictionary<string, Dictionary<int, string>>()
         {
             {
                 "General", new Dictionary<int, string>()
@@ -108,7 +108,7 @@ namespace Plugins
                 }
             },
         };
-        private static Dictionary<string, Dictionary<int, string>> shapeFaceValueMap = new Dictionary<string, Dictionary<int, string>>()
+        public static readonly Dictionary<string, Dictionary<int, string>> shapeFaceValueMap = new Dictionary<string, Dictionary<int, string>>()
         {
             {
                 "General", new Dictionary<int, string>()
@@ -225,6 +225,8 @@ namespace Plugins
                 {
                     if (selectedTab == value)
                         GUI.color = Color.cyan;
+                    else if (controller.IsCategoryEdited(value))
+                        GUI.color = Color.magenta;
                     if (GUILayout.Button(value.ToString()))
                         selectedTab = value;
                     GUI.color = c;
@@ -261,6 +263,8 @@ namespace Plugins
                         Color c = GUI.color;
                         if (selectedKind == kind.Value)
                             GUI.color = Color.cyan;
+                        else if (controller.IsClothingKindEdited(kind.Value))
+                            GUI.color = Color.magenta;
                         if (!controller.ClothingKindExists(kind.Value))
                             GUI.enabled = false;
                         if (GUILayout.Button(kind.Key))
@@ -331,6 +335,8 @@ namespace Plugins
                         Color c = GUI.color;
                         if (selectedBodyTab == category.Key)
                             GUI.color = Color.cyan;
+                        else if (controller.IsBodyCategoryEdited(category.Key))
+                            GUI.color = Color.magenta;
                         if (GUILayout.Button(category.Key))
                             selectedBodyTab = category.Key;
                         GUI.color = c;
@@ -421,6 +427,8 @@ namespace Plugins
                         Color c = GUI.color;
                         if (selectedFaceTab == category.Key)
                             GUI.color = Color.cyan;
+                        else if (controller.IsFaceEdited(category.Key))
+                            GUI.color = Color.magenta;
                         if (GUILayout.Button(category.Key))
                             selectedFaceTab = category.Key;
                         GUI.color = c;
@@ -575,7 +583,7 @@ namespace Plugins
             return guistyle;
         }
 
-        private enum SelectedTab
+        public enum SelectedTab
         {
             Body,
             Face,

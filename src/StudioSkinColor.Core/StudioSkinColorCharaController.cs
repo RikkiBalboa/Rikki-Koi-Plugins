@@ -112,13 +112,14 @@ namespace Plugins
             if (allControllers.ContainsKey(chaCtrl))
                 return allControllers[chaCtrl];
 #if DEBUG
-            return chaCtrl.gameObject.GetOrAddComponent<StudioSkinColorCharaController>();
+            return chaCtrl.gameObject.GetComponent<StudioSkinColorCharaController>();
 #else
             return chaCtrl.gameObject.GetComponent<StudioSkinColorCharaController>();
 #endif
         }
 
-        #region body
+        #region Body
+        #region Body color
         public void UpdateBodyAndFaceTextures()
         {
             ChaControl.AddUpdateCMFaceTexFlags(true, true, true, true, true, true, true);
@@ -154,6 +155,36 @@ namespace Plugins
             UpdateBodyAndFaceTextures();
         }
 
+        public Color GetBodyColor(TextureColor color)
+        {
+            switch (color)
+            {
+                case TextureColor.SkinMain:
+                    return ChaControl.fileBody.skinMainColor;
+                case TextureColor.SkinSub:
+                    return ChaControl.fileBody.skinSubColor;
+                case TextureColor.Tan:
+                    return ChaControl.fileBody.sunburnColor;
+            }
+            return Color.white;
+        }
+
+        public void ResetBodyColor(TextureColor colorType)
+        {
+            if (OriginalBodyColors.TryGetValue(colorType, out var color))
+                UpdateTextureColor(color.OriginalValue, colorType);
+        }
+
+        public Color GetOriginalBodyColor(TextureColor colorType)
+        {
+            if (OriginalBodyColors.TryGetValue(colorType, out var color))
+                return color.OriginalValue;
+            return GetBodyColor(colorType);
+
+        }
+        #endregion
+
+        #region Bust
         public void SetBustValue(float value, Bust bust)
         {
             if (!OriginalBustValues.ContainsKey(bust))
@@ -193,7 +224,99 @@ namespace Plugins
                 return ChaControl.fileBody.bustWeight;
             return 1f;
         }
+        #endregion
 
+        #region Body shape
+        public void UpdateBodyShapeValue(int index, float value)
+        {
+            if (!OriginalBodyShapeValues.ContainsKey(index))
+                OriginalBodyShapeValues[index] = new FloatStorage(GetCurrentBodyValue(index), value);
+            else
+                OriginalBodyShapeValues[index].Value = value;
+            ChaControl.SetShapeBodyValue(index, value);
+        }
+
+        public float GetCurrentBodyValue(int index)
+        {
+            return ChaControl.GetShapeBodyValue(index);
+        }
+
+        public void ResetBodyShapeValue(int index)
+        {
+            if (OriginalBodyShapeValues.TryGetValue(index, out var shapeValueBody))
+                UpdateBodyShapeValue(index, shapeValueBody.OriginalValue);
+        }
+
+        public float GetOriginalBodyShapeValue(int index)
+        {
+            if (OriginalBodyShapeValues.TryGetValue(index, out var original))
+                return original.OriginalValue;
+            return GetCurrentBodyValue(index);
+        }
+        #endregion
+
+        public bool IsBodyCategoryEdited(string category)
+        {
+            var isEdited = false;
+            if (shapeBodyValueMap.TryGetValue(category, out var keys))
+            {
+                isEdited |= OriginalBodyShapeValues
+                    .Where(x => keys.ContainsKey(x.Key))
+                    .Select(x => x.Value)
+                    .Any(x => Mathf.Abs(x.Value - x.OriginalValue) > 0.001f);
+            }
+            if (category == "General")
+                isEdited |= OriginalBodyColors.Any(x => x.Value.Value != x.Value.OriginalValue);
+            else if (category == "Chest")
+                isEdited |= OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
+
+            return isEdited;
+        }
+        #endregion
+
+        #region Face shape
+        public void UpdateFaceShapeValue(int index, float value)
+        {
+            if (!OriginalFaceShapeValues.ContainsKey(index))
+                OriginalFaceShapeValues[index] = new FloatStorage(GetCurrentFaceValue(index), value);
+            else
+                OriginalFaceShapeValues[index].Value = value;
+            ChaControl.SetShapeFaceValue(index, value);
+        }
+
+        public float GetCurrentFaceValue(int index)
+        {
+            return ChaControl.GetShapeFaceValue(index);
+        }
+
+        public void ResetFaceShapeValue(int index)
+        {
+            if (OriginalFaceShapeValues.TryGetValue(index, out var shapeValue))
+                UpdateFaceShapeValue(index, shapeValue.OriginalValue);
+        }
+
+        public float GetOriginalFaceShapeValue(int index)
+        {
+            if (OriginalFaceShapeValues.TryGetValue(index, out var shapeValue))
+                return shapeValue.OriginalValue;
+            return GetCurrentFaceValue(index);
+        }
+
+        public bool IsFaceEdited(string category)
+        {
+            var isEdited = false;
+            if (shapeFaceValueMap.TryGetValue(category, out var keys))
+            {
+                isEdited |= OriginalFaceShapeValues
+                    .Where(x => keys.ContainsKey(x.Key))
+                    .Select(x => x.Value)
+                    .Any(x => Mathf.Abs(x.Value - x.OriginalValue) > 0.001f);
+            }
+            return isEdited;
+        }
+        #endregion
+
+        #region Hair
         public void UpdateHairColor(Color color, HairColor hairColor)
         {
             if (!OriginalHairColors.ContainsKey(hairColor))
@@ -264,88 +387,6 @@ namespace Plugins
                     return ChaControl.fileFace.eyebrowColor;
             }
             return Color.white;
-        }
-
-        public Color GetBodyColor(TextureColor color)
-        {
-            switch (color)
-            {
-                case TextureColor.SkinMain:
-                    return ChaControl.fileBody.skinMainColor;
-                case TextureColor.SkinSub:
-                    return ChaControl.fileBody.skinSubColor;
-                case TextureColor.Tan:
-                    return ChaControl.fileBody.sunburnColor;
-            }
-            return Color.white;
-        }
-
-        public void ResetBodyColor(TextureColor colorType)
-        {
-            if (OriginalBodyColors.TryGetValue(colorType, out var color))
-                UpdateTextureColor(color.OriginalValue, colorType);
-        }
-
-        public Color GetOriginalBodyColor(TextureColor colorType)
-        {
-            if (OriginalBodyColors.TryGetValue(colorType, out var color))
-                return color.OriginalValue;
-            return GetBodyColor(colorType);
-
-        }
-
-        public void UpdateBodyShapeValue(int index, float value)
-        {
-            if (!OriginalBodyShapeValues.ContainsKey(index))
-                OriginalBodyShapeValues[index] = new FloatStorage(GetCurrentBodyValue(index), value);
-            else
-                OriginalBodyShapeValues[index].Value = value;
-            ChaControl.SetShapeBodyValue(index, value);
-        }
-
-        public float GetCurrentBodyValue(int index)
-        {
-            return ChaControl.GetShapeBodyValue(index);
-        }
-
-        public void ResetBodyShapeValue(int index)
-        {
-            if (OriginalBodyShapeValues.TryGetValue(index, out var shapeValueBody))
-                UpdateBodyShapeValue(index, shapeValueBody.OriginalValue);
-        }
-
-        public float GetOriginalBodyShapeValue(int index)
-        {
-            if (OriginalBodyShapeValues.TryGetValue(index, out var original))
-                return original.OriginalValue;
-            return GetCurrentBodyValue(index);
-        }
-
-        public void UpdateFaceShapeValue(int index, float value)
-        {
-            if (!OriginalFaceShapeValues.ContainsKey(index))
-                OriginalFaceShapeValues[index] = new FloatStorage(GetCurrentFaceValue(index), value);
-            else
-                OriginalFaceShapeValues[index].Value = value;
-            ChaControl.SetShapeFaceValue(index, value);
-        }
-
-        public float GetCurrentFaceValue(int index)
-        {
-            return ChaControl.GetShapeFaceValue(index);
-        }
-
-        public void ResetFaceShapeValue(int index)
-        {
-            if (OriginalFaceShapeValues.TryGetValue(index, out var shapeValue))
-                UpdateFaceShapeValue(index, shapeValue.OriginalValue);
-        }
-
-        public float GetOriginalFaceShapeValue(int index)
-        {
-            if (OriginalFaceShapeValues.TryGetValue(index, out var shapeValue))
-                return shapeValue.OriginalValue;
-            return GetCurrentFaceValue(index);
         }
         #endregion
 
@@ -514,7 +555,33 @@ namespace Plugins
 
             selectedCharacterClothing[ChaControl] = characterClothing;
         }
+
+        public bool IsClothingKindEdited(int kind)
+        {
+            return OriginalClothingColors
+                .Where(c => c.Key.ClothingKind == kind)
+                .Select(c => c.Value)
+                .Any(c => c.Value != c.OriginalValue);
+        }
         #endregion
+
+        public bool IsCategoryEdited(SelectedTab tab)
+        {
+            switch (tab)
+            {
+                case SelectedTab.Body:
+                    return OriginalBodyColors.Any(x => x.Value.Value != x.Value.OriginalValue)
+                        || OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
+                        || OriginalBodyShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
+                case SelectedTab.Face:
+                    return OriginalFaceShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
+                case SelectedTab.Hair:
+                    return OriginalHairColors.Any(x => x.Value.Value != x.Value.OriginalValue);
+                case SelectedTab.Clothes:
+                    return OriginalClothingColors.Any(x => x.Value.Value != x.Value.OriginalValue);
+            }
+            return false;
+        }
 
         private new void OnDestroy()
         {
@@ -522,6 +589,7 @@ namespace Plugins
         }
     }
 
+    #region Storage classes
     internal class CharacterClothing
     {
         public int Kind { get; set; }
@@ -605,4 +673,5 @@ namespace Plugins
             Value = value;
         }
     }
+    #endregion
 }
