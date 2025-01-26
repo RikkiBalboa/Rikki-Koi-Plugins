@@ -727,7 +727,8 @@ namespace Plugins
                         || OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
                         || OriginalBodyShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
                 case SelectedTab.Face:
-                    return OriginalFaceShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
+                    return OriginalFaceShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
+                        || OriginalFaceColors.Any(x => x.Value.Value != x.Value.OriginalValue);
                 case SelectedTab.Hair:
                     return OriginalHairColors.Any(x => x.Value.Value != x.Value.OriginalValue);
                 case SelectedTab.Clothes:
