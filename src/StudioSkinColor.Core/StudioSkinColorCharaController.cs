@@ -111,7 +111,11 @@ namespace Plugins
         {
             if (allControllers.ContainsKey(chaCtrl))
                 return allControllers[chaCtrl];
+#if DEBUG
+            return chaCtrl.gameObject.GetOrAddComponent<StudioSkinColorCharaController>();
+#else
             return chaCtrl.gameObject.GetComponent<StudioSkinColorCharaController>();
+#endif
         }
 
         #region body
@@ -174,6 +178,13 @@ namespace Plugins
                 SetBustValue(value.OriginalValue, bust);
         }
 
+        public float GetOriginalBustValue(Bust bust)
+        {
+            if (OriginalBustValues.TryGetValue(bust, out var original))
+                return original.OriginalValue;
+            return GetBustValue(bust);
+        }
+
         public float GetBustValue(Bust bust)
         {
             if (bust == Bust.Softness)
@@ -228,6 +239,13 @@ namespace Plugins
                 UpdateHairColor(color.OriginalValue, hairColor);
         }
 
+        public Color GetOriginalHairColor(HairColor hairColor)
+        {
+            if (OriginalHairColors.TryGetValue(hairColor, out var color))
+                return color.OriginalValue;
+            return GetHairColor(hairColor);
+        }
+
         public Color GetHairColor(HairColor color)
         {
             switch (color)
@@ -268,6 +286,14 @@ namespace Plugins
                 UpdateTextureColor(color.OriginalValue, colorType);
         }
 
+        public Color GetOriginalBodyColor(TextureColor colorType)
+        {
+            if (OriginalBodyColors.TryGetValue(colorType, out var color))
+                return color.OriginalValue;
+            return GetBodyColor(colorType);
+
+        }
+
         public void UpdateBodyShapeValue(int index, float value)
         {
             if (!OriginalBodyShapeValues.ContainsKey(index))
@@ -288,6 +314,13 @@ namespace Plugins
                 UpdateBodyShapeValue(index, shapeValueBody.OriginalValue);
         }
 
+        public float GetOriginalBodyShapeValue(int index)
+        {
+            if (OriginalBodyShapeValues.TryGetValue(index, out var original))
+                return original.OriginalValue;
+            return GetCurrentBodyValue(index);
+        }
+
         public void UpdateFaceShapeValue(int index, float value)
         {
             if (!OriginalFaceShapeValues.ContainsKey(index))
@@ -306,6 +339,13 @@ namespace Plugins
         {
             if (OriginalFaceShapeValues.TryGetValue(index, out var shapeValue))
                 UpdateFaceShapeValue(index, shapeValue.OriginalValue);
+        }
+
+        public float GetOriginalFaceShapeValue(int index)
+        {
+            if (OriginalFaceShapeValues.TryGetValue(index, out var shapeValue))
+                return shapeValue.OriginalValue;
+            return GetCurrentFaceValue(index);
         }
         #endregion
 
@@ -424,6 +464,14 @@ namespace Plugins
             var clothingColors = new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr);
             if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
                 SetClothingColor(kind, colorNr, color.OriginalValue, slotNr);
+        }
+
+        public Color GetOriginalClothingColor(int kind, int colorNr, int slotNr)
+        {
+            var clothingColors = new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr);
+            if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
+                return color.OriginalValue;
+            return GetClothingColor(kind, colorNr, slotNr);
         }
 
         internal void ChangeCoordinateEvent()

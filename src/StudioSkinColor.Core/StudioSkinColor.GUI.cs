@@ -205,7 +205,7 @@ namespace Plugins
         };
         #endregion
 
-        private SelectedTab selectedTab = SelectedTab.Clothes;
+        private SelectedTab selectedTab = SelectedTab.Body;
         private string selectedBodyTab = "General";
         private string selectedFaceTab = "General";
         private int selectedKind = 0;
@@ -232,14 +232,14 @@ namespace Plugins
             }
             GUILayout.EndHorizontal();
 
-            if (selectedTab == SelectedTab.Clothes)
-                DrawClothesWindow();
-            else if (selectedTab == SelectedTab.Body)
+            if (selectedTab == SelectedTab.Body)
                 DrawBodyWindow();
             else if (selectedTab == SelectedTab.Face)
                 DrawFaceWindow();
             else if (selectedTab == SelectedTab.Hair)
                 DrawHairWindow();
+            else if (selectedTab == SelectedTab.Clothes)
+                DrawClothesWindow();
 
             uiRect = KKAPI.Utilities.IMGUIUtils.DragResizeEatWindow(id, uiRect);
         }
@@ -293,6 +293,7 @@ namespace Plugins
                             DrawColorRow(
                                 "Color 1:",
                                 controller.GetClothingColor(selectedKind, 0, clothing.SlotNr),
+                                controller.GetOriginalClothingColor(selectedKind, 0, clothing.SlotNr),
                                 c => controller.SetClothingColor(selectedKind, 0, c, clothing.SlotNr),
                                 () => controller.ResetClothingColor(selectedKind, 0, clothing.SlotNr)
                             );
@@ -300,6 +301,7 @@ namespace Plugins
                             DrawColorRow(
                                 "Color 2:",
                                 controller.GetClothingColor(selectedKind, 1, clothing.SlotNr),
+                                controller.GetOriginalClothingColor(selectedKind, 1, clothing.SlotNr),
                                 c => controller.SetClothingColor(selectedKind, 1, c, clothing.SlotNr),
                                 () => controller.ResetClothingColor(selectedKind, 1, clothing.SlotNr)
                             );
@@ -307,6 +309,7 @@ namespace Plugins
                             DrawColorRow(
                                 "Color 3:",
                                 controller.GetClothingColor(selectedKind, 2, clothing.SlotNr),
+                                controller.GetOriginalClothingColor(selectedKind, 2, clothing.SlotNr),
                                 c => controller.SetClothingColor(selectedKind, 2, c, clothing.SlotNr),
                                 () => controller.ResetClothingColor(selectedKind, 2, clothing.SlotNr)
                             );
@@ -342,7 +345,8 @@ namespace Plugins
                             bodyValue.Value,
                             bodyValue.Value + bodyValue.Key,
                             controller.GetCurrentBodyValue(bodyValue.Key),
-                            -1f,
+                            controller.GetOriginalBodyShapeValue(bodyValue.Key),
+                            - 1f,
                             2f,
                             (f) => controller.UpdateBodyShapeValue(bodyValue.Key, f),
                             () => controller.ResetBodyShapeValue(bodyValue.Key)
@@ -353,18 +357,21 @@ namespace Plugins
                         DrawColorRow(
                             "Main Skin Color:",
                             controller.GetBodyColor(TextureColor.SkinMain),
+                            controller.GetOriginalBodyColor(TextureColor.SkinMain),
                             c => controller.UpdateTextureColor(c, TextureColor.SkinMain),
                             () => controller.ResetBodyColor(TextureColor.SkinMain)
                         );
                         DrawColorRow(
                             "Sub Skin Color:",
                             controller.GetBodyColor(TextureColor.SkinSub),
+                            controller.GetOriginalBodyColor(TextureColor.SkinSub),
                             c => controller.UpdateTextureColor(c, TextureColor.SkinSub),
                             () => controller.ResetBodyColor(TextureColor.SkinSub)
                         );
                         DrawColorRow(
                             "Tan Color:",
                             controller.GetBodyColor(TextureColor.Tan),
+                            controller.GetOriginalBodyColor(TextureColor.Tan),
                             c => controller.UpdateTextureColor(c, TextureColor.Tan),
                             () => controller.ResetBodyColor(TextureColor.Tan)
                         );
@@ -375,6 +382,7 @@ namespace Plugins
                             "Softness",
                             "BustSoftness",
                             controller.GetBustValue(Bust.Softness),
+                            controller.GetOriginalBustValue(Bust.Softness),
                             0,
                             1,
                             f => controller.SetBustValue(f, Bust.Softness),
@@ -384,6 +392,7 @@ namespace Plugins
                             "Weight",
                             "BustWeight",
                             controller.GetBustValue(Bust.Weight),
+                            controller.GetOriginalBustValue(Bust.Weight),
                             0,
                             1,
                             f => controller.SetBustValue(f, Bust.Weight),
@@ -426,7 +435,8 @@ namespace Plugins
                             bodyValue.Value,
                             bodyValue.Value + bodyValue.Key,
                             controller.GetCurrentFaceValue(bodyValue.Key),
-                            -1f,
+                            controller.GetOriginalFaceShapeValue(bodyValue.Key),
+                            - 1f,
                             2f,
                             (f) => controller.UpdateFaceShapeValue(bodyValue.Key, f),
                             () => controller.ResetFaceShapeValue(bodyValue.Key)
@@ -444,18 +454,21 @@ namespace Plugins
                 DrawColorRow(
                     "Color 1:",
                     controller.GetHairColor(HairColor.Base),
+                    controller.GetOriginalHairColor(HairColor.Base),
                     c => controller.UpdateHairColor(c, HairColor.Base),
                     () => controller.ResetHairColor(HairColor.Base)
                 );
                 DrawColorRow(
                     "Color 2:",
                     controller.GetHairColor(HairColor.Start),
+                    controller.GetOriginalHairColor(HairColor.Start),
                     c => controller.UpdateHairColor(c, HairColor.Start),
                     () => controller.ResetHairColor(HairColor.Start)
                 );
                 DrawColorRow(
                     "Color 3:",
                     controller.GetHairColor(HairColor.End),
+                    controller.GetOriginalHairColor(HairColor.End),
                     c => controller.UpdateHairColor(c, HairColor.End),
                     () => controller.ResetHairColor(HairColor.End)
                 );
@@ -463,6 +476,7 @@ namespace Plugins
                 DrawColorRow(
                     "Gloss color:",
                     controller.GetHairColor(HairColor.Gloss),
+                    controller.GetOriginalHairColor(HairColor.Gloss),
                     c => controller.UpdateHairColor(c, HairColor.Gloss),
                     () => controller.ResetHairColor(HairColor.Gloss)
                 );
@@ -470,6 +484,7 @@ namespace Plugins
                 DrawColorRow(
                     "Eyebrow color:",
                     controller.GetHairColor(HairColor.Eyebrow),
+                    controller.GetOriginalHairColor(HairColor.Eyebrow),
                     c => controller.UpdateHairColor(c, HairColor.Eyebrow),
                     () => controller.ResetHairColor(HairColor.Eyebrow)
                 );
@@ -477,8 +492,9 @@ namespace Plugins
             GUILayout.EndVertical();
         }
 
-        private void DrawColorRow(string name, Color currentColor, Action<Color> setColorAction, Action resetColorAction)
+        private void DrawColorRow(string name, Color currentColor, Color originalColor, Action<Color> setColorAction, Action resetColorAction)
         {
+            Color _c = GUI.color;
             GUILayout.Label(name, new GUIStyle(GUI.skin.label)
             {
                 alignment = TextAnchor.MiddleLeft,
@@ -498,17 +514,23 @@ namespace Plugins
                         if (c != currentColor)
                             setColorAction(c);
                     });
+
+                if (currentColor != originalColor)
+                    GUI.color = Color.magenta;
+
                 if (GUILayout.Button("Reset", new GUIStyle(GUI.skin.button)
                 {
                     margin = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom)
                 }, GUILayout.ExpandWidth(false)))
                     resetColorAction();
             }
+            GUI.color = _c;
             GUILayout.EndHorizontal();
         }
 
-        private void DrawSliderRow(string name, string key, float currentValue, float min, float max, Action<float> setValueAction, Action resetValueAction)
+        private void DrawSliderRow(string name, string key, float currentValue, float originalValue, float min, float max, Action<float> setValueAction, Action resetValueAction)
         {
+            Color c = GUI.color;
             inputBuffers.TryGetValue(key, out var buffer);
             if (buffer == null)
             {
@@ -522,6 +544,10 @@ namespace Plugins
             GUILayout.BeginHorizontal();
             {
                 buffer.SliderValue = GUILayout.HorizontalSlider(buffer.SliderValue, min, max, GUILayout.ExpandWidth(true));
+
+                if (currentValue != originalValue)
+                    GUI.color = Color.magenta;
+
                 buffer.InputValue = GUILayout.TextField(buffer.InputValue, GUILayout.Width(40));
                 if (GUILayout.Button("Reset"))
                     resetValueAction();
@@ -529,6 +555,7 @@ namespace Plugins
 
             if (buffer.SliderValue != currentValue)
                 setValueAction(buffer.SliderValue);
+            GUI.color = c;
             GUILayout.EndHorizontal();
         }
 
@@ -550,10 +577,10 @@ namespace Plugins
 
         private enum SelectedTab
         {
-            Clothes,
             Body,
             Face,
             Hair,
+            Clothes,
         }
 
         internal void ClearBuffers()

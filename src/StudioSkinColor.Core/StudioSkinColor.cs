@@ -7,6 +7,7 @@ using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
+using Studio;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,11 +40,6 @@ namespace Plugins
         internal static IDictionary c2aAIlnstances = null;
         internal static Type c2aAdapterType = null;
         internal static FieldInfo c2aClothingKindField = null;
-
-
-        /// <summary>
-        /// NEED TO KNOW ACCESSORY INDEX
-        /// </summary>
 
         private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
         internal Rect uiRect;
@@ -82,6 +78,14 @@ namespace Plugins
                 c2aAIlnstances = field.GetValue(c2aAdapterType) as IDictionary;
                 c2aClothingKindField = c2aAdapterType.GetField("_clothingKind", AccessTools.all);
             }
+
+#if DEBUG
+            foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)
+            {
+                if (item is OCIChar oCIChar)
+                    oCIChar.GetChaControl().GetOrAddComponent<StudioSkinColorCharaController>();
+            }
+#endif
         }
 
         private void Start()
@@ -165,11 +169,14 @@ namespace Plugins
             foreach (var cha in StudioAPI.GetSelectedCharacters())
                 StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateHairColor(color, hairColor);
         }
+
+#if DEBUG
         private void OnDestroy()
         {
             StudioSkinColorCharaController.allControllers.Clear();
             harmony.UnpatchSelf();
         }
+#endif
 
         internal static object GetC2aAdapter(ChaControl chaControl, int kind, int index)
         {
