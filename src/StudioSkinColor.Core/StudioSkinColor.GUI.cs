@@ -217,6 +217,23 @@ namespace Plugins
 
         internal void DrawWindow(int id)
         {
+            int visibleAreaSize = GUI.skin.window.border.top - 4;
+            if (GUI.Button(new Rect(uiRect.width - visibleAreaSize - 2, 2, visibleAreaSize, visibleAreaSize), "X"))
+            {
+                uiShow = false;
+                return;
+            }
+
+            GUILayout.BeginHorizontal(GUI.skin.box);
+            {
+                //selectedCharacter.chaFile
+                GUILayout.Label($"{selectedCharacter.chaFile.parameter.fullname} ({selectedCharacter.name})", new GUIStyle(GUI.skin.label)
+                {
+                    alignment = TextAnchor.MiddleCenter,
+                    fontStyle = FontStyle.Bold,
+                });
+            }
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
@@ -538,6 +555,8 @@ namespace Plugins
 
         private void DrawSliderRow(string name, string key, float currentValue, float originalValue, float min, float max, Action<float> setValueAction, Action resetValueAction)
         {
+            var valueChanged = Mathf.Abs(currentValue - originalValue) > 0.001f;
+
             Color c = GUI.color;
             inputBuffers.TryGetValue(key, out var buffer);
             if (buffer == null)
@@ -545,7 +564,7 @@ namespace Plugins
                 buffer = new InputBuffer(currentValue);
                 inputBuffers[key] = buffer;
             }
-            else if (buffer.SliderValue != currentValue)
+            else if (Mathf.Abs(buffer.SliderValue - currentValue) > 0.001f)
                 buffer.SliderValue = currentValue;
 
             GUILayout.Label(name, GUI.skin.label);
@@ -553,7 +572,7 @@ namespace Plugins
             {
                 buffer.SliderValue = GUILayout.HorizontalSlider(buffer.SliderValue, min, max, GUILayout.ExpandWidth(true));
 
-                if (currentValue != originalValue)
+                if (valueChanged)
                     GUI.color = Color.magenta;
 
                 buffer.InputValue = GUILayout.TextField(buffer.InputValue, GUILayout.Width(40));
@@ -561,7 +580,7 @@ namespace Plugins
                     resetValueAction();
             }
 
-            if (buffer.SliderValue != currentValue)
+            if (Mathf.Abs(buffer.SliderValue - currentValue) > 0.001f)
                 setValueAction(buffer.SliderValue);
             GUI.color = c;
             GUILayout.EndHorizontal();

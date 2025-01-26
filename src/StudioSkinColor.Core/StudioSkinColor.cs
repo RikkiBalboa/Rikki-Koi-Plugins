@@ -103,7 +103,7 @@ namespace Plugins
             GUI.skin = IMGUIUtils.SolidBackgroundGuiSkin;
             GUI.skin.label.normal.textColor = Color.white;
 
-            if (uiShow)
+            if (uiShow && selectedCharacter != null)
             {
                 uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "Studio Pseudo Maker");
                 IMGUIUtils.EatInputInRect(uiRect);
@@ -115,15 +115,15 @@ namespace Plugins
         {
             var newChar = StudioAPI.GetSelectedCharacters().FirstOrDefault()?.GetChaControl();
             if (newChar != selectedCharacter && newChar != null)
+            {
                 ClearBuffers();
-            selectedCharacter = newChar;
+                selectedCharacter = newChar;
+            }
 
-            if (KeyToggleGui.Value.IsDown() && selectedCharacter != null)
+            if (KeyToggleGui.Value.IsDown())
             {
                 uiShow = !uiShow;
             }
-            if (selectedCharacter == null)
-                uiShow = false;
 
             if (uiRect.width != WindowWidth.Value)
                 WindowWidth.Value = uiRect.width;
