@@ -46,7 +46,10 @@ namespace Plugins
         internal static FieldInfo c2aClothingKindField = null;
 
         private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
+        private readonly int pickerUiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4) | ('P' << 2) | 'I';
         internal Rect uiRect;
+        internal static Rect pickerRect;
+        internal Action pickerWindowFunc;
         private bool uiShow = false;
         private static StudioSkinColor instance;
 
@@ -82,6 +85,8 @@ namespace Plugins
             WindowWidth.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
             WindowHeight.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
 
+            pickerRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
+
             c2aAdapterType = Type.GetType("KK_Plugins.ClothesToAccessoriesAdapter, KKS_ClothesToAccessories", throwOnError: false);
             if (c2aAdapterType != null)
             {
@@ -91,8 +96,12 @@ namespace Plugins
             }
             CategoryPicker.InitializeCategories();
             foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
-                categoryPickers[category] = new CategoryPicker(category);
-            //ChangeSelection(CustomSelectKind.SelectKindType.HeadType);
+            {
+                var cat = new CategoryPicker(category);
+                cat.OnActivateAction = () => pickerWindowFunc = cat.DrawWindow;
+                cat.OnCloseAction = () => pickerWindowFunc = null;
+                categoryPickers[category] = cat;
+            }
 
 #if DEBUG
             foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)
@@ -122,8 +131,28 @@ namespace Plugins
             {
                 uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "Studio Pseudo Maker");
                 IMGUIUtils.EatInputInRect(uiRect);
+
+                if (pickerWindowFunc != null)
+                {
+                    pickerRect = GUILayout.Window(pickerUiWindowHash, pickerRect, DrawPickerWindow, "Picker");
+                    IMGUIUtils.EatInputInRect(pickerRect);
+                }
             }
             GUI.skin = skin;
+        }
+
+        private void DrawPickerWindow(int id)
+        {
+            int visibleAreaSize = GUI.skin.window.border.top - 4;
+            if (GUI.Button(new Rect(pickerRect.width - visibleAreaSize - 2, 2, visibleAreaSize, visibleAreaSize), "X"))
+            {
+                pickerWindowFunc = null;
+                return;
+            }
+
+            pickerWindowFunc();
+
+            pickerRect = IMGUIUtils.DragResizeEatWindow(id, pickerRect);
         }
 
         private void Update()

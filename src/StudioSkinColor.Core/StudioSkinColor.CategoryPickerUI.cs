@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using ChaCustom;
+using Illusion.Component.UI.ColorPicker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using static ChaCustom.CustomSelectKind;
+using static GameCursor;
 using static KKAPI.Maker.MakerConstants;
 
 namespace Plugins
@@ -19,7 +21,12 @@ namespace Plugins
         private SelectKindType type;
 
         private int selectedIndex = 0;
-        private Texture2D thumbnail;
+        private Texture2D selectedThumbnail;
+
+        private Vector2 panelScroll = Vector2.zero;
+
+        public Action OnActivateAction { get; set; }
+        public Action OnCloseAction { get; set; }
 
         private ChaControl SelectedCharacter => StudioSkinColor.selectedCharacter;
         private StudioSkinColorCharaController Controller => StudioSkinColorCharaController.GetController(SelectedCharacter);
@@ -175,10 +182,42 @@ namespace Plugins
                         wordWrap = false,
                         alignment = TextAnchor.MiddleLeft,
                     });
-                GUILayout.Button(new GUIContent(lstSelectInfo[selectedIndex].name, thumbnail), new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(50) }
-                );
+                if (GUILayout.Button(new GUIContent(lstSelectInfo[selectedIndex].name, selectedThumbnail), new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(50) }))
+                {
+                    OnActivateAction();
+                }
             }
             GUILayout.EndHorizontal();
+        }
+
+        public void DrawWindow()
+        {
+            panelScroll = GUILayout.BeginScrollView(panelScroll);
+            {
+                var width = StudioSkinColor.pickerRect.width - 60;
+                int columns = (int)(Mathf.Floor(width / 100));
+                var size = width / columns;
+
+                for (int rows = 0; rows < Mathf.Ceil((lstSelectInfo.Take(50).Count() / columns)); rows++)
+                {
+                    GUILayout.BeginHorizontal();
+                    for (int column = 0; column < columns; column++)
+                    {
+                        var index = rows * columns + column;
+                        var thumbnail = CommonLib.LoadAsset<Texture2D>(lstSelectInfo[index].assetBundle, lstSelectInfo[index].assetName);
+                        if (GUILayout.Button(new GUIContent(thumbnail), new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(100), GUILayout.Width(100) }))
+                        {
+                            SetSelected(lstSelectInfo[index].index);
+                        }
+                    }
+                    GUILayout.EndHorizontal();
+                }
+
+                foreach (var val in lstSelectInfo.Take(50))
+                {
+                }
+            }
+            GUILayout.EndScrollView();
         }
 
         public void UpdateSelected()
@@ -187,7 +226,7 @@ namespace Plugins
             if (newIndex != selectedIndex)
             {
                 selectedIndex = newIndex;
-                thumbnail = CommonLib.LoadAsset<Texture2D>(lstSelectInfo[selectedIndex].assetBundle, lstSelectInfo[selectedIndex].assetName);
+                selectedThumbnail = CommonLib.LoadAsset<Texture2D>(lstSelectInfo[selectedIndex].assetBundle, lstSelectInfo[selectedIndex].assetName);
             }
         }
 
