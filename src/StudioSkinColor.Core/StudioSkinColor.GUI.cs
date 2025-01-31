@@ -274,7 +274,6 @@ namespace Plugins
             }
             GUILayout.BeginHorizontal();
             {
-
                 leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(leftPanelWidth));
                 {
                     foreach (var kind in clothingKinds)
@@ -298,6 +297,8 @@ namespace Plugins
                 {
                     controller.InitBaseCustomTextureClothesIfNotExists(selectedKind);
                     var clothingList = selectedCharacterClothing[selectedCharacter]?.Where(c => c.Kind == selectedKind);
+
+                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTop].DrawSelectedItem();
 
                     foreach (var clothing in clothingList)
                     {

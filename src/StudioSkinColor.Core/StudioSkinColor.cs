@@ -39,6 +39,8 @@ namespace Plugins
         public static ConfigEntry<float> WindowWidth { get; private set; }
         public static ConfigEntry<float> WindowHeight { get; private set; }
 
+        internal static Dictionary<CustomSelectKind.SelectKindType, CategoryPicker> categoryPickers = new Dictionary<CustomSelectKind.SelectKindType, CategoryPicker>();
+
         internal static IDictionary c2aAIlnstances = null;
         internal static Type c2aAdapterType = null;
         internal static FieldInfo c2aClothingKindField = null;
@@ -87,8 +89,10 @@ namespace Plugins
                 c2aAIlnstances = field.GetValue(c2aAdapterType) as IDictionary;
                 c2aClothingKindField = c2aAdapterType.GetField("_clothingKind", AccessTools.all);
             }
-            InitializeCategories();
-            ChangeSelection(CustomSelectKind.SelectKindType.HeadType);
+            CategoryPicker.InitializeCategories();
+            foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
+                categoryPickers[category] = new CategoryPicker(category);
+            //ChangeSelection(CustomSelectKind.SelectKindType.HeadType);
 
 #if DEBUG
             foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)
