@@ -122,7 +122,7 @@ namespace Plugins
             if (allControllers.ContainsKey(chaCtrl))
                 return allControllers[chaCtrl];
 #if DEBUG
-            return chaCtrl.gameObject.GetComponent<StudioSkinColorCharaController>();
+            return chaCtrl.gameObject.GetOrAddComponent<StudioSkinColorCharaController>();
 #else
             return chaCtrl.gameObject.GetComponent<StudioSkinColorCharaController>();
 #endif

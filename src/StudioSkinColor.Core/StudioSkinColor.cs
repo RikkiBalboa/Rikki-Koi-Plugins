@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using ChaCustom;
 using HarmonyLib;
 using KK_Plugins.MaterialEditor;
 using KKAPI.Chara;
@@ -45,9 +46,11 @@ namespace Plugins
         private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
         internal Rect uiRect;
         private bool uiShow = false;
+        private static StudioSkinColor instance;
 
         private void Awake()
         {
+            instance = this;
             Logger = base.Logger;
             harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
@@ -84,6 +87,8 @@ namespace Plugins
                 c2aAIlnstances = field.GetValue(c2aAdapterType) as IDictionary;
                 c2aClothingKindField = c2aAdapterType.GetField("_clothingKind", AccessTools.all);
             }
+            InitializeCategories();
+            ChangeSelection(CustomSelectKind.SelectKindType.HeadType);
 
 #if DEBUG
             foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)
