@@ -17,9 +17,9 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <OutputPath>G:\Koikatsu Sunshine EX\BepInEx\scripts\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -63,6 +63,11 @@
     </Reference>
     <Reference Include="KKS_MaterialEditor">
       <HintPath>E:\projects\Koikatsu\Plugins\lib\KKS_MaterialEditor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KKS_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sideloader.KoikatsuSunshine.20.0.0\lib\net46\KKS_Sideloader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sirenix.Serialization, Version=2.1.13.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\lib\net46\Sirenix.Serialization.dll</HintPath>

@@ -8,9 +8,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using static ChaCustom.CustomSelectKind;
-using static GameCursor;
-using static KKAPI.Maker.MakerConstants;
-
+using Sideloader.AutoResolver;
 namespace Plugins
 {
     public class CategoryPicker
@@ -26,11 +24,46 @@ namespace Plugins
 
         private static ChaListControl chaListCtrl;
         private List<CustomSelectInfo> lstSelectInfo;
+        private List<CustomSelectInfo> lstSelectInfoFiltered = new List<CustomSelectInfo>();
         private SelectKindType type;
 
         private int selectedIndex = 0;
         private Texture2D selectedThumbnail;
         private bool scrollToSelected = false;
+        private string searchText = "";
+        private bool searchTextChanged = false;
+        public string SearchText
+        {
+            get => searchText;
+            set
+            {
+                if (value == null) value = "";
+                if (searchText != value)
+                {
+                    searchText = value;
+                    searchTextChanged = true;
+
+                    if (value.Count() > 0)
+                        lstSelectInfoFiltered = lstSelectInfo.Where(x => Search(x, value)).ToList();
+                    else
+                        lstSelectInfoFiltered.Clear();
+                }
+            }
+        }
+
+        private bool Search(CustomSelectInfo info, string search)
+        {
+            var show = false;
+            show |= info.name.Contains(search);
+            show |= info.assetBundle.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            var _info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)info.category, info.index);
+            if (_info != null)
+            {
+                show |= _info.Author.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+            }
+            return show;
+        }
 
         private Vector2 panelScroll = Vector2.zero;
 
@@ -197,24 +230,27 @@ namespace Plugins
 
         public void DrawWindow()
         {
+            var items = searchText.Count() == 0 ? lstSelectInfo : lstSelectInfoFiltered;
+
             var selected = GetSelected();
 
             var width = StudioSkinColor.pickerRect.width - 60;
             int columns = Mathf.Max((int)Mathf.Floor(width / 100), 3);
             var size = width / columns;
 
-            int totalRows = (int)Mathf.Ceil(lstSelectInfo.Count() / columns);
+            int totalRows = (int)Mathf.Ceil(items.Count() / columns);
             int firstRow = Mathf.Clamp((int)(panelScroll.y / size), 0, totalRows);
             int maxrow = Mathf.Clamp((int)Mathf.Ceil(StudioSkinColor.pickerRect.height / size) + firstRow, 0, totalRows);
 
             if (scrollToSelected)
             {
                 scrollToSelected = false;
-                if (columns > 0)
-                    panelScroll.y = lstSelectInfo.FindIndex(x => x.index == selected) / columns * size;
+                var index = items.FindIndex(x => x.index == selected);
+                if (columns > 0 && index >= 0)
+                    panelScroll.y = index / columns * size;
             }
 
-            panelScroll = GUILayout.BeginScrollView(panelScroll, true, false);
+            panelScroll = GUILayout.BeginScrollView(panelScroll, false, true);
             {
                 GUILayout.Space(firstRow * size);
 
@@ -227,19 +263,19 @@ namespace Plugins
 
                         if (!shownThumbnails.TryGetValue(index, out GUIContent thumbnail))
                         {
-                            var texture = CommonLib.LoadAsset<Texture2D>(lstSelectInfo[index].assetBundle, lstSelectInfo[index].assetName);
+                            var texture = CommonLib.LoadAsset<Texture2D>(items[index].assetBundle, items[index].assetName);
                             if (thumbnail != null)
                                 StudioSkinColor.Logger.LogInfo(texture.width);
                             shownThumbnails[index] = new GUIContent(texture);
                         }
 
                         var c = GUI.color;
-                        if (selected == lstSelectInfo[index].index)
+                        if (selected == items[index].index)
                             GUI.color = Color.cyan;
 
                         if (GUILayout.Button(thumbnail, new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(size), GUILayout.Width(size) }))
                         {
-                            SetSelected(lstSelectInfo[index].index);
+                            SetSelected(items[index].index);
                         }
                         GUI.color = c;
                     }
@@ -249,6 +285,29 @@ namespace Plugins
                 GUILayout.Space((totalRows - maxrow) * size);
             }
             GUILayout.EndScrollView();
+
+            GUILayout.BeginHorizontal(GUI.skin.box);
+            {
+                GUI.changed = false;
+                if (searchTextChanged && Event.current.type == EventType.Repaint)
+                {
+                    searchTextChanged = false;
+                    GUI.FocusControl("searchBox");
+                }
+
+                GUI.SetNextControlName("searchBox");
+                var showToolTip = searchText.Length == 0 && GUI.GetNameOfFocusedControl() != "searchBox";
+                var newValue = GUILayout.TextField(showToolTip ? "Search..." : searchText);
+                if (GUI.changed)
+                    SearchText = newValue;
+
+                if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
+                {
+                    SearchText = "";
+                    GUI.FocusControl("");
+                }
+            }
+            GUILayout.EndHorizontal();
         }
 
         public void UpdateSelected()
