@@ -194,17 +194,17 @@ namespace Plugins
 
         public void DrawWindow()
         {
+            var selected = GetSelected();
+
             panelScroll = GUILayout.BeginScrollView(panelScroll, true, false);
             {
                 var width = StudioSkinColor.pickerRect.width - 60;
                 int columns = (int)(Mathf.Floor(width / 100));
                 var size = width / columns;
 
-                int firstRow = (int)(panelScroll.y / size);
                 int totalRows = (int)Mathf.Ceil(lstSelectInfo.Count() / columns);
-                int maxrow = (int)Mathf.Ceil(StudioSkinColor.pickerRect.height / size) + firstRow;
-
-                //firstRow = Mathf.Clamp(firstRow, 0, columns);
+                int firstRow = Mathf.Clamp((int)(panelScroll.y / size), 0, totalRows);
+                int maxrow = Mathf.Clamp((int)Mathf.Ceil(StudioSkinColor.pickerRect.height / size) + firstRow, 0, totalRows);
 
                 GUILayout.Space(firstRow * size);
 
@@ -223,10 +223,15 @@ namespace Plugins
                             shownThumbnails[index] = new GUIContent(texture);
                         }
 
+                        var c = GUI.color;
+                        if (selected == lstSelectInfo[index].index)
+                            GUI.color = Color.cyan;
+
                         if (GUILayout.Button(thumbnail, new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(size), GUILayout.Width(size) }))
                         {
                             SetSelected(lstSelectInfo[index].index);
                         }
+                        GUI.color = c;
                     }
                     GUILayout.EndHorizontal();
                 }
