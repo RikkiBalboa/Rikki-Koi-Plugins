@@ -98,7 +98,12 @@ namespace Plugins
             foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
             {
                 var cat = new CategoryPicker(category);
-                cat.OnActivateAction = () => pickerWindowFunc = cat.DrawWindow;
+                cat.OnActivateAction = () => { 
+                    if (pickerWindowFunc == null)
+                        pickerWindowFunc = cat.DrawWindow;
+                    else
+                        cat.OnCloseAction();
+                };
                 cat.OnCloseAction = () => pickerWindowFunc = null;
                 categoryPickers[category] = cat;
             }

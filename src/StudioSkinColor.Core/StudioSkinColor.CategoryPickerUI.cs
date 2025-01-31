@@ -15,18 +15,6 @@ namespace Plugins
 {
     public class CategoryPicker
     {
-        private static ChaListControl chaListCtrl;
-
-        List<CustomSelectInfo> lstSelectInfo;
-        private SelectKindType type;
-
-        private int selectedIndex = 0;
-        private Texture2D selectedThumbnail;
-
-        private Vector2 panelScroll = Vector2.zero;
-
-        public Action OnActivateAction { get; set; }
-        public Action OnCloseAction { get; set; }
 
         private ChaControl SelectedCharacter => StudioSkinColor.selectedCharacter;
         private StudioSkinColorCharaController Controller => StudioSkinColorCharaController.GetController(SelectedCharacter);
@@ -34,6 +22,20 @@ namespace Plugins
         private ChaFileClothes SetClothes => SelectedCharacter.chaFile.coordinate[SelectedCharacter.chaFile.status.coordinateType].clothes;
         private ChaFileAccessory Accessories => SelectedCharacter.nowCoordinate.accessory;
         private ChaFileAccessory SetAccessories => SelectedCharacter.chaFile.coordinate[SelectedCharacter.chaFile.status.coordinateType].accessory;
+
+
+        private static ChaListControl chaListCtrl;
+        private List<CustomSelectInfo> lstSelectInfo;
+        private SelectKindType type;
+
+        private int selectedIndex = 0;
+        private Texture2D selectedThumbnail;
+        private bool scrollToSelected = false;
+
+        private Vector2 panelScroll = Vector2.zero;
+
+        public Action OnActivateAction { get; set; }
+        public Action OnCloseAction { get; set; }
 
         public static void InitializeCategories()
         {
@@ -184,6 +186,7 @@ namespace Plugins
                     });
                 if (GUILayout.Button(new GUIContent(lstSelectInfo[selectedIndex].name, selectedThumbnail), new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(50) }))
                 {
+                    scrollToSelected = true;
                     OnActivateAction();
                 }
             }
@@ -196,16 +199,23 @@ namespace Plugins
         {
             var selected = GetSelected();
 
+            var width = StudioSkinColor.pickerRect.width - 60;
+            int columns = Mathf.Max((int)Mathf.Floor(width / 100), 3);
+            var size = width / columns;
+
+            int totalRows = (int)Mathf.Ceil(lstSelectInfo.Count() / columns);
+            int firstRow = Mathf.Clamp((int)(panelScroll.y / size), 0, totalRows);
+            int maxrow = Mathf.Clamp((int)Mathf.Ceil(StudioSkinColor.pickerRect.height / size) + firstRow, 0, totalRows);
+
+            if (scrollToSelected)
+            {
+                scrollToSelected = false;
+                if (columns > 0)
+                    panelScroll.y = lstSelectInfo.FindIndex(x => x.index == selected) / columns * size;
+            }
+
             panelScroll = GUILayout.BeginScrollView(panelScroll, true, false);
             {
-                var width = StudioSkinColor.pickerRect.width - 60;
-                int columns = (int)(Mathf.Floor(width / 100));
-                var size = width / columns;
-
-                int totalRows = (int)Mathf.Ceil(lstSelectInfo.Count() / columns);
-                int firstRow = Mathf.Clamp((int)(panelScroll.y / size), 0, totalRows);
-                int maxrow = Mathf.Clamp((int)Mathf.Ceil(StudioSkinColor.pickerRect.height / size) + firstRow, 0, totalRows);
-
                 GUILayout.Space(firstRow * size);
 
                 for (int rows = firstRow; rows < maxrow; rows++)
