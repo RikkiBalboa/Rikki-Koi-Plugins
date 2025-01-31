@@ -21,9 +21,9 @@ namespace Plugins
         private int selectedIndex = 0;
         private Texture2D thumbnail;
 
-        private ChaControl SelectedCharacter => SelectedCharacter;
+        private ChaControl SelectedCharacter => StudioSkinColor.selectedCharacter;
         private StudioSkinColorCharaController Controller => StudioSkinColorCharaController.GetController(SelectedCharacter);
-        private ChaFileClothes Clothes => Clothes;
+        private ChaFileClothes Clothes => SelectedCharacter.nowCoordinate.clothes;
         private ChaFileClothes SetClothes => SelectedCharacter.chaFile.coordinate[SelectedCharacter.chaFile.status.coordinateType].clothes;
         private ChaFileAccessory Accessories => SelectedCharacter.nowCoordinate.accessory;
         private ChaFileAccessory SetAccessories => SelectedCharacter.chaFile.coordinate[SelectedCharacter.chaFile.status.coordinateType].accessory;
@@ -175,10 +175,7 @@ namespace Plugins
                         wordWrap = false,
                         alignment = TextAnchor.MiddleLeft,
                     });
-                GUILayout.Button(new GUIContent(lstSelectInfo[selectedIndex].name, thumbnail), new GUIStyle(GUI.skin.button)
-                    {
-                        alignment = TextAnchor.MiddleLeft,
-                    }, new GUILayoutOption[] { GUILayout.Height(50) }
+                GUILayout.Button(new GUIContent(lstSelectInfo[selectedIndex].name, thumbnail), new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(50) }
                 );
             }
             GUILayout.EndHorizontal();
