@@ -190,22 +190,40 @@ namespace Plugins
             GUILayout.EndHorizontal();
         }
 
+        private readonly Dictionary<int, GUIContent> shownThumbnails = new Dictionary<int, GUIContent>();
+
         public void DrawWindow()
         {
-            panelScroll = GUILayout.BeginScrollView(panelScroll);
+            panelScroll = GUILayout.BeginScrollView(panelScroll, true, false);
             {
                 var width = StudioSkinColor.pickerRect.width - 60;
                 int columns = (int)(Mathf.Floor(width / 100));
                 var size = width / columns;
 
-                for (int rows = 0; rows < Mathf.Ceil((lstSelectInfo.Take(50).Count() / columns)); rows++)
+                int firstRow = (int)(panelScroll.y / size);
+                int totalRows = (int)Mathf.Ceil(lstSelectInfo.Count() / columns);
+                int maxrow = (int)Mathf.Ceil(StudioSkinColor.pickerRect.height / size) + firstRow;
+
+                //firstRow = Mathf.Clamp(firstRow, 0, columns);
+
+                GUILayout.Space(firstRow * size);
+
+                for (int rows = firstRow; rows < maxrow; rows++)
                 {
                     GUILayout.BeginHorizontal();
                     for (int column = 0; column < columns; column++)
                     {
                         var index = rows * columns + column;
-                        var thumbnail = CommonLib.LoadAsset<Texture2D>(lstSelectInfo[index].assetBundle, lstSelectInfo[index].assetName);
-                        if (GUILayout.Button(new GUIContent(thumbnail), new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(100), GUILayout.Width(100) }))
+
+                        if (!shownThumbnails.TryGetValue(index, out GUIContent thumbnail))
+                        {
+                            var texture = CommonLib.LoadAsset<Texture2D>(lstSelectInfo[index].assetBundle, lstSelectInfo[index].assetName);
+                            if (thumbnail != null)
+                                StudioSkinColor.Logger.LogInfo(texture.width);
+                            shownThumbnails[index] = new GUIContent(texture);
+                        }
+
+                        if (GUILayout.Button(thumbnail, new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(size), GUILayout.Width(size) }))
                         {
                             SetSelected(lstSelectInfo[index].index);
                         }
@@ -213,9 +231,7 @@ namespace Plugins
                     GUILayout.EndHorizontal();
                 }
 
-                foreach (var val in lstSelectInfo.Take(50))
-                {
-                }
+                GUILayout.Space((totalRows - maxrow) * size);
             }
             GUILayout.EndScrollView();
         }
