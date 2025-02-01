@@ -9,7 +9,7 @@ using System.Collections;
 using System;
 using MessagePack;
 using ExtensibleSaveFormat;
-using static MaterialEditorAPI.MaterialAPI;
+using static ChaCustom.CustomSelectKind;
 
 namespace Plugins
 {
@@ -562,8 +562,25 @@ namespace Plugins
 
         public void InitBaseCustomTextureClothesIfNotExists(int kind)
         {
-            if (selectedCharacter.ctCreateClothes[kind, 0] == null)
-                selectedCharacter.InitBaseCustomTextureClothes(true, kind);
+            try
+            {
+                if (selectedCharacter?.ctCreateClothes[kind, 0] == null)
+                    selectedCharacter.InitBaseCustomTextureClothes(true, kind);
+            }
+            catch (Exception e)
+            {
+                StudioSkinColor.Logger.LogMessage("Selected option is broken and was switched back to the first option");
+                StudioSkinColor.Logger.LogError(e);
+                if (kind == 0) SetSelectKind(SelectKindType.CosTop, 0);
+                else if (kind == 1) SetSelectKind(SelectKindType.CosBot, 0);
+                else if (kind == 2) SetSelectKind(SelectKindType.CosBra, 0);
+                else if (kind == 3) SetSelectKind(SelectKindType.CosShorts, 0);
+                else if (kind == 4) SetSelectKind(SelectKindType.CosGloves, 0);
+                else if (kind == 5) SetSelectKind(SelectKindType.CosPanst, 0);
+                else if (kind == 6) SetSelectKind(SelectKindType.CosSocks, 0);
+                else if (kind == 7) SetSelectKind(SelectKindType.CosInnerShoes, 0);
+                else if (kind == 8) SetSelectKind(SelectKindType.CosOuterShoes, 0);
+            }
         }
 
         public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1)
@@ -720,6 +737,662 @@ namespace Plugins
                 .Any(c => c.Value != c.OriginalValue);
         }
         #endregion
+
+        public void SetSelectKind(SelectKindType type, int id)
+        {
+            void UpdateClothesPattern(int kind, int pattern)
+            {
+                Clothes.parts[kind].colorInfo[pattern].pattern = id;
+                SetClothes.parts[kind].colorInfo[pattern].pattern = id;
+                if (IsMultiPartTop(kind))
+                {
+                    if (pattern == 0)
+                    {
+                        selectedCharacter.ChangeCustomClothes(main: false, 0, updateColor: false, updateTex01: true, updateTex02: false, updateTex03: false, updateTex04: false);
+                        selectedCharacter.ChangeCustomClothes(main: false, 1, updateColor: false, updateTex01: true, updateTex02: false, updateTex03: false, updateTex04: false);
+                    }
+                    else if (pattern == 1)
+                    {
+                        selectedCharacter.ChangeCustomClothes(main: false, 0, updateColor: false, updateTex01: false, updateTex02: true, updateTex03: false, updateTex04: false);
+                        selectedCharacter.ChangeCustomClothes(main: false, 1, updateColor: false, updateTex01: false, updateTex02: true, updateTex03: false, updateTex04: false);
+                    }
+                    else if (pattern == 2)
+                    {
+                        selectedCharacter.ChangeCustomClothes(main: false, 0, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: true, updateTex04: false);
+                        selectedCharacter.ChangeCustomClothes(main: false, 1, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: true, updateTex04: false);
+                    }
+                    else if (pattern == 3)
+                    {
+                        selectedCharacter.ChangeCustomClothes(main: false, 0, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: true);
+                        selectedCharacter.ChangeCustomClothes(main: false, 1, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: true);
+                    }
+                }
+                if (pattern == 0)
+                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: true, updateTex02: false, updateTex03: false, updateTex04: false);
+                if (pattern == 1)
+                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: false, updateTex02: true, updateTex03: false, updateTex04: false);
+                if (pattern == 2)
+                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: true, updateTex04: false);
+                if (pattern == 3)
+                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: true);
+            }
+
+
+            if (selectedCharacter == null)
+                return;
+
+            switch (type)
+            {
+                case SelectKindType.FaceDetail:
+                    selectedCharacter.fileFace.detailId = id;
+                    selectedCharacter.ChangeSettingFaceDetail();
+                    break;
+                case SelectKindType.Eyebrow:
+                    selectedCharacter.fileFace.eyebrowId = id;
+                    selectedCharacter.ChangeSettingEyebrow();
+                    break;
+                case SelectKindType.EyelineUp:
+                    selectedCharacter.fileFace.eyelineUpId = id;
+                    selectedCharacter.ChangeSettingEyelineUp();
+                    break;
+                case SelectKindType.EyelineDown:
+                    selectedCharacter.fileFace.eyelineDownId = id;
+                    selectedCharacter.ChangeSettingEyelineDown();
+                    break;
+                case SelectKindType.EyeWGrade:
+                    selectedCharacter.fileFace.whiteId = id;
+                    selectedCharacter.ChangeSettingWhiteOfEye(true, false);
+                    break;
+                case SelectKindType.EyeHLUp:
+                    selectedCharacter.fileFace.hlUpId = id;
+                    selectedCharacter.ChangeSettingEyeHiUp();
+                    break;
+                case SelectKindType.EyeHLDown:
+                    selectedCharacter.fileFace.hlDownId = id;
+                    selectedCharacter.ChangeSettingEyeHiDown();
+                    break;
+                case SelectKindType.Pupil:
+                    selectedCharacter.fileFace.pupil[0].id = id;
+                    selectedCharacter.ChangeSettingEye(true, false, false);
+                    break;
+                case SelectKindType.PupilGrade:
+                    selectedCharacter.fileFace.pupil[0].gradMaskId = id;
+                    selectedCharacter.ChangeSettingEye(false, true, false);
+                    break;
+                case SelectKindType.Nose:
+                    selectedCharacter.fileFace.noseId = id;
+                    selectedCharacter.ChangeSettingNose();
+                    break;
+                case SelectKindType.Lipline:
+                    selectedCharacter.fileFace.lipLineId = id;
+                    UpdateFaceTextures(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: false, inpLipLine: true, inpMole: false);
+                    break;
+                case SelectKindType.Mole:
+                    selectedCharacter.fileFace.moleId = id;
+                    UpdateFaceTextures(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: false, inpLipLine: false, inpMole: true);
+                    break;
+                case SelectKindType.Eyeshadow:
+                    selectedCharacter.fileFace.baseMakeup.eyeshadowId = id;
+                    selectedCharacter.ChangeSettingEyeShadow();
+                    break;
+                case SelectKindType.Cheek:
+                    selectedCharacter.fileFace.baseMakeup.cheekId = id;
+                    UpdateFaceTextures(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: true, inpLipLine: false, inpMole: false);
+                    break;
+                case SelectKindType.Lip:
+                    selectedCharacter.fileFace.baseMakeup.lipId = id;
+                    selectedCharacter.ChangeSettingLip();
+                    break;
+                case SelectKindType.FacePaint01:
+                    selectedCharacter.fileFace.baseMakeup.paintId[0] = id;
+                    selectedCharacter.AddUpdateCMFaceTexFlags(inpBase: false, inpSub: false, inpPaint01: true, inpPaint02: false, inpCheek: false, inpLipLine: false, inpMole: false);
+                    selectedCharacter.CreateFaceTexture();
+                    selectedCharacter.SetFaceBaseMaterial();
+                    break;
+                case SelectKindType.FacePaint02:
+                    selectedCharacter.fileFace.baseMakeup.paintId[1] = id;
+                    selectedCharacter.AddUpdateCMFaceTexFlags(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: true, inpCheek: false, inpLipLine: false, inpMole: false);
+                    selectedCharacter.CreateFaceTexture();
+                    selectedCharacter.SetFaceBaseMaterial();
+                    break;
+                case SelectKindType.BodyDetail:
+                    selectedCharacter.fileBody.detailId = id;
+                    selectedCharacter.ChangeSettingBodyDetail();
+                    break;
+                case SelectKindType.Nip:
+                    selectedCharacter.fileBody.nipId = id;
+                    selectedCharacter.ChangeSettingNip();
+                    break;
+                case SelectKindType.Underhair:
+                    selectedCharacter.fileBody.underhairId = id;
+                    selectedCharacter.ChangeSettingUnderhair();
+                    break;
+                case SelectKindType.Sunburn:
+                    selectedCharacter.fileBody.sunburnId = id;
+                    selectedCharacter.AddUpdateCMBodyTexFlags(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpSunburn: true);
+                    selectedCharacter.CreateBodyTexture();
+                    selectedCharacter.SetBodyBaseMaterial();
+                    break;
+                case SelectKindType.BodyPaint01:
+                    selectedCharacter.fileBody.paintId[0] = id;
+                    selectedCharacter.AddUpdateCMBodyTexFlags(inpBase: false, inpSub: false, inpPaint01: true, inpPaint02: false, inpSunburn: false);
+                    selectedCharacter.CreateBodyTexture();
+                    selectedCharacter.SetBodyBaseMaterial();
+                    break;
+                case SelectKindType.BodyPaint02:
+                    selectedCharacter.fileBody.paintId[1] = id;
+                    selectedCharacter.AddUpdateCMBodyTexFlags(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: true, inpSunburn: false);
+                    selectedCharacter.CreateBodyTexture();
+                    selectedCharacter.SetBodyBaseMaterial();
+                    break;
+                case SelectKindType.BodyPaint01Layout:
+                    selectedCharacter.fileBody.paintLayoutId[0] = id;
+                    selectedCharacter.AddUpdateCMBodyTexFlags(inpBase: false, inpSub: false, inpPaint01: true, inpPaint02: false, inpSunburn: false);
+                    selectedCharacter.CreateBodyTexture();
+                    selectedCharacter.SetBodyBaseMaterial();
+                    break;
+                case SelectKindType.BodyPaint02Layout:
+                    selectedCharacter.fileBody.paintLayoutId[1] = id;
+                    selectedCharacter.AddUpdateCMBodyTexFlags(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: true, inpSunburn: false);
+                    selectedCharacter.CreateBodyTexture();
+                    selectedCharacter.SetBodyBaseMaterial();
+                    break;
+                case SelectKindType.HairBack:
+                    selectedCharacter.fileHair.parts[0].id = id;
+                    selectedCharacter.ChangeHairBack(true);
+                    break;
+                case SelectKindType.HairFront:
+                    selectedCharacter.fileHair.parts[1].id = id;
+                    selectedCharacter.ChangeHairFront(true);
+                    break;
+                case SelectKindType.HairSide:
+                    selectedCharacter.fileHair.parts[2].id = id;
+                    selectedCharacter.ChangeHairSide(true);
+                    break;
+                case SelectKindType.HairExtension:
+                    selectedCharacter.fileHair.parts[3].id = id;
+                    selectedCharacter.ChangeHairOption(true);
+                    break;
+                case SelectKindType.CosTop:
+                    //clothes.parts[clothesType].sleevesType = 0;
+                    //setClothes.parts[clothesType].sleevesType = 0;
+                    Clothes.parts[0].id = id;
+                    SetClothes.parts[0].id = id;
+                    selectedCharacter.ChangeClothesTop(id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    break;
+                case SelectKindType.CosSailor01:
+                    Clothes.subPartsId[0] = id;
+                    SetClothes.subPartsId[0] = id;
+                    selectedCharacter.ChangeClothesTop(0, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    break;
+                case SelectKindType.CosSailor02:
+                    Clothes.subPartsId[1] = id;
+                    SetClothes.subPartsId[1] = id;
+                    selectedCharacter.ChangeClothesTop(0, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    break;
+                case SelectKindType.CosSailor03:
+                    Clothes.subPartsId[2] = id;
+                    SetClothes.subPartsId[2] = id;
+                    selectedCharacter.ChangeClothesTop(0, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    break;
+                case SelectKindType.CosJacket01:
+                    Clothes.subPartsId[0] = id;
+                    SetClothes.subPartsId[0] = id;
+                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    break;
+                case SelectKindType.CosJacket02:
+                    Clothes.subPartsId[1] = id;
+                    SetClothes.subPartsId[1] = id;
+                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    break;
+                case SelectKindType.CosJacket03:
+                    Clothes.subPartsId[2] = id;
+                    SetClothes.subPartsId[2] = id;
+                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    break;
+                case SelectKindType.CosTopPtn01:
+                    UpdateClothesPattern(0, 0);
+                    break;
+                case SelectKindType.CosTopPtn02:
+                    UpdateClothesPattern(0, 1);
+                    break;
+                case SelectKindType.CosTopPtn03:
+                    UpdateClothesPattern(0, 2);
+                    break;
+                case SelectKindType.CosTopPtn04:
+                    UpdateClothesPattern(0, 3);
+                    break;
+                case SelectKindType.CosTopEmblem:
+                    Clothes.parts[0].emblemeId = id;
+                    SetClothes.parts[0].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(0, id);
+                    break;
+                case SelectKindType.CosBot:
+                    Clothes.parts[1].id = id;
+                    SetClothes.parts[1].id = id;
+                    selectedCharacter.ChangeClothesBot(id, true);
+                    break;
+                case SelectKindType.CosBotPtn01:
+                    UpdateClothesPattern(1, 0);
+                    break;
+                case SelectKindType.CosBotPtn02:
+                    UpdateClothesPattern(1, 1);
+                    break;
+                case SelectKindType.CosBotPtn03:
+                    UpdateClothesPattern(1, 2);
+                    break;
+                case SelectKindType.CosBotPtn04:
+                    UpdateClothesPattern(1, 3);
+                    break;
+                case SelectKindType.CosBotEmblem:
+                    Clothes.parts[1].emblemeId = id;
+                    SetClothes.parts[1].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(1, id);
+                    break;
+                case SelectKindType.CosBra:
+                    Clothes.parts[2].id = id;
+                    SetClothes.parts[2].id = id;
+                    selectedCharacter.ChangeClothesBra(id, true);
+                    break;
+                case SelectKindType.CosBraPtn01:
+                    UpdateClothesPattern(2, 0);
+                    break;
+                case SelectKindType.CosBraPtn02:
+                    UpdateClothesPattern(2, 1);
+                    break;
+                case SelectKindType.CosBraPtn03:
+                    UpdateClothesPattern(2, 2);
+                    break;
+                case SelectKindType.CosBraPtn04:
+                    UpdateClothesPattern(2, 3);
+                    break;
+                case SelectKindType.CosBraEmblem:
+                    Clothes.parts[2].emblemeId = id;
+                    SetClothes.parts[2].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(2, id);
+                    break;
+                case SelectKindType.CosShorts:
+                    Clothes.parts[3].id = id;
+                    SetClothes.parts[3].id = id;
+                    selectedCharacter.ChangeClothesShorts(id, true);
+                    break;
+                case SelectKindType.CosShortsPtn01:
+                    UpdateClothesPattern(3, 0);
+                    break;
+                case SelectKindType.CosShortsPtn02:
+                    UpdateClothesPattern(3, 1);
+                    break;
+                case SelectKindType.CosShortsPtn03:
+                    UpdateClothesPattern(3, 2);
+                    break;
+                case SelectKindType.CosShortsPtn04:
+                    UpdateClothesPattern(3, 3);
+                    break;
+                case SelectKindType.CosShortsEmblem:
+                    Clothes.parts[3].emblemeId = id;
+                    SetClothes.parts[3].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(3, id);
+                    break;
+                case SelectKindType.CosGloves:
+                    Clothes.parts[4].id = id;
+                    SetClothes.parts[4].id = id;
+                    selectedCharacter.ChangeClothesGloves(id, true);
+                    break;
+                case SelectKindType.CosGlovesPtn01:
+                    UpdateClothesPattern(4, 0);
+                    break;
+                case SelectKindType.CosGlovesPtn02:
+                    UpdateClothesPattern(4, 1);
+                    break;
+                case SelectKindType.CosGlovesPtn03:
+                    UpdateClothesPattern(4, 2);
+                    break;
+                case SelectKindType.CosGlovesPtn04:
+                    UpdateClothesPattern(4, 3);
+                    break;
+                case SelectKindType.CosGlovesEmblem:
+                    Clothes.parts[4].emblemeId = id;
+                    SetClothes.parts[4].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(4, id);
+                    break;
+                case SelectKindType.CosPanst:
+                    Clothes.parts[5].id = id;
+                    SetClothes.parts[5].id = id;
+                    selectedCharacter.ChangeClothesPanst(id, true);
+                    break;
+                case SelectKindType.CosPanstPtn01:
+                    UpdateClothesPattern(5, 0);
+                    break;
+                case SelectKindType.CosPanstPtn02:
+                    UpdateClothesPattern(5, 1);
+                    break;
+                case SelectKindType.CosPanstPtn03:
+                    UpdateClothesPattern(5, 2);
+                    break;
+                case SelectKindType.CosPanstPtn04:
+                    UpdateClothesPattern(5, 3);
+                    break;
+                case SelectKindType.CosPanstEmblem:
+                    Clothes.parts[5].emblemeId = id;
+                    SetClothes.parts[5].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(5, id);
+                    break;
+                case SelectKindType.CosSocks:
+                    Clothes.parts[6].id = id;
+                    SetClothes.parts[6].id = id;
+                    selectedCharacter.ChangeClothesSocks(id, true);
+                    break;
+                case SelectKindType.CosSocksPtn01:
+                    UpdateClothesPattern(6, 0);
+                    break;
+                case SelectKindType.CosSocksPtn02:
+                    UpdateClothesPattern(6, 1);
+                    break;
+                case SelectKindType.CosSocksPtn03:
+                    UpdateClothesPattern(6, 2);
+                    break;
+                case SelectKindType.CosSocksPtn04:
+                    UpdateClothesPattern(6, 3);
+                    break;
+                case SelectKindType.CosSocksEmblem:
+                    Clothes.parts[6].emblemeId = id;
+                    SetClothes.parts[6].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(6, id);
+                    break;
+                case SelectKindType.CosInnerShoes:
+                    Clothes.parts[7].id = id;
+                    SetClothes.parts[7].id = id;
+                    selectedCharacter.ChangeClothesShoes(0, id, true);
+                    break;
+                case SelectKindType.CosInnerShoesPtn01:
+                    UpdateClothesPattern(7, 0);
+                    break;
+                case SelectKindType.CosInnerShoesPtn02:
+                    UpdateClothesPattern(7, 1);
+                    break;
+                case SelectKindType.CosInnerShoesPtn03:
+                    UpdateClothesPattern(7, 2);
+                    break;
+                case SelectKindType.CosInnerShoesPtn04:
+                    UpdateClothesPattern(7, 3);
+                    break;
+                case SelectKindType.CosInnerShoesEmblem:
+                    Clothes.parts[7].emblemeId = id;
+                    SetClothes.parts[7].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(7, id);
+                    break;
+                case SelectKindType.CosOuterShoes:
+                    Clothes.parts[8].id = id;
+                    SetClothes.parts[8].id = id;
+                    selectedCharacter.ChangeClothesShoes(1, id, true);
+                    break;
+                case SelectKindType.CosOuterShoesPtn01:
+                    UpdateClothesPattern(8, 0);
+                    break;
+                case SelectKindType.CosOuterShoesPtn02:
+                    UpdateClothesPattern(8, 1);
+                    break;
+                case SelectKindType.CosOuterShoesPtn03:
+                    UpdateClothesPattern(8, 2);
+                    break;
+                case SelectKindType.CosOuterShoesPtn04:
+                    UpdateClothesPattern(8, 3);
+                    break;
+                case SelectKindType.CosOuterShoesEmblem:
+                    Clothes.parts[8].emblemeId = id;
+                    SetClothes.parts[8].emblemeId = id;
+                    selectedCharacter.ChangeCustomEmblem(8, id);
+                    break;
+                case SelectKindType.HairGloss:
+                    selectedCharacter.fileHair.glossId = id;
+                    selectedCharacter.LoadHairGlossMask();
+                    selectedCharacter.ChangeSettingHairGlossMaskAll();
+                    break;
+                case SelectKindType.HeadType:
+                    selectedCharacter.fileFace.headId = id;
+                    selectedCharacter.ChangeHead(id, true);
+                    break;
+                case SelectKindType.CosTopEmblem2:
+                    Clothes.parts[0].emblemeId2 = id;
+                    break;
+                case SelectKindType.CosBotEmblem2:
+                    Clothes.parts[1].emblemeId2 = id;
+                    break;
+                case SelectKindType.CosBraEmblem2:
+                    Clothes.parts[2].emblemeId2 = id;
+                    break;
+                case SelectKindType.CosShortsEmblem2:
+                    Clothes.parts[3].emblemeId2 = id;
+                    break;
+                case SelectKindType.CosGlovesEmblem2:
+                    Clothes.parts[4].emblemeId2 = id;
+                    break;
+                case SelectKindType.CosPanstEmblem2:
+                    Clothes.parts[5].emblemeId2 = id;
+                    break;
+                case SelectKindType.CosSocksEmblem2:
+                    Clothes.parts[6].emblemeId2 = id;
+                    break;
+                case SelectKindType.CosInnerShoesEmblem2:
+                    Clothes.parts[7].emblemeId2 = id;
+                    break;
+                case SelectKindType.CosOuterShoesEmblem2:
+                    Clothes.parts[8].emblemeId2 = id;
+                    break;
+            }
+        }
+
+        public int GetSelected(SelectKindType type)
+        {
+            if (selectedCharacter == null)
+                return 0;
+
+            switch (type)
+            {
+                case SelectKindType.FaceDetail:
+                    return selectedCharacter.fileFace.detailId;
+                case SelectKindType.Eyebrow:
+                    return selectedCharacter.fileFace.eyebrowId;
+                case SelectKindType.EyelineUp:
+                    return selectedCharacter.fileFace.eyelineUpId;
+                case SelectKindType.EyelineDown:
+                    return selectedCharacter.fileFace.eyelineDownId;
+                case SelectKindType.EyeWGrade:
+                    return selectedCharacter.fileFace.whiteId;
+                case SelectKindType.EyeHLUp:
+                    return selectedCharacter.fileFace.hlUpId;
+                case SelectKindType.EyeHLDown:
+                    return selectedCharacter.fileFace.hlDownId;
+                case SelectKindType.Pupil:
+                    return selectedCharacter.fileFace.pupil[0].id;
+                case SelectKindType.PupilGrade:
+                    return selectedCharacter.fileFace.pupil[0].gradMaskId;
+                case SelectKindType.Nose:
+                    return selectedCharacter.fileFace.noseId;
+                case SelectKindType.Lipline:
+                    return selectedCharacter.fileFace.lipLineId;
+                case SelectKindType.Mole:
+                    return selectedCharacter.fileFace.moleId;
+                case SelectKindType.Eyeshadow:
+                    return selectedCharacter.fileFace.baseMakeup.eyeshadowId;
+                case SelectKindType.Cheek:
+                    return selectedCharacter.fileFace.baseMakeup.cheekId;
+                case SelectKindType.Lip:
+                    return selectedCharacter.fileFace.baseMakeup.lipId;
+                case SelectKindType.FacePaint01:
+                    return selectedCharacter.fileFace.baseMakeup.paintId[0];
+                case SelectKindType.FacePaint02:
+                    return selectedCharacter.fileFace.baseMakeup.paintId[1];
+                case SelectKindType.BodyDetail:
+                    return selectedCharacter.fileBody.detailId;
+                case SelectKindType.Nip:
+                    return selectedCharacter.fileBody.nipId;
+                case SelectKindType.Underhair:
+                    return selectedCharacter.fileBody.underhairId;
+                case SelectKindType.Sunburn:
+                    return selectedCharacter.fileBody.sunburnId;
+                case SelectKindType.BodyPaint01:
+                    return selectedCharacter.fileBody.paintId[0];
+                case SelectKindType.BodyPaint02:
+                    return selectedCharacter.fileBody.paintId[1];
+                case SelectKindType.BodyPaint01Layout:
+                    return selectedCharacter.fileBody.paintLayoutId[0];
+                case SelectKindType.BodyPaint02Layout:
+                    return selectedCharacter.fileBody.paintLayoutId[1];
+                case SelectKindType.HairBack:
+                    return selectedCharacter.fileHair.parts[0].id;
+                case SelectKindType.HairFront:
+                    return selectedCharacter.fileHair.parts[1].id;
+                case SelectKindType.HairSide:
+                    return selectedCharacter.fileHair.parts[2].id;
+                case SelectKindType.HairExtension:
+                    return selectedCharacter.fileHair.parts[3].id;
+                case SelectKindType.CosTop:
+                    return Clothes.parts[0].id;
+                case SelectKindType.CosSailor01:
+                    return Clothes.subPartsId[0];
+                case SelectKindType.CosSailor02:
+                    return Clothes.subPartsId[1];
+                case SelectKindType.CosSailor03:
+                    return Clothes.subPartsId[2];
+                case SelectKindType.CosJacket01:
+                    return Clothes.subPartsId[0];
+                case SelectKindType.CosJacket02:
+                    return Clothes.subPartsId[1];
+                case SelectKindType.CosJacket03:
+                    return Clothes.subPartsId[2];
+                case SelectKindType.CosTopPtn01:
+                    return Clothes.parts[0].colorInfo[0].pattern;
+                case SelectKindType.CosTopPtn02:
+                    return Clothes.parts[0].colorInfo[1].pattern;
+                case SelectKindType.CosTopPtn03:
+                    return Clothes.parts[0].colorInfo[2].pattern;
+                case SelectKindType.CosTopPtn04:
+                    return Clothes.parts[0].colorInfo[3].pattern;
+                case SelectKindType.CosTopEmblem:
+                    return Clothes.parts[0].emblemeId;
+                case SelectKindType.CosBot:
+                    return Clothes.parts[1].id;
+                case SelectKindType.CosBotPtn01:
+                    return Clothes.parts[1].colorInfo[0].pattern;
+                case SelectKindType.CosBotPtn02:
+                    return Clothes.parts[1].colorInfo[1].pattern;
+                case SelectKindType.CosBotPtn03:
+                    return Clothes.parts[1].colorInfo[2].pattern;
+                case SelectKindType.CosBotPtn04:
+                    return Clothes.parts[1].colorInfo[3].pattern;
+                case SelectKindType.CosBotEmblem:
+                    return Clothes.parts[1].emblemeId;
+                case SelectKindType.CosBra:
+                    return Clothes.parts[2].id;
+                case SelectKindType.CosBraPtn01:
+                    return Clothes.parts[2].colorInfo[0].pattern;
+                case SelectKindType.CosBraPtn02:
+                    return Clothes.parts[2].colorInfo[1].pattern;
+                case SelectKindType.CosBraPtn03:
+                    return Clothes.parts[2].colorInfo[2].pattern;
+                case SelectKindType.CosBraPtn04:
+                    return Clothes.parts[2].colorInfo[3].pattern;
+                case SelectKindType.CosBraEmblem:
+                    return Clothes.parts[2].emblemeId;
+                case SelectKindType.CosShorts:
+                    return Clothes.parts[3].id;
+                case SelectKindType.CosShortsPtn01:
+                    return Clothes.parts[3].colorInfo[0].pattern;
+                case SelectKindType.CosShortsPtn02:
+                    return Clothes.parts[3].colorInfo[1].pattern;
+                case SelectKindType.CosShortsPtn03:
+                    return Clothes.parts[3].colorInfo[2].pattern;
+                case SelectKindType.CosShortsPtn04:
+                    return Clothes.parts[3].colorInfo[3].pattern;
+                case SelectKindType.CosShortsEmblem:
+                    return Clothes.parts[3].emblemeId;
+                case SelectKindType.CosGloves:
+                    return Clothes.parts[4].id;
+                case SelectKindType.CosGlovesPtn01:
+                    return Clothes.parts[4].colorInfo[0].pattern;
+                case SelectKindType.CosGlovesPtn02:
+                    return Clothes.parts[4].colorInfo[1].pattern;
+                case SelectKindType.CosGlovesPtn03:
+                    return Clothes.parts[4].colorInfo[2].pattern;
+                case SelectKindType.CosGlovesPtn04:
+                    return Clothes.parts[4].colorInfo[3].pattern;
+                case SelectKindType.CosGlovesEmblem:
+                    return Clothes.parts[4].emblemeId;
+                case SelectKindType.CosPanst:
+                    return Clothes.parts[5].id;
+                case SelectKindType.CosPanstPtn01:
+                    return Clothes.parts[5].colorInfo[0].pattern;
+                case SelectKindType.CosPanstPtn02:
+                    return Clothes.parts[5].colorInfo[1].pattern;
+                case SelectKindType.CosPanstPtn03:
+                    return Clothes.parts[5].colorInfo[2].pattern;
+                case SelectKindType.CosPanstPtn04:
+                    return Clothes.parts[5].colorInfo[3].pattern;
+                case SelectKindType.CosPanstEmblem:
+                    return Clothes.parts[5].emblemeId;
+                case SelectKindType.CosSocks:
+                    return Clothes.parts[6].id;
+                case SelectKindType.CosSocksPtn01:
+                    return Clothes.parts[6].colorInfo[0].pattern;
+                case SelectKindType.CosSocksPtn02:
+                    return Clothes.parts[6].colorInfo[1].pattern;
+                case SelectKindType.CosSocksPtn03:
+                    return Clothes.parts[6].colorInfo[2].pattern;
+                case SelectKindType.CosSocksPtn04:
+                    return Clothes.parts[6].colorInfo[3].pattern;
+                case SelectKindType.CosSocksEmblem:
+                    return Clothes.parts[6].emblemeId;
+                case SelectKindType.CosInnerShoes:
+                    return Clothes.parts[7].id;
+                case SelectKindType.CosInnerShoesPtn01:
+                    return Clothes.parts[7].colorInfo[0].pattern;
+                case SelectKindType.CosInnerShoesPtn02:
+                    return Clothes.parts[7].colorInfo[1].pattern;
+                case SelectKindType.CosInnerShoesPtn03:
+                    return Clothes.parts[7].colorInfo[2].pattern;
+                case SelectKindType.CosInnerShoesPtn04:
+                    return Clothes.parts[7].colorInfo[3].pattern;
+                case SelectKindType.CosInnerShoesEmblem:
+                    return Clothes.parts[7].emblemeId;
+                case SelectKindType.CosOuterShoes:
+                    return Clothes.parts[8].id;
+                case SelectKindType.CosOuterShoesPtn01:
+                    return Clothes.parts[8].colorInfo[0].pattern;
+                case SelectKindType.CosOuterShoesPtn02:
+                    return Clothes.parts[8].colorInfo[1].pattern;
+                case SelectKindType.CosOuterShoesPtn03:
+                    return Clothes.parts[8].colorInfo[2].pattern;
+                case SelectKindType.CosOuterShoesPtn04:
+                    return Clothes.parts[8].colorInfo[3].pattern;
+                case SelectKindType.CosOuterShoesEmblem:
+                    return Clothes.parts[8].emblemeId;
+                case SelectKindType.HairGloss:
+                    return selectedCharacter.fileHair.glossId;
+                case SelectKindType.HeadType:
+                    return selectedCharacter.fileFace.headId;
+                case SelectKindType.CosTopEmblem2:
+                    return Clothes.parts[0].emblemeId2;
+                case SelectKindType.CosBotEmblem2:
+                    return Clothes.parts[1].emblemeId2;
+                case SelectKindType.CosBraEmblem2:
+                    return Clothes.parts[2].emblemeId2;
+                case SelectKindType.CosShortsEmblem2:
+                    return Clothes.parts[3].emblemeId2;
+                case SelectKindType.CosGlovesEmblem2:
+                    return Clothes.parts[4].emblemeId2;
+                case SelectKindType.CosPanstEmblem2:
+                    return Clothes.parts[5].emblemeId2;
+                case SelectKindType.CosSocksEmblem2:
+                    return Clothes.parts[6].emblemeId2;
+                case SelectKindType.CosInnerShoesEmblem2:
+                    return Clothes.parts[7].emblemeId2;
+                case SelectKindType.CosOuterShoesEmblem2:
+                    return Clothes.parts[8].emblemeId2;
+                default:
+                    return 0;
+            }
+        }
 
         public bool IsCategoryEdited(SelectedTab tab)
         {
