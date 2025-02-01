@@ -26,6 +26,7 @@ namespace Plugins
 
         private Dictionary<string, string> translationCache = new Dictionary<string, string>();
 
+        public readonly string name = "Undefined";
         private int selectedIndex = 0;
         private Texture2D selectedThumbnail;
         private bool scrollToSelected = false;
@@ -81,6 +82,7 @@ namespace Plugins
         public CategoryPicker(SelectKindType type)
         {
             this.type = type;
+            name = GetName();
             ChaListDefine.CategoryNo[] array = new ChaListDefine.CategoryNo[100]
             {
                 ChaListDefine.CategoryNo.mt_face_detail,
@@ -208,12 +210,12 @@ namespace Plugins
             UpdateSelected();
 
             if (!StudioSkinColor.UseWideLayout.Value)
-                GUILayout.Label("Test", GUI.skin.label);
+                GUILayout.Label(name, GUI.skin.label);
 
             GUILayout.BeginHorizontal();
             {
                 if (StudioSkinColor.UseWideLayout.Value)
-                    GUILayout.Label("Test", new GUIStyle(GUI.skin.label)
+                    GUILayout.Label(name, new GUIStyle(GUI.skin.label)
                     {
                         fixedWidth = 160,
                         wordWrap = false,
@@ -323,6 +325,171 @@ namespace Plugins
                 selectedIndex = newIndex;
                 selectedThumbnail = CommonLib.LoadAsset<Texture2D>(lstSelectInfo[selectedIndex].assetBundle, lstSelectInfo[selectedIndex].assetName);
             }
+        }
+
+
+        public string GetName()
+        {
+            switch (type)
+            {
+                case SelectKindType.FaceDetail:
+                    return "Face Overlay Type";
+                case SelectKindType.Eyebrow:
+                    return "Eyebrow Type";
+                case SelectKindType.EyelineUp:
+                    return "Upper eyeliner Type";
+                case SelectKindType.EyelineDown:
+                    return "Lower Eyeliner Type";
+                case SelectKindType.EyeWGrade:
+                    return "Sclera Type";
+                case SelectKindType.EyeHLUp:
+                    return "Upper Highlight Type";
+                case SelectKindType.EyeHLDown:
+                    return "Lower Highlight Type";
+                case SelectKindType.Pupil:
+                    return "Eye Type";
+                case SelectKindType.PupilGrade:
+                    return "Eye Gradient Type";
+                case SelectKindType.Nose:
+                    return "Nose Type";
+                case SelectKindType.Lipline:
+                    return "Lip Line Type";
+                case SelectKindType.Mole:
+                    return "Mole Type";
+                case SelectKindType.Eyeshadow:
+                    return "Eyeshadow Type";
+                case SelectKindType.Cheek:
+                    return "Cheek Type";
+                case SelectKindType.Lip:
+                    return "Lip Type";
+                case SelectKindType.FacePaint01:
+                    return "Paint 01 Type";
+                case SelectKindType.FacePaint02:
+                    return "Paint 02 Type";
+                case SelectKindType.BodyDetail:
+                    return "Skin Type";
+                case SelectKindType.Nip:
+                    return "Nipple Type";
+                case SelectKindType.Underhair:
+                    return "Pubic Hair Type";
+                case SelectKindType.Sunburn:
+                    return "Suntan Type";
+                case SelectKindType.BodyPaint01:
+                    return "Paint 01 Type";
+                case SelectKindType.BodyPaint02:
+                    return "Paint 02 Type";
+                case SelectKindType.BodyPaint01Layout:
+                    return "Paint 01 Position";
+                case SelectKindType.BodyPaint02Layout:
+                    return "Paint 02 Position";
+                case SelectKindType.HairBack:
+                    return "Back Hair Type";
+                case SelectKindType.HairFront:
+                    return "Front Hair Type";
+                case SelectKindType.HairSide:
+                    return "Side Hair Type";
+                case SelectKindType.HairExtension:
+                    return "Extension Type";
+                case SelectKindType.CosTop:
+                    return "Top Type";
+                case SelectKindType.CosSailor01:
+                    return "Body Type";
+                case SelectKindType.CosSailor02:
+                    return "Collar Type";
+                case SelectKindType.CosSailor03:
+                    return "Decoration Type";
+                case SelectKindType.CosJacket01:
+                    return "Innerwear Type";
+                case SelectKindType.CosJacket02:
+                    return "Outerwear Type";
+                case SelectKindType.CosJacket03:
+                    return "Decoration Type";
+                case SelectKindType.CosTopPtn01:
+                case SelectKindType.CosBotPtn01:
+                case SelectKindType.CosBraPtn01:
+                case SelectKindType.CosShortsPtn01:
+                case SelectKindType.CosGlovesPtn01:
+                case SelectKindType.CosPanstPtn01:
+                case SelectKindType.CosSocksPtn01:
+                case SelectKindType.CosInnerShoesPtn01:
+                case SelectKindType.CosOuterShoesPtn01:
+                    return "Cloth Pattern ①";
+                case SelectKindType.CosTopPtn02:
+                case SelectKindType.CosBotPtn02:
+                case SelectKindType.CosBraPtn02:
+                case SelectKindType.CosShortsPtn02:
+                case SelectKindType.CosGlovesPtn02:
+                case SelectKindType.CosPanstPtn02:
+                case SelectKindType.CosSocksPtn02:
+                case SelectKindType.CosInnerShoesPtn02:
+                case SelectKindType.CosOuterShoesPtn02:
+                    return "Cloth Pattern ②";
+                case SelectKindType.CosTopPtn03:
+                case SelectKindType.CosBotPtn03:
+                case SelectKindType.CosBraPtn03:
+                case SelectKindType.CosShortsPtn03:
+                case SelectKindType.CosGlovesPtn03:
+                case SelectKindType.CosPanstPtn03:
+                case SelectKindType.CosSocksPtn03:
+                case SelectKindType.CosInnerShoesPtn03:
+                case SelectKindType.CosOuterShoesPtn03:
+                    return "Cloth Pattern ③";
+                case SelectKindType.CosTopPtn04:
+                case SelectKindType.CosBotPtn04:
+                case SelectKindType.CosBraPtn04:
+                case SelectKindType.CosShortsPtn04:
+                case SelectKindType.CosGlovesPtn04:
+                case SelectKindType.CosPanstPtn04:
+                case SelectKindType.CosSocksPtn04:
+                case SelectKindType.CosInnerShoesPtn04:
+                case SelectKindType.CosOuterShoesPtn04:
+                    return "Cloth Pattern ④";
+                case SelectKindType.CosTopEmblem:
+                case SelectKindType.CosBotEmblem:
+                case SelectKindType.CosBraEmblem:
+                case SelectKindType.CosShortsEmblem:
+                case SelectKindType.CosGlovesEmblem:
+                case SelectKindType.CosPanstEmblem:
+                case SelectKindType.CosSocksEmblem:
+                case SelectKindType.CosInnerShoesEmblem:
+                case SelectKindType.CosOuterShoesEmblem:
+                    return "Emblem 02 Type";
+                case SelectKindType.CosBot:
+                    return "Bottom Type";
+                case SelectKindType.CosBra:
+                    return "Bra Type";
+                case SelectKindType.CosShorts:
+                    return "Underwear Type";
+                case SelectKindType.CosGloves:
+                    return "Gloves Type";
+                case SelectKindType.CosPanst:
+                    return "Pantyhose Type";
+                case SelectKindType.CosSocks:
+                    return "Legwear Type";
+                case SelectKindType.CosInnerShoes:
+                    return "Inner Shoe Type";
+                case SelectKindType.CosOuterShoes:
+#if KK
+                    return "Outer Shoe Type";
+#elif KKS
+                    return "Shoe Type";
+#endif
+                case SelectKindType.HairGloss:
+                    return "Hihglight Type";
+                case SelectKindType.HeadType:
+                    return "Face Type";
+                case SelectKindType.CosTopEmblem2:
+                case SelectKindType.CosBotEmblem2:
+                case SelectKindType.CosBraEmblem2:
+                case SelectKindType.CosShortsEmblem2:
+                case SelectKindType.CosGlovesEmblem2:
+                case SelectKindType.CosPanstEmblem2:
+                case SelectKindType.CosSocksEmblem2:
+                case SelectKindType.CosInnerShoesEmblem2:
+                case SelectKindType.CosOuterShoesEmblem2:
+                    return "Emblem 02 Type";
+            }
+            return "Undefined";
         }
     }
 }

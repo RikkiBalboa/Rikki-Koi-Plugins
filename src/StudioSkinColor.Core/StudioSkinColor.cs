@@ -50,6 +50,7 @@ namespace Plugins
         internal Rect uiRect;
         internal static Rect pickerRect;
         internal Action pickerWindowFunc;
+        internal string pickerWindowName = "Picker";
         private bool uiShow = false;
         private static StudioSkinColor instance;
 
@@ -98,9 +99,12 @@ namespace Plugins
             foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
             {
                 var cat = new CategoryPicker(category);
-                cat.OnActivateAction = () => { 
+                cat.OnActivateAction = () => {
                     if (pickerWindowFunc == null || pickerWindowFunc != cat.DrawWindow)
+                    {
+                        pickerWindowName = cat.name;
                         pickerWindowFunc = cat.DrawWindow;
+                    }
                     else
                         cat.OnCloseAction();
                 };
@@ -139,7 +143,7 @@ namespace Plugins
 
                 if (pickerWindowFunc != null)
                 {
-                    pickerRect = GUILayout.Window(pickerUiWindowHash, pickerRect, DrawPickerWindow, "Picker");
+                    pickerRect = GUILayout.Window(pickerUiWindowHash, pickerRect, DrawPickerWindow, pickerWindowName);
                     IMGUIUtils.EatInputInRect(pickerRect);
                 }
             }
