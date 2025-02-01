@@ -221,21 +221,21 @@ namespace Plugins
                     ChaControl.fileFace.baseMakeup.lipColor = color;
                     ChaControl.ChangeSettingLipColor();
                     break;
-                case ColorType.Base:
+                case ColorType.HairBase:
                     for (int i = 0; i < 4; i++)
                     {
                         ChaControl.fileHair.parts[i].baseColor = color;
                         ChaControl.ChangeSettingHairColor(i, true, true, true);
                     }
                     break;
-                case ColorType.Start:
+                case ColorType.HairStart:
                     for (int i = 0; i < 4; i++)
                     {
                         ChaControl.fileHair.parts[i].startColor = color;
                         ChaControl.ChangeSettingHairColor(i, true, true, true);
                     }
                     break;
-                case ColorType.End:
+                case ColorType.HairEnd:
                     for (int i = 0; i < 4; i++)
                     {
                         ChaControl.fileHair.parts[i].endColor = color;
@@ -243,7 +243,7 @@ namespace Plugins
                     }
                     break;
 #if KKS
-                case ColorType.Gloss:
+                case ColorType.HairGloss:
                     for (int i = 0; i < 4; i++)
                     {
                         ChaControl.fileHair.parts[i].glossColor = color;
@@ -302,14 +302,14 @@ namespace Plugins
                     return ChaControl.fileFace.baseMakeup.cheekColor;
                 case ColorType.LipColor:
                     return ChaControl.fileFace.baseMakeup.lipColor;
-                case ColorType.Base:
+                case ColorType.HairBase:
                     return ChaControl.fileHair.parts[0].baseColor;
-                case ColorType.Start:
+                case ColorType.HairStart:
                     return ChaControl.fileHair.parts[0].startColor;
-                case ColorType.End:
+                case ColorType.HairEnd:
                     return ChaControl.fileHair.parts[0].endColor;
 #if KKS
-                case ColorType.Gloss:
+                case ColorType.HairGloss:
                     return ChaControl.fileHair.parts[0].glossColor;
 #endif
                 case ColorType.Eyebrow:
@@ -414,9 +414,12 @@ namespace Plugins
                     .Select(x => x.Value)
                     .Any(x => Mathf.Abs(x.Value - x.OriginalValue) > 0.001f);
             }
-            if (category == "General")
-                isEdited |= OriginalColors.Any(x => x.Value.Value != x.Value.OriginalValue);
-            else if (category == "Chest")
+            isEdited |= OriginalColors.Any(x =>
+                GetCategoryTypes(x.Key) == "Body"
+                && GetCategoryTypes(x.Key, true) == category
+                && x.Value.OriginalValue != x.Value.Value
+            );
+            if (category == "Chest")
                 isEdited |= OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
 
             return isEdited;
@@ -461,6 +464,11 @@ namespace Plugins
                     .Select(x => x.Value)
                     .Any(x => Mathf.Abs(x.Value - x.OriginalValue) > 0.001f);
             }
+            isEdited |= OriginalColors.Any(x =>
+                GetCategoryTypes(x.Key) == "Face"
+                && GetCategoryTypes(x.Key, true) == category
+                && x.Value.OriginalValue != x.Value.Value
+            );
             return isEdited;
         }
         #endregion
@@ -656,6 +664,7 @@ namespace Plugins
         }
         #endregion
 
+        #region Category pickers
         public void SetSelectKind(SelectKindType type, int id)
         {
             void UpdateClothesPattern(int kind, int pattern)
@@ -1301,20 +1310,139 @@ namespace Plugins
                     return 0;
             }
         }
+        #endregion
+
+        #region Category mappings
+        public string GetCategoryTypes(ColorType colorType, bool returnSubCategory = false)
+        {
+            string category;
+            string subCategory;
+
+            switch (colorType)
+            {
+                case ColorType.SkinMain:
+                    category = "Body";
+                    subCategory = "General";
+                    break;
+                case ColorType.SkinSub:
+                    category = "Body";
+                    subCategory = "General";
+                    break;
+                case ColorType.SkinTan:
+                    category = "Body";
+                    subCategory = "Suntan";
+                    break;
+                case ColorType.NippleColor:
+                    category = "Body";
+                    subCategory = "Chest";
+                    break;
+                case ColorType.NailColor:
+                    category = "Body";
+                    subCategory = "General";
+                    break;
+                case ColorType.PubicHairColor:
+                    category = "Body";
+                    subCategory = "Pubic Hair";
+                    break;
+                case ColorType.HairBase:
+                    category = "Hair";
+                    subCategory = "";
+                    break;
+                case ColorType.HairStart:
+                    category = "Hair";
+                    subCategory = "";
+                    break;
+                case ColorType.HairEnd:
+                    category = "Hair";
+                    subCategory = "";
+                    break;
+                case ColorType.HairGloss:
+                    category = "Hair";
+                    subCategory = "";
+                    break;
+                case ColorType.Eyebrow:
+                    category = "Face";
+                    subCategory = "Eyebrows";
+                    break;
+                case ColorType.EyebrowColor:
+                    category = "Face";
+                    subCategory = "Eyebrows";
+                    break;
+                case ColorType.EyelineColor:
+                    category = "Face";
+                    subCategory = "Eyes";
+                    break;
+                case ColorType.ScleraColor1:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case ColorType.ScleraColor2:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case ColorType.UpperHighlightColor:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case ColorType.LowerHightlightColor:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case ColorType.EyeColor1Left:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case ColorType.EyeColor2Left:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case ColorType.EyeColor1Right:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case ColorType.EyeColor2Right:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case ColorType.LipLineColor:
+                    category = "Face";
+                    subCategory = "Mouth";
+                    break;
+                case ColorType.EyeShadowColor:
+                    category = "Face";
+                    subCategory = "Makeup";
+                    break;
+                case ColorType.CheekColor:
+                    category = "Face";
+                    subCategory = "Makeup";
+                    break;
+                case ColorType.LipColor:
+                    category = "Face";
+                    subCategory = "Makeup";
+                    break;
+                default:
+                    category = "Undefined";
+                    subCategory = "Undefined";
+                    break;
+            }
+
+            return returnSubCategory ? subCategory : category;
+        }
+        #endregion
 
         public bool IsCategoryEdited(SelectedTab tab)
         {
             switch (tab)
             {
                 case SelectedTab.Body:
-                    return OriginalColors.Any(x => x.Value.Value != x.Value.OriginalValue)
+                    return OriginalColors.Any(x => GetCategoryTypes(x.Key) == "Body" && x.Value.Value != x.Value.OriginalValue)
                         || OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
                         || OriginalBodyShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
                 case SelectedTab.Face:
                     return OriginalFaceShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
-                        || OriginalColors.Any(x => x.Value.Value != x.Value.OriginalValue);
+                        || OriginalColors.Any(x => GetCategoryTypes(x.Key) == "Face" && x.Value.Value != x.Value.OriginalValue);
                 case SelectedTab.Hair:
-                    return OriginalColors.Any(x => x.Value.Value != x.Value.OriginalValue);
+                    return OriginalColors.Any(x => GetCategoryTypes(x.Key) == "Hair" && x.Value.Value != x.Value.OriginalValue);
                 case SelectedTab.Clothes:
                     return OriginalClothingColors.Any(x => x.Value.Value != x.Value.OriginalValue);
             }

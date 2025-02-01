@@ -206,7 +206,7 @@ namespace Plugins
                 }
             },
             { "Makeup", new Dictionary<int, string>() },
-        };
+        };        
         #endregion
 
         private SelectedTab selectedTab = SelectedTab.Body;
@@ -576,32 +576,32 @@ namespace Plugins
             {
                 DrawColorRow(
                     "Color 1:",
-                    controller.GetColorPropertyValue(ColorType.Base),
-                    controller.GetOriginalColorPropertyValue(ColorType.Base),
-                    c => controller.UpdateColorProperty(c, ColorType.Base),
-                    () => controller.ResetColorProperty(ColorType.Base)
+                    controller.GetColorPropertyValue(ColorType.HairBase),
+                    controller.GetOriginalColorPropertyValue(ColorType.HairBase),
+                    c => controller.UpdateColorProperty(c, ColorType.HairBase),
+                    () => controller.ResetColorProperty(ColorType.HairBase)
                 );
                 DrawColorRow(
                     "Color 2:",
-                    controller.GetColorPropertyValue(ColorType.Start),
-                    controller.GetOriginalColorPropertyValue(ColorType.Start),
-                    c => controller.UpdateColorProperty(c, ColorType.Start),
-                    () => controller.ResetColorProperty(ColorType.Start)
+                    controller.GetColorPropertyValue(ColorType.HairStart),
+                    controller.GetOriginalColorPropertyValue(ColorType.HairStart),
+                    c => controller.UpdateColorProperty(c, ColorType.HairStart),
+                    () => controller.ResetColorProperty(ColorType.HairStart)
                 );
                 DrawColorRow(
                     "Color 3:",
-                    controller.GetColorPropertyValue(ColorType.End),
-                    controller.GetOriginalColorPropertyValue(ColorType.End),
-                    c => controller.UpdateColorProperty(c, ColorType.End),
-                    () => controller.ResetColorProperty(ColorType.End)
+                    controller.GetColorPropertyValue(ColorType.HairEnd),
+                    controller.GetOriginalColorPropertyValue(ColorType.HairEnd),
+                    c => controller.UpdateColorProperty(c, ColorType.HairEnd),
+                    () => controller.ResetColorProperty(ColorType.HairEnd)
                 );
 #if KKS
                 DrawColorRow(
                     "Gloss color:",
-                    controller.GetColorPropertyValue(ColorType.Gloss),
-                    controller.GetOriginalColorPropertyValue(ColorType.Gloss),
-                    c => controller.UpdateColorProperty(c, ColorType.Gloss),
-                    () => controller.ResetColorProperty(ColorType.Gloss)
+                    controller.GetColorPropertyValue(ColorType.HairGloss),
+                    controller.GetOriginalColorPropertyValue(ColorType.HairGloss),
+                    c => controller.UpdateColorProperty(c, ColorType.HairGloss),
+                    () => controller.ResetColorProperty(ColorType.HairGloss)
                 );
 #endif
                 DrawColorRow(
