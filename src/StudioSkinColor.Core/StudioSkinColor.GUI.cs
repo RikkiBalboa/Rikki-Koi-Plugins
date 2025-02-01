@@ -311,12 +311,14 @@ namespace Plugins
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor01].DrawSelectedItem();
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor02].DrawSelectedItem();
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor03].DrawSelectedItem();
+                                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTopEmblem].DrawSelectedItem();
                                 }
                                 else if (kind == 2)
                                 {
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosJacket01].DrawSelectedItem();
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosJacket02].DrawSelectedItem();
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosJacket03].DrawSelectedItem();
+                                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTopEmblem].DrawSelectedItem();
                                 }
                             }
                             else if (selectedKind == 1) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosBot].DrawSelectedItem();

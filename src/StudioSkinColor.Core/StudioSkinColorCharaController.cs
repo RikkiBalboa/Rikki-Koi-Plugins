@@ -779,6 +779,14 @@ namespace Plugins
                     selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: true);
             }
 
+            void ChangeEmblem(int kind)
+            {
+                Clothes.parts[0].emblemeId = id;
+                SetClothes.parts[0].emblemeId = id;
+                selectedCharacter.ChangeCustomEmblem(0, id);
+                selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+            }
+
 
             if (selectedCharacter == null)
                 return;
@@ -925,32 +933,32 @@ namespace Plugins
                 case SelectKindType.CosSailor01:
                     Clothes.subPartsId[0] = id;
                     SetClothes.subPartsId[0] = id;
-                    selectedCharacter.ChangeClothesTop(0, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
                     break;
                 case SelectKindType.CosSailor02:
                     Clothes.subPartsId[1] = id;
                     SetClothes.subPartsId[1] = id;
-                    selectedCharacter.ChangeClothesTop(0, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
                     break;
                 case SelectKindType.CosSailor03:
                     Clothes.subPartsId[2] = id;
                     SetClothes.subPartsId[2] = id;
-                    selectedCharacter.ChangeClothesTop(0, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
                     break;
                 case SelectKindType.CosJacket01:
                     Clothes.subPartsId[0] = id;
                     SetClothes.subPartsId[0] = id;
-                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    selectedCharacter.ChangeClothesTop(2, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
                     break;
                 case SelectKindType.CosJacket02:
                     Clothes.subPartsId[1] = id;
                     SetClothes.subPartsId[1] = id;
-                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    selectedCharacter.ChangeClothesTop(2, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
                     break;
                 case SelectKindType.CosJacket03:
                     Clothes.subPartsId[2] = id;
                     SetClothes.subPartsId[2] = id;
-                    selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    selectedCharacter.ChangeClothesTop(2, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
                     break;
                 case SelectKindType.CosTopPtn01:
                     UpdateClothesPattern(0, 0);
@@ -965,9 +973,7 @@ namespace Plugins
                     UpdateClothesPattern(0, 3);
                     break;
                 case SelectKindType.CosTopEmblem:
-                    Clothes.parts[0].emblemeId = id;
-                    SetClothes.parts[0].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(0, id);
+                    ChangeEmblem(0);
                     break;
                 case SelectKindType.CosBot:
                     Clothes.parts[1].id = id;
@@ -987,9 +993,7 @@ namespace Plugins
                     UpdateClothesPattern(1, 3);
                     break;
                 case SelectKindType.CosBotEmblem:
-                    Clothes.parts[1].emblemeId = id;
-                    SetClothes.parts[1].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(1, id);
+                    ChangeEmblem(1);
                     break;
                 case SelectKindType.CosBra:
                     Clothes.parts[2].id = id;
@@ -1009,9 +1013,7 @@ namespace Plugins
                     UpdateClothesPattern(2, 3);
                     break;
                 case SelectKindType.CosBraEmblem:
-                    Clothes.parts[2].emblemeId = id;
-                    SetClothes.parts[2].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(2, id);
+                    ChangeEmblem(2);
                     break;
                 case SelectKindType.CosShorts:
                     Clothes.parts[3].id = id;
@@ -1031,9 +1033,7 @@ namespace Plugins
                     UpdateClothesPattern(3, 3);
                     break;
                 case SelectKindType.CosShortsEmblem:
-                    Clothes.parts[3].emblemeId = id;
-                    SetClothes.parts[3].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(3, id);
+                    ChangeEmblem(3);
                     break;
                 case SelectKindType.CosGloves:
                     Clothes.parts[4].id = id;
@@ -1053,9 +1053,7 @@ namespace Plugins
                     UpdateClothesPattern(4, 3);
                     break;
                 case SelectKindType.CosGlovesEmblem:
-                    Clothes.parts[4].emblemeId = id;
-                    SetClothes.parts[4].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(4, id);
+                    ChangeEmblem(4);
                     break;
                 case SelectKindType.CosPanst:
                     Clothes.parts[5].id = id;
@@ -1075,9 +1073,7 @@ namespace Plugins
                     UpdateClothesPattern(5, 3);
                     break;
                 case SelectKindType.CosPanstEmblem:
-                    Clothes.parts[5].emblemeId = id;
-                    SetClothes.parts[5].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(5, id);
+                    ChangeEmblem(5);
                     break;
                 case SelectKindType.CosSocks:
                     Clothes.parts[6].id = id;
@@ -1097,9 +1093,7 @@ namespace Plugins
                     UpdateClothesPattern(6, 3);
                     break;
                 case SelectKindType.CosSocksEmblem:
-                    Clothes.parts[6].emblemeId = id;
-                    SetClothes.parts[6].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(6, id);
+                    ChangeEmblem(6);
                     break;
                 case SelectKindType.CosInnerShoes:
                     Clothes.parts[7].id = id;
@@ -1119,9 +1113,7 @@ namespace Plugins
                     UpdateClothesPattern(7, 3);
                     break;
                 case SelectKindType.CosInnerShoesEmblem:
-                    Clothes.parts[7].emblemeId = id;
-                    SetClothes.parts[7].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(7, id);
+                    ChangeEmblem(7);
                     break;
                 case SelectKindType.CosOuterShoes:
                     Clothes.parts[8].id = id;
@@ -1141,9 +1133,7 @@ namespace Plugins
                     UpdateClothesPattern(8, 3);
                     break;
                 case SelectKindType.CosOuterShoesEmblem:
-                    Clothes.parts[8].emblemeId = id;
-                    SetClothes.parts[8].emblemeId = id;
-                    selectedCharacter.ChangeCustomEmblem(8, id);
+                    ChangeEmblem(8);
                     break;
                 case SelectKindType.HairGloss:
                     selectedCharacter.fileHair.glossId = id;
