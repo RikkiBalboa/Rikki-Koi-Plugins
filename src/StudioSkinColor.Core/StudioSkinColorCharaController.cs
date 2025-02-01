@@ -132,7 +132,7 @@ namespace Plugins
         #region Body color
         public void UpdateBodyTextures(bool inpBase = false, bool inpSub = false, bool inpPaint01 = false, bool inpPaint02 = false, bool inpSunburn = false, bool inpNail = false)
         {
-            //ChaControl.AddUpdateCMBodyTexFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpSunburn);
+            ChaControl.AddUpdateCMBodyTexFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpSunburn);
             ChaControl.AddUpdateCMBodyColorFlags(inpBase, inpSub, inpPaint01, inpPaint02, inpSunburn, inpNail);
             ChaControl.CreateBodyTexture();
             ChaControl.SetBodyBaseMaterial();
@@ -331,11 +331,11 @@ namespace Plugins
                     break;
                 case FaceColor.ScleraColor1:
                     ChaControl.fileFace.whiteBaseColor = color;
-                    ChaControl.ChangeSettingWhiteOfEye(false, true);
+                    ChaControl.ChangeSettingWhiteOfEye(true, true);
                     break;
                 case FaceColor.ScleraColor2:
                     ChaControl.fileFace.whiteSubColor = color;
-                    ChaControl.ChangeSettingWhiteOfEye(false, true);
+                    ChaControl.ChangeSettingWhiteOfEye(true, true);
                     break;
                 case FaceColor.UpperHighlightColor:
                     ChaControl.fileFace.hlUpColor = color;

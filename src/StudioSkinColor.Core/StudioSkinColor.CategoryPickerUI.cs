@@ -407,15 +407,11 @@ namespace Plugins
                     break;
                 case SelectKindType.Lipline:
                     SelectedCharacter.fileFace.lipLineId = id;
-                    SelectedCharacter.AddUpdateCMFaceTexFlags(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: false, inpLipLine: true, inpMole: false);
-                    SelectedCharacter.CreateFaceTexture();
-                    SelectedCharacter.SetFaceBaseMaterial();
+                    Controller.UpdateFaceTextures(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: false, inpLipLine: true, inpMole: false);
                     break;
                 case SelectKindType.Mole:
                     SelectedCharacter.fileFace.moleId = id;
-                    SelectedCharacter.AddUpdateCMFaceTexFlags(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: false, inpLipLine: false, inpMole: true);
-                    SelectedCharacter.CreateFaceTexture();
-                    SelectedCharacter.SetFaceBaseMaterial();
+                    Controller.UpdateFaceTextures(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: false, inpLipLine: false, inpMole: true);
                     break;
                 case SelectKindType.Eyeshadow:
                     SelectedCharacter.fileFace.baseMakeup.eyeshadowId = id;
@@ -423,9 +419,7 @@ namespace Plugins
                     break;
                 case SelectKindType.Cheek:
                     SelectedCharacter.fileFace.baseMakeup.cheekId = id;
-                    SelectedCharacter.AddUpdateCMFaceTexFlags(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: true, inpLipLine: false, inpMole: false);
-                    SelectedCharacter.CreateFaceTexture();
-                    SelectedCharacter.SetFaceBaseMaterial();
+                    Controller.UpdateFaceTextures(inpBase: false, inpSub: false, inpPaint01: false, inpPaint02: false, inpCheek: true, inpLipLine: false, inpMole: false);
                     break;
                 case SelectKindType.Lip:
                     SelectedCharacter.fileFace.baseMakeup.lipId = id;
@@ -738,7 +732,7 @@ namespace Plugins
                     break;
                 case SelectKindType.HeadType:
                     SelectedCharacter.fileFace.headId = id;
-                    SelectedCharacter.ChangeHead();
+                    SelectedCharacter.ChangeHead(id, true);
 					break;
                 case SelectKindType.CosTopEmblem2:
                     Clothes.parts[0].emblemeId2 = id;
