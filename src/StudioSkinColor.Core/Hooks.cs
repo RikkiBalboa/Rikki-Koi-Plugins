@@ -11,5 +11,13 @@ namespace Plugins
             if (controller != null)
                 controller.ChangeCoordinateEvent();
         }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
+        private static void ChangeCustomClothesPostFix(ChaControl __instance)
+        {
+            var controller = StudioSkinColorCharaController.GetController(__instance);
+            if (controller != null)
+                controller.ChangeCoordinateEvent();
+        }
     }
 }

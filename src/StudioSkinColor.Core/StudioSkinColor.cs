@@ -99,7 +99,7 @@ namespace Plugins
             {
                 var cat = new CategoryPicker(category);
                 cat.OnActivateAction = () => { 
-                    if (pickerWindowFunc == null)
+                    if (pickerWindowFunc == null || pickerWindowFunc != cat.DrawWindow)
                         pickerWindowFunc = cat.DrawWindow;
                     else
                         cat.OnCloseAction();

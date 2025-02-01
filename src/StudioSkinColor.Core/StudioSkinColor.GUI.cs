@@ -285,8 +285,6 @@ namespace Plugins
                             GUI.color = Color.cyan;
                         else if (controller.IsClothingKindEdited(kind.Value))
                             GUI.color = Color.magenta;
-                        if (!controller.ClothingKindExists(kind.Value))
-                            GUI.enabled = false;
                         if (GUILayout.Button(kind.Key))
                             selectedKind = kind.Value;
                         GUI.color = c;

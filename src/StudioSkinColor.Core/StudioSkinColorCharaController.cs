@@ -687,8 +687,7 @@ namespace Plugins
             foreach (var kind in clothingKinds)
             {
                 var name = GetclothingName(kind.Value);
-                if (name != "None")
-                    characterClothing.Add(new CharacterClothing(kind.Value, name, CheckClothingUseColor(kind.Value)));
+                characterClothing.Add(new CharacterClothing(kind.Value, name, CheckClothingUseColor(kind.Value)));
             }
 
             if (c2aAIlnstances != null && c2aAIlnstances.Contains(ChaControl))
