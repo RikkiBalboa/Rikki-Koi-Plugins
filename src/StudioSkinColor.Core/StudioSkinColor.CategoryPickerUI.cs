@@ -1,14 +1,11 @@
-﻿using BepInEx;
-using ChaCustom;
-using Illusion.Component.UI.ColorPicker;
+﻿using ChaCustom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 using static ChaCustom.CustomSelectKind;
 using Sideloader.AutoResolver;
+using KKAPI.Utilities;
 namespace Plugins
 {
     public class CategoryPicker
@@ -26,6 +23,8 @@ namespace Plugins
         private List<CustomSelectInfo> lstSelectInfo;
         private List<CustomSelectInfo> lstSelectInfoFiltered = new List<CustomSelectInfo>();
         private SelectKindType type;
+
+        private Dictionary<string, string> translationCache = new Dictionary<string, string>();
 
         private int selectedIndex = 0;
         private Texture2D selectedThumbnail;
@@ -54,8 +53,11 @@ namespace Plugins
         private bool Search(CustomSelectInfo info, string search)
         {
             var show = false;
-            show |= info.name.Contains(search);
-            show |= info.assetBundle.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+            show |= info.name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+            //show |= info.assetBundle.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (translationCache.TryGetValue(info.name, out var translation))
+                show |= translation.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
 
             var _info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)info.category, info.index);
             if (_info != null)
@@ -187,6 +189,8 @@ namespace Plugins
             lstSelectInfo = new List<CustomSelectInfo>();
             chaListCtrl.GetCategoryInfo(cn).Values.ToList().ForEach(info =>
             {
+                TranslationHelper.TranslateAsync(info.Name, s => translationCache[info.Name] = s);
+
                 CustomSelectInfo customSelectInfo = new CustomSelectInfo
                 {
                     category = info.Category,
@@ -234,11 +238,11 @@ namespace Plugins
 
             var selected = GetSelected();
 
-            var width = StudioSkinColor.pickerRect.width - 60;
-            int columns = Mathf.Max((int)Mathf.Floor(width / 100), 3);
-            var size = width / columns;
+            float width = StudioSkinColor.pickerRect.width - 60;
+            int columns = (int)Mathf.Max(Mathf.Floor(width / 100), 3);
+            float size = width / columns;
 
-            int totalRows = (int)Mathf.Ceil(items.Count() / columns);
+            int totalRows = (int)Mathf.Ceil(items.Count() / (float)columns);
             int firstRow = Mathf.Clamp((int)(panelScroll.y / size), 0, totalRows);
             int maxrow = Mathf.Clamp((int)Mathf.Ceil(StudioSkinColor.pickerRect.height / size) + firstRow, 0, totalRows);
 
@@ -260,22 +264,25 @@ namespace Plugins
                     for (int column = 0; column < columns; column++)
                     {
                         var index = rows * columns + column;
+                        if (index >= items.Count)
+                            continue;
+                        var item = items[index];
 
-                        if (!shownThumbnails.TryGetValue(index, out GUIContent thumbnail))
+                        if (!shownThumbnails.TryGetValue(item.index, out GUIContent thumbnail))
                         {
-                            var texture = CommonLib.LoadAsset<Texture2D>(items[index].assetBundle, items[index].assetName);
+                            var texture = CommonLib.LoadAsset<Texture2D>(item.assetBundle, item.assetName);
                             if (thumbnail != null)
                                 StudioSkinColor.Logger.LogInfo(texture.width);
-                            shownThumbnails[index] = new GUIContent(texture);
+                            shownThumbnails[item.index] = new GUIContent(texture);
                         }
 
                         var c = GUI.color;
-                        if (selected == items[index].index)
+                        if (selected == item.index)
                             GUI.color = Color.cyan;
 
                         if (GUILayout.Button(thumbnail, new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft }, new GUILayoutOption[] { GUILayout.Height(size), GUILayout.Width(size) }))
                         {
-                            SetSelected(items[index].index);
+                            SetSelected(item.index);
                         }
                         GUI.color = c;
                     }
