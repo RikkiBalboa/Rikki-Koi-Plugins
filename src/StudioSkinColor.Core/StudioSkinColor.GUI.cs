@@ -358,6 +358,7 @@ namespace Plugins
                         GUILayout.EndHorizontal();
 
                         if (clothing.UseColors[0])
+                        {
                             DrawColorRow(
                                 "Color 1:",
                                 controller.GetClothingColor(selectedKind, 0, clothing.SlotNr),
@@ -365,7 +366,23 @@ namespace Plugins
                                 c => controller.SetClothingColor(selectedKind, 0, c, clothing.SlotNr),
                                 () => controller.ResetClothingColor(selectedKind, 0, clothing.SlotNr)
                             );
+                            if (!clothing.IsC2a)
+                            {
+                                categoryPickers[StudioSkinColorCharaController.KindToSelectKind(clothing.Kind, 1)].DrawSelectedItem();
+                                if (controller.ClothingUsesPattern(clothing.Kind, 1))
+                                {
+                                    DrawColorRow(
+                                        "Pattern Color 1:",
+                                        controller.GetClothingColor(selectedKind, 0, clothing.SlotNr, true),
+                                        controller.GetOriginalClothingColor(selectedKind, 0, clothing.SlotNr, true),
+                                        c => controller.SetClothingColor(selectedKind, 0, c, clothing.SlotNr, true),
+                                        () => controller.ResetClothingColor(selectedKind, 0, clothing.SlotNr, true)
+                                    );
+                                }
+                            }
+                        }
                         if (clothing.UseColors[1])
+                        {
                             DrawColorRow(
                                 "Color 2:",
                                 controller.GetClothingColor(selectedKind, 1, clothing.SlotNr),
@@ -373,7 +390,23 @@ namespace Plugins
                                 c => controller.SetClothingColor(selectedKind, 1, c, clothing.SlotNr),
                                 () => controller.ResetClothingColor(selectedKind, 1, clothing.SlotNr)
                             );
+                            if (!clothing.IsC2a)
+                            {
+                                categoryPickers[StudioSkinColorCharaController.KindToSelectKind(clothing.Kind, 2)].DrawSelectedItem();
+                                if (controller.ClothingUsesPattern(clothing.Kind, 2))
+                                {
+                                    DrawColorRow(
+                                        "Pattern Color 1:",
+                                        controller.GetClothingColor(selectedKind, 1, clothing.SlotNr, true),
+                                        controller.GetOriginalClothingColor(selectedKind, 1, clothing.SlotNr, true),
+                                        c => controller.SetClothingColor(selectedKind, 1, c, clothing.SlotNr, true),
+                                        () => controller.ResetClothingColor(selectedKind, 1, clothing.SlotNr, true)
+                                    );
+                                }
+                            }
+                        }
                         if (clothing.UseColors[2])
+                        {
                             DrawColorRow(
                                 "Color 3:",
                                 controller.GetClothingColor(selectedKind, 2, clothing.SlotNr),
@@ -381,6 +414,21 @@ namespace Plugins
                                 c => controller.SetClothingColor(selectedKind, 2, c, clothing.SlotNr),
                                 () => controller.ResetClothingColor(selectedKind, 2, clothing.SlotNr)
                             );
+                            if (!clothing.IsC2a)
+                            {
+                                categoryPickers[StudioSkinColorCharaController.KindToSelectKind(clothing.Kind, 3)].DrawSelectedItem();
+                                if (controller.ClothingUsesPattern(clothing.Kind, 3))
+                                {
+                                    DrawColorRow(
+                                        "Pattern Color 1:",
+                                        controller.GetClothingColor(selectedKind, 2, clothing.SlotNr, true),
+                                        controller.GetOriginalClothingColor(selectedKind, 2, clothing.SlotNr, true),
+                                        c => controller.SetClothingColor(selectedKind, 2, c, clothing.SlotNr, true),
+                                        () => controller.ResetClothingColor(selectedKind, 2, clothing.SlotNr, true)
+                                    );
+                                }
+                            }
+                        }
                     }
                 }
                 GUILayout.EndScrollView();

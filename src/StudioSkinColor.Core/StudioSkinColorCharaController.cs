@@ -509,7 +509,7 @@ namespace Plugins
             }
         }
 
-        public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1)
+        public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1, bool isPattern = false)
         {
             var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
             if (MEController != null)
@@ -518,14 +518,23 @@ namespace Plugins
                 MEController.RefreshClothesMainTex();
             }
 
-            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr);
-            if (!OriginalClothingColors.Any(x => x.Key.Compare(CurrentOutfitSlot, kind, colorNr, slotNr)))
-                OriginalClothingColors[clothingColors] = new ColorStorage(GetClothingColor(kind, colorNr, slotNr), color);
+            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
+            if (!OriginalClothingColors.Any(x => x.Key.Compare(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern)))
+                OriginalClothingColors[clothingColors] = new ColorStorage(GetClothingColor(kind, colorNr, slotNr, isPattern), color);
             else
                 OriginalClothingColors[clothingColors].Value = color;
 
-
-            if (slotNr < 0)
+            if (isPattern)
+            {
+                Clothes.parts[kind].colorInfo[colorNr].patternColor = color;
+                SetClothes.parts[kind].colorInfo[colorNr].patternColor = color;
+                if (!IsMultiPartTop(kind))
+                    ChaControl.ChangeCustomClothes(true, kind, true, true, true, true, true);
+                else
+                    for (int i = 0; i < Clothes.subPartsId.Length; i++)
+                        ChaControl.ChangeCustomClothes(false, i, true, true, true, true, true);
+            }
+            else if (slotNr < 0)
             {
                 Clothes.parts[kind].colorInfo[colorNr].baseColor = color;
                 SetClothes.parts[kind].colorInfo[colorNr].baseColor = color;
@@ -533,9 +542,7 @@ namespace Plugins
                     ChaControl.ChangeCustomClothes(true, kind, true, true, true, true, true);
                 else
                     for (int i = 0; i < Clothes.subPartsId.Length; i++)
-                    {
-                        ChaControl.ChangeCustomClothes(main: false, i, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: false);
-                    }
+                        ChaControl.ChangeCustomClothes(false, i, true, true, true, true, true);
             }
             else
             {
@@ -593,26 +600,33 @@ namespace Plugins
             return false;
         }
 
-        public Color GetClothingColor(int kind, int colorNr, int slotNr = -1)
+        public bool ClothingUsesPattern(int kind, int pattern)
         {
-            if (slotNr < 0)
+            return GetSelected(KindToSelectKind(kind, pattern)) > 0;
+        }
+
+        public Color GetClothingColor(int kind, int colorNr, int slotNr = -1, bool isPattern = false)
+        {
+            if (isPattern)
+                return Clothes.parts[kind].colorInfo[colorNr].patternColor;
+            else if (slotNr < 0)
                 return Clothes.parts[kind].colorInfo[colorNr].baseColor;
             return Accessories.parts[slotNr].color[colorNr];
         }
 
-        public void ResetClothingColor(int kind, int colorNr, int slotNr)
+        public void ResetClothingColor(int kind, int colorNr, int slotNr, bool isPattern = false)
         {
-            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr);
+            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
             if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
-                SetClothingColor(kind, colorNr, color.OriginalValue, slotNr);
+                SetClothingColor(kind, colorNr, color.OriginalValue, slotNr, isPattern);
         }
 
-        public Color GetOriginalClothingColor(int kind, int colorNr, int slotNr)
+        public Color GetOriginalClothingColor(int kind, int colorNr, int slotNr, bool isPattern = false)
         {
-            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr);
+            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
             if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
                 return color.OriginalValue;
-            return GetClothingColor(kind, colorNr, slotNr);
+            return GetClothingColor(kind, colorNr, slotNr, isPattern);
         }
 
         public bool GetHideOpt(int kind, int option)
@@ -714,13 +728,13 @@ namespace Plugins
                     }
                 }
                 if (pattern == 0)
-                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: true, updateTex02: false, updateTex03: false, updateTex04: false);
+                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: true, updateTex01: true, updateTex02: false, updateTex03: false, updateTex04: false);
                 if (pattern == 1)
-                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: false, updateTex02: true, updateTex03: false, updateTex04: false);
+                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: true, updateTex01: false, updateTex02: true, updateTex03: false, updateTex04: false);
                 if (pattern == 2)
-                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: true, updateTex04: false);
+                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: true, updateTex04: false);
                 if (pattern == 3)
-                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: false, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: true);
+                    selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: true);
             }
 
             void ChangeEmblem(int kind)
@@ -1329,6 +1343,176 @@ namespace Plugins
                     return 0;
             }
         }
+
+        public static int SelectKindToIntKind(SelectKindType type)
+        {
+            switch (type)
+            {
+                case SelectKindType.CosTop:
+                case SelectKindType.CosTopPtn01:
+                case SelectKindType.CosTopPtn02:
+                case SelectKindType.CosTopPtn03:
+                case SelectKindType.CosTopPtn04:
+                case SelectKindType.CosTopEmblem:
+                case SelectKindType.CosTopEmblem2:
+                    return 0;
+                case SelectKindType.CosBot:
+                case SelectKindType.CosBotPtn01:
+                case SelectKindType.CosBotPtn02:
+                case SelectKindType.CosBotPtn03:
+                case SelectKindType.CosBotPtn04:
+                case SelectKindType.CosBotEmblem:
+                case SelectKindType.CosBotEmblem2:
+                    return 1;
+                case SelectKindType.CosBra:
+                case SelectKindType.CosBraPtn01:
+                case SelectKindType.CosBraPtn02:
+                case SelectKindType.CosBraPtn03:
+                case SelectKindType.CosBraPtn04:
+                case SelectKindType.CosBraEmblem:
+                case SelectKindType.CosBraEmblem2:
+                    return 2;
+                case SelectKindType.CosShorts:
+                case SelectKindType.CosShortsPtn01:
+                case SelectKindType.CosShortsPtn02:
+                case SelectKindType.CosShortsPtn03:
+                case SelectKindType.CosShortsPtn04:
+                case SelectKindType.CosShortsEmblem:
+                case SelectKindType.CosShortsEmblem2:
+                    return 3;
+                case SelectKindType.CosGloves:
+                case SelectKindType.CosGlovesPtn01:
+                case SelectKindType.CosGlovesPtn02:
+                case SelectKindType.CosGlovesPtn03:
+                case SelectKindType.CosGlovesPtn04:
+                case SelectKindType.CosGlovesEmblem:
+                case SelectKindType.CosGlovesEmblem2:
+                    return 4;
+                case SelectKindType.CosPanst:
+                case SelectKindType.CosPanstPtn01:
+                case SelectKindType.CosPanstPtn02:
+                case SelectKindType.CosPanstPtn03:
+                case SelectKindType.CosPanstPtn04:
+                case SelectKindType.CosPanstEmblem:
+                case SelectKindType.CosPanstEmblem2:
+                    return 5;
+                case SelectKindType.CosSocks:
+                case SelectKindType.CosSocksPtn01:
+                case SelectKindType.CosSocksPtn02:
+                case SelectKindType.CosSocksPtn03:
+                case SelectKindType.CosSocksPtn04:
+                case SelectKindType.CosSocksEmblem:
+                case SelectKindType.CosSocksEmblem2:
+                    return 6;
+                case SelectKindType.CosInnerShoes:
+                case SelectKindType.CosInnerShoesPtn01:
+                case SelectKindType.CosInnerShoesPtn02:
+                case SelectKindType.CosInnerShoesPtn03:
+                case SelectKindType.CosInnerShoesPtn04:
+                case SelectKindType.CosInnerShoesEmblem:
+                case SelectKindType.CosInnerShoesEmblem2:
+                    return 7;
+                case SelectKindType.CosOuterShoes:
+                case SelectKindType.CosOuterShoesPtn01:
+                case SelectKindType.CosOuterShoesPtn02:
+                case SelectKindType.CosOuterShoesPtn03:
+                case SelectKindType.CosOuterShoesPtn04:
+                case SelectKindType.CosOuterShoesEmblem:
+                case SelectKindType.CosOuterShoesEmblem2:
+                    return 8;
+                default:
+                    return -1;
+            }
+        }
+
+        public static SelectKindType KindToSelectKind(int kind, int pattern = 0, int emblem = 0)
+        {
+            switch (kind)
+            {
+                case 0:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosBot;
+                    if (pattern == 1) return SelectKindType.CosTopPtn01;
+                    if (pattern == 2) return SelectKindType.CosTopPtn02;
+                    if (pattern == 3) return SelectKindType.CosTopPtn03;
+                    if (pattern == 4) return SelectKindType.CosTopPtn04;
+                    if (emblem == 1) return SelectKindType.CosTopEmblem;
+                    if (emblem == 2) return SelectKindType.CosTopEmblem;
+                    break;
+                case 1:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosBot;
+                    if (pattern == 1) return SelectKindType.CosBotPtn01;
+                    if (pattern == 2) return SelectKindType.CosBotPtn02;
+                    if (pattern == 3) return SelectKindType.CosBotPtn03;
+                    if (pattern == 4) return SelectKindType.CosBotPtn04;
+                    if (emblem == 1) return SelectKindType.CosBotEmblem;
+                    if (emblem == 2) return SelectKindType.CosBotEmblem;
+                    break;
+                case 2:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosBra;
+                    if (pattern == 1) return SelectKindType.CosBraPtn01;
+                    if (pattern == 2) return SelectKindType.CosBraPtn02;
+                    if (pattern == 3) return SelectKindType.CosBraPtn03;
+                    if (pattern == 4) return SelectKindType.CosBraPtn04;
+                    if (emblem == 1) return SelectKindType.CosBraEmblem;
+                    if (emblem == 2) return SelectKindType.CosBraEmblem;
+                    break;
+                case 3:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosShorts;
+                    if (pattern == 1) return SelectKindType.CosShortsPtn01;
+                    if (pattern == 2) return SelectKindType.CosShortsPtn02;
+                    if (pattern == 3) return SelectKindType.CosShortsPtn03;
+                    if (pattern == 4) return SelectKindType.CosShortsPtn04;
+                    if (emblem == 1) return SelectKindType.CosShortsEmblem;
+                    if (emblem == 2) return SelectKindType.CosShortsEmblem;
+                    break;
+                case 4:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosGloves;
+                    if (pattern == 1) return SelectKindType.CosGlovesPtn01;
+                    if (pattern == 2) return SelectKindType.CosGlovesPtn02;
+                    if (pattern == 3) return SelectKindType.CosGlovesPtn03;
+                    if (pattern == 4) return SelectKindType.CosGlovesPtn04;
+                    if (emblem == 1) return SelectKindType.CosGlovesEmblem;
+                    if (emblem == 2) return SelectKindType.CosGlovesEmblem;
+                    break;
+                case 5:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosPanst;
+                    if (pattern == 1) return SelectKindType.CosPanstPtn01;
+                    if (pattern == 2) return SelectKindType.CosPanstPtn02;
+                    if (pattern == 3) return SelectKindType.CosPanstPtn03;
+                    if (pattern == 4) return SelectKindType.CosPanstPtn04;
+                    if (emblem == 1) return SelectKindType.CosPanstEmblem;
+                    if (emblem == 2) return SelectKindType.CosPanstEmblem;
+                    break;
+                case 6:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosSocks;
+                    if (pattern == 1) return SelectKindType.CosSocksPtn01;
+                    if (pattern == 2) return SelectKindType.CosSocksPtn02;
+                    if (pattern == 3) return SelectKindType.CosSocksPtn03;
+                    if (pattern == 4) return SelectKindType.CosSocksPtn04;
+                    if (emblem == 1) return SelectKindType.CosSocksEmblem;
+                    if (emblem == 2) return SelectKindType.CosSocksEmblem;
+                    break;
+                case 7:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosInnerShoes;
+                    if (pattern == 1) return SelectKindType.CosInnerShoesPtn01;
+                    if (pattern == 2) return SelectKindType.CosInnerShoesPtn02;
+                    if (pattern == 3) return SelectKindType.CosInnerShoesPtn03;
+                    if (pattern == 4) return SelectKindType.CosInnerShoesPtn04;
+                    if (emblem == 1) return SelectKindType.CosInnerShoesEmblem;
+                    if (emblem == 2) return SelectKindType.CosInnerShoesEmblem;
+                    break;
+                case 8:
+                    if (pattern == 0 && emblem == 0) return SelectKindType.CosOuterShoes;
+                    if (pattern == 1) return SelectKindType.CosOuterShoesPtn01;
+                    if (pattern == 2) return SelectKindType.CosOuterShoesPtn02;
+                    if (pattern == 3) return SelectKindType.CosOuterShoesPtn03;
+                    if (pattern == 4) return SelectKindType.CosOuterShoesPtn04;
+                    if (emblem == 1) return SelectKindType.CosOuterShoesEmblem;
+                    if (emblem == 2) return SelectKindType.CosOuterShoesEmblem;
+                    break;
+            }
+            return SelectKindType.CosTop;
+        }
         #endregion
 
         #region Category mappings
@@ -1505,22 +1689,26 @@ namespace Plugins
         public int ColorNr { get; set; }
         [Key("SlotNr")]
         public int SlotNr { get; set; }
+        [Key("IsPattern")]
+        public bool IsPattern { get; set; }
 
-        public ClothingStorageKey(int outfitSlot, int clothingKind, int colorNr, int slotNr)
+        public ClothingStorageKey(int outfitSlot, int clothingKind, int colorNr, int slotNr, bool isPattern)
         {
             OutfitSlot = outfitSlot;
             ClothingKind = clothingKind;
             ColorNr = colorNr;
             SlotNr = slotNr;
+            IsPattern = isPattern;
         }
 
-        public bool Compare(int outfitSlot, int kind, int colorNr, int slotNr)
+        public bool Compare(int outfitSlot, int kind, int colorNr, int slotNr, bool isPattern)
         {
             if (
                 OutfitSlot == outfitSlot
                 && ClothingKind == kind
                 && ColorNr == colorNr
                 && SlotNr == slotNr
+                && IsPattern == isPattern
             )
                 return true;
             return false;
