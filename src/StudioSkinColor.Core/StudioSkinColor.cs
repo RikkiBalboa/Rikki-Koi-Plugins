@@ -95,22 +95,27 @@ namespace Plugins
                 c2aAIlnstances = field.GetValue(c2aAdapterType) as IDictionary;
                 c2aClothingKindField = c2aAdapterType.GetField("_clothingKind", AccessTools.all);
             }
-            CategoryPicker.InitializeCategories();
-            foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
+
+            StudioAPI.StudioLoadedChanged += (sender, e) =>
             {
-                var cat = new CategoryPicker(category);
-                cat.OnActivateAction = () => {
-                    if (pickerWindowFunc == null || pickerWindowFunc != cat.DrawWindow)
+                CategoryPicker.InitializeCategories();
+                foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
+                {
+                    var cat = new CategoryPicker(category);
+                    cat.OnActivateAction = () =>
                     {
-                        pickerWindowName = cat.name;
-                        pickerWindowFunc = cat.DrawWindow;
-                    }
-                    else
-                        cat.OnCloseAction();
-                };
-                cat.OnCloseAction = () => pickerWindowFunc = null;
-                categoryPickers[category] = cat;
-            }
+                        if (pickerWindowFunc == null || pickerWindowFunc != cat.DrawWindow)
+                        {
+                            pickerWindowName = cat.name;
+                            pickerWindowFunc = cat.DrawWindow;
+                        }
+                        else
+                            cat.OnCloseAction();
+                    };
+                    cat.OnCloseAction = () => pickerWindowFunc = null;
+                    categoryPickers[category] = cat;
+                }
+            };
 
 #if DEBUG
             foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)
