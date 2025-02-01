@@ -107,6 +107,8 @@ namespace Plugins
                     {36, "Ankle Thickness"},
                 }
             },
+            { "Pubic Hair", new Dictionary<int, string>() },
+            { "Suntan", new Dictionary<int, string>() },
         };
         public static readonly Dictionary<string, Dictionary<int, string>> shapeFaceValueMap = new Dictionary<string, Dictionary<int, string>>()
         {
@@ -298,10 +300,36 @@ namespace Plugins
                     controller.InitBaseCustomTextureClothesIfNotExists(selectedKind);
                     var clothingList = selectedCharacterClothing[selectedCharacter]?.Where(c => c.Kind == selectedKind);
 
-                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTop].DrawSelectedItem();
-
                     foreach (var clothing in clothingList)
                     {
+                        if (!clothing.IsC2a)
+                        {
+                            if (selectedKind == 0)
+                            {
+                                categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTop].DrawSelectedItem();
+                                if (selectedCharacter.infoClothes[clothing.Kind].Kind == 1)
+                                {
+                                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor01].DrawSelectedItem();
+                                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor02].DrawSelectedItem();
+                                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor03].DrawSelectedItem();
+                                }
+                                else if (selectedCharacter.infoClothes[clothing.Kind].Kind == 2)
+                                {
+                                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosJacket01].DrawSelectedItem();
+                                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosJacket02].DrawSelectedItem();
+                                    categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosJacket03].DrawSelectedItem();
+                                }
+                            }
+                            else if (selectedKind == 1) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosBot].DrawSelectedItem();
+                            else if (selectedKind == 2) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosBra].DrawSelectedItem();
+                            else if (selectedKind == 3) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosShorts].DrawSelectedItem();
+                            else if (selectedKind == 4) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosGloves].DrawSelectedItem();
+                            else if (selectedKind == 5) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosPanst].DrawSelectedItem();
+                            else if (selectedKind == 6) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSocks].DrawSelectedItem();
+                            else if (selectedKind == 7) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosInnerShoes].DrawSelectedItem();
+                            else if (selectedKind == 8) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosOuterShoes].DrawSelectedItem();
+                        }
+
                         GUILayout.BeginHorizontal(GUI.skin.box);
                         if (clothing.IsC2a)
                             GUILayout.Label($"(Acc {clothing.SlotNr})", new GUIStyle(GUI.skin.label));
@@ -391,10 +419,9 @@ namespace Plugins
 
                     if (selectedBodyTab == "General")
                     {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.BodyDetail].DrawSelectedItem();
                         BodyColorRow("Main Skin Color", BodyColor.SkinMain);
                         BodyColorRow("Sub Skin Color", BodyColor.SkinSub);
-                        BodyColorRow("Tan Color", BodyColor.SkinTan);
-                        BodyColorRow("Pubic Hair Color", BodyColor.PubicHairColor);
                         BodyColorRow("Nail Color", BodyColor.NailColor);
                     }
                     else if (selectedBodyTab == "Chest")
@@ -419,7 +446,18 @@ namespace Plugins
                             f => controller.SetBustValue(f, Bust.Weight),
                             () => controller.ResetBustValue(Bust.Weight)
                         );
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Nip].DrawSelectedItem();
                         BodyColorRow("Nipple Color", BodyColor.NippleColor);
+                    }
+                    else if (selectedBodyTab == "Pubic Hair")
+                    {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Underhair].DrawSelectedItem();
+                        BodyColorRow("Pubic Hair Color", BodyColor.PubicHairColor);
+                    }
+                    else if (selectedBodyTab == "Suntan")
+                    {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Sunburn].DrawSelectedItem();
+                        BodyColorRow("Tan Color", BodyColor.SkinTan);
                     }
 
                     foreach (var category in shapeBodyValueMap)
@@ -477,29 +515,52 @@ namespace Plugins
                             () => controller.ResetFaceShapeValue(faceValue.Key)
                         );
 
-                    if (selectedFaceTab == "Eyebrows")
+                    if (selectedFaceTab == "General")
+                    {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.HeadType].DrawSelectedItem();
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.FaceDetail].DrawSelectedItem();
+                    }
+                    else if (selectedFaceTab == "Eyebrows")
+                    {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Eyebrow].DrawSelectedItem();
                         FaceColorRow("Eyebrow Color", FaceColor.EyebrowColor);
+                    }
                     else if (selectedFaceTab == "Eyes")
+                    {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyelineUp].DrawSelectedItem();
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyelineDown].DrawSelectedItem();
                         FaceColorRow("Eyeline Color", FaceColor.EyelineColor);
+                    }
                     else if (selectedFaceTab == "Iris")
                     {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeWGrade].DrawSelectedItem();
                         FaceColorRow("Sclera Color 1", FaceColor.ScleraColor1);
                         FaceColorRow("Sclera Color 2", FaceColor.ScleraColor2);
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeHLUp].DrawSelectedItem();
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeHLDown].DrawSelectedItem();
                         FaceColorRow("Upper Highlight Color", FaceColor.UpperHighlightColor);
                         FaceColorRow("Lower Highlight Color", FaceColor.LowerHightlightColor);
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Pupil].DrawSelectedItem();
                         FaceColorRow("Eye Color 1 (Left)", FaceColor.EyeColor1Left);
                         FaceColorRow("Eye Color 2 (Left)", FaceColor.EyeColor2Left);
                         FaceColorRow("Eye Color 1 (Right)", FaceColor.EyeColor1Right);
                         FaceColorRow("Eye Color 2 (Right)", FaceColor.EyeColor2Right);
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.PupilGrade].DrawSelectedItem();
                     }
+                    else if (selectedFaceTab == "Nose")
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Nose].DrawSelectedItem();
                     else if (selectedFaceTab == "Mouth")
                     {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Lipline].DrawSelectedItem();
                         FaceColorRow("Lip Line Color", FaceColor.LipLineColor);
                     }
                     else if (selectedFaceTab == "Makeup")
                     {
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Eyeshadow].DrawSelectedItem();
                         FaceColorRow("Eye Shadow Color", FaceColor.EyeShadowColor);
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Cheek].DrawSelectedItem();
                         FaceColorRow("Cheek Color", FaceColor.CheekColor);
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Lip].DrawSelectedItem();
                         FaceColorRow("Lip Color", FaceColor.LipColor);
                     }
                 }
