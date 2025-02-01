@@ -201,8 +201,6 @@ namespace Plugins
                 };
                 lstSelectInfo.Add(customSelectInfo);
             });
-
-            UpdateSelected();
         }
 
         public void DrawSelectedItem()
@@ -319,8 +317,8 @@ namespace Plugins
 
         public void UpdateSelected()
         {
-            int newIndex = lstSelectInfo.FindIndex(x => x.index == Controller.GetSelected(type));
-            if (newIndex != selectedIndex)
+            int newIndex = lstSelectInfo.FindIndex(x => x.index == Controller?.GetSelected(type));
+            if (newIndex != selectedIndex && newIndex >= 0)
             {
                 selectedIndex = newIndex;
                 selectedThumbnail = CommonLib.LoadAsset<Texture2D>(lstSelectInfo[selectedIndex].assetBundle, lstSelectInfo[selectedIndex].assetName);

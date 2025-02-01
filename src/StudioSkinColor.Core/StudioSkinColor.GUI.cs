@@ -305,13 +305,14 @@ namespace Plugins
                             if (selectedKind == 0)
                             {
                                 categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTop].DrawSelectedItem();
-                                if (selectedCharacter.infoClothes[clothing.Kind].Kind == 1)
+                                var kind = selectedCharacter.infoClothes[clothing.Kind]?.Kind;
+                                if (kind == 1)
                                 {
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor01].DrawSelectedItem();
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor02].DrawSelectedItem();
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSailor03].DrawSelectedItem();
                                 }
-                                else if (selectedCharacter.infoClothes[clothing.Kind].Kind == 2)
+                                else if (kind == 2)
                                 {
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosJacket01].DrawSelectedItem();
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosJacket02].DrawSelectedItem();

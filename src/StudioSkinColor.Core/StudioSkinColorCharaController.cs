@@ -119,6 +119,8 @@ namespace Plugins
 
         public static StudioSkinColorCharaController GetController(ChaControl chaCtrl)
         {
+            if (chaCtrl == null)
+                return null;
             if (allControllers.ContainsKey(chaCtrl))
                 return allControllers[chaCtrl];
 #if DEBUG
@@ -556,15 +558,15 @@ namespace Plugins
         public string GetclothingName(int kind, int slotNr = -1)
         {
             if (slotNr < 0)
-                return ChaControl.infoClothes[kind].Name;
-            return ChaControl.infoAccessory[slotNr].Name;
+                return ChaControl.infoClothes[kind]?.Name;
+            return ChaControl.infoAccessory[slotNr]?.Name;
         }
 
         public void InitBaseCustomTextureClothesIfNotExists(int kind)
         {
             try
             {
-                if (selectedCharacter?.ctCreateClothes[kind, 0] == null)
+                if (selectedCharacter?.ctCreateClothes[kind, 0] == null && selectedCharacter.infoClothes[kind] != null)
                     selectedCharacter.InitBaseCustomTextureClothes(true, kind);
             }
             catch (Exception e)
