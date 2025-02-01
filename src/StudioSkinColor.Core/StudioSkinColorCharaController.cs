@@ -615,6 +615,25 @@ namespace Plugins
             return GetClothingColor(kind, colorNr, slotNr);
         }
 
+        public bool GetHideOpt(int kind, int option)
+        {
+            return selectedCharacter.nowCoordinate.clothes.parts[kind].hideOpt[option];
+        }
+
+        public void SetHideOpt(int kind, int option, bool value)
+        {
+            if (Clothes.parts[kind].hideOpt[option] != value)
+            {
+                Clothes.parts[kind].hideOpt[option] = value;
+                SetClothes.parts[kind].hideOpt[option] = value;
+            }
+        }
+
+        public int GetClothingUsesOptParts (ChaClothesComponent component)
+        {
+            return Convert.ToInt32(component?.objOpt01?.Any()) + Convert.ToInt32(component?.objOpt02?.Any());
+        }
+
         internal void ChangeCoordinateEvent()
         {
             StartCoroutine(ChangeCoordinateTypeCoroutine());

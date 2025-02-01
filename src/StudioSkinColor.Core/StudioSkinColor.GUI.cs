@@ -302,9 +302,32 @@ namespace Plugins
                     {
                         if (!clothing.IsC2a)
                         {
+                            if (selectedKind == 0) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTop].DrawSelectedItem();
+                            else if (selectedKind == 1) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosBot].DrawSelectedItem();
+                            else if (selectedKind == 2) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosBra].DrawSelectedItem();
+                            else if (selectedKind == 3) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosShorts].DrawSelectedItem();
+                            else if (selectedKind == 4) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosGloves].DrawSelectedItem();
+                            else if (selectedKind == 5) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosPanst].DrawSelectedItem();
+                            else if (selectedKind == 6) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSocks].DrawSelectedItem();
+                            else if (selectedKind == 7) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosInnerShoes].DrawSelectedItem();
+                            else if (selectedKind == 8) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosOuterShoes].DrawSelectedItem();
+
+                            var optParts = controller.GetClothingUsesOptParts(clothesComponent);
+                            if (optParts > 0)
+                            {
+                                GUILayout.BeginHorizontal();
+                                {
+                                    GUILayout.Space(160);
+                                    if (optParts > 0)
+                                        controller.SetHideOpt(clothing.Kind, 0, !GUILayout.Toggle(!controller.GetHideOpt(clothing.Kind, 0), "Option 1"));
+                                    if (optParts > 1)
+                                        controller.SetHideOpt(clothing.Kind, 1, !GUILayout.Toggle(!controller.GetHideOpt(clothing.Kind, 1), "Option 2"));
+                                }
+                                GUILayout.EndHorizontal();
+                            }
+
                             if (selectedKind == 0)
                             {
-                                categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTop].DrawSelectedItem();
                                 var kind = selectedCharacter.infoClothes[clothing.Kind]?.Kind;
                                 if (kind == 1)
                                 {
@@ -321,14 +344,6 @@ namespace Plugins
                                     categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosTopEmblem].DrawSelectedItem();
                                 }
                             }
-                            else if (selectedKind == 1) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosBot].DrawSelectedItem();
-                            else if (selectedKind == 2) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosBra].DrawSelectedItem();
-                            else if (selectedKind == 3) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosShorts].DrawSelectedItem();
-                            else if (selectedKind == 4) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosGloves].DrawSelectedItem();
-                            else if (selectedKind == 5) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosPanst].DrawSelectedItem();
-                            else if (selectedKind == 6) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosSocks].DrawSelectedItem();
-                            else if (selectedKind == 7) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosInnerShoes].DrawSelectedItem();
-                            else if (selectedKind == 8) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosOuterShoes].DrawSelectedItem();
                         }
 
                         GUILayout.BeginHorizontal(GUI.skin.box);
