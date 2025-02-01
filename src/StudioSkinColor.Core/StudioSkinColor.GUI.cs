@@ -375,14 +375,14 @@ namespace Plugins
 
         private void DrawBodyWindow()
         {
-            void BodyColorRow(string name, BodyColor bodyColor)
+            void BodyColorRow(string name, ColorType bodyColor)
             {
                 DrawColorRow(
                     $"{name}:",
-                    controller.GetBodyColor(bodyColor),
-                    controller.GetOriginalBodyColor(bodyColor),
-                    c => controller.UpdateBodyColor(c, bodyColor),
-                    () => controller.ResetBodyColor(bodyColor)
+                    controller.GetColorPropertyValue(bodyColor),
+                    controller.GetOriginalColorPropertyValue(bodyColor),
+                    c => controller.UpdateColorProperty(c, bodyColor),
+                    () => controller.ResetColorProperty(bodyColor)
                 );
             }
 
@@ -421,9 +421,9 @@ namespace Plugins
                     if (selectedBodyTab == "General")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.BodyDetail].DrawSelectedItem();
-                        BodyColorRow("Main Skin Color", BodyColor.SkinMain);
-                        BodyColorRow("Sub Skin Color", BodyColor.SkinSub);
-                        BodyColorRow("Nail Color", BodyColor.NailColor);
+                        BodyColorRow("Main Skin Color", ColorType.SkinMain);
+                        BodyColorRow("Sub Skin Color", ColorType.SkinSub);
+                        BodyColorRow("Nail Color", ColorType.NailColor);
                     }
                     else if (selectedBodyTab == "Chest")
                     {
@@ -448,17 +448,17 @@ namespace Plugins
                             () => controller.ResetBustValue(Bust.Weight)
                         );
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Nip].DrawSelectedItem();
-                        BodyColorRow("Nipple Color", BodyColor.NippleColor);
+                        BodyColorRow("Nipple Color", ColorType.NippleColor);
                     }
                     else if (selectedBodyTab == "Pubic Hair")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Underhair].DrawSelectedItem();
-                        BodyColorRow("Pubic Hair Color", BodyColor.PubicHairColor);
+                        BodyColorRow("Pubic Hair Color", ColorType.PubicHairColor);
                     }
                     else if (selectedBodyTab == "Suntan")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Sunburn].DrawSelectedItem();
-                        BodyColorRow("Tan Color", BodyColor.SkinTan);
+                        BodyColorRow("Tan Color", ColorType.SkinTan);
                     }
 
                     foreach (var category in shapeBodyValueMap)
@@ -473,14 +473,14 @@ namespace Plugins
 
         private void DrawFaceWindow()
         {
-            void FaceColorRow(string name, FaceColor faceColor)
+            void FaceColorRow(string name, ColorType faceColor)
             {
                 DrawColorRow(
                     $"{name}:",
-                    controller.GetFaceColor(faceColor),
-                    controller.GetOriginalFaceColor(faceColor),
-                    c => controller.UpdateFaceColor(c, faceColor),
-                    () => controller.ResetFaceColor(faceColor)
+                    controller.GetColorPropertyValue(faceColor),
+                    controller.GetOriginalColorPropertyValue(faceColor),
+                    c => controller.UpdateColorProperty(c, faceColor),
+                    () => controller.ResetColorProperty(faceColor)
                 );
             }
 
@@ -524,28 +524,28 @@ namespace Plugins
                     else if (selectedFaceTab == "Eyebrows")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Eyebrow].DrawSelectedItem();
-                        FaceColorRow("Eyebrow Color", FaceColor.EyebrowColor);
+                        FaceColorRow("Eyebrow Color", ColorType.EyebrowColor);
                     }
                     else if (selectedFaceTab == "Eyes")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyelineUp].DrawSelectedItem();
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyelineDown].DrawSelectedItem();
-                        FaceColorRow("Eyeline Color", FaceColor.EyelineColor);
+                        FaceColorRow("Eyeline Color", ColorType.EyelineColor);
                     }
                     else if (selectedFaceTab == "Iris")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeWGrade].DrawSelectedItem();
-                        FaceColorRow("Sclera Color 1", FaceColor.ScleraColor1);
-                        FaceColorRow("Sclera Color 2", FaceColor.ScleraColor2);
+                        FaceColorRow("Sclera Color 1", ColorType.ScleraColor1);
+                        FaceColorRow("Sclera Color 2", ColorType.ScleraColor2);
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeHLUp].DrawSelectedItem();
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeHLDown].DrawSelectedItem();
-                        FaceColorRow("Upper Highlight Color", FaceColor.UpperHighlightColor);
-                        FaceColorRow("Lower Highlight Color", FaceColor.LowerHightlightColor);
+                        FaceColorRow("Upper Highlight Color", ColorType.UpperHighlightColor);
+                        FaceColorRow("Lower Highlight Color", ColorType.LowerHightlightColor);
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Pupil].DrawSelectedItem();
-                        FaceColorRow("Eye Color 1 (Left)", FaceColor.EyeColor1Left);
-                        FaceColorRow("Eye Color 2 (Left)", FaceColor.EyeColor2Left);
-                        FaceColorRow("Eye Color 1 (Right)", FaceColor.EyeColor1Right);
-                        FaceColorRow("Eye Color 2 (Right)", FaceColor.EyeColor2Right);
+                        FaceColorRow("Eye Color 1 (Left)", ColorType.EyeColor1Left);
+                        FaceColorRow("Eye Color 2 (Left)", ColorType.EyeColor2Left);
+                        FaceColorRow("Eye Color 1 (Right)", ColorType.EyeColor1Right);
+                        FaceColorRow("Eye Color 2 (Right)", ColorType.EyeColor2Right);
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.PupilGrade].DrawSelectedItem();
                     }
                     else if (selectedFaceTab == "Nose")
@@ -553,16 +553,16 @@ namespace Plugins
                     else if (selectedFaceTab == "Mouth")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Lipline].DrawSelectedItem();
-                        FaceColorRow("Lip Line Color", FaceColor.LipLineColor);
+                        FaceColorRow("Lip Line Color", ColorType.LipLineColor);
                     }
                     else if (selectedFaceTab == "Makeup")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Eyeshadow].DrawSelectedItem();
-                        FaceColorRow("Eye Shadow Color", FaceColor.EyeShadowColor);
+                        FaceColorRow("Eye Shadow Color", ColorType.EyeShadowColor);
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Cheek].DrawSelectedItem();
-                        FaceColorRow("Cheek Color", FaceColor.CheekColor);
+                        FaceColorRow("Cheek Color", ColorType.CheekColor);
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Lip].DrawSelectedItem();
-                        FaceColorRow("Lip Color", FaceColor.LipColor);
+                        FaceColorRow("Lip Color", ColorType.LipColor);
                     }
                 }
                 GUILayout.EndScrollView();
@@ -576,40 +576,40 @@ namespace Plugins
             {
                 DrawColorRow(
                     "Color 1:",
-                    controller.GetHairColor(HairColor.Base),
-                    controller.GetOriginalHairColor(HairColor.Base),
-                    c => controller.UpdateHairColor(c, HairColor.Base),
-                    () => controller.ResetHairColor(HairColor.Base)
+                    controller.GetColorPropertyValue(ColorType.Base),
+                    controller.GetOriginalColorPropertyValue(ColorType.Base),
+                    c => controller.UpdateColorProperty(c, ColorType.Base),
+                    () => controller.ResetColorProperty(ColorType.Base)
                 );
                 DrawColorRow(
                     "Color 2:",
-                    controller.GetHairColor(HairColor.Start),
-                    controller.GetOriginalHairColor(HairColor.Start),
-                    c => controller.UpdateHairColor(c, HairColor.Start),
-                    () => controller.ResetHairColor(HairColor.Start)
+                    controller.GetColorPropertyValue(ColorType.Start),
+                    controller.GetOriginalColorPropertyValue(ColorType.Start),
+                    c => controller.UpdateColorProperty(c, ColorType.Start),
+                    () => controller.ResetColorProperty(ColorType.Start)
                 );
                 DrawColorRow(
                     "Color 3:",
-                    controller.GetHairColor(HairColor.End),
-                    controller.GetOriginalHairColor(HairColor.End),
-                    c => controller.UpdateHairColor(c, HairColor.End),
-                    () => controller.ResetHairColor(HairColor.End)
+                    controller.GetColorPropertyValue(ColorType.End),
+                    controller.GetOriginalColorPropertyValue(ColorType.End),
+                    c => controller.UpdateColorProperty(c, ColorType.End),
+                    () => controller.ResetColorProperty(ColorType.End)
                 );
 #if KKS
                 DrawColorRow(
                     "Gloss color:",
-                    controller.GetHairColor(HairColor.Gloss),
-                    controller.GetOriginalHairColor(HairColor.Gloss),
-                    c => controller.UpdateHairColor(c, HairColor.Gloss),
-                    () => controller.ResetHairColor(HairColor.Gloss)
+                    controller.GetColorPropertyValue(ColorType.Gloss),
+                    controller.GetOriginalColorPropertyValue(ColorType.Gloss),
+                    c => controller.UpdateColorProperty(c, ColorType.Gloss),
+                    () => controller.ResetColorProperty(ColorType.Gloss)
                 );
 #endif
                 DrawColorRow(
                     "Eyebrow color:",
-                    controller.GetHairColor(HairColor.Eyebrow),
-                    controller.GetOriginalHairColor(HairColor.Eyebrow),
-                    c => controller.UpdateHairColor(c, HairColor.Eyebrow),
-                    () => controller.ResetHairColor(HairColor.Eyebrow)
+                    controller.GetColorPropertyValue(ColorType.Eyebrow),
+                    controller.GetOriginalColorPropertyValue(ColorType.Eyebrow),
+                    c => controller.UpdateColorProperty(c, ColorType.Eyebrow),
+                    () => controller.ResetColorProperty(ColorType.Eyebrow)
                 );
             }
             GUILayout.EndVertical();

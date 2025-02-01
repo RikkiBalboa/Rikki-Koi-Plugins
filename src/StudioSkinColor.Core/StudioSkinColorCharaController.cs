@@ -18,10 +18,8 @@ namespace Plugins
         internal static readonly Dictionary<ChaControl, StudioSkinColorCharaController> allControllers = new Dictionary<ChaControl, StudioSkinColorCharaController>();
 
         #region Save Lists
-        private Dictionary<ClothingColors, ColorStorage> OriginalClothingColors = new Dictionary<ClothingColors, ColorStorage>();
-        private Dictionary<HairColor, ColorStorage> OriginalHairColors = new Dictionary<HairColor, ColorStorage>();
-        private Dictionary<BodyColor, ColorStorage> OriginalBodyColors = new Dictionary<BodyColor, ColorStorage>();
-        private Dictionary<FaceColor, ColorStorage> OriginalFaceColors = new Dictionary<FaceColor, ColorStorage>();
+        private Dictionary<ClothingStorageKey, ColorStorage> OriginalClothingColors = new Dictionary<ClothingStorageKey, ColorStorage>();
+        private Dictionary<ColorType, ColorStorage> OriginalColors = new Dictionary<ColorType, ColorStorage>();
         private Dictionary<Bust, FloatStorage> OriginalBustValues = new Dictionary<Bust, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalBodyShapeValues = new Dictionary<int, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalFaceShapeValues = new Dictionary<int, FloatStorage>();
@@ -44,20 +42,10 @@ namespace Plugins
             else
                 data.data.Add(nameof(OriginalClothingColors), null);
 
-            if (OriginalHairColors.Count > 0)
-                data.data.Add(nameof(OriginalHairColors), MessagePackSerializer.Serialize(OriginalHairColors));
+            if (OriginalColors.Count > 0)
+                data.data.Add(nameof(OriginalColors), MessagePackSerializer.Serialize(OriginalColors));
             else
-                data.data.Add(nameof(OriginalHairColors), null);
-
-            if (OriginalBodyColors.Count > 0)
-                data.data.Add(nameof(OriginalBodyColors), MessagePackSerializer.Serialize(OriginalBodyColors));
-            else
-                data.data.Add(nameof(OriginalBodyColors), null);
-
-            if (OriginalFaceColors.Count > 0)
-                data.data.Add(nameof(OriginalFaceColors), MessagePackSerializer.Serialize(OriginalFaceColors));
-            else
-                data.data.Add(nameof(OriginalFaceColors), null);
+                data.data.Add(nameof(OriginalColors), null);
 
             if (OriginalBustValues.Count > 0)
                 data.data.Add(nameof(OriginalBustValues), MessagePackSerializer.Serialize(OriginalBustValues));
@@ -84,9 +72,7 @@ namespace Plugins
 
             allControllers[ChaControl] = this;
             OriginalClothingColors.Clear();
-            OriginalHairColors.Clear();
-            OriginalBodyColors.Clear();
-            OriginalFaceColors.Clear();
+            OriginalColors.Clear();
             OriginalBustValues.Clear();
             OriginalBodyShapeValues.Clear();
             OriginalFaceShapeValues.Clear();
@@ -96,16 +82,10 @@ namespace Plugins
                 return;
 
             if (data.data.TryGetValue(nameof(OriginalClothingColors), out var originalClothingColors) && originalClothingColors != null)
-                OriginalClothingColors = MessagePackSerializer.Deserialize<Dictionary<ClothingColors, ColorStorage>>((byte[])originalClothingColors);
+                OriginalClothingColors = MessagePackSerializer.Deserialize<Dictionary<ClothingStorageKey, ColorStorage>>((byte[])originalClothingColors);
 
-            if (data.data.TryGetValue(nameof(OriginalHairColors), out var originalHairColors) && originalHairColors != null)
-                OriginalHairColors = MessagePackSerializer.Deserialize<Dictionary<HairColor, ColorStorage>>((byte[])originalHairColors);
-
-            if (data.data.TryGetValue(nameof(OriginalBodyColors), out var originalBodyColors) && originalBodyColors != null)
-                OriginalBodyColors = MessagePackSerializer.Deserialize<Dictionary<BodyColor, ColorStorage>>((byte[])originalBodyColors);
-
-            if (data.data.TryGetValue(nameof(OriginalFaceColors), out var originalFaceColors) && originalFaceColors != null)
-                OriginalFaceColors = MessagePackSerializer.Deserialize<Dictionary<FaceColor, ColorStorage>>((byte[])originalFaceColors);
+            if (data.data.TryGetValue(nameof(OriginalColors), out var originalHairColors) && originalHairColors != null)
+                OriginalColors = MessagePackSerializer.Deserialize<Dictionary<ColorType, ColorStorage>>((byte[])originalHairColors);
 
             if (data.data.TryGetValue(nameof(OriginalBustValues), out var originalBustValues) && originalBustValues != null)
                 OriginalBustValues = MessagePackSerializer.Deserialize<Dictionary<Bust, FloatStorage>>((byte[])originalBustValues);
@@ -150,75 +130,205 @@ namespace Plugins
             ChaControl.SetFaceBaseMaterial();
         }
 
-        public void UpdateBodyColor(Color color, BodyColor textureColor)
+        public void UpdateColorProperty(Color color, ColorType textureColor)
         {
-            if (!OriginalBodyColors.ContainsKey(textureColor))
-                OriginalBodyColors[textureColor] = new ColorStorage(GetBodyColor(textureColor), color);
+            if (!OriginalColors.ContainsKey(textureColor))
+                OriginalColors[textureColor] = new ColorStorage(GetColorPropertyValue(textureColor), color);
             else
-                OriginalBodyColors[textureColor].Value = color;
+                OriginalColors[textureColor].Value = color;
 
             switch (textureColor)
             {
-                case BodyColor.SkinMain:
+                case ColorType.SkinMain:
                     ChaControl.fileBody.skinMainColor = color;
                     UpdateFaceTextures(inpBase: true);
                     UpdateBodyTextures(inpBase: true);
                     break;
-                case BodyColor.SkinSub:
+                case ColorType.SkinSub:
                     ChaControl.fileBody.skinSubColor = color;
                     UpdateFaceTextures(inpSub: true);
                     UpdateBodyTextures(inpSub: true);
                     break;
-                case BodyColor.SkinTan:
+                case ColorType.SkinTan:
                     ChaControl.fileBody.sunburnColor = color;
                     UpdateBodyTextures(inpSunburn: true);
                     break;
-                case BodyColor.NippleColor:
+                case ColorType.NippleColor:
                     ChaControl.fileBody.nipColor = color;
                     ChaControl.ChangeSettingNipColor();
                     break;
-                case BodyColor.NailColor:
+                case ColorType.NailColor:
                     ChaControl.fileBody.nailColor = color;
                     UpdateBodyTextures(inpNail: true);
                     break;
-                case BodyColor.PubicHairColor:
+                case ColorType.PubicHairColor:
                     ChaControl.fileBody.underhairColor = color;
                     ChaControl.ChangeSettingUnderhairColor();
+                    break;
+                case ColorType.EyebrowColor:
+                    ChaControl.fileFace.eyebrowColor = color;
+                    ChaControl.ChangeSettingEyebrowColor();
+                    break;
+                case ColorType.EyelineColor:
+                    ChaControl.fileFace.eyelineColor = color;
+                    ChaControl.ChangeSettingEyelineColor();
+                    break;
+                case ColorType.ScleraColor1:
+                    ChaControl.fileFace.whiteBaseColor = color;
+                    ChaControl.ChangeSettingWhiteOfEye(true, true);
+                    break;
+                case ColorType.ScleraColor2:
+                    ChaControl.fileFace.whiteSubColor = color;
+                    ChaControl.ChangeSettingWhiteOfEye(true, true);
+                    break;
+                case ColorType.UpperHighlightColor:
+                    ChaControl.fileFace.hlUpColor = color;
+                    ChaControl.ChangeSettingEyeHiUpColor();
+                    break;
+                case ColorType.LowerHightlightColor:
+                    ChaControl.fileFace.hlDownColor = color;
+                    ChaControl.ChangeSettingEyeHiDownColor();
+                    break;
+                case ColorType.EyeColor1Left:
+                    ChaControl.fileFace.pupil[0].baseColor = color;
+                    ChaControl.ChangeSettingEyeL(true, true, false);
+                    break;
+                case ColorType.EyeColor2Left:
+                    ChaControl.fileFace.pupil[0].subColor = color;
+                    ChaControl.ChangeSettingEyeL(true, true, false);
+                    break;
+                case ColorType.EyeColor1Right:
+                    ChaControl.fileFace.pupil[1].baseColor = color;
+                    ChaControl.ChangeSettingEyeR(true, true, false);
+                    break;
+                case ColorType.EyeColor2Right:
+                    ChaControl.fileFace.pupil[2].subColor = color;
+                    ChaControl.ChangeSettingEyeR(true, true, false);
+                    break;
+                case ColorType.LipLineColor:
+                    ChaControl.fileFace.lipLineColor = color;
+                    UpdateFaceTextures(inpLipLine: true);
+                    break;
+                case ColorType.EyeShadowColor:
+                    ChaControl.fileFace.baseMakeup.eyeshadowColor = color;
+                    ChaControl.ChangeSettingEyeShadowColor();
+                    break;
+                case ColorType.CheekColor:
+                    ChaControl.fileFace.baseMakeup.cheekColor = color;
+                    UpdateFaceTextures(inpCheek: true);
+                    break;
+                case ColorType.LipColor:
+                    ChaControl.fileFace.baseMakeup.lipColor = color;
+                    ChaControl.ChangeSettingLipColor();
+                    break;
+                case ColorType.Base:
+                    for (int i = 0; i < 4; i++)
+                    {
+                        ChaControl.fileHair.parts[i].baseColor = color;
+                        ChaControl.ChangeSettingHairColor(i, true, true, true);
+                    }
+                    break;
+                case ColorType.Start:
+                    for (int i = 0; i < 4; i++)
+                    {
+                        ChaControl.fileHair.parts[i].startColor = color;
+                        ChaControl.ChangeSettingHairColor(i, true, true, true);
+                    }
+                    break;
+                case ColorType.End:
+                    for (int i = 0; i < 4; i++)
+                    {
+                        ChaControl.fileHair.parts[i].endColor = color;
+                        ChaControl.ChangeSettingHairColor(i, true, true, true);
+                    }
+                    break;
+#if KKS
+                case ColorType.Gloss:
+                    for (int i = 0; i < 4; i++)
+                    {
+                        ChaControl.fileHair.parts[i].glossColor = color;
+                        ChaControl.ChangeSettingHairGlossColor(i);
+                    }
+                    break;
+#endif
+                case ColorType.Eyebrow:
+                    ChaControl.fileFace.eyebrowColor = color;
+                    ChaControl.ChangeSettingEyebrowColor();
                     break;
             }
         }
 
-        public Color GetBodyColor(BodyColor color)
+        public Color GetColorPropertyValue(ColorType color)
         {
             switch (color)
             {
-                case BodyColor.SkinMain:
+                case ColorType.SkinMain:
                     return ChaControl.fileBody.skinMainColor;
-                case BodyColor.SkinSub:
+                case ColorType.SkinSub:
                     return ChaControl.fileBody.skinSubColor;
-                case BodyColor.SkinTan:
+                case ColorType.SkinTan:
                     return ChaControl.fileBody.sunburnColor;
-                case BodyColor.NippleColor:
+                case ColorType.NippleColor:
                     return ChaControl.fileBody.nipColor;
-                case BodyColor.NailColor:
+                case ColorType.NailColor:
                     return ChaControl.fileBody.nailColor;
-                case BodyColor.PubicHairColor:
+                case ColorType.PubicHairColor:
                     return ChaControl.fileBody.underhairColor;
+                case ColorType.EyebrowColor:
+                    return ChaControl.fileFace.eyebrowColor;
+                case ColorType.EyelineColor:
+                    return ChaControl.fileFace.eyelineColor;
+                case ColorType.ScleraColor1:
+                    return ChaControl.fileFace.whiteBaseColor;
+                case ColorType.ScleraColor2:
+                    return ChaControl.fileFace.whiteSubColor;
+                case ColorType.UpperHighlightColor:
+                    return ChaControl.fileFace.hlUpColor;
+                case ColorType.LowerHightlightColor:
+                    return ChaControl.fileFace.hlDownColor;
+                case ColorType.EyeColor1Left:
+                    return ChaControl.fileFace.pupil[0].baseColor;
+                case ColorType.EyeColor2Left:
+                    return ChaControl.fileFace.pupil[0].subColor;
+                case ColorType.EyeColor1Right:
+                    return ChaControl.fileFace.pupil[1].baseColor;
+                case ColorType.EyeColor2Right:
+                    return ChaControl.fileFace.pupil[1].subColor;
+                case ColorType.LipLineColor:
+                    return ChaControl.fileFace.lipLineColor;
+                case ColorType.EyeShadowColor:
+                    return ChaControl.fileFace.baseMakeup.eyeshadowColor;
+                case ColorType.CheekColor:
+                    return ChaControl.fileFace.baseMakeup.cheekColor;
+                case ColorType.LipColor:
+                    return ChaControl.fileFace.baseMakeup.lipColor;
+                case ColorType.Base:
+                    return ChaControl.fileHair.parts[0].baseColor;
+                case ColorType.Start:
+                    return ChaControl.fileHair.parts[0].startColor;
+                case ColorType.End:
+                    return ChaControl.fileHair.parts[0].endColor;
+#if KKS
+                case ColorType.Gloss:
+                    return ChaControl.fileHair.parts[0].glossColor;
+#endif
+                case ColorType.Eyebrow:
+                    return ChaControl.fileFace.eyebrowColor;
             }
             return Color.white;
         }
 
-        public void ResetBodyColor(BodyColor colorType)
+        public void ResetColorProperty(ColorType colorType)
         {
-            if (OriginalBodyColors.TryGetValue(colorType, out var color))
-                UpdateBodyColor(color.OriginalValue, colorType);
+            if (OriginalColors.TryGetValue(colorType, out var color))
+                UpdateColorProperty(color.OriginalValue, colorType);
         }
 
-        public Color GetOriginalBodyColor(BodyColor colorType)
+        public Color GetOriginalColorPropertyValue(ColorType colorType)
         {
-            if (OriginalBodyColors.TryGetValue(colorType, out var color))
+            if (OriginalColors.TryGetValue(colorType, out var color))
                 return color.OriginalValue;
-            return GetBodyColor(colorType);
+            return GetColorPropertyValue(colorType);
 
         }
         #endregion
@@ -305,131 +415,11 @@ namespace Plugins
                     .Any(x => Mathf.Abs(x.Value - x.OriginalValue) > 0.001f);
             }
             if (category == "General")
-                isEdited |= OriginalBodyColors.Any(x => x.Value.Value != x.Value.OriginalValue);
+                isEdited |= OriginalColors.Any(x => x.Value.Value != x.Value.OriginalValue);
             else if (category == "Chest")
                 isEdited |= OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
 
             return isEdited;
-        }
-        #endregion
-
-        #region Face
-        public void UpdateFaceColor(Color color, FaceColor faceColor)
-        {
-            if (!OriginalFaceColors.ContainsKey(faceColor))
-                OriginalFaceColors[faceColor] = new ColorStorage(GetFaceColor(faceColor), color);
-            else
-                OriginalFaceColors[faceColor].Value = color;
-
-            switch (faceColor)
-            {
-                case FaceColor.EyebrowColor:
-                    ChaControl.fileFace.eyebrowColor = color;
-                    ChaControl.ChangeSettingEyebrowColor();
-                    break;
-                case FaceColor.EyelineColor:
-                    ChaControl.fileFace.eyelineColor = color;
-                    ChaControl.ChangeSettingEyelineColor();
-                    break;
-                case FaceColor.ScleraColor1:
-                    ChaControl.fileFace.whiteBaseColor = color;
-                    ChaControl.ChangeSettingWhiteOfEye(true, true);
-                    break;
-                case FaceColor.ScleraColor2:
-                    ChaControl.fileFace.whiteSubColor = color;
-                    ChaControl.ChangeSettingWhiteOfEye(true, true);
-                    break;
-                case FaceColor.UpperHighlightColor:
-                    ChaControl.fileFace.hlUpColor = color;
-                    ChaControl.ChangeSettingEyeHiUpColor();
-                    break;
-                case FaceColor.LowerHightlightColor:
-                    ChaControl.fileFace.hlDownColor = color;
-                    ChaControl.ChangeSettingEyeHiDownColor();
-                    break;
-                case FaceColor.EyeColor1Left:
-                    ChaControl.fileFace.pupil[0].baseColor = color;
-                    ChaControl.ChangeSettingEyeL(true, true, false);
-                    break;
-                case FaceColor.EyeColor2Left:
-                    ChaControl.fileFace.pupil[0].subColor = color;
-                    ChaControl.ChangeSettingEyeL(true, true, false);
-                    break;
-                case FaceColor.EyeColor1Right:
-                    ChaControl.fileFace.pupil[1].baseColor = color;
-                    ChaControl.ChangeSettingEyeR(true, true, false);
-                    break;
-                case FaceColor.EyeColor2Right:
-                    ChaControl.fileFace.pupil[2].subColor = color;
-                    ChaControl.ChangeSettingEyeR(true, true, false);
-                    break;
-                case FaceColor.LipLineColor:
-                    ChaControl.fileFace.lipLineColor = color;
-                    UpdateFaceTextures(inpLipLine: true);
-                    break;
-                case FaceColor.EyeShadowColor:
-                    ChaControl.fileFace.baseMakeup.eyeshadowColor = color;
-                    ChaControl.ChangeSettingEyeShadowColor();
-                    break;
-                case FaceColor.CheekColor:
-                    ChaControl.fileFace.baseMakeup.cheekColor = color;
-                    UpdateFaceTextures(inpCheek: true);
-                    break;
-                case FaceColor.LipColor:
-                    ChaControl.fileFace.baseMakeup.lipColor = color;
-                    ChaControl.ChangeSettingLipColor();
-                    break;
-            }
-        }
-
-        public Color GetFaceColor(FaceColor color)
-        {
-            switch (color)
-            {
-                case FaceColor.EyebrowColor:
-                    return ChaControl.fileFace.eyebrowColor;
-                case FaceColor.EyelineColor:
-                    return ChaControl.fileFace.eyelineColor;
-                case FaceColor.ScleraColor1:
-                    return ChaControl.fileFace.whiteBaseColor;
-                case FaceColor.ScleraColor2:
-                    return ChaControl.fileFace.whiteSubColor;
-                case FaceColor.UpperHighlightColor:
-                    return ChaControl.fileFace.hlUpColor;
-                case FaceColor.LowerHightlightColor:
-                    return ChaControl.fileFace.hlDownColor;
-                case FaceColor.EyeColor1Left:
-                    return ChaControl.fileFace.pupil[0].baseColor;
-                case FaceColor.EyeColor2Left:
-                    return ChaControl.fileFace.pupil[0].subColor;
-                case FaceColor.EyeColor1Right:
-                    return ChaControl.fileFace.pupil[1].baseColor;
-                case FaceColor.EyeColor2Right:
-                    return ChaControl.fileFace.pupil[1].subColor;
-                case FaceColor.LipLineColor:
-                    return ChaControl.fileFace.lipLineColor;
-                case FaceColor.EyeShadowColor:
-                    return ChaControl.fileFace.baseMakeup.eyeshadowColor;
-                case FaceColor.CheekColor:
-                    return ChaControl.fileFace.baseMakeup.cheekColor;
-                case FaceColor.LipColor:
-                    return ChaControl.fileFace.baseMakeup.lipColor;
-            }
-            return Color.white;
-        }
-
-        public void ResetFaceColor(FaceColor colorType)
-        {
-            if (OriginalFaceColors.TryGetValue(colorType, out var color))
-                UpdateFaceColor(color.OriginalValue, colorType);
-        }
-
-        public Color GetOriginalFaceColor(FaceColor colorType)
-        {
-            if (OriginalFaceColors.TryGetValue(colorType, out var color))
-                return color.OriginalValue;
-            return GetFaceColor(colorType);
-
         }
         #endregion
 
@@ -472,80 +462,6 @@ namespace Plugins
                     .Any(x => Mathf.Abs(x.Value - x.OriginalValue) > 0.001f);
             }
             return isEdited;
-        }
-        #endregion
-
-        #region Hair
-        public void UpdateHairColor(Color color, HairColor hairColor)
-        {
-            if (!OriginalHairColors.ContainsKey(hairColor))
-                OriginalHairColors[hairColor] = new ColorStorage(GetHairColor(hairColor), color);
-            else
-                OriginalHairColors[hairColor].Value = color;
-
-            switch (hairColor)
-            {
-                case HairColor.Base:
-                    for (int i = 0; i < 4; i++)
-                        ChaControl.fileHair.parts[i].baseColor = color;
-                    break;
-                case HairColor.Start:
-                    for (int i = 0; i < 4; i++)
-                        ChaControl.fileHair.parts[i].startColor = color;
-                    break;
-                case HairColor.End:
-                    for (int i = 0; i < 4; i++)
-                        ChaControl.fileHair.parts[i].endColor = color;
-                    break;
-#if KKS
-                case HairColor.Gloss:
-                    for (int i = 0; i < 4; i++)
-                    {
-                        ChaControl.fileHair.parts[i].glossColor = color;
-                        ChaControl.ChangeSettingHairGlossColor(i);
-                    }
-                    break;
-#endif
-                case HairColor.Eyebrow:
-                    ChaControl.fileFace.eyebrowColor = color;
-                    ChaControl.ChangeSettingEyebrowColor();
-                    break;
-            }
-            for (int i = 0; i < 4; i++)
-                ChaControl.ChangeSettingHairColor(i, true, true, true);
-        }
-
-        public void ResetHairColor(HairColor hairColor)
-        {
-            if (OriginalHairColors.TryGetValue(hairColor, out var color))
-                UpdateHairColor(color.OriginalValue, hairColor);
-        }
-
-        public Color GetOriginalHairColor(HairColor hairColor)
-        {
-            if (OriginalHairColors.TryGetValue(hairColor, out var color))
-                return color.OriginalValue;
-            return GetHairColor(hairColor);
-        }
-
-        public Color GetHairColor(HairColor color)
-        {
-            switch (color)
-            {
-                case HairColor.Base:
-                    return ChaControl.fileHair.parts[0].baseColor;
-                case HairColor.Start:
-                    return ChaControl.fileHair.parts[0].startColor;
-                case HairColor.End:
-                    return ChaControl.fileHair.parts[0].endColor;
-#if KKS
-                case HairColor.Gloss:
-                    return ChaControl.fileHair.parts[0].glossColor;
-#endif
-                case HairColor.Eyebrow:
-                    return ChaControl.fileFace.eyebrowColor;
-            }
-            return Color.white;
         }
         #endregion
 
@@ -594,7 +510,7 @@ namespace Plugins
                 MEController.RefreshClothesMainTex();
             }
 
-            var clothingColors = new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr);
+            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr);
             if (!OriginalClothingColors.Any(x => x.Key.Compare(CurrentOutfitSlot, kind, colorNr, slotNr)))
                 OriginalClothingColors[clothingColors] = new ColorStorage(GetClothingColor(kind, colorNr, slotNr), color);
             else
@@ -678,14 +594,14 @@ namespace Plugins
 
         public void ResetClothingColor(int kind, int colorNr, int slotNr)
         {
-            var clothingColors = new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr);
+            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr);
             if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
                 SetClothingColor(kind, colorNr, color.OriginalValue, slotNr);
         }
 
         public Color GetOriginalClothingColor(int kind, int colorNr, int slotNr)
         {
-            var clothingColors = new ClothingColors(CurrentOutfitSlot, kind, colorNr, slotNr);
+            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr);
             if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
                 return color.OriginalValue;
             return GetClothingColor(kind, colorNr, slotNr);
@@ -1391,14 +1307,14 @@ namespace Plugins
             switch (tab)
             {
                 case SelectedTab.Body:
-                    return OriginalBodyColors.Any(x => x.Value.Value != x.Value.OriginalValue)
+                    return OriginalColors.Any(x => x.Value.Value != x.Value.OriginalValue)
                         || OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
                         || OriginalBodyShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
                 case SelectedTab.Face:
                     return OriginalFaceShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
-                        || OriginalFaceColors.Any(x => x.Value.Value != x.Value.OriginalValue);
+                        || OriginalColors.Any(x => x.Value.Value != x.Value.OriginalValue);
                 case SelectedTab.Hair:
-                    return OriginalHairColors.Any(x => x.Value.Value != x.Value.OriginalValue);
+                    return OriginalColors.Any(x => x.Value.Value != x.Value.OriginalValue);
                 case SelectedTab.Clothes:
                     return OriginalClothingColors.Any(x => x.Value.Value != x.Value.OriginalValue);
             }
@@ -1432,7 +1348,7 @@ namespace Plugins
 
     [Serializable]
     [MessagePackObject]
-    public struct ClothingColors
+    public struct ClothingStorageKey
     {
         [Key("OutfitSlot")]
         public int OutfitSlot { get; set; }
@@ -1443,7 +1359,7 @@ namespace Plugins
         [Key("SlotNr")]
         public int SlotNr { get; set; }
 
-        public ClothingColors(int outfitSlot, int clothingKind, int colorNr, int slotNr)
+        public ClothingStorageKey(int outfitSlot, int clothingKind, int colorNr, int slotNr)
         {
             OutfitSlot = outfitSlot;
             ClothingKind = clothingKind;

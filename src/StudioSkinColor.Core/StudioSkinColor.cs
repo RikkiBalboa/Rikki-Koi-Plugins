@@ -187,28 +187,28 @@ namespace Plugins
         private void RegisterStudioControls()
         {
             var catBody = StudioAPI.GetOrCreateCurrentStateCategory("Body");
-            catBody.AddControl(new CurrentStateColorSlider("Main Skin", c => c.GetChaControl().fileBody.skinMainColor, c => UpdateTextureColor(c, BodyColor.SkinMain)));
-            catBody.AddControl(new CurrentStateColorSlider("Sub Skin", c => c.GetChaControl().fileBody.skinSubColor, c => UpdateTextureColor(c, BodyColor.SkinSub)));
-            catBody.AddControl(new CurrentStateColorSlider("Tan", c => c.GetChaControl().fileBody.sunburnColor, c => UpdateTextureColor(c, BodyColor.SkinTan)));
+            catBody.AddControl(new CurrentStateColorSlider("Main Skin", c => c.GetChaControl().fileBody.skinMainColor, c => UpdateTextureColor(c, ColorType.SkinMain)));
+            catBody.AddControl(new CurrentStateColorSlider("Sub Skin", c => c.GetChaControl().fileBody.skinSubColor, c => UpdateTextureColor(c, ColorType.SkinSub)));
+            catBody.AddControl(new CurrentStateColorSlider("Tan", c => c.GetChaControl().fileBody.sunburnColor, c => UpdateTextureColor(c, ColorType.SkinTan)));
 
             var catBust = StudioAPI.GetOrCreateCurrentStateCategory("Bust");
             catBust.AddControl(new CurrentStateCategorySlider("Softness", c => c.GetChaControl().fileBody.bustSoftness, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, Bust.Softness));
             catBust.AddControl(new CurrentStateCategorySlider("Weight", c => c.GetChaControl().fileBody.bustWeight, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, Bust.Weight));
 
             var catHair = StudioAPI.GetOrCreateCurrentStateCategory("Hair");
-            catHair.AddControl(new CurrentStateColorSlider("Color 1", c => c.GetChaControl().fileHair.parts[0].baseColor, color => UpdateHairColor(color, HairColor.Base)));
-            catHair.AddControl(new CurrentStateColorSlider("Color 2", c => c.GetChaControl().fileHair.parts[0].startColor, color => UpdateHairColor(color, HairColor.Start)));
-            catHair.AddControl(new CurrentStateColorSlider("Color 3", c => c.GetChaControl().fileHair.parts[0].endColor, color => UpdateHairColor(color, HairColor.End)));
+            catHair.AddControl(new CurrentStateColorSlider("Color 1", c => c.GetChaControl().fileHair.parts[0].baseColor, color => UpdateColorProperty(color, ColorType.Base)));
+            catHair.AddControl(new CurrentStateColorSlider("Color 2", c => c.GetChaControl().fileHair.parts[0].startColor, color => UpdateColorProperty(color, ColorType.Start)));
+            catHair.AddControl(new CurrentStateColorSlider("Color 3", c => c.GetChaControl().fileHair.parts[0].endColor, color => UpdateColorProperty(color, ColorType.End)));
 #if KKS
-            catHair.AddControl(new CurrentStateColorSlider("Gloss", c => c.GetChaControl().fileHair.parts[0].glossColor, color => UpdateHairColor(color, HairColor.Gloss)));
+            catHair.AddControl(new CurrentStateColorSlider("Gloss", c => c.GetChaControl().fileHair.parts[0].glossColor, color => UpdateColorProperty(color, ColorType.Gloss)));
 #endif
-            catHair.AddControl(new CurrentStateColorSlider("Eyebrow", c => c.GetChaControl().fileFace.eyebrowColor, color => UpdateHairColor(color, HairColor.Eyebrow)));
+            catHair.AddControl(new CurrentStateColorSlider("Eyebrow", c => c.GetChaControl().fileFace.eyebrowColor, color => UpdateColorProperty(color, ColorType.Eyebrow)));
         }
 
-        internal static void UpdateTextureColor(Color color, BodyColor textureColor)
+        internal static void UpdateTextureColor(Color color, ColorType textureColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateBodyColor(color, textureColor);
+                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, textureColor);
         }
 
         internal static void UpdateBustSoftness(float value, Bust bust)
@@ -217,10 +217,10 @@ namespace Plugins
                 StudioSkinColorCharaController.GetController(cha.GetChaControl())?.SetBustValue(value, bust);
         }
 
-        internal static void UpdateHairColor(Color color, HairColor hairColor)
+        internal static void UpdateColorProperty(Color color, ColorType hairColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateHairColor(color, hairColor);
+                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, hairColor);
         }
 
 #if DEBUG
@@ -239,7 +239,7 @@ namespace Plugins
         }
     }
 
-    internal enum BodyColor
+    internal enum ColorType
     {
         SkinMain,
         SkinSub,
@@ -247,25 +247,11 @@ namespace Plugins
         NippleColor,
         NailColor,
         PubicHairColor,
-    }
-
-    internal enum Bust
-    {
-        Softness,
-        Weight,
-    }
-
-    internal enum HairColor
-    {
         Base,
         Start,
         End,
         Gloss,
         Eyebrow,
-    }
-
-    internal enum FaceColor
-    {
         EyebrowColor,
         EyelineColor,
         ScleraColor1,
@@ -280,5 +266,11 @@ namespace Plugins
         EyeShadowColor,
         CheekColor,
         LipColor,
+    }
+
+    internal enum Bust
+    {
+        Softness,
+        Weight,
     }
 }
