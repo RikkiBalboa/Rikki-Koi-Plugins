@@ -125,6 +125,7 @@ namespace Plugins
 
             if (uiShow && selectedCharacter != null)
             {
+                InitializeStyles();
                 uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "Studio Pseudo Maker");
                 IMGUIUtils.EatInputInRect(uiRect);
 

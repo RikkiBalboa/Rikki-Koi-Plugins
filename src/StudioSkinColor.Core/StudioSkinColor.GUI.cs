@@ -206,8 +206,14 @@ namespace Plugins
                 }
             },
             { "Makeup", new Dictionary<int, string>() },
-        };        
+        };
         #endregion
+
+        private bool isInitialized = false;
+        Texture2D colorTexture;
+        private RectOffset colorButtonRectOffset;
+        private RectOffset labelRectOffset;
+        private RectOffset resetButtonRectOffset;
 
         private SelectedTab selectedTab = SelectedTab.Body;
         private string selectedBodyTab = "General";
@@ -218,6 +224,16 @@ namespace Plugins
         private StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
         private ListInfoBase infoClothes => selectedCharacter.infoClothes[selectedKind];
         private ChaClothesComponent clothesComponent => selectedCharacter.GetCustomClothesComponent(selectedKind);
+
+        internal void InitializeStyles()
+        {
+            if (isInitialized) return;
+            colorTexture = new Texture2D(1, 1, (TextureFormat)20, false);
+            colorButtonRectOffset = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom);
+            labelRectOffset = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom);
+            resetButtonRectOffset = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom);
+            isInitialized = true;
+        }
 
         internal void DrawWindow(int id)
         {
@@ -246,8 +262,8 @@ namespace Plugins
                 {
                     if (selectedTab == value)
                         GUI.color = Color.cyan;
-                    else if (controller.IsCategoryEdited(value))
-                        GUI.color = Color.magenta;
+                    //else if (controller.IsCategoryEdited(value))
+                    //    GUI.color = Color.magenta;
                     if (GUILayout.Button(value.ToString()))
                         selectedTab = value;
                     GUI.color = c;
@@ -449,7 +465,7 @@ namespace Plugins
             void BodyColorRow(string name, ColorType bodyColor)
             {
                 DrawColorRow(
-                    $"{name}:",
+                    name,
                     controller.GetColorPropertyValue(bodyColor),
                     controller.GetOriginalColorPropertyValue(bodyColor),
                     c => controller.UpdateColorProperty(c, bodyColor),
@@ -480,8 +496,8 @@ namespace Plugins
                         Color c = GUI.color;
                         if (selectedBodyTab == category.Key)
                             GUI.color = Color.cyan;
-                        else if (controller.IsBodyCategoryEdited(category.Key))
-                            GUI.color = Color.magenta;
+                        //else if (controller.IsBodyCategoryEdited(category.Key))
+                        //    GUI.color = Color.magenta;
                         if (GUILayout.Button(category.Key))
                             selectedBodyTab = category.Key;
                         GUI.color = c;
@@ -506,12 +522,12 @@ namespace Plugins
                     if (selectedBodyTab == "General")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.BodyDetail].DrawSelectedItem();
-                        BodyFloatRow("Skin Type Strenth", FloatType.SkinTypeStrenth);
-                        BodyColorRow("Main Skin Color", ColorType.SkinMain);
-                        BodyColorRow("Sub Skin Color", ColorType.SkinSub);
-                        BodyFloatRow("Skin Gloss", FloatType.SkinGloss);
-                        BodyColorRow("Nail Color", ColorType.NailColor);
-                        BodyFloatRow("Nail Gloss", FloatType.NailGloss);
+                        BodyFloatRow("Skin Type Strenth:", FloatType.SkinTypeStrenth);
+                        BodyColorRow("Main Skin Color:", ColorType.SkinMain);
+                        BodyColorRow("Sub Skin Color:", ColorType.SkinSub);
+                        BodyFloatRow("Skin Gloss:", FloatType.SkinGloss);
+                        BodyColorRow("Nail Color:", ColorType.NailColor);
+                        BodyFloatRow("Nail Gloss:", FloatType.NailGloss);
                     }
                     else if (selectedBodyTab == "Chest")
                     {
@@ -742,7 +758,7 @@ namespace Plugins
                 GUILayout.Label(name, new GUIStyle(GUI.skin.label)
                 {
                     alignment = TextAnchor.MiddleLeft,
-                    margin = new RectOffset(GUI.skin.label.margin.left, GUI.skin.label.margin.right, GUI.skin.label.margin.top, 0)
+                    margin = labelRectOffset
                 }, GUILayout.ExpandWidth(false));
 
             GUILayout.BeginHorizontal();
@@ -751,16 +767,12 @@ namespace Plugins
                     GUILayout.Label(name, new GUIStyle(GUI.skin.label)
                     {
                         alignment = TextAnchor.MiddleLeft,
-                        margin = new RectOffset(GUI.skin.label.margin.left, GUI.skin.label.margin.right, GUI.skin.label.margin.top, 0),
+                        margin = labelRectOffset,
                         fixedWidth = 160,
                         wordWrap = false,
                     }, GUILayout.ExpandWidth(false));
 
-                bool colorOpened = GUILayout.Button("", new GUIStyle(Colorbutton(currentColor))
-                {
-                    margin = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom)
-                });
-                if (colorOpened)
+                if (GUILayout.Button("", Colorbutton(currentColor)))
                     ColorPicker.OpenColorPicker(currentColor, (c) =>
                     {
                         if (c != currentColor)
@@ -772,7 +784,7 @@ namespace Plugins
 
                 if (GUILayout.Button("Reset", new GUIStyle(GUI.skin.button)
                 {
-                    margin = new RectOffset(GUI.skin.button.margin.left, GUI.skin.button.margin.right, 0, GUI.skin.button.margin.bottom)
+                    margin = resetButtonRectOffset
                 }, GUILayout.ExpandWidth(false)))
                     resetColorAction();
             }
@@ -783,8 +795,6 @@ namespace Plugins
 
         private void DrawSliderRow(string name, string key, float currentValue, float originalValue, float min, float max, Action<float> setValueAction, Action resetValueAction)
         {
-            var valueChanged = Mathf.Abs(currentValue - originalValue) > 0.001f;
-
             Color c = GUI.color;
             inputBuffers.TryGetValue(key, out var buffer);
             if (buffer == null)
@@ -807,7 +817,7 @@ namespace Plugins
                     });
                 buffer.SliderValue = GUILayout.HorizontalSlider(buffer.SliderValue, min, max, GUILayout.ExpandWidth(true));
 
-                if (valueChanged)
+                if (Mathf.Abs(currentValue - originalValue) > 0.001f)
                     GUI.color = Color.magenta;
 
                 buffer.InputValue = GUILayout.TextField(buffer.InputValue, GUILayout.Width(40));
@@ -824,17 +834,16 @@ namespace Plugins
 
         private GUIStyle Colorbutton(Color col)
         {
+            colorTexture.SetPixel(0, 0, col);
+            colorTexture.Apply();
             GUIStyle guistyle = new GUIStyle(GUI.skin.button);
-            Texture2D texture2D = new Texture2D(1, 1, (TextureFormat)20, false);
-            texture2D.SetPixel(0, 0, col);
-            texture2D.Apply();
-            guistyle.normal.background = texture2D;
+            guistyle.normal.background = colorTexture;
             guistyle.hover = guistyle.normal;
             guistyle.onHover = guistyle.normal;
             guistyle.onActive = guistyle.normal;
             guistyle.onFocused = guistyle.normal;
             guistyle.active = guistyle.normal;
-            guistyle.margin = new RectOffset(guistyle.margin.left, guistyle.margin.right, 0, guistyle.margin.bottom);
+            guistyle.margin = colorButtonRectOffset;
             return guistyle;
         }
 
