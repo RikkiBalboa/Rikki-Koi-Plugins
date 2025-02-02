@@ -96,28 +96,10 @@ namespace Plugins
                 c2aClothingKindField = c2aAdapterType.GetField("_clothingKind", AccessTools.all);
             }
 
-            StudioAPI.StudioLoadedChanged += (sender, e) =>
-            {
-                CategoryPicker.InitializeCategories();
-                foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
-                {
-                    var cat = new CategoryPicker(category);
-                    cat.OnActivateAction = () =>
-                    {
-                        if (pickerWindowFunc == null || pickerWindowFunc != cat.DrawWindow)
-                        {
-                            pickerWindowName = cat.name;
-                            pickerWindowFunc = cat.DrawWindow;
-                        }
-                        else
-                            cat.OnCloseAction();
-                    };
-                    cat.OnCloseAction = () => pickerWindowFunc = null;
-                    categoryPickers[category] = cat;
-                }
-            };
+            StudioAPI.StudioLoadedChanged += (sender, e) => InitializeCategories();
 
 #if DEBUG
+            InitializeCategories();
             foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)
             {
                 if (item is OCIChar oCIChar)
@@ -153,6 +135,27 @@ namespace Plugins
                 }
             }
             GUI.skin = skin;
+        }
+
+        private void InitializeCategories()
+        {
+            CategoryPicker.InitializeCategories();
+            foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
+            {
+                var cat = new CategoryPicker(category);
+                cat.OnActivateAction = () =>
+                {
+                    if (pickerWindowFunc == null || pickerWindowFunc != cat.DrawWindow)
+                    {
+                        pickerWindowName = cat.name;
+                        pickerWindowFunc = cat.DrawWindow;
+                    }
+                    else
+                        cat.OnCloseAction();
+                };
+                cat.OnCloseAction = () => pickerWindowFunc = null;
+                categoryPickers[category] = cat;
+            }
         }
 
         private void DrawPickerWindow(int id)
@@ -277,5 +280,14 @@ namespace Plugins
     {
         Softness,
         Weight,
+    }
+
+    internal enum PatternValue
+    {
+        Horizontal,
+        Vertical,
+        Rotation,
+        Width,
+        Height,
     }
 }

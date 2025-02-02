@@ -511,6 +511,11 @@ namespace Plugins
 
         public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1, bool isPattern = false)
         {
+            StudioSkinColor.Logger.LogInfo(kind);
+            StudioSkinColor.Logger.LogInfo(colorNr);
+            StudioSkinColor.Logger.LogInfo(color);
+            StudioSkinColor.Logger.LogInfo(slotNr);
+            StudioSkinColor.Logger.LogInfo(isPattern);
             var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
             if (MEController != null)
             {
@@ -629,6 +634,73 @@ namespace Plugins
             return GetClothingColor(kind, colorNr, slotNr, isPattern);
         }
 
+        public float GetPatternValue(int kind, int colorNr, PatternValue patternValue)
+        {
+            switch (patternValue)
+            {
+#if KKS
+                case PatternValue.Horizontal:
+                    return Clothes.parts[kind].colorInfo[colorNr].offset.x;
+                case PatternValue.Vertical:
+                    return Clothes.parts[kind].colorInfo[colorNr].offset.y;
+                case PatternValue.Rotation:
+                    return Clothes.parts[kind].colorInfo[colorNr].rotate;
+#endif
+                case PatternValue.Width:
+                    return Clothes.parts[kind].colorInfo[colorNr].tiling.x;
+                case PatternValue.Height:
+                    return Clothes.parts[kind].colorInfo[colorNr].tiling.y;
+                default:
+                    return 0f;
+            }
+        }
+
+        public void SetPatternValue(int kind, int colorNr, PatternValue patternValue, float value)
+        {
+            Vector2 vector;
+            switch (patternValue)
+            {
+#if KKS
+                case PatternValue.Horizontal:
+                    vector = Clothes.parts[kind].colorInfo[colorNr].offset;
+                    vector.x = value;
+                    Clothes.parts[kind].colorInfo[colorNr].offset = vector;
+                    SetClothes.parts[kind].colorInfo[colorNr].offset = vector;
+                    break;
+                case PatternValue.Vertical:
+                    vector = Clothes.parts[kind].colorInfo[colorNr].offset;
+                    vector.y = value;
+                    Clothes.parts[kind].colorInfo[colorNr].offset = vector;
+                    SetClothes.parts[kind].colorInfo[colorNr].offset = vector;
+                    break;
+                case PatternValue.Rotation:
+                    Clothes.parts[kind].colorInfo[colorNr].rotate = value;
+                    SetClothes.parts[kind].colorInfo[colorNr].rotate = value;
+                    break;
+#endif
+                case PatternValue.Width:
+                    vector = Clothes.parts[kind].colorInfo[colorNr].tiling;
+                    vector.x = value;
+                    Clothes.parts[kind].colorInfo[colorNr].tiling = vector;
+                    SetClothes.parts[kind].colorInfo[colorNr].tiling = vector;
+                    break;
+                case PatternValue.Height:
+                    vector = Clothes.parts[kind].colorInfo[colorNr].tiling;
+                    vector.y = value;
+                    Clothes.parts[kind].colorInfo[colorNr].tiling = vector;
+                    SetClothes.parts[kind].colorInfo[colorNr].tiling = vector;
+                    break;
+                default:
+                    break;
+            }
+
+            if (!IsMultiPartTop(kind))
+                ChaControl.ChangeCustomClothes(true, kind, true, true, true, true, true);
+            else
+                for (int i = 0; i < Clothes.subPartsId.Length; i++)
+                    ChaControl.ChangeCustomClothes(false, i, true, true, true, true, true);
+        }
+
         public bool GetHideOpt(int kind, int option)
         {
             return selectedCharacter.nowCoordinate.clothes.parts[kind].hideOpt[option];
@@ -695,7 +767,7 @@ namespace Plugins
                 .Select(c => c.Value)
                 .Any(c => c.Value != c.OriginalValue);
         }
-        #endregion
+#endregion
 
         #region Category pickers
         public void SetSelectKind(SelectKindType type, int id)

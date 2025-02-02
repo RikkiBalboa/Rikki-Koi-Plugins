@@ -357,75 +357,83 @@ namespace Plugins
                         GUILayout.FlexibleSpace();
                         GUILayout.EndHorizontal();
 
-                        if (clothing.UseColors[0])
+                        for (int i = 0; i < 3; i++)
                         {
-                            DrawColorRow(
-                                "Color 1:",
-                                controller.GetClothingColor(selectedKind, 0, clothing.SlotNr),
-                                controller.GetOriginalClothingColor(selectedKind, 0, clothing.SlotNr),
-                                c => controller.SetClothingColor(selectedKind, 0, c, clothing.SlotNr),
-                                () => controller.ResetClothingColor(selectedKind, 0, clothing.SlotNr)
-                            );
-                            if (!clothing.IsC2a)
+                            var _i = i;
+                            if (clothing.UseColors[i])
                             {
-                                categoryPickers[StudioSkinColorCharaController.KindToSelectKind(clothing.Kind, 1)].DrawSelectedItem();
-                                if (controller.ClothingUsesPattern(clothing.Kind, 1))
+                                DrawColorRow(
+                                    $"Color {i + 1}:",
+                                    controller.GetClothingColor(selectedKind, i, clothing.SlotNr),
+                                    controller.GetOriginalClothingColor(selectedKind, i, clothing.SlotNr),
+                                    c => controller.SetClothingColor(selectedKind, _i, c, clothing.SlotNr),
+                                    () => controller.ResetClothingColor(selectedKind, _i, clothing.SlotNr)
+                                );
+                                if (!clothing.IsC2a)
                                 {
-                                    DrawColorRow(
-                                        "Pattern Color 1:",
-                                        controller.GetClothingColor(selectedKind, 0, clothing.SlotNr, true),
-                                        controller.GetOriginalClothingColor(selectedKind, 0, clothing.SlotNr, true),
-                                        c => controller.SetClothingColor(selectedKind, 0, c, clothing.SlotNr, true),
-                                        () => controller.ResetClothingColor(selectedKind, 0, clothing.SlotNr, true)
-                                    );
-                                }
-                            }
-                        }
-                        if (clothing.UseColors[1])
-                        {
-                            DrawColorRow(
-                                "Color 2:",
-                                controller.GetClothingColor(selectedKind, 1, clothing.SlotNr),
-                                controller.GetOriginalClothingColor(selectedKind, 1, clothing.SlotNr),
-                                c => controller.SetClothingColor(selectedKind, 1, c, clothing.SlotNr),
-                                () => controller.ResetClothingColor(selectedKind, 1, clothing.SlotNr)
-                            );
-                            if (!clothing.IsC2a)
-                            {
-                                categoryPickers[StudioSkinColorCharaController.KindToSelectKind(clothing.Kind, 2)].DrawSelectedItem();
-                                if (controller.ClothingUsesPattern(clothing.Kind, 2))
-                                {
-                                    DrawColorRow(
-                                        "Pattern Color 1:",
-                                        controller.GetClothingColor(selectedKind, 1, clothing.SlotNr, true),
-                                        controller.GetOriginalClothingColor(selectedKind, 1, clothing.SlotNr, true),
-                                        c => controller.SetClothingColor(selectedKind, 1, c, clothing.SlotNr, true),
-                                        () => controller.ResetClothingColor(selectedKind, 1, clothing.SlotNr, true)
-                                    );
-                                }
-                            }
-                        }
-                        if (clothing.UseColors[2])
-                        {
-                            DrawColorRow(
-                                "Color 3:",
-                                controller.GetClothingColor(selectedKind, 2, clothing.SlotNr),
-                                controller.GetOriginalClothingColor(selectedKind, 2, clothing.SlotNr),
-                                c => controller.SetClothingColor(selectedKind, 2, c, clothing.SlotNr),
-                                () => controller.ResetClothingColor(selectedKind, 2, clothing.SlotNr)
-                            );
-                            if (!clothing.IsC2a)
-                            {
-                                categoryPickers[StudioSkinColorCharaController.KindToSelectKind(clothing.Kind, 3)].DrawSelectedItem();
-                                if (controller.ClothingUsesPattern(clothing.Kind, 3))
-                                {
-                                    DrawColorRow(
-                                        "Pattern Color 1:",
-                                        controller.GetClothingColor(selectedKind, 2, clothing.SlotNr, true),
-                                        controller.GetOriginalClothingColor(selectedKind, 2, clothing.SlotNr, true),
-                                        c => controller.SetClothingColor(selectedKind, 2, c, clothing.SlotNr, true),
-                                        () => controller.ResetClothingColor(selectedKind, 2, clothing.SlotNr, true)
-                                    );
+                                    categoryPickers[StudioSkinColorCharaController.KindToSelectKind(clothing.Kind, i + 1)].DrawSelectedItem();
+                                    if (controller.ClothingUsesPattern(clothing.Kind, i + 1))
+                                    {
+#if KKS
+                                        DrawSliderRow(
+                                            $"Pattern {i + 1} Horizontal:",
+                                            $"Pattern{i}Horizontal",
+                                            controller.GetPatternValue(selectedKind, i, PatternValue.Horizontal),
+                                            0.5f,
+                                            -2f,
+                                            2f,
+                                            f => controller.SetPatternValue(selectedKind, _i, PatternValue.Horizontal, f),
+                                            () => controller.SetPatternValue(selectedKind, _i, PatternValue.Horizontal, 0.5f)
+                                        );
+                                        DrawSliderRow(
+                                            $"Pattern {i} Vertical:",
+                                            $"Pattern{i}Vertical",
+                                            controller.GetPatternValue(selectedKind, i, PatternValue.Vertical),
+                                            0.5f,
+                                            -2f,
+                                            2f,
+                                            f => controller.SetPatternValue(selectedKind, _i, PatternValue.Vertical, f),
+                                            () => controller.SetPatternValue(selectedKind, _i, PatternValue.Vertical, 0.5f)
+                                        );
+                                        DrawSliderRow(
+                                            $"Pattern {i} Rotation:",
+                                            $"Pattern{i}Rotation",
+                                            controller.GetPatternValue(selectedKind, i, PatternValue.Rotation),
+                                            0.5f,
+                                            -2f,
+                                            2f,
+                                            f => controller.SetPatternValue(selectedKind, _i, PatternValue.Rotation, f),
+                                            () => controller.SetPatternValue(selectedKind, _i, PatternValue.Rotation, 0.5f)
+                                        );
+#endif
+                                        DrawSliderRow(
+                                            $"Pattern {i} Width:",
+                                            $"Pattern{i}Width",
+                                            controller.GetPatternValue(selectedKind, i, PatternValue.Width),
+                                            0.5f,
+                                            -2f,
+                                            2f,
+                                            f => controller.SetPatternValue(selectedKind, _i, PatternValue.Width, f),
+                                            () => controller.SetPatternValue(selectedKind, _i, PatternValue.Width, 0.5f)
+                                        );
+                                        DrawSliderRow(
+                                            $"Pattern {i} Height:",
+                                            $"Pattern{i}Height",
+                                            controller.GetPatternValue(selectedKind, i, PatternValue.Height),
+                                            0.5f,
+                                            -2f,
+                                            2f,
+                                            f => controller.SetPatternValue(selectedKind, _i, PatternValue.Height, f),
+                                            () => controller.SetPatternValue(selectedKind, _i, PatternValue.Height, 0.5f)
+                                        );
+                                        DrawColorRow(
+                                            $"Pattern Color {i + 1}:",
+                                            controller.GetClothingColor(selectedKind, i, clothing.SlotNr, true),
+                                            controller.GetOriginalClothingColor(selectedKind, i, clothing.SlotNr, true),
+                                            c => controller.SetClothingColor(selectedKind, _i, c, clothing.SlotNr, true),
+                                            () => controller.ResetClothingColor(selectedKind, _i, clothing.SlotNr, true)
+                                        );
+                                    }
                                 }
                             }
                         }
