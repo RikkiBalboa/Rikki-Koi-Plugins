@@ -10,6 +10,7 @@ using System;
 using MessagePack;
 using ExtensibleSaveFormat;
 using static ChaCustom.CustomSelectKind;
+using static Illusion.Utils;
 
 namespace Plugins
 {
@@ -20,7 +21,7 @@ namespace Plugins
         #region Save Lists
         private Dictionary<ClothingStorageKey, ColorStorage> OriginalClothingColors = new Dictionary<ClothingStorageKey, ColorStorage>();
         private Dictionary<ColorType, ColorStorage> OriginalColors = new Dictionary<ColorType, ColorStorage>();
-        private Dictionary<Bust, FloatStorage> OriginalBustValues = new Dictionary<Bust, FloatStorage>();
+        private Dictionary<FloatType, FloatStorage> OriginalFloats = new Dictionary<FloatType, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalBodyShapeValues = new Dictionary<int, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalFaceShapeValues = new Dictionary<int, FloatStorage>();
         #endregion
@@ -47,10 +48,10 @@ namespace Plugins
             else
                 data.data.Add(nameof(OriginalColors), null);
 
-            if (OriginalBustValues.Count > 0)
-                data.data.Add(nameof(OriginalBustValues), MessagePackSerializer.Serialize(OriginalBustValues));
+            if (OriginalFloats.Count > 0)
+                data.data.Add(nameof(OriginalFloats), MessagePackSerializer.Serialize(OriginalFloats));
             else
-                data.data.Add(nameof(OriginalBustValues), null);
+                data.data.Add(nameof(OriginalFloats), null);
 
             if (OriginalBodyShapeValues.Count > 0)
                 data.data.Add(nameof(OriginalBodyShapeValues), MessagePackSerializer.Serialize(OriginalBodyShapeValues));
@@ -73,7 +74,7 @@ namespace Plugins
             allControllers[ChaControl] = this;
             OriginalClothingColors.Clear();
             OriginalColors.Clear();
-            OriginalBustValues.Clear();
+            OriginalFloats.Clear();
             OriginalBodyShapeValues.Clear();
             OriginalFaceShapeValues.Clear();
 
@@ -87,8 +88,8 @@ namespace Plugins
             if (data.data.TryGetValue(nameof(OriginalColors), out var originalHairColors) && originalHairColors != null)
                 OriginalColors = MessagePackSerializer.Deserialize<Dictionary<ColorType, ColorStorage>>((byte[])originalHairColors);
 
-            if (data.data.TryGetValue(nameof(OriginalBustValues), out var originalBustValues) && originalBustValues != null)
-                OriginalBustValues = MessagePackSerializer.Deserialize<Dictionary<Bust, FloatStorage>>((byte[])originalBustValues);
+            if (data.data.TryGetValue(nameof(OriginalFloats), out var originalBustValues) && originalBustValues != null)
+                OriginalFloats = MessagePackSerializer.Deserialize<Dictionary<FloatType, FloatStorage>>((byte[])originalBustValues);
 
             if (data.data.TryGetValue(nameof(OriginalBodyShapeValues), out var originalBodyShapeValues) && originalBodyShapeValues != null)
                 OriginalBodyShapeValues = MessagePackSerializer.Deserialize<Dictionary<int, FloatStorage>>((byte[])originalBodyShapeValues);
@@ -334,44 +335,173 @@ namespace Plugins
         #endregion
 
         #region Bust
-        public void SetBustValue(float value, Bust bust)
+        public void SetFloatTypeValue(float value, FloatType floatType)
         {
-            if (!OriginalBustValues.ContainsKey(bust))
-                OriginalBustValues[bust] = new FloatStorage(GetBustValue(bust), value);
+            if (!OriginalFloats.ContainsKey(floatType))
+                OriginalFloats[floatType] = new FloatStorage(GetFloatValue(floatType), value);
             else
-                OriginalBustValues[bust].Value = value;
+                OriginalFloats[floatType].Value = value;
 
-            switch (bust)
+            switch (floatType)
             {
-                case Bust.Softness:
+                case FloatType.SkinTypeStrenth:
+                    ChaFileControl.custom.body.detailPower = value;
+                    ChaControl.ChangeSettingBodyDetailPower();
+                    break;
+                case FloatType.SkinGloss:
+                    ChaFileControl.custom.body.skinGlossPower = value;
+                    ChaControl.ChangeSettingSkinGlossPower();
+                    break;
+                case FloatType.DisplaySkinDetailLines:
+                    ChaFileControl.custom.body.drawAddLine = Convert.ToBoolean(value);
+                    ChaControl.VisibleAddBodyLine();
+                    break;
+                case FloatType.Softness:
                     ChaControl.ChangeBustSoftness(value);
                     break;
-                case Bust.Weight:
+                case FloatType.Weight:
                     ChaControl.ChangeBustGravity(value);
+                    break;
+                case FloatType.NippleGloss:
+                    ChaFileControl.custom.body.nipGlossPower = value;
+                    ChaControl.ChangeSettingNipGlossPower();
+                    break;
+                case FloatType.NailGloss:
+                    ChaFileControl.custom.body.nailGlossPower = value;
+                    ChaControl.ChangeSettingNailGlossPower();
+                    break;
+                case FloatType.FaceOverlayStrenth:
+                    ChaFileControl.custom.face.detailPower = value;
+                    ChaControl.ChangeSettingFaceDetailPower();
+                    break;
+                case FloatType.CheekGloss:
+                    ChaFileControl.custom.face.cheekGlossPower = value;
+                    ChaControl.ChangeSettingCheekGlossPower();
+                    break;
+                case FloatType.UpperHighlightVertical:
+                    ChaFileControl.custom.face.hlUpY = value;
+                    ChaControl.ChangeSettingEyeHLUpPosY();
+                    break;
+#if KKS
+                case FloatType.UpperHighlightHorizontal:
+                    ChaFileControl.custom.face.hlUpX = value;
+                    ChaControl.ChangeSettingEyeHLUpPosX();
+                    break;
+#endif
+                case FloatType.LowerHightlightVertical:
+                    ChaFileControl.custom.face.hlDownY = value;
+                    ChaControl.ChangeSettingEyeHLDownPosY();
+                    break;
+#if KKS
+                case FloatType.LowerHightlightHorizontal:
+                    ChaFileControl.custom.face.hlDownX = value;
+                    ChaControl.ChangeSettingEyeHLDownPosX();
+                    break;
+#endif
+                case FloatType.IrisSpacing:
+                    ChaFileControl.custom.face.pupilX = value;
+                    ChaControl.ChangeSettingEyePosX();
+                    break;
+                case FloatType.IrisVerticalPosition:
+                    ChaFileControl.custom.face.pupilY = value;
+                    ChaControl.ChangeSettingEyePosY();
+                    break;
+                case FloatType.IrisWidth:
+                    ChaFileControl.custom.face.pupilWidth = value;
+                    ChaControl.ChangeSettingEyeScaleWidth();
+                    break;
+                case FloatType.IrisHeight:
+                    ChaFileControl.custom.face.pupilHeight = value;
+                    ChaControl.ChangeSettingEyeScaleHeight();
+                    break;
+                case FloatType.EyeGradientStrenth:
+                    ChaFileControl.custom.face.pupil[0].gradBlend = value;
+                    ChaFileControl.custom.face.pupil[1].gradBlend = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
+                case FloatType.EyeGradientVertical:
+                    ChaFileControl.custom.face.pupil[0].gradOffsetY = value;
+                    ChaFileControl.custom.face.pupil[1].gradOffsetY = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
+                case FloatType.EyeGradientSize:
+                    ChaFileControl.custom.face.pupil[0].gradScale = value;
+                    ChaFileControl.custom.face.pupil[1].gradScale = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
+                case FloatType.LipGloss:
+                    ChaFileControl.custom.face.lipGlossPower = value;
+                    ChaControl.ChangeSettingLipGlossPower();
                     break;
             }
         }
 
-        public void ResetBustValue(Bust bust)
+        public void ResetFloatTypeValue(FloatType floatType)
         {
-            if (OriginalBustValues.TryGetValue(bust, out var value))
-                SetBustValue(value.OriginalValue, bust);
+            if (OriginalFloats.TryGetValue(floatType, out var value))
+                SetFloatTypeValue(value.OriginalValue, floatType);
         }
 
-        public float GetOriginalBustValue(Bust bust)
+        public float GetOriginalFloatValue(FloatType floatType)
         {
-            if (OriginalBustValues.TryGetValue(bust, out var original))
+            if (OriginalFloats.TryGetValue(floatType, out var original))
                 return original.OriginalValue;
-            return GetBustValue(bust);
+            return GetFloatValue(floatType);
         }
 
-        public float GetBustValue(Bust bust)
+        public float GetFloatValue(FloatType floatType)
         {
-            if (bust == Bust.Softness)
-                return ChaControl.fileBody.bustSoftness;
-            else if (bust == Bust.Weight)
-                return ChaControl.fileBody.bustWeight;
-            return 1f;
+            switch (floatType)
+            {
+                case FloatType.SkinTypeStrenth:
+                    return ChaFileControl.custom.body.detailPower;
+                case FloatType.SkinGloss:
+                    return ChaFileControl.custom.body.skinGlossPower;
+                case FloatType.DisplaySkinDetailLines:
+                    return Convert.ToSingle(ChaFileControl.custom.body.drawAddLine);
+                case FloatType.Softness:
+                    return ChaControl.fileBody.bustSoftness;
+                case FloatType.Weight:
+                    return ChaControl.fileBody.bustWeight;
+                case FloatType.NippleGloss:
+                    return ChaFileControl.custom.body.nipGlossPower;
+                case FloatType.NailGloss:
+                    return ChaFileControl.custom.body.nailGlossPower;
+                case FloatType.FaceOverlayStrenth:
+                    return ChaFileControl.custom.face.detailPower;
+                case FloatType.CheekGloss:
+                    return ChaFileControl.custom.face.cheekGlossPower;
+                case FloatType.UpperHighlightVertical:
+                    return ChaFileControl.custom.face.hlUpY;
+#if KKS
+                case FloatType.UpperHighlightHorizontal:
+                    return ChaFileControl.custom.face.hlUpX;
+#endif
+                case FloatType.LowerHightlightVertical:
+                    return ChaFileControl.custom.face.hlDownY;
+#if KKS
+                case FloatType.LowerHightlightHorizontal:
+                    return ChaFileControl.custom.face.hlDownX;
+#endif
+                case FloatType.IrisSpacing:
+                    return ChaFileControl.custom.face.pupilX;
+                case FloatType.IrisVerticalPosition:
+                    return ChaFileControl.custom.face.pupilY;
+                case FloatType.IrisWidth:
+                    return ChaFileControl.custom.face.pupilWidth;
+                case FloatType.IrisHeight:
+                    return ChaFileControl.custom.face.pupilHeight;
+                case FloatType.EyeGradientStrenth:
+                    return ChaFileControl.custom.face.pupil[0].gradBlend;
+                case FloatType.EyeGradientVertical:
+                    return ChaFileControl.custom.face.pupil[0].gradOffsetY;
+                case FloatType.EyeGradientSize:
+                    return ChaFileControl.custom.face.pupil[0].gradScale;
+                case FloatType.LipGloss:
+                    return ChaFileControl.custom.face.lipGlossPower;
+                default:
+                    return 0f;
+            }
         }
         #endregion
 
@@ -419,8 +549,11 @@ namespace Plugins
                 && GetCategoryTypes(x.Key, true) == category
                 && x.Value.OriginalValue != x.Value.Value
             );
-            if (category == "Chest")
-                isEdited |= OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
+            isEdited |= OriginalFloats.Any(x =>
+                GetCategoryTypes(x.Key) == "Body"
+                && GetCategoryTypes(x.Key, true) == category
+                && Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f
+            );
 
             return isEdited;
         }
@@ -468,6 +601,11 @@ namespace Plugins
                 GetCategoryTypes(x.Key) == "Face"
                 && GetCategoryTypes(x.Key, true) == category
                 && x.Value.OriginalValue != x.Value.Value
+            );
+            isEdited |= OriginalFloats.Any(x =>
+                GetCategoryTypes(x.Key) == "Face"
+                && GetCategoryTypes(x.Key, true) == category
+                && Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f
             );
             return isEdited;
         }
@@ -1703,6 +1841,64 @@ namespace Plugins
 
             return returnSubCategory ? subCategory : category;
         }
+
+        public string GetCategoryTypes(FloatType floatType, bool returnSubCategory = false)
+        {
+            string category;
+            string subCategory;
+
+            switch (floatType)
+            {
+                case FloatType.SkinTypeStrenth:
+                case FloatType.SkinGloss:
+                case FloatType.DisplaySkinDetailLines:
+                    category = "Body";
+                    subCategory = "General";
+                    break;
+                case FloatType.Softness:
+                case FloatType.Weight:
+                case FloatType.NippleGloss:
+                    category = "Body";
+                    subCategory = "Chest";
+                    break;
+                case FloatType.NailGloss:
+                    category = "Body";
+                    subCategory = "General";
+                    break;
+                case FloatType.FaceOverlayStrenth:
+                    category = "Face";
+                    subCategory = "General";
+                    break;
+                case FloatType.CheekGloss:
+                    category = "Face";
+                    subCategory = "Cheeks";
+                    break;
+                case FloatType.UpperHighlightVertical:
+                case FloatType.UpperHighlightHorizontal:
+                case FloatType.LowerHightlightVertical:
+                case FloatType.LowerHightlightHorizontal:
+                case FloatType.IrisSpacing:
+                case FloatType.IrisVerticalPosition:
+                case FloatType.IrisWidth:
+                case FloatType.IrisHeight:
+                case FloatType.EyeGradientStrenth:
+                case FloatType.EyeGradientVertical:
+                case FloatType.EyeGradientSize:
+                    category = "Face";
+                    subCategory = "Iris";
+                    break;
+                case FloatType.LipGloss:
+                    category = "Face";
+                    subCategory = "Mouth";
+                    break;
+                default:
+                    category = "Undefined";
+                    subCategory = "Undefined";
+                    break;
+            }
+
+            return returnSubCategory ? subCategory : category;
+        }
         #endregion
 
         public bool IsCategoryEdited(SelectedTab tab)
@@ -1711,7 +1907,7 @@ namespace Plugins
             {
                 case SelectedTab.Body:
                     return OriginalColors.Any(x => GetCategoryTypes(x.Key) == "Body" && x.Value.Value != x.Value.OriginalValue)
-                        || OriginalBustValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
+                        || OriginalFloats.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
                         || OriginalBodyShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
                 case SelectedTab.Face:
                     return OriginalFaceShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)

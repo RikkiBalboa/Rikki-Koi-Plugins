@@ -200,8 +200,8 @@ namespace Plugins
             catBody.AddControl(new CurrentStateColorSlider("Tan", c => c.GetChaControl().fileBody.sunburnColor, c => UpdateTextureColor(c, ColorType.SkinTan)));
 
             var catBust = StudioAPI.GetOrCreateCurrentStateCategory("Bust");
-            catBust.AddControl(new CurrentStateCategorySlider("Softness", c => c.GetChaControl().fileBody.bustSoftness, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, Bust.Softness));
-            catBust.AddControl(new CurrentStateCategorySlider("Weight", c => c.GetChaControl().fileBody.bustWeight, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, Bust.Weight));
+            catBust.AddControl(new CurrentStateCategorySlider("Softness", c => c.GetChaControl().fileBody.bustSoftness, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, FloatType.Softness));
+            catBust.AddControl(new CurrentStateCategorySlider("Weight", c => c.GetChaControl().fileBody.bustWeight, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, FloatType.Weight));
 
             var catHair = StudioAPI.GetOrCreateCurrentStateCategory("Hair");
             catHair.AddControl(new CurrentStateColorSlider("Color 1", c => c.GetChaControl().fileHair.parts[0].baseColor, color => UpdateColorProperty(color, ColorType.HairBase)));
@@ -219,10 +219,10 @@ namespace Plugins
                 StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, textureColor);
         }
 
-        internal static void UpdateBustSoftness(float value, Bust bust)
+        internal static void UpdateBustSoftness(float value, FloatType bust)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.SetBustValue(value, bust);
+                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.SetFloatTypeValue(value, bust);
         }
 
         internal static void UpdateColorProperty(Color color, ColorType hairColor)
@@ -276,10 +276,29 @@ namespace Plugins
         LipColor,
     }
 
-    internal enum Bust
+    internal enum FloatType
     {
+        SkinTypeStrenth,
+        SkinGloss,
+        DisplaySkinDetailLines,
         Softness,
         Weight,
+        NippleGloss,
+        NailGloss,
+        FaceOverlayStrenth,
+        CheekGloss,
+        UpperHighlightVertical,
+        UpperHighlightHorizontal,
+        LowerHightlightVertical,
+        LowerHightlightHorizontal,
+        IrisSpacing,
+        IrisVerticalPosition,
+        IrisWidth,
+        IrisHeight,
+        EyeGradientStrenth,
+        EyeGradientVertical,
+        EyeGradientSize,
+        LipGloss,
     }
 
     internal enum PatternValue

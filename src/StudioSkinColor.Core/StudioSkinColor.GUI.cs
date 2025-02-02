@@ -457,6 +457,20 @@ namespace Plugins
                 );
             }
 
+            void BodyFloatRow(string name, FloatType floatType)
+            {
+                DrawSliderRow(
+                    name,
+                    name,
+                    controller.GetFloatValue(floatType),
+                    controller.GetOriginalFloatValue(floatType),
+                    -1,
+                    2,
+                    f => controller.SetFloatTypeValue(f, floatType),
+                    () => controller.ResetFloatTypeValue(floatType)
+                );
+            }
+
             GUILayout.BeginHorizontal();
             {
                 leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(leftPanelWidth));
@@ -492,34 +506,38 @@ namespace Plugins
                     if (selectedBodyTab == "General")
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.BodyDetail].DrawSelectedItem();
+                        BodyFloatRow("Skin Type Strenth", FloatType.SkinTypeStrenth);
                         BodyColorRow("Main Skin Color", ColorType.SkinMain);
                         BodyColorRow("Sub Skin Color", ColorType.SkinSub);
+                        BodyFloatRow("Skin Gloss", FloatType.SkinGloss);
                         BodyColorRow("Nail Color", ColorType.NailColor);
+                        BodyFloatRow("Nail Gloss", FloatType.NailGloss);
                     }
                     else if (selectedBodyTab == "Chest")
                     {
                         DrawSliderRow(
                             "Softness",
                             "BustSoftness",
-                            controller.GetBustValue(Bust.Softness),
-                            controller.GetOriginalBustValue(Bust.Softness),
+                            controller.GetFloatValue(FloatType.Softness),
+                            controller.GetOriginalFloatValue(FloatType.Softness),
                             0,
                             1,
-                            f => controller.SetBustValue(f, Bust.Softness),
-                            () => controller.ResetBustValue(Bust.Softness)
+                            f => controller.SetFloatTypeValue(f, FloatType.Softness),
+                            () => controller.ResetFloatTypeValue(FloatType.Softness)
                         );
                         DrawSliderRow(
                             "Weight",
                             "BustWeight",
-                            controller.GetBustValue(Bust.Weight),
-                            controller.GetOriginalBustValue(Bust.Weight),
+                            controller.GetFloatValue(FloatType.Weight),
+                            controller.GetOriginalFloatValue(FloatType.Weight),
                             0,
                             1,
-                            f => controller.SetBustValue(f, Bust.Weight),
-                            () => controller.ResetBustValue(Bust.Weight)
+                            f => controller.SetFloatTypeValue(f, FloatType.Weight),
+                            () => controller.ResetFloatTypeValue(FloatType.Weight)
                         );
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Nip].DrawSelectedItem();
                         BodyColorRow("Nipple Color", ColorType.NippleColor);
+                        BodyFloatRow("Nipple Gloss", FloatType.NippleGloss);
                     }
                     else if (selectedBodyTab == "Pubic Hair")
                     {
@@ -552,6 +570,20 @@ namespace Plugins
                     controller.GetOriginalColorPropertyValue(faceColor),
                     c => controller.UpdateColorProperty(c, faceColor),
                     () => controller.ResetColorProperty(faceColor)
+                );
+            }
+
+            void FaceFloatRow(string name, FloatType floatType)
+            {
+                DrawSliderRow(
+                    name,
+                    name,
+                    controller.GetFloatValue(floatType),
+                    controller.GetOriginalFloatValue(floatType),
+                    -1,
+                    2,
+                    f => controller.SetFloatTypeValue(f, floatType),
+                    () => controller.ResetFloatTypeValue(floatType)
                 );
             }
 
@@ -591,6 +623,11 @@ namespace Plugins
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.HeadType].DrawSelectedItem();
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.FaceDetail].DrawSelectedItem();
+                        FaceFloatRow("Face Overlay Strenth", FloatType.FaceOverlayStrenth);
+                    }
+                    else if (selectedFaceTab == "Cheeks")
+                    {
+                        FaceFloatRow("Cheek Gloss", FloatType.CheekGloss);
                     }
                     else if (selectedFaceTab == "Eyebrows")
                     {
@@ -609,15 +646,26 @@ namespace Plugins
                         FaceColorRow("Sclera Color 1", ColorType.ScleraColor1);
                         FaceColorRow("Sclera Color 2", ColorType.ScleraColor2);
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeHLUp].DrawSelectedItem();
-                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeHLDown].DrawSelectedItem();
                         FaceColorRow("Upper Highlight Color", ColorType.UpperHighlightColor);
+                        categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.EyeHLDown].DrawSelectedItem();
                         FaceColorRow("Lower Highlight Color", ColorType.LowerHightlightColor);
+                        FaceFloatRow("Upper Highlight Vertical", FloatType.UpperHighlightVertical);
+                        FaceFloatRow("Upper Highlight Horizontal", FloatType.UpperHighlightHorizontal);
+                        FaceFloatRow("Lower Highlight Vertical", FloatType.LowerHightlightVertical);
+                        FaceFloatRow("Lower Highlight Horizontal", FloatType.LowerHightlightHorizontal);
+                        FaceFloatRow("Iris Spacing", FloatType.IrisSpacing);
+                        FaceFloatRow("Iris Vertical Position", FloatType.IrisVerticalPosition);
+                        FaceFloatRow("Iris Width", FloatType.IrisWidth);
+                        FaceFloatRow("Iris Height", FloatType.IrisHeight);
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Pupil].DrawSelectedItem();
                         FaceColorRow("Eye Color 1 (Left)", ColorType.EyeColor1Left);
                         FaceColorRow("Eye Color 2 (Left)", ColorType.EyeColor2Left);
                         FaceColorRow("Eye Color 1 (Right)", ColorType.EyeColor1Right);
                         FaceColorRow("Eye Color 2 (Right)", ColorType.EyeColor2Right);
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.PupilGrade].DrawSelectedItem();
+                        FaceFloatRow("Eye Gradient Strenth", FloatType.EyeGradientStrenth);
+                        FaceFloatRow("Eye Gradient Vertical", FloatType.EyeGradientVertical);
+                        FaceFloatRow("Eye Gradient Size", FloatType.EyeGradientSize);
                     }
                     else if (selectedFaceTab == "Nose")
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Nose].DrawSelectedItem();
@@ -625,6 +673,7 @@ namespace Plugins
                     {
                         categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.Lipline].DrawSelectedItem();
                         FaceColorRow("Lip Line Color", ColorType.LipLineColor);
+                        FaceFloatRow("Lip Gloss", FloatType.LipGloss);
                     }
                     else if (selectedFaceTab == "Makeup")
                     {
