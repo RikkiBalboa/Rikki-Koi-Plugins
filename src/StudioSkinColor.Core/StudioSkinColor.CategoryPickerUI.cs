@@ -6,6 +6,7 @@ using UnityEngine;
 using static ChaCustom.CustomSelectKind;
 using Sideloader.AutoResolver;
 using KKAPI.Utilities;
+using ActionGame.Communication;
 namespace Plugins
 {
     public class CategoryPicker
@@ -202,6 +203,12 @@ namespace Plugins
                     assetName = info.GetInfo(ChaListDefine.KeyType.ThumbTex),
                 };
                 lstSelectInfo.Add(customSelectInfo);
+
+                if (!shownThumbnails.TryGetValue(new Key<int, int>(info.Category, info.Id), out GUIContent thumbnail))
+                {
+                    var texture = CommonLib.LoadAsset<Texture2D>(customSelectInfo.assetBundle, customSelectInfo.assetName);
+                    shownThumbnails[new Key<int, int>(info.Category, info.Id)] = new GUIContent(texture);
+                }
             });
         }
 
@@ -230,7 +237,7 @@ namespace Plugins
             GUILayout.EndHorizontal();
         }
 
-        private readonly Dictionary<int, GUIContent> shownThumbnails = new Dictionary<int, GUIContent>();
+        private static readonly Dictionary<Key<int, int>, GUIContent> shownThumbnails = new Dictionary<Key<int, int>, GUIContent>();
 
         public void DrawWindow()
         {
@@ -268,10 +275,10 @@ namespace Plugins
                             continue;
                         var item = items[index];
 
-                        if (!shownThumbnails.TryGetValue(item.index, out GUIContent thumbnail))
+                        if (!shownThumbnails.TryGetValue(new Key<int, int>(item.category, item.index), out GUIContent thumbnail))
                         {
                             var texture = CommonLib.LoadAsset<Texture2D>(item.assetBundle, item.assetName);
-                            shownThumbnails[item.index] = new GUIContent(texture);
+                            shownThumbnails[new Key<int, int>(item.category, item.index)] = new GUIContent(texture);
                         }
 
                         var c = GUI.color;
@@ -488,6 +495,13 @@ namespace Plugins
                     return "Emblem 02 Type";
             }
             return "Undefined";
+        }
+
+        private readonly struct Key<T1, T2>
+        {
+            public readonly T1 Item1;
+            public readonly T2 Item2;
+            public Key(T1 item1, T2 item2) { Item1 = item1; Item2 = item2; }
         }
     }
 }
