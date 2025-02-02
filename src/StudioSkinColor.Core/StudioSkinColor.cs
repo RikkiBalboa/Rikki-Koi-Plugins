@@ -12,6 +12,7 @@ using Studio;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UniRx;
@@ -97,6 +98,7 @@ namespace Plugins
             }
 
             StudioAPI.StudioLoadedChanged += (sender, e) => InitializeCategories();
+            UI.Initialize();
 
 #if DEBUG
             InitializeCategories();
@@ -119,23 +121,23 @@ namespace Plugins
 
         protected void OnGUI()
         {
-            var skin = GUI.skin;
-            GUI.skin = IMGUIUtils.SolidBackgroundGuiSkin;
-            GUI.skin.label.normal.textColor = Color.white;
+            //var skin = GUI.skin;
+            //GUI.skin = IMGUIUtils.SolidBackgroundGuiSkin;
+            //GUI.skin.label.normal.textColor = Color.white;
 
-            if (uiShow && selectedCharacter != null)
-            {
-                InitializeStyles();
-                uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "Studio Pseudo Maker");
-                IMGUIUtils.EatInputInRect(uiRect);
+            //if (uiShow && selectedCharacter != null)
+            //{
+            //    InitializeStyles();
+            //    uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "Studio Pseudo Maker");
+            //    IMGUIUtils.EatInputInRect(uiRect);
 
-                if (pickerWindowFunc != null)
-                {
-                    pickerRect = GUILayout.Window(pickerUiWindowHash, pickerRect, DrawPickerWindow, pickerWindowName);
-                    IMGUIUtils.EatInputInRect(pickerRect);
-                }
-            }
-            GUI.skin = skin;
+            //    if (pickerWindowFunc != null)
+            //    {
+            //        pickerRect = GUILayout.Window(pickerUiWindowHash, pickerRect, DrawPickerWindow, pickerWindowName);
+            //        IMGUIUtils.EatInputInRect(pickerRect);
+            //    }
+            //}
+            //GUI.skin = skin;
         }
 
         private void InitializeCategories()
@@ -236,6 +238,7 @@ namespace Plugins
         private void OnDestroy()
         {
             StudioSkinColorCharaController.allControllers.Clear();
+            if (UI.MainWindow != null) Destroy(UI.MainWindow);
             harmony.UnpatchSelf();
         }
 #endif

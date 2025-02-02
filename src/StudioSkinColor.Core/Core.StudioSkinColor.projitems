@@ -17,5 +17,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColor.GUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibilityHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\MovableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Mappings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Assets\pseudo_maker_interface.unity3d">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
