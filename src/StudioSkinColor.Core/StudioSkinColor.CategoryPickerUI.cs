@@ -45,28 +45,11 @@ namespace Plugins
                     searchTextChanged = true;
 
                     if (value.Count() > 0)
-                        lstSelectInfoFiltered = lstSelectInfo.Where(x => Search(x, value)).ToList();
+                        lstSelectInfoFiltered = lstSelectInfo.Where(x => ShouldShowItem(x, value)).ToList();
                     else
                         lstSelectInfoFiltered.Clear();
                 }
             }
-        }
-
-        private bool Search(CustomSelectInfo info, string search)
-        {
-            var show = false;
-            show |= info.name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
-            //show |= info.assetBundle.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
-
-            if (translationCache.TryGetValue(info.name, out var translation))
-                show |= translation.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
-
-            var _info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)info.category, info.index);
-            if (_info != null)
-            {
-                show |= _info.Author.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
-            }
-            return show;
         }
 
         private Vector2 panelScroll = Vector2.zero;
@@ -203,12 +186,6 @@ namespace Plugins
                     assetName = info.GetInfo(ChaListDefine.KeyType.ThumbTex),
                 };
                 lstSelectInfo.Add(customSelectInfo);
-
-                if (!shownThumbnails.TryGetValue(new Key<int, int>(info.Category, info.Id), out GUIContent thumbnail))
-                {
-                    var texture = CommonLib.LoadAsset<Texture2D>(customSelectInfo.assetBundle, customSelectInfo.assetName);
-                    shownThumbnails[new Key<int, int>(info.Category, info.Id)] = new GUIContent(texture);
-                }
             });
         }
 
@@ -495,6 +472,23 @@ namespace Plugins
                     return "Emblem 02 Type";
             }
             return "Undefined";
+        }
+
+        private bool ShouldShowItem(CustomSelectInfo info, string search)
+        {
+            var show = false;
+            show |= info.name?.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+            //show |= info.assetBundle.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (translationCache.TryGetValue(info.name, out var translation))
+                show |= translation.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            var _info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)info.category, info.index);
+            if (_info != null)
+            {
+                show |= _info.Author?.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+            }
+            return show;
         }
 
         private readonly struct Key<T1, T2>
