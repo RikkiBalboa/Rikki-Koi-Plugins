@@ -649,11 +649,6 @@ namespace Plugins
 
         public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1, bool isPattern = false)
         {
-            StudioSkinColor.Logger.LogInfo(kind);
-            StudioSkinColor.Logger.LogInfo(colorNr);
-            StudioSkinColor.Logger.LogInfo(color);
-            StudioSkinColor.Logger.LogInfo(slotNr);
-            StudioSkinColor.Logger.LogInfo(isPattern);
             var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
             if (MEController != null)
             {

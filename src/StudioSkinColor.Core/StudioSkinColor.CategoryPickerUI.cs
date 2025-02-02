@@ -271,8 +271,6 @@ namespace Plugins
                         if (!shownThumbnails.TryGetValue(item.index, out GUIContent thumbnail))
                         {
                             var texture = CommonLib.LoadAsset<Texture2D>(item.assetBundle, item.assetName);
-                            if (thumbnail != null)
-                                StudioSkinColor.Logger.LogInfo(texture.width);
                             shownThumbnails[item.index] = new GUIContent(texture);
                         }
 
