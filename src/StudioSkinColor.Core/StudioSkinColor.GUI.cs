@@ -219,11 +219,14 @@ namespace Plugins
         private string selectedBodyTab = "General";
         private string selectedFaceTab = "General";
         private int selectedKind = 0;
+        private int selectedAccessory = 0;
         private readonly Dictionary<string, InputBuffer> inputBuffers = new Dictionary<string, InputBuffer>();
 
         private StudioSkinColorCharaController controller => StudioSkinColorCharaController.GetController(selectedCharacter);
-        private ListInfoBase infoClothes => selectedCharacter.infoClothes[selectedKind];
-        private ChaClothesComponent clothesComponent => selectedCharacter.GetCustomClothesComponent(selectedKind);
+        private ListInfoBase InfoClothes => selectedCharacter.infoClothes[selectedKind];
+        private ListInfoBase[] InfoAccessories => selectedCharacter.infoAccessory;
+        private ChaFileAccessory.PartsInfo[] Accessories => selectedCharacter.nowCoordinate.accessory.parts;
+        private ChaClothesComponent ClothesComponent => selectedCharacter.GetCustomClothesComponent(selectedKind);
 
         internal void InitializeStyles()
         {
@@ -279,6 +282,8 @@ namespace Plugins
                 DrawHairWindow();
             else if (selectedTab == SelectedTab.Clothes)
                 DrawClothesWindow();
+            else if (selectedTab == SelectedTab.Accessories)
+                DrawAccessoriesWindow();
 
             uiRect = KKAPI.Utilities.IMGUIUtils.DragResizeEatWindow(id, uiRect);
         }
@@ -328,7 +333,7 @@ namespace Plugins
                             else if (selectedKind == 7) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosInnerShoes].DrawSelectedItem();
                             else if (selectedKind == 8) categoryPickers[ChaCustom.CustomSelectKind.SelectKindType.CosOuterShoes].DrawSelectedItem();
 
-                            var optParts = controller.GetClothingUsesOptParts(clothesComponent);
+                            var optParts = controller.GetClothingUsesOptParts(ClothesComponent);
                             if (optParts > 0)
                             {
                                 GUILayout.BeginHorizontal();
@@ -452,6 +457,53 @@ namespace Plugins
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+                GUILayout.EndScrollView();
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawAccessoriesWindow()
+        {
+            GUILayout.BeginHorizontal();
+            {
+                leftPanelScroll = GUILayout.BeginScrollView(leftPanelScroll, GUI.skin.box, GUILayout.Width(165));
+                {
+                    for (int i = 0; i < InfoAccessories.Count(); i++)
+                    {
+                        Color c = GUI.color;
+                        if (selectedAccessory == i)
+                            GUI.color = Color.cyan;
+                        //else if (controller.IsClothingKindEdited(kind.Value))
+                        //    GUI.color = Color.magenta;
+                        if (GUILayout.Button(InfoAccessories[i] == null ? i.ToString() : InfoAccessories[i].Name, new GUIStyle(GUI.skin.button)
+                        {
+                            alignment = TextAnchor.MiddleLeft,
+                        }, GUILayout.Width(140)))
+                            selectedAccessory = i;
+                        GUI.color = c;
+                        GUI.enabled = true;
+                    }
+                }
+                GUILayout.EndScrollView();
+
+                rightPanelScroll = GUILayout.BeginScrollView(rightPanelScroll, GUI.skin.box);
+                {
+                    var useCols = controller.CheckAccessoryUseColor(selectedAccessory);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        var _i = i;
+                        if (useCols[_i])
+                        {
+                            DrawColorRow(
+                                $"Color {i + 1}:",
+                                controller.GetAccessoryColor(selectedAccessory, _i),
+                                controller.GetOriginalAccessoryColor(selectedAccessory, _i),
+                                c => controller.SetAccessoryColor(selectedAccessory, _i, c),
+                                () => controller.ResetAccessoryColor(selectedAccessory, _i)
+                            );
                         }
                     }
                 }
@@ -853,6 +905,7 @@ namespace Plugins
             Face,
             Hair,
             Clothes,
+            Accessories,
         }
 
         internal void ClearBuffers()

@@ -20,6 +20,7 @@ namespace Plugins
 
         #region Save Lists
         private Dictionary<ClothingStorageKey, ColorStorage> OriginalClothingColors = new Dictionary<ClothingStorageKey, ColorStorage>();
+        private Dictionary<AccessoryStorageKey, ColorStorage> OriginalAccessoryColors = new Dictionary<AccessoryStorageKey, ColorStorage>();
         private Dictionary<ColorType, ColorStorage> OriginalColors = new Dictionary<ColorType, ColorStorage>();
         private Dictionary<FloatType, FloatStorage> OriginalFloats = new Dictionary<FloatType, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalBodyShapeValues = new Dictionary<int, FloatStorage>();
@@ -42,6 +43,11 @@ namespace Plugins
                 data.data.Add(nameof(OriginalClothingColors), MessagePackSerializer.Serialize(OriginalClothingColors));
             else
                 data.data.Add(nameof(OriginalClothingColors), null);
+
+            if (OriginalAccessoryColors.Count > 0)
+                data.data.Add(nameof(OriginalAccessoryColors), MessagePackSerializer.Serialize(OriginalAccessoryColors));
+            else
+                data.data.Add(nameof(OriginalAccessoryColors), null);
 
             if (OriginalColors.Count > 0)
                 data.data.Add(nameof(OriginalColors), MessagePackSerializer.Serialize(OriginalColors));
@@ -84,6 +90,9 @@ namespace Plugins
 
             if (data.data.TryGetValue(nameof(OriginalClothingColors), out var originalClothingColors) && originalClothingColors != null)
                 OriginalClothingColors = MessagePackSerializer.Deserialize<Dictionary<ClothingStorageKey, ColorStorage>>((byte[])originalClothingColors);
+
+            if (data.data.TryGetValue(nameof(OriginalAccessoryColors), out var originalAccessoryColors) && originalAccessoryColors != null)
+                OriginalAccessoryColors = MessagePackSerializer.Deserialize<Dictionary<AccessoryStorageKey, ColorStorage>>((byte[])originalAccessoryColors);
 
             if (data.data.TryGetValue(nameof(OriginalColors), out var originalHairColors) && originalHairColors != null)
                 OriginalColors = MessagePackSerializer.Deserialize<Dictionary<ColorType, ColorStorage>>((byte[])originalHairColors);
@@ -900,7 +909,55 @@ namespace Plugins
                 .Select(c => c.Value)
                 .Any(c => c.Value != c.OriginalValue);
         }
-#endregion
+        #endregion
+
+        #region Accessories
+        public bool[] CheckAccessoryUseColor(int slotNr)
+        {
+            bool[] useCols = new bool[3] { false, false, false };
+            var component = ChaControl.GetAccessoryComponent(slotNr);
+            if (component != null)
+            {
+                useCols[0] = component.useColor01;
+                useCols[1] = component.useColor02;
+                useCols[2] = component.useColor03;
+            }
+            return useCols;
+        }
+
+        public Color GetAccessoryColor(int slotNr, int colorNr)
+        {
+            return Accessories.parts[slotNr].color[colorNr];
+        }
+
+        public void SetAccessoryColor(int slotNr, int colorNr,  Color color)
+        {
+            var accessoryColor = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
+            if (!OriginalAccessoryColors.Any(x => x.Key.Compare(CurrentOutfitSlot, slotNr, colorNr)))
+                OriginalAccessoryColors[accessoryColor] = new ColorStorage(GetAccessoryColor(slotNr, colorNr), color);
+            else
+                OriginalAccessoryColors[accessoryColor].Value = color;
+
+            Accessories.parts[slotNr].color[colorNr] = color;
+            SetAccessories.parts[slotNr].color[colorNr] = color;
+            ChaControl.ChangeAccessoryColor(slotNr);
+        }
+
+        public void ResetAccessoryColor(int slotNr, int colorNr)
+        {
+            var accessoryColor = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
+            if (OriginalAccessoryColors.TryGetValue(accessoryColor, out var color))
+                SetAccessoryColor(slotNr, colorNr, color.OriginalValue);
+        }
+
+        public Color GetOriginalAccessoryColor(int slotNr, int colorNr)
+        {
+            var accessoryColor = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
+            if (OriginalAccessoryColors.TryGetValue(accessoryColor, out var color))
+                return color.OriginalValue;
+            return GetAccessoryColor(slotNr, colorNr);
+        }
+        #endregion
 
         #region Category pickers
         public void SetSelectKind(SelectKindType type, int id)
@@ -1972,6 +2029,36 @@ namespace Plugins
                 && ColorNr == colorNr
                 && SlotNr == slotNr
                 && IsPattern == isPattern
+            )
+                return true;
+            return false;
+        }
+    }
+
+    [Serializable]
+    [MessagePackObject]
+    public struct AccessoryStorageKey
+    {
+        [Key("OutfitSlot")]
+        public int OutfitSlot { get; set; }
+        [Key("ColorNr")]
+        public int ColorNr { get; set; }
+        [Key("SlotNr")]
+        public int SlotNr { get; set; }
+
+        public AccessoryStorageKey(int outfitSlot, int slotNr, int colorNr)
+        {
+            OutfitSlot = outfitSlot;
+            ColorNr = colorNr;
+            SlotNr = slotNr;
+        }
+
+        public bool Compare(int outfitSlot, int slotNr, int colorNr)
+        {
+            if (
+                OutfitSlot == outfitSlot
+                && ColorNr == colorNr
+                && SlotNr == slotNr
             )
                 return true;
             return false;
