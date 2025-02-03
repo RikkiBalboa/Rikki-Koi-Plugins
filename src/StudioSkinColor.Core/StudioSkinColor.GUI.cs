@@ -491,6 +491,14 @@ namespace Plugins
 
                 rightPanelScroll = GUILayout.BeginScrollView(rightPanelScroll, GUI.skin.box);
                 {
+                    GUILayout.BeginHorizontal(GUI.skin.box);
+                    GUILayout.Label(InfoAccessories[selectedAccessory].Name, new GUIStyle(GUI.skin.label)
+                    {
+                        fontStyle = FontStyle.Bold,
+                    });
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+
                     var useCols = controller.CheckAccessoryUseColor(selectedAccessory);
                     for (int i = 0; i < 3; i++)
                     {
