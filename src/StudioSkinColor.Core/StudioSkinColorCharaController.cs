@@ -957,6 +957,19 @@ namespace Plugins
                 return color.OriginalValue;
             return GetAccessoryColor(slotNr, colorNr);
         }
+
+        public Vector3 GetAccessoryAddMove(int slotNr, int moveNr, int kind)
+        {
+            return Accessories.parts[slotNr].addMove[moveNr, kind];
+        }
+
+        public void SetAccessoryAddMove(int slotNr, int moveNr, int kind, int flag, float value)
+        {
+            if (flag == 0) Accessories.parts[slotNr].addMove[moveNr, kind].x = value;
+            else if (flag == 1) Accessories.parts[slotNr].addMove[moveNr, kind].y = value;
+            if (flag == 2) Accessories.parts[slotNr].addMove[moveNr, kind].z = value;
+            
+        }
         #endregion
 
         #region Category pickers

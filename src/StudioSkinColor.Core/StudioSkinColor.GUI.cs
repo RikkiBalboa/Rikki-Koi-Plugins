@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using BepInEx;
+using System.Collections;
 
 namespace Plugins
 {
@@ -286,6 +287,7 @@ namespace Plugins
                 DrawAccessoriesWindow();
 
             uiRect = KKAPI.Utilities.IMGUIUtils.DragResizeEatWindow(id, uiRect);
+            KKAPI.Utilities.IMGUIUtils.DrawTooltip(uiRect);
         }
 
         private void DrawClothesWindow()
@@ -492,7 +494,7 @@ namespace Plugins
                 rightPanelScroll = GUILayout.BeginScrollView(rightPanelScroll, GUI.skin.box);
                 {
                     GUILayout.BeginHorizontal(GUI.skin.box);
-                    GUILayout.Label(InfoAccessories[selectedAccessory].Name, new GUIStyle(GUI.skin.label)
+                    GUILayout.Label(InfoAccessories[selectedAccessory]?.Name, new GUIStyle(GUI.skin.label)
                     {
                         fontStyle = FontStyle.Bold,
                     });
@@ -514,6 +516,37 @@ namespace Plugins
                             );
                         }
                     }
+
+                    void DrawEditRow(string label, int correctNo, int flag, Func<int, int, float, bool, int, bool> setAction, float value)
+                    {
+                        GUILayout.BeginHorizontal();
+                        {
+                            GUILayout.Label("X:");
+                            if (GUILayout.RepeatButton("◄", GUILayout.Width(25)))
+                                if (!repeatWait)
+                                {
+                                    setAction(selectedAccessory, correctNo, -0.1f, true, flag);
+                                    repeatWait = true;
+                                    StartCoroutine(RepeatWaitCoroutine());
+                                }
+                            GUILayout.TextField(value.ToString(), GUILayout.Width(60));
+                            if (GUILayout.RepeatButton("►", GUILayout.Width(25)))
+                                if (!repeatWait)
+                                {
+                                    setAction(selectedAccessory, correctNo, 0.1f, true, flag);
+                                    repeatWait = true;
+                                    StartCoroutine(RepeatWaitCoroutine());
+                                }
+                            if (GUILayout.Button("Reset", GUILayout.Width(40)))
+                                setAction(selectedAccessory, correctNo, 0, false, flag);
+                            GUILayout.FlexibleSpace();
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+
+                    DrawEditRow("X:", 0, 1, selectedCharacter.SetAccessoryPos, Accessories[selectedAccessory].addMove[0, 0].x);
+                    DrawEditRow("Y:", 0, 2, selectedCharacter.SetAccessoryPos, Accessories[selectedAccessory].addMove[0, 0].y);
+                    DrawEditRow("Z:", 0, 4, selectedCharacter.SetAccessoryPos, Accessories[selectedAccessory].addMove[0, 0].z);
                 }
                 GUILayout.EndScrollView();
             }
@@ -955,5 +988,16 @@ namespace Plugins
                 InputValue = value.ToString("0.000");
             }
         }
+
+        private bool repeatWait = false;
+        private IEnumerator RepeatWaitCoroutine()
+        {
+            yield return new WaitForSeconds(0.1f);
+            repeatWait = false;
+        }
     }
+
+#if KK
+    public delegate TResult Func<in T1,in T2,in T3,in T4,in T5,out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
+#endif
 }

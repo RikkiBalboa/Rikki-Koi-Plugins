@@ -6,7 +6,6 @@ using UnityEngine;
 using static ChaCustom.CustomSelectKind;
 using Sideloader.AutoResolver;
 using KKAPI.Utilities;
-using ActionGame.Communication;
 namespace Plugins
 {
     public class CategoryPicker
@@ -255,7 +254,7 @@ namespace Plugins
                         if (!shownThumbnails.TryGetValue(new Key<int, int>(item.category, item.index), out GUIContent thumbnail))
                         {
                             var texture = CommonLib.LoadAsset<Texture2D>(item.assetBundle, item.assetName);
-                            shownThumbnails[new Key<int, int>(item.category, item.index)] = new GUIContent(texture);
+                            shownThumbnails[new Key<int, int>(item.category, item.index)] = new GUIContent(texture, item.name);
                         }
 
                         var c = GUI.color;
@@ -274,6 +273,10 @@ namespace Plugins
                 GUILayout.Space((totalRows - maxrow) * size);
             }
             GUILayout.EndScrollView();
+
+            GUILayout.BeginHorizontal(GUI.skin.box);
+            GUILayout.Label(GUI.tooltip, new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter });
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal(GUI.skin.box);
             {
@@ -297,6 +300,7 @@ namespace Plugins
                 }
             }
             GUILayout.EndHorizontal();
+            //KKAPI.Utilities.IMGUIUtils.DrawTooltip(StudioSkinColor.pickerRect);
         }
 
         public void UpdateSelected()
