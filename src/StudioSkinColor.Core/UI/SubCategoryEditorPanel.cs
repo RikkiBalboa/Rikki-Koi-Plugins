@@ -16,6 +16,8 @@ namespace Plugins
         public GameObject ColorTemplate;
         public GameObject PickerTemplate;
 
+        public List<SliderComponent> sliders;
+
         public void Awake()
         {
             scrollRect = GetComponent<ScrollRect>();
@@ -24,11 +26,51 @@ namespace Plugins
             ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
             PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
 
+            Initialize();
+
+            Destroy(SliderTemplate);
+            Destroy(ColorTemplate);
+            Destroy(PickerTemplate);
+        }
+
+        public void Initialize()
+        {
+            if (UIMappings.ShapeBodyValueMap.TryGetValue(SubCategory, out var values))
+                foreach (var value in values)
+                    AddSlider(
+                        value.Value,
+                        () => StudioSkinColor.selectedCharacterController.GetCurrentBodyValue(value.Key),
+                        () => StudioSkinColor.selectedCharacterController.GetOriginalBodyShapeValue(value.Key),
+                        (f) => StudioSkinColor.selectedCharacterController.UpdateBodyShapeValue(value.Key, f),
+                        () => StudioSkinColor.selectedCharacterController.ResetBodyShapeValue(value.Key)
+                    );
+            if (UIMappings.ShapeFaceValueMap.TryGetValue(SubCategory, out values))
+                foreach (var value in values)
+                    AddSlider(
+                        value.Value,
+                        () => StudioSkinColor.selectedCharacterController.GetCurrentFaceValue(value.Key),
+                        () => StudioSkinColor.selectedCharacterController.GetOriginalFaceShapeValue(value.Key),
+                        (f) => StudioSkinColor.selectedCharacterController.UpdateFaceShapeValue(value.Key, f),
+                        () => StudioSkinColor.selectedCharacterController.ResetFaceShapeValue(value.Key)
+                    );
+        }
+
+        public SliderComponent AddSlider(string name, Func<float> getCurrentValue, Func<float> getOriginalValue, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2)
+        {
+            var slider = Instantiate(SliderTemplate, SliderTemplate.transform.parent);
+            slider.name = $"Slider{name.Replace(" ", "")}";
+
+            var sliderComponent = slider.AddComponent<SliderComponent>();
+            sliderComponent.Name = name;
+            sliderComponent.MinValue = minValue;
+            sliderComponent.MaxValue = maxValue;
+            sliderComponent.GetCurrentValue = getCurrentValue;
+            sliderComponent.GetOriginalValue = getOriginalValue;
+            sliderComponent.SetValueAction = setValueAction;
+            sliderComponent.ResetValueAction = resetValueAction;
 
 
-            SliderTemplate.SetActive(false);
-            ColorTemplate.SetActive(false);
-            PickerTemplate.SetActive(false);
+            return sliderComponent;
         }
     }
 }

@@ -23,17 +23,17 @@ namespace Plugins
 #endif
         };
 
-        public static readonly Dictionary<string, Dictionary<int, string>> ShapeBodyValueMap = new Dictionary<string, Dictionary<int, string>>()
+        public static readonly Dictionary<SubCategory, Dictionary<int, string>> ShapeBodyValueMap = new Dictionary<SubCategory, Dictionary<int, string>>()
         {
             {
-                "General", new Dictionary<int, string>()
+                SubCategory.BodyGeneral, new Dictionary<int, string>()
                 {
                     {0,  "Body Height"},
                     {1,  "Head Size"},
                 }
             },
             {
-                "Chest", new Dictionary<int, string>()
+                SubCategory.BodyChest, new Dictionary<int, string>()
                 {
                     {4, "Breast Size"},
                     {5, "Breast Vertical Position"},
@@ -48,7 +48,7 @@ namespace Plugins
                 }
             },
             {
-                "Upper Body", new Dictionary<int, string>()
+                SubCategory.BodyUpper, new Dictionary<int, string>()
                 {
                     {2, "Neck Width"},
                     {3, "Neck Thickness"},
@@ -61,7 +61,7 @@ namespace Plugins
                 }
             },
             {
-                "Lower Body", new Dictionary<int, string>()
+                SubCategory.BodyLower, new Dictionary<int, string>()
                 {
                     {20, "Waist Position"},
                     {21, "Belly Thickness"},
@@ -74,7 +74,7 @@ namespace Plugins
                 }
             },
             {
-                "Arms", new Dictionary<int, string>()
+                SubCategory.BodyArms, new Dictionary<int, string>()
                 {
                     {37, "Shoulder Width"},
                     {38, "Shoulder Thickness"},
@@ -86,7 +86,7 @@ namespace Plugins
                 }
             },
             {
-                "Legs", new Dictionary<int, string>()
+                SubCategory.BodyLegs, new Dictionary<int, string>()
                 {
                     {28, "Upper Thigh Width"},
                     {29, "Upper Thigh Thickness"},
@@ -99,13 +99,11 @@ namespace Plugins
                     {36, "Ankle Thickness"},
                 }
             },
-            { "Pubic Hair", new Dictionary<int, string>() },
-            { "Suntan", new Dictionary<int, string>() },
         };
-        public static readonly Dictionary<string, Dictionary<int, string>> ShapeFaceValueMap = new Dictionary<string, Dictionary<int, string>>()
+        public static readonly Dictionary<SubCategory, Dictionary<int, string>> ShapeFaceValueMap = new Dictionary<SubCategory, Dictionary<int, string>>()
         {
             {
-                "General", new Dictionary<int, string>()
+                SubCategory.FaceGeneral, new Dictionary<int, string>()
                 {
                     {0, "Face Width"},
                     {1, "Upper Face Depth"},
@@ -116,7 +114,7 @@ namespace Plugins
                 }
             },
             {
-                "Ears", new Dictionary<int, string>()
+                SubCategory.FaceEars, new Dictionary<int, string>()
                 {
                     {47, "Ear Size"},
                     {48, "Ear Angle Y Axis"},
@@ -126,7 +124,7 @@ namespace Plugins
                 }
             },
             {
-                "Jaw", new Dictionary<int, string>()
+                SubCategory.FaceJaw, new Dictionary<int, string>()
                 {
                     {6, "Lower Jaw Vertical Position"},
                     {7, "Lower Jaw Depth"},
@@ -139,7 +137,7 @@ namespace Plugins
                 }
             },
             {
-                "Cheeks", new Dictionary<int, string>()
+                SubCategory.FaceCheeks, new Dictionary<int, string>()
                 {
                     {14, "Cheekbone Width"},
                     {15, "Cheekbone Depth"},
@@ -149,7 +147,7 @@ namespace Plugins
                 }
             },
             {
-                "Eyebrows", new Dictionary<int, string>()
+                SubCategory.FaceEyebrows, new Dictionary<int, string>()
                 {
                     {19, "Eyebrow Vertical Position"},
                     {20, "Eyebrow Spacing"},
@@ -159,7 +157,7 @@ namespace Plugins
                 }
             },
             {
-                "Eyes", new Dictionary<int, string>()
+                SubCategory.FaceEyes, new Dictionary<int, string>()
                 {
                     {24, "Upper Eyelid Shape 1"},
                     {25, "Upper Eyelid Shape 2"},
@@ -177,9 +175,8 @@ namespace Plugins
                     {37, "Outer Eye Corner Height"},
                 }
             },
-            { "Iris", new Dictionary<int, string>() },
             {
-                "Nose", new Dictionary<int, string>()
+                SubCategory.FaceNose, new Dictionary<int, string>()
                 {
                     {38, "Nose Tip Height"},
                     {39, "Nose Vertical Position"},
@@ -187,7 +184,7 @@ namespace Plugins
                 }
             },
             {
-                "Mouth", new Dictionary<int, string>()
+                SubCategory.FaceMouth, new Dictionary<int, string>()
                 {
                     {41, "Mouse Vertical Position"},
                     {42, "Mouth Width"},
@@ -197,7 +194,6 @@ namespace Plugins
                     {46, "Mouth Corner Shape"},
                 }
             },
-            { "Makeup", new Dictionary<int, string>() },
         };
 
         public static string GetSubcategoryName(SubCategory subcategory)

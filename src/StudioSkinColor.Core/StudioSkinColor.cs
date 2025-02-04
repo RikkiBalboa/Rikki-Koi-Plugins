@@ -34,6 +34,7 @@ namespace Plugins
         private static Harmony harmony;
 
         internal static ChaControl selectedCharacter;
+        internal static StudioSkinColorCharaController selectedCharacterController;
         internal static Dictionary<ChaControl, List<CharacterClothing>> selectedCharacterClothing = new Dictionary<ChaControl, List<CharacterClothing>>();
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<bool> UseWideLayout { get; private set; }
@@ -182,6 +183,7 @@ namespace Plugins
             {
                 ClearBuffers();
                 selectedCharacter = newChar;
+                selectedCharacterController = StudioSkinColorCharaController.GetController(selectedCharacter);
             }
 
             if (KeyToggleGui.Value.IsDown())

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
-using static HSceneProc;
-using static RootMotion.FinalIK.GrounderQuadruped;
 
 namespace Plugins
 {
@@ -45,7 +43,7 @@ namespace Plugins
                 toggle.group = PanelToggleGroup;
                 toggles.Add(toggle);
 
-                var text = go.GetComponentInChildren<Text>();
+                var text = go.GetComponentInChildren<Text>(true);
                 text.text = UIMappings.GetSubcategoryName(subCategory);
 
                 var panel = Instantiate(editorPanelTemplate);

@@ -19,8 +19,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibilityHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CategoryPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\MovableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\OnDragHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PseudoMakerUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ResizableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\SliderComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\SubCategoryEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Mappings.cs" />
   </ItemGroup>

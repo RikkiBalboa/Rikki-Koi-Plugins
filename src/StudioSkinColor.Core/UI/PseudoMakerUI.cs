@@ -77,7 +77,7 @@ namespace Plugins
                 toggle.group = CategoryToggleGroup;
                 toggles.Add(toggle);
 
-                var text = go.GetComponentInChildren<Text>();
+                var text = go.GetComponentInChildren<Text>(true);
                 text.text = category.ToString();
 
                 var panel = Instantiate(categoryPanelTemplate);
@@ -135,6 +135,7 @@ namespace Plugins
             if (canvasObj == null) throw new ArgumentException("Could not find QuickAccessBoxCanvas.prefab in loaded AB");
 
             MainWindow = Instantiate(canvasObj);
+            MainWindow.SetActive(false);
             //copy.SetActive(false);
 
             Destroy(canvasObj);
