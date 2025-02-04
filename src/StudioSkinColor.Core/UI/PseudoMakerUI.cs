@@ -16,6 +16,7 @@ namespace Plugins
 
         public RectTransform MainCanvas;
         public RectTransform DragPanel;
+        public RectTransform ResizeHandle;
 
         public GameObject CategorySelectorPanel;
         public ToggleGroup CategoryToggleGroup;
@@ -32,10 +33,13 @@ namespace Plugins
         {
             MainCanvas = (RectTransform)MainWindow.transform.Find("MainCanvas").transform;
             DragPanel = (RectTransform)MainCanvas.transform.Find("DragPanel").transform;
+            ResizeHandle = (RectTransform)MainCanvas.transform.Find("ResizeHandle").transform;
             MovableWindow.MakeObjectDraggable(DragPanel, MainCanvas, false);
+            ResizableWindow.MakeObjectResizable(ResizeHandle, MainCanvas, new Vector2(100, 100), MainWindow.GetComponent<CanvasScaler>().referenceResolution, false);
 
             InitializeTemplates();
             InitializeCategories();
+            ResizeHandle.SetAsLastSibling();
         }
 
         private void InitializeTemplates()
