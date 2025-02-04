@@ -83,7 +83,6 @@ namespace Plugins
 
                 var categoryPanel = panel.AddComponent<CategoryPanel>();
                 categoryPanel.Category = category;
-                //categoryPanel.InitializeSubCategories(category);
                 CategoryPanels[category] = categoryPanel;
             }
             toggles[0].isOn = true;

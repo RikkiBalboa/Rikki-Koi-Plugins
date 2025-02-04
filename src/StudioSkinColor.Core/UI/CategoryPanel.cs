@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using static HSceneProc;
 using static RootMotion.FinalIK.GrounderQuadruped;
 
 namespace Plugins
@@ -11,16 +12,18 @@ namespace Plugins
     public class CategoryPanel : MonoBehaviour
     {
         public Category Category;
-        public GameObject SubCategoryPanel;
+        public GameObject SubCategorySelectorPanel;
 
         public ScrollRect PanelScroll;
         public ToggleGroup PanelToggleGroup;
 
+        public Dictionary<SubCategory, SubCategoryEditorPanel> SubCategoryPanels = new Dictionary<SubCategory, SubCategoryEditorPanel>();
+
         private void Awake()
         {
-            SubCategoryPanel = gameObject.transform.Find("SubCategoryPanel").gameObject;
-            PanelScroll = SubCategoryPanel.GetComponent<ScrollRect>();
-            PanelToggleGroup = SubCategoryPanel.GetComponent<ToggleGroup>();
+            SubCategorySelectorPanel = gameObject.transform.Find("SubCategorySelectorPanel").gameObject;
+            PanelScroll = SubCategorySelectorPanel.GetComponent<ScrollRect>();
+            PanelToggleGroup = SubCategorySelectorPanel.GetComponent<ToggleGroup>();
 
             InitializeSubCategories();
         }
@@ -28,6 +31,7 @@ namespace Plugins
         public void InitializeSubCategories()
         {
             var toggleTemplate = PanelScroll.content.Find("ToggleTemplate").gameObject;
+            var editorPanelTemplate = gameObject.transform.Find("EditorPanelTemplate").gameObject;
 
             var toggles = new List<Toggle>();
 
@@ -37,25 +41,33 @@ namespace Plugins
                 go.transform.SetParent(PanelScroll.content, false);
 
                 var toggle = go.GetComponent<Toggle>();
-                //toggle.onValueChanged.AddListener((change) => CategoryToggleValueChanged(category));
+                toggle.onValueChanged.AddListener((change) => SubCategoryToggleValueChanged(subCategory));
                 toggle.group = PanelToggleGroup;
                 toggles.Add(toggle);
 
                 var text = go.GetComponentInChildren<Text>();
                 text.text = UIMappings.GetSubcategoryName(subCategory);
 
-                //var panel = Instantiate(categoryPanelTemplate);
-                //panel.SetActive(false);
-                //panel.name = $"Category{category}Panel";
-                //panel.transform.SetParent(categoryPanelTemplate.transform.parent, false);
+                var panel = Instantiate(editorPanelTemplate);
+                panel.SetActive(false);
+                panel.name = $"Category{subCategory}Editor";
+                panel.transform.SetParent(editorPanelTemplate.transform.parent, false);
 
-                //var categoryPanel = panel.AddComponent<CategoryPanel>();
-                //categoryPanel.InitializeSubCategories(category);
-                //CategoryPanels[category] = categoryPanel;
+                var categoryPanel = panel.AddComponent<SubCategoryEditorPanel>();
+                categoryPanel.SubCategory = subCategory;
+                SubCategoryPanels[subCategory] = categoryPanel;
             }
             if (toggles.Count > 0)
                 toggles[0].isOn = true;
             Destroy(toggleTemplate);
+            Destroy(editorPanelTemplate);
+        }
+
+        private void SubCategoryToggleValueChanged(SubCategory subCategory)
+        {
+            foreach (var panel in SubCategoryPanels)
+                panel.Value.gameObject.SetActive(false);
+            SubCategoryPanels[subCategory].gameObject.SetActive(true);
         }
 
         private IEnumerable<SubCategory> GetSubCategories()

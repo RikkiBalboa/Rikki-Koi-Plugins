@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\MovableWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PseudoMakerUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ResizableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\SubCategoryEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Mappings.cs" />
   </ItemGroup>
   <ItemGroup>
