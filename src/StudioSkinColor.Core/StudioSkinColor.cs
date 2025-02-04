@@ -98,7 +98,7 @@ namespace Plugins
             }
 
             StudioAPI.StudioLoadedChanged += (sender, e) => InitializeCategories();
-            UI.Initialize();
+            PseudoMakerUI.Initialize().AddComponent<PseudoMakerUI>();
 
 #if DEBUG
             InitializeCategories();
@@ -238,7 +238,7 @@ namespace Plugins
         private void OnDestroy()
         {
             StudioSkinColorCharaController.allControllers.Clear();
-            if (UI.MainWindow != null) Destroy(UI.MainWindow);
+            if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow);
             harmony.UnpatchSelf();
         }
 #endif

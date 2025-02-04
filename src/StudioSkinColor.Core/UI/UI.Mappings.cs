@@ -199,5 +199,88 @@ namespace Plugins
             },
             { "Makeup", new Dictionary<int, string>() },
         };
+
+        public static string GetSubcategoryName(SubCategory subcategory)
+        {
+            switch (subcategory)
+            {
+                case SubCategory.BodyGeneral: return "General";
+                case SubCategory.BodyChest: return "Chest";
+                case SubCategory.BodyUpper: return "Upper Body";
+                case SubCategory.BodyLower: return "Lower Body";
+                case SubCategory.BodyArms: return "Arms";
+                case SubCategory.BodyLegs: return "Legs";
+                case SubCategory.BodyPubicHair: return "Pubic Hair";
+                case SubCategory.BodySuntan:return "Suntan";
+                case SubCategory.FaceGeneral: return "General";
+                case SubCategory.FaceEars: return "Ears";
+                case SubCategory.FaceJaw: return "Jaw";
+                case SubCategory.FaceCheeks: return "Cheeks";
+                case SubCategory.FaceEyebrows: return "Eyebrows";
+                case SubCategory.FaceEyes: return "Eyes";
+                case SubCategory.FaceIris: return "Iris";
+                case SubCategory.FaceNose: return "Nose";
+                case SubCategory.FaceMouth: return "Mouth";
+                case SubCategory.FaceMakeup: return "Makeup";
+                case SubCategory.ClothingTop: return "Top";
+                case SubCategory.ClothingBottom: return "Bottom";
+                case SubCategory.ClothingBra: return "Bra";
+                case SubCategory.ClothingUnderwear: return "Underwear";
+                case SubCategory.ClothingGloves: return "Gloves";
+                case SubCategory.ClothingPantyhose: return "Pantyhose";
+                case SubCategory.ClothingLegwear: return "Legwear";
+#if KK
+                case SubCategory.ClothingShoesInDoors: return "Shoes (Indoors)";
+                case SubCategory.ClothingShoesOutdoors: return "Shoes (Outdoors";
+#elif KKS
+                case SubCategory.ClothingShoes: return "Shoes";
+#endif
+                default: return "Undefined";
+            }
+        }
+    }
+
+    public enum Category
+    {
+        Body,
+        Face,
+        Hair,
+        Clothing,
+        Accessories,
+    }
+
+    public enum SubCategory
+    {
+        BodyGeneral,
+        BodyChest,
+        BodyUpper,
+        BodyLower,
+        BodyArms,
+        BodyLegs,
+        BodyPubicHair,
+        BodySuntan,
+        FaceGeneral,
+        FaceEars,
+        FaceJaw,
+        FaceCheeks,
+        FaceEyebrows,
+        FaceEyes,
+        FaceIris,
+        FaceNose,
+        FaceMouth,
+        FaceMakeup,
+        ClothingTop,
+        ClothingBottom,
+        ClothingBra,
+        ClothingUnderwear,
+        ClothingGloves,
+        ClothingPantyhose,
+        ClothingLegwear,
+#if KK
+        ClothingShoesInDoors,
+        ClothingShoesOutdoors,
+#elif KKS
+        ClothingShoes,
+#endif
     }
 }
