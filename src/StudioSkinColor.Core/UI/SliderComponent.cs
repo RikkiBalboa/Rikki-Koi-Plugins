@@ -24,6 +24,8 @@ namespace Plugins
         private void Awake()
         {
             text = GetComponentInChildren<Text>(true);
+            var dragHandler = text.gameObject.AddComponent<OnDragHandler>();
+            dragHandler.UpdateAction = value => inputField.onEndEdit.Invoke((slider.value + value).ToString());
 
             slider = GetComponentInChildren<Slider>(true);
             slider.minValue = MinValue;
