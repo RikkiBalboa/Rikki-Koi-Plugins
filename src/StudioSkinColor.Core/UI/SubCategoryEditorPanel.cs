@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,7 @@ namespace Plugins
         public GameObject SliderTemplate;
         public GameObject ColorTemplate;
         public GameObject PickerTemplate;
+        public GameObject SplitterTemplate;
 
         public List<SliderComponent> sliders;
 
@@ -25,12 +27,14 @@ namespace Plugins
             SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
             ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
             PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
+            SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
 
             Initialize();
 
             Destroy(SliderTemplate);
             Destroy(ColorTemplate);
             Destroy(PickerTemplate);
+            Destroy(SplitterTemplate);
         }
 
         public void Initialize()
@@ -53,6 +57,17 @@ namespace Plugins
                         (f) => StudioSkinColor.selectedCharacterController.UpdateFaceShapeValue(value.Key, f),
                         () => StudioSkinColor.selectedCharacterController.ResetFaceShapeValue(value.Key)
                     );
+
+            if (
+                UIMappings.ShapeBodyValueMap.Where(x => x.Key == SubCategory).Select(x => x.Value).Count()
+                + UIMappings.ShapeFaceValueMap.Where(x => x.Key == SubCategory).Select(x => x.Value).Count() > 0
+            )
+                AddSplitter();
+        }
+
+        public GameObject AddSplitter()
+        {
+            return Instantiate(SplitterTemplate, SplitterTemplate.transform.parent);
         }
 
         public SliderComponent AddSlider(string name, Func<float> getCurrentValue, Func<float> getOriginalValue, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2)
