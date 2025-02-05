@@ -18,11 +18,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibilityHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CategoryPanel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\MovableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ColorComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\MovableWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\OnDragHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PseudoMakerUI.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\ResizableWindow.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\SliderComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ResizableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\SliderComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\SubCategoryEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Mappings.cs" />
   </ItemGroup>
@@ -30,5 +31,8 @@
     <None Include="$(MSBuildThisFileDirectory)Assets\pseudo_maker_interface.unity3d">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)UI\Components\" />
   </ItemGroup>
 </Project>

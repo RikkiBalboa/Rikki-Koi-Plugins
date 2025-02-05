@@ -45,7 +45,7 @@ namespace Plugins
                         value.Value,
                         () => StudioSkinColor.selectedCharacterController.GetCurrentBodyValue(value.Key),
                         () => StudioSkinColor.selectedCharacterController.GetOriginalBodyShapeValue(value.Key),
-                        (f) => StudioSkinColor.selectedCharacterController.UpdateBodyShapeValue(value.Key, f),
+                        f => StudioSkinColor.selectedCharacterController.UpdateBodyShapeValue(value.Key, f),
                         () => StudioSkinColor.selectedCharacterController.ResetBodyShapeValue(value.Key)
                     );
             if (UIMappings.ShapeFaceValueMap.TryGetValue(SubCategory, out values))
@@ -54,7 +54,7 @@ namespace Plugins
                         value.Value,
                         () => StudioSkinColor.selectedCharacterController.GetCurrentFaceValue(value.Key),
                         () => StudioSkinColor.selectedCharacterController.GetOriginalFaceShapeValue(value.Key),
-                        (f) => StudioSkinColor.selectedCharacterController.UpdateFaceShapeValue(value.Key, f),
+                        f => StudioSkinColor.selectedCharacterController.UpdateFaceShapeValue(value.Key, f),
                         () => StudioSkinColor.selectedCharacterController.ResetFaceShapeValue(value.Key)
                     );
 
@@ -63,6 +63,12 @@ namespace Plugins
                 + UIMappings.ShapeFaceValueMap.Where(x => x.Key == SubCategory).Select(x => x.Value).Count() > 0
             )
                 AddSplitter();
+
+            if (SubCategory == SubCategory.BodyGeneral)
+            {
+                AddBodyColorRow("Main Skin Color", ColorType.SkinMain);
+            }
+
         }
 
         public GameObject AddSplitter()
@@ -70,7 +76,7 @@ namespace Plugins
             return Instantiate(SplitterTemplate, SplitterTemplate.transform.parent);
         }
 
-        public SliderComponent AddSlider(string name, Func<float> getCurrentValue, Func<float> getOriginalValue, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2)
+        public SliderComponent AddSlider(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2)
         {
             var slider = Instantiate(SliderTemplate, SliderTemplate.transform.parent);
             slider.name = $"Slider{name.Replace(" ", "")}";
@@ -79,13 +85,39 @@ namespace Plugins
             sliderComponent.Name = name;
             sliderComponent.MinValue = minValue;
             sliderComponent.MaxValue = maxValue;
-            sliderComponent.GetCurrentValue = getCurrentValue;
-            sliderComponent.GetOriginalValue = getOriginalValue;
+            sliderComponent.GetCurrentValue = getCurrentValueAction;
+            sliderComponent.GetOriginalValue = getOriginalValueAction;
             sliderComponent.SetValueAction = setValueAction;
             sliderComponent.ResetValueAction = resetValueAction;
 
 
             return sliderComponent;
+        }
+
+        public ColorComponent AddColorRow(string name, Func<Color> getCurrentValueAction, Func<Color> getOriginalValueAction, Action<Color> setValueAction, Action resetValueAction)
+        {
+            var button = Instantiate(ColorTemplate, ColorTemplate.transform.parent);
+            button.name = $"ColorPicker{name.Replace(" ", "")}";
+            
+            var colorComponent = button.AddComponent<ColorComponent>();
+            colorComponent.Name = name;
+            colorComponent.GetCurrentValue = getCurrentValueAction;
+            colorComponent.GetOriginalValue = getOriginalValueAction;
+            colorComponent.SetValueAction = setValueAction;
+            colorComponent.ResetValueAction = resetValueAction;
+
+            return colorComponent;
+        }
+
+        private void AddBodyColorRow(string name, ColorType colorType)
+        {
+            AddColorRow(
+                name,
+                () => StudioSkinColor.selectedCharacterController.GetColorPropertyValue(colorType),
+                () => StudioSkinColor.selectedCharacterController.GetOriginalColorPropertyValue(colorType),
+                c => StudioSkinColor.selectedCharacterController.UpdateColorProperty(c, colorType),
+                () => StudioSkinColor.selectedCharacterController.ResetColorProperty(colorType)
+            );
         }
     }
 }
