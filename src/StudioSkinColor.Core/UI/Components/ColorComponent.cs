@@ -29,7 +29,7 @@ namespace Plugins
                 {
                     if (c != background.color)
                         UpdateValue(c);
-                });
+                }, $"Pseudo Maker - {Name}");
             });
 
             background = transform.Find("Image").gameObject.GetComponent<Image>();

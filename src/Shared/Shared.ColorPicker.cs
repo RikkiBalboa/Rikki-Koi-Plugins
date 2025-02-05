@@ -1,26 +1,33 @@
 ﻿# if KK || KKS
+using ADV.Commands.Camera;
 using ChaCustom;
 using HarmonyLib;
 using KKAPI;
 using Studio;
 using System;
 using UnityEngine;
+using static DynamicBoneReferenceCtrl;
 
 namespace Shared
 {
     internal class ColorPicker
     {
-        public static void OpenColorPicker(Color col, Action<Color> act)
+        public static void OpenColorPicker(Color col, Action<Color> act, string name = null)
         {
-            var studio = Singleton<global::Studio.Studio>.Instance;
+            name = name == null ? "ColorPicker" : name;
 
             if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio)
             {
-                var setup = AccessTools.Method(typeof(ColorPalette), nameof(ColorPalette.Setup));
-                setup.Invoke(studio.colorPalette, new object[] { "ColorPicker", col, act, true });
+                var studio = Singleton<global::Studio.Studio>.Instance;
+                if (studio.colorPalette.visible && name != null && studio.colorPalette.Check(name))
+                {
+                    studio.colorPalette.visible = false;
+                    return;
+                }
+                studio.colorPalette.Setup(name, col, act, true);
                 studio.colorPalette.visible = true;
             }
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker)
+            else if (KoikatuAPI.GetCurrentGameMode() == GameMode.Maker)
             {
                 CvsColor component = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsColor/Top").GetComponent<CvsColor>();
                 var setup = AccessTools.Method(typeof(CvsColor), nameof(CvsColor.Setup));
@@ -31,9 +38,9 @@ namespace Shared
                 else
                 {
                     if (setup.GetParameters().Length == 5)
-                        setup.Invoke(component, new object[] { "ColorPicker", CvsColor.ConnectColorKind.None, col, act, true });
+                        setup.Invoke(component, new object[] { name, CvsColor.ConnectColorKind.None, col, act, true });
                     else
-                        setup.Invoke(component, new object[] { "ColorPicker", CvsColor.ConnectColorKind.None, col, act, null, true });
+                        setup.Invoke(component, new object[] { name, CvsColor.ConnectColorKind.None, col, act, null, true });
                 }
             }
         }
