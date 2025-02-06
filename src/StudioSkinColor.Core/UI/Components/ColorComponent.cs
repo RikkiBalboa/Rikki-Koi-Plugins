@@ -55,10 +55,6 @@ namespace Plugins
         {
             background.color = value;
             SetValueAction(value);
-            //var stringValue = value.ToString("0.00");
-            //if (slider.value != value) slider.value = value;
-            //if (inputField.text != stringValue) inputField.text = stringValue;
-            //SetValueAction(value);
         }
 
         public void ResetValue()

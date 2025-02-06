@@ -1,12 +1,9 @@
 ﻿# if KK || KKS
-using ADV.Commands.Camera;
 using ChaCustom;
 using HarmonyLib;
 using KKAPI;
-using Studio;
 using System;
 using UnityEngine;
-using static DynamicBoneReferenceCtrl;
 
 namespace Shared
 {

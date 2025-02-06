@@ -35,4 +35,9 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)UI\Components\" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\StudioIcon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

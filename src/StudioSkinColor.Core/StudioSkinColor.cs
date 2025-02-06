@@ -12,11 +12,12 @@ using Studio;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Plugins
 {
@@ -55,6 +56,8 @@ namespace Plugins
         internal string pickerWindowName = "Picker";
         private bool uiShow = false;
         private static StudioSkinColor instance;
+        private static PseudoMakerUI MainWindow;
+        private static Button PseudoMakerStudioButton;
 
         private void Awake()
         {
@@ -99,7 +102,7 @@ namespace Plugins
             }
 
             StudioAPI.StudioLoadedChanged += (sender, e) => InitializeCategories();
-            PseudoMakerUI.Initialize().AddComponent<PseudoMakerUI>();
+            MainWindow = PseudoMakerUI.Initialize().AddComponent<PseudoMakerUI>();
 
 #if DEBUG
             InitializeCategories();
@@ -116,6 +119,10 @@ namespace Plugins
             if (StudioAPI.InsideStudio)
             {
                 RegisterStudioControls();
+                SceneManager.sceneLoaded += (s, lsm) => AddStudioButton(s.name);
+#if DEBUG
+                AddStudioButton("Studio");
+#endif
                 TimelineCompatibilityHelper.PopulateTimeline();
             }
         }
@@ -188,6 +195,7 @@ namespace Plugins
 
             if (KeyToggleGui.Value.IsDown())
             {
+                MainWindow.gameObject.SetActive(!MainWindow.gameObject.activeSelf);
                 uiShow = !uiShow;
             }
 
@@ -236,11 +244,41 @@ namespace Plugins
                 StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, hairColor);
         }
 
+        private static void AddStudioButton(string sceneName)
+        {
+            if (sceneName != "Studio") return;
+            SceneManager.sceneLoaded -= (s, lsm) => AddStudioButton(s.name);
+
+            RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Route").GetComponent<RectTransform>();
+
+            PseudoMakerStudioButton = Instantiate(original.gameObject, original.parent, false).GetComponent<Button>();
+            PseudoMakerStudioButton.name = "Button Pseudo Maker";
+
+            RectTransform transform = PseudoMakerStudioButton.transform as RectTransform;
+            PseudoMakerStudioButton.transform.SetParent(original.parent, true);
+            PseudoMakerStudioButton.transform.localScale = original.localScale;
+
+            transform.anchoredPosition = original.anchoredPosition + new Vector2(-48f * 3 + 4, 44f);
+
+            Texture2D texture2D = new Texture2D(32, 32);
+            texture2D.LoadImage(ResourceUtils.GetEmbeddedResource("StudioIcon.png"));
+            Image DBDEIcon = PseudoMakerStudioButton.targetGraphic as Image;
+            DBDEIcon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 32, 32), new Vector2(40, 40));
+            DBDEIcon.color = Color.white;
+
+            PseudoMakerStudioButton.onClick = new Button.ButtonClickedEvent();
+            PseudoMakerStudioButton.onClick.AddListener(() => { 
+                if (StudioAPI.GetSelectedCharacters().Count() > 0)
+                    MainWindow.gameObject.SetActive(true);
+            });
+        }
+
 #if DEBUG
         private void OnDestroy()
         {
             StudioSkinColorCharaController.allControllers.Clear();
             if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow);
+            if (PseudoMakerStudioButton.gameObject != null) Destroy(PseudoMakerStudioButton);
             harmony.UnpatchSelf();
         }
 #endif
