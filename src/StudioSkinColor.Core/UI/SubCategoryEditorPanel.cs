@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using static ChaCustom.CustomSelectKind;
 
 namespace Plugins
 {
@@ -67,6 +68,7 @@ namespace Plugins
             if (SubCategory == SubCategory.BodyGeneral)
             {
                 AddBodyColorRow("Main Skin Color", ColorType.SkinMain);
+                AddPickerRow(SelectKindType.BodyDetail);
             }
 
         }
@@ -107,6 +109,21 @@ namespace Plugins
             colorComponent.ResetValueAction = resetValueAction;
 
             return colorComponent;
+        }
+
+        public PickerComponent AddPickerRow(SelectKindType selectKind)
+        {
+            var name = UIMappings.GetSelectKindTypeName(selectKind);
+
+            var picker = Instantiate(PickerTemplate, SliderTemplate.transform.parent);
+            picker.name = $"CategoryPicker{name.Replace(" ", "")}";
+
+            var pickerComponent = picker.AddComponent<PickerComponent>();
+            pickerComponent.Name = name;
+            pickerComponent.SelectKind = selectKind;
+            pickerComponent.GetCurrentValue = StudioSkinColor.selectedCharacterController.GetSelected;
+
+            return pickerComponent;
         }
 
         private void AddBodyColorRow(string name, ColorType colorType)

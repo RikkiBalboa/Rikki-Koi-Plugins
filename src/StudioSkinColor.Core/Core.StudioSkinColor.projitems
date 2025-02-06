@@ -20,7 +20,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\CategoryPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ColorComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\MovableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\PickerComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\OnDragHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\PickerPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PseudoMakerUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ResizableWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\SliderComponent.cs" />
@@ -31,9 +33,6 @@
     <None Include="$(MSBuildThisFileDirectory)Assets\pseudo_maker_interface.unity3d">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)UI\Components\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\StudioIcon.png">

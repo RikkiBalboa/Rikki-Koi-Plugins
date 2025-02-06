@@ -22,6 +22,8 @@ namespace Plugins
         public RectTransform CloseButton;
         public RectTransform ResizeHandle;
 
+        public PickerPanel PickerPanel;
+
         public GameObject CategorySelectorPanel;
         public ToggleGroup CategoryToggleGroup;
 
@@ -36,6 +38,7 @@ namespace Plugins
         public void Awake()
         {
             MainCanvas = (RectTransform)MainWindow.transform.Find("MainCanvas").transform;
+            PickerPanel = MainWindow.transform.Find("CategoryPicker").gameObject.AddComponent<PickerPanel>();
             DragPanel = (RectTransform)MainCanvas.transform.Find("DragPanel").transform;
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
             ResizeHandle = (RectTransform)MainCanvas.transform.Find("ResizeHandle").transform;
@@ -139,7 +142,6 @@ namespace Plugins
 
             MainWindow = Instantiate(canvasObj);
             MainWindow.SetActive(false);
-            //copy.SetActive(false);
 
             Destroy(canvasObj);
             ab.Unload(false);
