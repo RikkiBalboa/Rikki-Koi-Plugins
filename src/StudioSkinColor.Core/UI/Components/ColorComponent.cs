@@ -54,7 +54,9 @@ namespace Plugins
         public void UpdateValue(Color value)
         {
             background.color = value;
-            SetValueAction(value);
+
+            if (value != GetCurrentValue())
+                SetValueAction(value);
         }
 
         public void ResetValue()

@@ -55,14 +55,18 @@ namespace Plugins
             var stringValue = value.ToString("0.00");
             if (slider.value != value) slider.value = value;
             if (inputField.text != stringValue) inputField.text = stringValue;
-            SetValueAction(value);
+
+            if (value != GetCurrentValue())
+                SetValueAction(value);
         }
         public void UpdateValue(string value)
         {
             if (float.TryParse(value, out var floatValue))
             {
                 if (slider.value != floatValue) slider.value = floatValue;
-                SetValueAction(floatValue);
+
+                if (floatValue != GetCurrentValue())
+                    SetValueAction(floatValue);
             }
         }
 
