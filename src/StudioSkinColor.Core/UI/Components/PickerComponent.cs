@@ -25,7 +25,7 @@ namespace Plugins
             pickerButton = transform.Find("PickerButton").gameObject.GetComponent<Button>();
             pickerButton.onClick.AddListener(() =>
             {
-                PickerPanel.SetCategory(CategoryNo, GetCurrentValue, (info) =>
+                PickerPanel.SetCategory(Name, CategoryNo, GetCurrentValue, (info) =>
                 {
                     pickerText.text = info.name;
                     thumbnail.sprite = PickerPanel.GetThumbSprite(info);

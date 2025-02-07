@@ -5,6 +5,8 @@ using Studio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UGUI_AssistLibrary;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -32,6 +34,7 @@ namespace Plugins
 
         private static readonly Dictionary<string, string> translationCache = new Dictionary<string, string>();
 
+        private static string titleText;
         private static ChaListDefine.CategoryNo CategoryNo;
         private static Func<int> GetCurrentValue;
         private static Action<CustomSelectInfo> SetCurrentValue;
@@ -65,8 +68,9 @@ namespace Plugins
 
         private GameObject pickerEntryTemplate;
 
-        public static void SetCategory(ChaListDefine.CategoryNo categoryNo, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
+        public static void SetCategory(string name, ChaListDefine.CategoryNo categoryNo, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
         {
+            titleText = name;
             CategoryNo = categoryNo;
             GetCurrentValue = getCurrentValue;
             SetCurrentValue = setCurrentValue;
@@ -80,6 +84,7 @@ namespace Plugins
             instance = this;
             Canvas = (RectTransform)transform;
             DragPanel = (RectTransform)transform.Find("DragPanel").transform;
+            Title = DragPanel.Find("UITitleText").gameObject.GetComponent<Text>();
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
             ResizeHandle = (RectTransform)transform.Find("ResizeHandle").transform;
             ScrollRect = transform.Find("Scroll View").gameObject.GetComponent<ScrollRect>();
@@ -125,6 +130,14 @@ namespace Plugins
             PopulateEntryCache();
 
             gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            Title.text = $"{titleText} Picker";
+            var current = dictSelectInfo[CategoryNo].FirstOrDefault(x => x.index == GetCurrentValue());
+            if (current != null)
+                ((Text)NameField.placeholder).text = current.name;
         }
 
         private void Update()
@@ -253,10 +266,15 @@ namespace Plugins
                 copyInfoComp.tgl.onValueChanged.AddListener((value) =>
                 {
                     if (value && copyInfoComp.info != null && copyInfoComp.info.index != GetCurrentValue())
+                    {
+                        ((Text)NameField.placeholder).text = copyInfoComp.info.name;
                         SetCurrentValue(copyInfoComp.info);
+                    }
                 });
 
-                //__instance.SetToggleHandler(copy);
+                var hoverComponent = copy.AddComponent<SelectListInfoHoverComponent>();
+                hoverComponent.onEnterAction = () => NameField.text = copyInfoComp.info.name;
+                hoverComponent.onExitAction = () => NameField.text = "";
 
                 copyInfoComp.img = copy.GetComponent<Image>();
 

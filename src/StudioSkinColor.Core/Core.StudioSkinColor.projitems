@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ColorComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\MovableWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\PickerComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\SelectListInfoHoverComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\OnDragHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PickerPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PseudoMakerUI.cs" />
