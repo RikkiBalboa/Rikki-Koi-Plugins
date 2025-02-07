@@ -7,8 +7,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static GUIDrawer;
-using static HSceneProc;
 
 namespace Plugins
 {
@@ -100,7 +98,14 @@ namespace Plugins
             CloseButton.gameObject.GetComponent<Button>().onClick.AddListener(() => gameObject.SetActive(false));
 
             MovableWindow.MakeObjectDraggable(DragPanel, Canvas, false);
-            ResizableWindow.MakeObjectResizable(ResizeHandle, Canvas, new Vector2(100, 100), PseudoMakerUI.MainWindow.GetComponent<CanvasScaler>().referenceResolution, false);
+            ResizableWindow.MakeObjectResizable(
+                ResizeHandle,
+                Canvas,
+                new Vector2(100, 100),
+                PseudoMakerUI.MainWindow.GetComponent<CanvasScaler>().referenceResolution,
+                false,
+                PopulateEntryCache
+            );
 
             PopulateEntryCache();
 
@@ -190,12 +195,19 @@ namespace Plugins
         {
             var rectTransform = ScrollRect.transform as RectTransform;
 
-            columnCount = ((int)rectTransform.rect.width) / (int)GridLayoutGroup.cellSize.x;
-            rowCount = ((int)rectTransform.rect.height) / (int)GridLayoutGroup.cellSize.x + 2;
-            var totalVisibleItems = columnCount * rowCount;
+            var _columnCount = ((int)rectTransform.rect.width) / (int)GridLayoutGroup.cellSize.x;
+            var _rowCount = ((int)rectTransform.rect.height) / (int)GridLayoutGroup.cellSize.x + 2;
 
+            var totalVisibleItems = _columnCount * _rowCount;
 
-            for (int i = 0; i < totalVisibleItems; i++)
+            if (totalVisibleItems <= columnCount * rowCount)
+                return;
+
+            rowCount = _rowCount;
+            columnCount = _columnCount;
+
+            var newEntries = totalVisibleItems - cachedEntries.Count;
+            for (int i = 0; i < newEntries; i++)
             {
                 var copy = Instantiate(pickerEntryTemplate, GridLayoutGroup.transform, false);
                 copy.name = "PickerItem";
