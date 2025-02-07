@@ -1,5 +1,6 @@
 ﻿using ChaCustom;
 using KKAPI.Utilities;
+using Sideloader.AutoResolver;
 using Studio;
 using System;
 using System.Collections.Generic;
@@ -96,7 +97,15 @@ namespace Plugins
             pickerEntryTemplate.SetActive(false);
 
             NameField = transform.Find("NameField").gameObject.GetComponent<InputField>();
+
             SearchField = transform.Find("SearchInputField").gameObject.GetComponent<InputField>();
+            SearchField.onValueChanged.AddListener((value) =>
+            {
+                if (value != "")
+                    itemList = dictSelectInfo[CategoryNo].Where(x => FilterInfo(x, value)).ToList();
+                else itemList = dictSelectInfo[CategoryNo];
+                isDirty = true;
+            });
 
             ClearButton = transform.Find("ClearButton").gameObject.GetComponent<Button>();
             ClearButton.onClick.AddListener(() => SearchField.text = "");
@@ -190,13 +199,30 @@ namespace Plugins
             //    if (SelectedItem.sic != null)
             //        SelectedItem.sic.tgl.isOn = true;
 
-                //    //if (_selectionChanged && IsVisible) // Only update the scroll after the list is fully loaded and shown, or it will get reset to 0
-                //    //{
-                //    //    if (ScrollListsToSelection.Value)
-                //    //        ScrollToSelection();
-                //    //    _selectionChanged = false;
-                //    //}
-                //}
+            //    //if (_selectionChanged && IsVisible) // Only update the scroll after the list is fully loaded and shown, or it will get reset to 0
+            //    //{
+            //    //    if (ScrollListsToSelection.Value)
+            //    //        ScrollToSelection();
+            //    //    _selectionChanged = false;
+            //    //}
+            //}
+        }
+
+        private bool FilterInfo(CustomSelectInfo info, string search)
+        {
+            var show = false;
+            show |= info.name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+            //show |= info.assetBundle.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (translationCache.TryGetValue(info.name, out var translation))
+                show |= translation.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            var _info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)info.category, info.index);
+            if (_info != null)
+            {
+                show |= _info.Author.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+            }
+            return show;
         }
 
         private void PopulateEntryCache()

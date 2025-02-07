@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-using Shared;
-using Illusion.Component.UI.ColorPicker;
-using static ChaCustom.CustomSelectKind;
 using ChaCustom;
 using System.Linq;
 
