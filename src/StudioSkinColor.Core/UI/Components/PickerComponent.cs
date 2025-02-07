@@ -5,6 +5,8 @@ using UnityEngine;
 using Shared;
 using Illusion.Component.UI.ColorPicker;
 using static ChaCustom.CustomSelectKind;
+using ChaCustom;
+using System.Linq;
 
 namespace Plugins
 {
@@ -14,11 +16,11 @@ namespace Plugins
         private Button pickerButton;
         private Text pickerText;
         private Image thumbnail;
-        private Button resetButton;
 
         public string Name;
-        public SelectKindType SelectKind;
-        public Func<SelectKindType, int> GetCurrentValue;
+        public ChaListDefine.CategoryNo CategoryNo;
+        public Func<int> GetCurrentValue;
+        public Action<CustomSelectInfo> SetCurrentValue;
 
         private void Awake()
         {
@@ -27,12 +29,17 @@ namespace Plugins
             pickerButton = transform.Find("PickerButton").gameObject.GetComponent<Button>();
             pickerButton.onClick.AddListener(() =>
             {
-                PickerPanel.SetCategory(ChaListDefine.CategoryNo.co_top);
+                PickerPanel.SetCategory(CategoryNo, GetCurrentValue, (info) =>
+                {
+                    pickerText.text = info.name;
+                    thumbnail.sprite = PickerPanel.GetThumbSprite(info);
+                    SetCurrentValue(info);
+                });
             });
 
             pickerText = pickerButton.GetComponentInChildren<Text>(true);
 
-            thumbnail = pickerButton.GetComponentInChildren<Image>(true);
+            thumbnail = pickerButton.transform.Find("Image").gameObject.GetComponent<Image>();
         }
 
         private void Start()
@@ -42,15 +49,15 @@ namespace Plugins
 
         private void OnEnable()
         {
-            //if (GetCurrentValue == null)
-            //    return;
+            if (GetCurrentValue == null)
+                return;
 
-            //UpdateValue(SelectKind, GetCurrentValue());
-        }
-
-        public void UpdateValue(SelectKindType selectKindType, int id)
-        {
-            //SetValueAction(selectKindType, id);
+            var current = PickerPanel.dictSelectInfo[CategoryNo].FirstOrDefault(x => x.index == GetCurrentValue());
+            if (current != null)
+            {
+                pickerText.text = current.name;
+                thumbnail.sprite = PickerPanel.GetThumbSprite(current);
+            }
         }
     }
 }

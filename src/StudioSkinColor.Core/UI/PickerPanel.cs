@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static ChaCustom.CustomSelectKind;
 
 namespace Plugins
 {
@@ -31,7 +32,10 @@ namespace Plugins
         private static readonly Dictionary<string, string> translationCache = new Dictionary<string, string>();
 
         private static ChaListDefine.CategoryNo CategoryNo;
-        private static Dictionary<ChaListDefine.CategoryNo, List<CustomSelectInfo>> dictSelectInfo;
+        private static Func<int> GetCurrentValue;
+        private static Action<CustomSelectInfo> SetCurrentValue;
+
+        internal static Dictionary<ChaListDefine.CategoryNo, List<CustomSelectInfo>> dictSelectInfo;
         private static List<CustomSelectInfo> itemList;
 
         private static List<CustomSelectInfoComponent> cachedEntries = new List<CustomSelectInfoComponent>();
@@ -60,9 +64,11 @@ namespace Plugins
 
         private GameObject pickerEntryTemplate;
 
-        public static void SetCategory(ChaListDefine.CategoryNo categoryNo)
+        public static void SetCategory(ChaListDefine.CategoryNo categoryNo, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
         {
             CategoryNo = categoryNo;
+            GetCurrentValue = getCurrentValue;
+            SetCurrentValue = setCurrentValue;
             itemList = dictSelectInfo[categoryNo];
             isDirty = true;
             instance.gameObject.SetActive(true);
@@ -142,8 +148,8 @@ namespace Plugins
 
                 cachedEntry.Disable(item.disable);
 
-                //var thumb = listData.GetThumbSprite(item);
-                //cachedEntry.img.sprite = thumb;
+                var thumb = GetThumbSprite(item);
+                cachedEntry.img.sprite = thumb;
 
                 if (ReferenceEquals(selectedItem, item))
                     EventSystem.current.SetSelectedGameObject(cachedEntry.gameObject);
@@ -177,18 +183,20 @@ namespace Plugins
         private void UpdateSelection()
         {
             cachedEntries.ForEach(x => x.tgl.isOn = false);
-            if (SelectedItem != null)
-            {
-                if (SelectedItem.sic != null)
-                    SelectedItem.sic.tgl.isOn = true;
+            var onToggle = cachedEntries.FirstOrDefault(x => x.info.index == GetCurrentValue());
+            if (onToggle != null) onToggle.tgl.isOn = true;
+            //if (SelectedItem != null)
+            //{
+            //    if (SelectedItem.sic != null)
+            //        SelectedItem.sic.tgl.isOn = true;
 
-                //if (_selectionChanged && IsVisible) // Only update the scroll after the list is fully loaded and shown, or it will get reset to 0
-                //{
-                //    if (ScrollListsToSelection.Value)
-                //        ScrollToSelection();
-                //    _selectionChanged = false;
+                //    //if (_selectionChanged && IsVisible) // Only update the scroll after the list is fully loaded and shown, or it will get reset to 0
+                //    //{
+                //    //    if (ScrollListsToSelection.Value)
+                //    //        ScrollToSelection();
+                //    //    _selectionChanged = false;
+                //    //}
                 //}
-            }
         }
 
         private void PopulateEntryCache()
@@ -216,14 +224,31 @@ namespace Plugins
                 copyInfoComp.tgl = copy.GetComponent<Toggle>();
                 copyInfoComp.tgl.group = toggleGroup;
                 copyInfoComp.tgl.isOn = false;
+                copyInfoComp.tgl.onValueChanged.AddListener((value) =>
+                {
+                    if (value && copyInfoComp.info != null && copyInfoComp.info.index != GetCurrentValue())
+                        SetCurrentValue(copyInfoComp.info);
+                });
 
                 //__instance.SetToggleHandler(copy);
 
                 copyInfoComp.img = copy.GetComponent<Image>();
 
                 cachedEntries.Add(copyInfoComp);
-                copy.SetActive(true);
+                copy.SetActive(false);
             }
+        }
+
+        public static Sprite GetThumbSprite(CustomSelectInfo item)
+        {
+            var thumbTex = CommonLib.LoadAsset<Texture2D>(item.assetBundle, item.assetName, false, string.Empty);
+            Sprite thumb = null;
+            if (thumbTex)
+            {
+                thumb = Sprite.Create(thumbTex, new Rect(0f, 0f, thumbTex.width, thumbTex.height), new Vector2(0.5f, 0.5f));
+            }
+
+            return thumb;
         }
 
         public static void InitializeCategories()

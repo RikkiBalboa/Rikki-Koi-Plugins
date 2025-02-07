@@ -262,9 +262,9 @@ namespace Plugins
 
             Texture2D texture2D = new Texture2D(32, 32);
             texture2D.LoadImage(ResourceUtils.GetEmbeddedResource("StudioIcon.png"));
-            Image DBDEIcon = PseudoMakerStudioButton.targetGraphic as Image;
-            DBDEIcon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 32, 32), new Vector2(40, 40));
-            DBDEIcon.color = Color.white;
+            Image icon = PseudoMakerStudioButton.targetGraphic as Image;
+            icon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 32, 32), new Vector2(40, 40));
+            icon.color = Color.white;
 
             PseudoMakerStudioButton.onClick = new Button.ButtonClickedEvent();
             PseudoMakerStudioButton.onClick.AddListener(() => { 
@@ -276,9 +276,9 @@ namespace Plugins
 #if DEBUG
         private void OnDestroy()
         {
-            StudioSkinColorCharaController.allControllers.Clear();
-            if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow);
             if (PseudoMakerStudioButton.gameObject != null) Destroy(PseudoMakerStudioButton);
+            if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow);
+            StudioSkinColorCharaController.allControllers.Clear();
             harmony.UnpatchSelf();
         }
 #endif

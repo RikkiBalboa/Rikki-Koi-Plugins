@@ -11,6 +11,7 @@ using MessagePack;
 using ExtensibleSaveFormat;
 using static ChaCustom.CustomSelectKind;
 using static Illusion.Utils;
+using ChaCustom;
 
 namespace Plugins
 {
@@ -908,6 +909,11 @@ namespace Plugins
 #endregion
 
         #region Category pickers
+        public void SetSelectKind(SelectKindType type, CustomSelectInfo info)
+        {
+            SetSelectKind(type, info.index);
+        }
+
         public void SetSelectKind(SelectKindType type, int id)
         {
             void UpdateClothesPattern(int kind, int pattern)
