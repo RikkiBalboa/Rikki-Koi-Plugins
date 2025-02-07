@@ -1,42 +1,93 @@
 ﻿using ChaCustom;
 using KKAPI.Utilities;
+using Studio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static GUIDrawer;
+using static HSceneProc;
 
 namespace Plugins
 {
     public class PickerPanel : MonoBehaviour
     {
+        private static PickerPanel instance;
+
         public RectTransform Canvas;
         public RectTransform DragPanel;
         public RectTransform CloseButton;
         public RectTransform ResizeHandle;
+        public GameObject Content;
 
         public Text Title;
         public InputField NameField;
         public InputField SearchField;
         public Button ClearButton;
+        public ScrollRect ScrollRect;
         public GridLayoutGroup GridLayoutGroup;
+        public ToggleGroup toggleGroup;
 
-        private static Dictionary<ChaListDefine.CategoryNo, List<CustomSelectInfo>> dictSelectInfo;
         private static readonly Dictionary<string, string> translationCache = new Dictionary<string, string>();
 
-        private List<CustomSelectInfo> itemList;
+        private static ChaListDefine.CategoryNo CategoryNo;
+        private static Dictionary<ChaListDefine.CategoryNo, List<CustomSelectInfo>> dictSelectInfo;
+        private static List<CustomSelectInfo> itemList;
+
+        private static List<CustomSelectInfoComponent> cachedEntries = new List<CustomSelectInfoComponent>();
+        private int lastItemsAboveViewRect;
+        private static bool isDirty;
+        private static int rowCount;
+        private static int columnCount;
+
+        public int InitialBotPadding;
+        public int InitialTopPadding;
+
+        private bool _selectionChanged;
+        private CustomSelectInfo _selectedItem;
+        private CustomSelectInfo SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    _selectionChanged = true;
+                }
+            }
+        }
 
         private GameObject pickerEntryTemplate;
 
+        public static void SetCategory(ChaListDefine.CategoryNo categoryNo)
+        {
+            CategoryNo = categoryNo;
+            itemList = dictSelectInfo[categoryNo];
+            isDirty = true;
+            instance.gameObject.SetActive(true);
+        }
+
         private void Awake()
         {
+            instance = this;
             Canvas = (RectTransform)transform;
             DragPanel = (RectTransform)transform.Find("DragPanel").transform;
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
             ResizeHandle = (RectTransform)transform.Find("ResizeHandle").transform;
-            GridLayoutGroup = transform.Find("Scroll View/Viewport/Content").gameObject.GetComponent<GridLayoutGroup>();
+            ScrollRect = transform.Find("Scroll View").gameObject.GetComponent<ScrollRect>();
+            Content = ScrollRect.transform.Find("Viewport/Content").gameObject;
+
+            GridLayoutGroup = Content.GetComponent<GridLayoutGroup>();
+            InitialBotPadding = GridLayoutGroup.padding.bottom;
+            InitialTopPadding = GridLayoutGroup.padding.top;
+
+            toggleGroup = Content.GetComponent<ToggleGroup>();
 
             pickerEntryTemplate = GridLayoutGroup.transform.Find("PickerItemTemplate").gameObject;
+            pickerEntryTemplate.gameObject.AddComponent<CustomSelectInfoComponent>();
             pickerEntryTemplate.transform.SetParent(GridLayoutGroup.transform.parent);
             pickerEntryTemplate.SetActive(false);
 
@@ -51,7 +102,116 @@ namespace Plugins
             MovableWindow.MakeObjectDraggable(DragPanel, Canvas, false);
             ResizableWindow.MakeObjectResizable(ResizeHandle, Canvas, new Vector2(100, 100), PseudoMakerUI.MainWindow.GetComponent<CanvasScaler>().referenceResolution, false);
 
+            PopulateEntryCache();
+
             gameObject.SetActive(false);
+        }
+
+        private void Update()
+        {
+            var visibleItemCount = itemList.Count(x => !x.disvisible);
+            var offscreenItemCount = Mathf.Max(0, visibleItemCount - cachedEntries.Count);
+
+            var rowsAboveViewRect = Mathf.FloorToInt(Mathf.Clamp(ScrollRect.content.localPosition.y / (int)GridLayoutGroup.cellSize.x, 0, offscreenItemCount));
+            var itemsAboveViewRect = rowsAboveViewRect * columnCount;
+
+            if (lastItemsAboveViewRect == itemsAboveViewRect && !isDirty) return;
+
+            lastItemsAboveViewRect = itemsAboveViewRect;
+            isDirty = false;
+
+            var selectedItem = itemList.Find(x => x.sic != null && x.sic.gameObject == EventSystem.current.currentSelectedGameObject);
+            itemList.ForEach(x => x.sic = null);
+
+            var count = 0;
+            foreach (var item in itemList.Where(x => !x.disvisible).Skip(itemsAboveViewRect))
+            {
+                if (count >= cachedEntries.Count) break;
+
+                var cachedEntry = cachedEntries[count];
+
+                count++;
+
+                cachedEntry.info = item;
+                item.sic = cachedEntry;
+
+                cachedEntry.Disable(item.disable);
+
+                //var thumb = listData.GetThumbSprite(item);
+                //cachedEntry.img.sprite = thumb;
+
+                if (ReferenceEquals(selectedItem, item))
+                    EventSystem.current.SetSelectedGameObject(cachedEntry.gameObject);
+
+                if (!cachedEntry.gameObject.activeSelf)
+                    cachedEntry.gameObject.SetActive(true);
+            }
+
+            // Disable unused cache items
+            if (count < cachedEntries.Count)
+            {
+                foreach (var cacheEntry in cachedEntries.Skip(count))
+                    cacheEntry.gameObject.SetActive(false);
+            }
+
+            UpdateSelection();
+
+            // Apply top and bottom offsets to create the illusion of having all of the list items
+            var topOffset = Mathf.RoundToInt(rowsAboveViewRect * GridLayoutGroup.cellSize.x);
+            GridLayoutGroup.padding.top = InitialTopPadding + topOffset;
+
+            var totalHeight = Mathf.CeilToInt((float)visibleItemCount / columnCount) * GridLayoutGroup.cellSize.x;
+            var cacheEntriesHeight = Mathf.CeilToInt((float)cachedEntries.Count / columnCount) * GridLayoutGroup.cellSize.x;
+            var trailingHeight = totalHeight - cacheEntriesHeight - topOffset;
+            GridLayoutGroup.padding.bottom = Mathf.FloorToInt(Mathf.Max(0, trailingHeight) + InitialBotPadding);
+
+            // Needed after changing padding since it doesn't make the object dirty
+            LayoutRebuilder.MarkLayoutForRebuild(Content.transform as RectTransform);
+        }
+
+        private void UpdateSelection()
+        {
+            cachedEntries.ForEach(x => x.tgl.isOn = false);
+            if (SelectedItem != null)
+            {
+                if (SelectedItem.sic != null)
+                    SelectedItem.sic.tgl.isOn = true;
+
+                //if (_selectionChanged && IsVisible) // Only update the scroll after the list is fully loaded and shown, or it will get reset to 0
+                //{
+                //    if (ScrollListsToSelection.Value)
+                //        ScrollToSelection();
+                //    _selectionChanged = false;
+                //}
+            }
+        }
+
+        private void PopulateEntryCache()
+        {
+            var rectTransform = ScrollRect.transform as RectTransform;
+
+            columnCount = ((int)rectTransform.rect.width) / (int)GridLayoutGroup.cellSize.x;
+            rowCount = ((int)rectTransform.rect.height) / (int)GridLayoutGroup.cellSize.x + 2;
+            var totalVisibleItems = columnCount * rowCount;
+
+
+            for (int i = 0; i < totalVisibleItems; i++)
+            {
+                var copy = Instantiate(pickerEntryTemplate, GridLayoutGroup.transform, false);
+                copy.name = "PickerItem";
+                var copyInfoComp = copy.GetComponent<CustomSelectInfoComponent>();
+
+                copyInfoComp.tgl = copy.GetComponent<Toggle>();
+                copyInfoComp.tgl.group = toggleGroup;
+                copyInfoComp.tgl.isOn = false;
+
+                //__instance.SetToggleHandler(copy);
+
+                copyInfoComp.img = copy.GetComponent<Image>();
+
+                cachedEntries.Add(copyInfoComp);
+                copy.SetActive(true);
+            }
         }
 
         public static void InitializeCategories()

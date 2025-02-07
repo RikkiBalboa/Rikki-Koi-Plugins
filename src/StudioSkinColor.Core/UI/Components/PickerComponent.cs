@@ -25,6 +25,10 @@ namespace Plugins
             text = GetComponentInChildren<Text>(true);
 
             pickerButton = transform.Find("PickerButton").gameObject.GetComponent<Button>();
+            pickerButton.onClick.AddListener(() =>
+            {
+                PickerPanel.SetCategory(ChaListDefine.CategoryNo.co_top);
+            });
 
             pickerText = pickerButton.GetComponentInChildren<Text>(true);
 
