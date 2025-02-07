@@ -23,7 +23,7 @@ namespace Plugins
         {
             text = GetComponentInChildren<Text>(true);
 
-            colorButton = transform.Find("Image").gameObject.GetComponent<Button>();
+            colorButton = transform.Find("Alpha/Image").gameObject.GetComponent<Button>();
             colorButton.onClick.AddListener(() => {
                 ColorPicker.OpenColorPicker(background.color, (c) =>
                 {
@@ -32,7 +32,7 @@ namespace Plugins
                 }, $"Pseudo Maker - {Name}");
             });
 
-            background = transform.Find("Image").gameObject.GetComponent<Image>();
+            background = transform.Find("Alpha/Image").gameObject.GetComponent<Image>();
 
             resetButton = transform.Find("ResetButton").gameObject.GetComponent<Button>();
             resetButton.onClick.AddListener(ResetValue);
