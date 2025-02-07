@@ -28,7 +28,7 @@ namespace Plugins
         public InputField NameField;
         public InputField SearchField;
         public Button ClearButton;
-        public ScrollRect ScrollRect;
+        public static ScrollRect ScrollRect;
         public GridLayoutGroup GridLayoutGroup;
         public ToggleGroup toggleGroup;
 
@@ -70,6 +70,12 @@ namespace Plugins
 
         public static void SetCategory(string name, ChaListDefine.CategoryNo categoryNo, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
         {
+            if (CategoryNo == categoryNo && instance.gameObject.activeSelf)
+            {
+                instance.gameObject.SetActive(false);
+                return;
+            }
+
             titleText = name;
             CategoryNo = categoryNo;
             GetCurrentValue = getCurrentValue;
@@ -77,6 +83,7 @@ namespace Plugins
             itemList = dictSelectInfo[categoryNo];
             isDirty = true;
             instance.gameObject.SetActive(true);
+            ScrollRect.content.localPosition = Vector2.zero;
         }
 
         private void Awake()
