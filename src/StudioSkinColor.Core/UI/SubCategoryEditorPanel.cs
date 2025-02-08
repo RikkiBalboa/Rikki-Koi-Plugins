@@ -1,4 +1,5 @@
-﻿using Illusion.Game;
+﻿using Cysharp.Threading.Tasks.Linq;
+using Illusion.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace Plugins
 
         private Dictionary<int, List<GameObject>> clothingColorGameobjects;
         private Dictionary<int, List<GameObject>> clothingPatternGameobjects;
+        private List<GameObject> clothingSailorGameObjects;
+        private List<GameObject> clothingJacketGameObjects;
 
         private void Awake()
         {
@@ -215,7 +218,8 @@ namespace Plugins
             };
             clothingChangeAction = () =>
             {
-                var useCols = StudioSkinColor.selectedCharacterController.CheckClothingUseColor(StudioSkinColorCharaController.SelectKindToIntKind(selectKindType));
+                var kind = StudioSkinColorCharaController.SelectKindToIntKind(selectKindType);
+                var useCols = StudioSkinColor.selectedCharacterController.CheckClothingUseColor(kind);
                 for (int colorNr = 0; colorNr < useCols.Length; colorNr++)
                 {
                     if (clothingColorGameobjects != null && clothingColorGameobjects.TryGetValue(colorNr, out var _gameObjects))
@@ -223,17 +227,31 @@ namespace Plugins
                             _gameObject.SetActive(useCols[colorNr]);
                     patternChangeAction(colorNr);
                 }
+                var current = StudioSkinColor.selectedCharacterController.GetSelected(selectKindType);
+                clothingSailorGameObjects?.ForEach(x => x.SetActive(false));
+                clothingJacketGameObjects?.ForEach(x => x.SetActive(false));
+
+                if (SubCategory == SubCategory.ClothingTop && current == 1)
+                    clothingSailorGameObjects?.ForEach(x => x.SetActive(true));
+                if (SubCategory == SubCategory.ClothingTop && current == 2)
+                    clothingJacketGameObjects?.ForEach(x => x.SetActive(true));
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
             if (SubCategory == SubCategory.ClothingTop)
             {
-                AddPickerRow(SelectKindType.CosJacket01);
-                AddPickerRow(SelectKindType.CosJacket02);
-                AddPickerRow(SelectKindType.CosJacket03);
-                AddPickerRow(SelectKindType.CosSailor01);
-                AddPickerRow(SelectKindType.CosSailor02);
-                AddPickerRow(SelectKindType.CosSailor03);
+                clothingSailorGameObjects = new List<GameObject>()
+                {
+                    AddPickerRow(SelectKindType.CosSailor01).gameObject,
+                    AddPickerRow(SelectKindType.CosSailor02).gameObject,
+                    AddPickerRow(SelectKindType.CosSailor03).gameObject,
+                };
+                clothingJacketGameObjects = new List<GameObject>()
+                {
+                    AddPickerRow(SelectKindType.CosJacket01).gameObject,
+                    AddPickerRow(SelectKindType.CosJacket02).gameObject,
+                    AddPickerRow(SelectKindType.CosJacket03).gameObject,
+                };
             }
 
             for (int i = 0; i < 3; i++)
