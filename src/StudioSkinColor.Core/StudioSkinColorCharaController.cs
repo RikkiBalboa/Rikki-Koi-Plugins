@@ -650,11 +650,13 @@ namespace Plugins
 
         public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1, bool isPattern = false)
         {
+            InitBaseCustomTextureClothesIfNotExists(kind);
             StudioSkinColor.Logger.LogInfo(kind);
             StudioSkinColor.Logger.LogInfo(colorNr);
             StudioSkinColor.Logger.LogInfo(color);
             StudioSkinColor.Logger.LogInfo(slotNr);
             StudioSkinColor.Logger.LogInfo(isPattern);
+            StudioSkinColor.Logger.LogInfo(IsMultiPartTop(kind));
             var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
             if (MEController != null)
             {
@@ -683,7 +685,10 @@ namespace Plugins
                 Clothes.parts[kind].colorInfo[colorNr].baseColor = color;
                 SetClothes.parts[kind].colorInfo[colorNr].baseColor = color;
                 if (!IsMultiPartTop(kind))
+                {
+                    StudioSkinColor.Logger.LogInfo("AAAAAAAAAAAAAAAAAAAAAA");
                     ChaControl.ChangeCustomClothes(true, kind, true, true, true, true, true);
+                }
                 else
                     for (int i = 0; i < Clothes.subPartsId.Length; i++)
                         ChaControl.ChangeCustomClothes(false, i, true, true, true, true, true);
@@ -758,14 +763,14 @@ namespace Plugins
             return Accessories.parts[slotNr].color[colorNr];
         }
 
-        public void ResetClothingColor(int kind, int colorNr, int slotNr, bool isPattern = false)
+        public void ResetClothingColor(int kind, int colorNr, int slotNr = -1, bool isPattern = false)
         {
             var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
             if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
                 SetClothingColor(kind, colorNr, color.OriginalValue, slotNr, isPattern);
         }
 
-        public Color GetOriginalClothingColor(int kind, int colorNr, int slotNr, bool isPattern = false)
+        public Color GetOriginalClothingColor(int kind, int colorNr, int slotNr = -1, bool isPattern = false)
         {
             var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
             if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
@@ -1728,6 +1733,25 @@ namespace Plugins
                     break;
             }
             return SelectKindType.CosTop;
+        }
+
+        public static int SubCategoryToKind(SubCategory subCategory)
+        {
+            int clothingKind = -1;
+            if (subCategory == SubCategory.ClothingTop) clothingKind = 0;
+            else if (subCategory == SubCategory.ClothingBottom) clothingKind = 1;
+            else if (subCategory == SubCategory.ClothingBra) clothingKind = 2;
+            else if (subCategory == SubCategory.ClothingUnderwear) clothingKind = 3;
+            else if (subCategory == SubCategory.ClothingGloves) clothingKind = 4;
+            else if (subCategory == SubCategory.ClothingPantyhose) clothingKind = 5;
+            else if (subCategory == SubCategory.ClothingLegwear) clothingKind = 6;
+#if KK
+            else if (subCategory == SubCategory.ClothingShoesInDoors) clothingKind = 7;
+            else if (subCategory == SubCategory.ClothingShoesOutdoors) clothingKind = 8;
+#else
+            else if (subCategory == SubCategory.ClothingShoes) clothingKind = 8;
+#endif
+            return clothingKind;
         }
         #endregion
 

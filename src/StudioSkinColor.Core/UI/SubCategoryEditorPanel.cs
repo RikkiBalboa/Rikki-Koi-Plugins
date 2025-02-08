@@ -170,6 +170,42 @@ namespace Plugins
                 AddColorRow("Lip Color", ColorType.LipColor);
                 AddSplitter();
             }
+            if (SubCategory.ToString().StartsWith("Clothing"))
+                DrawClothesCategories();
+        }
+
+        private void DrawClothesCategories()
+        {
+            SelectKindType selectKindType = SelectKindType.CosTop;
+            if (SubCategory == SubCategory.ClothingTop) selectKindType = SelectKindType.CosTop;
+            else if (SubCategory == SubCategory.ClothingBottom) selectKindType = SelectKindType.CosBot;
+            else if (SubCategory == SubCategory.ClothingBra) selectKindType = SelectKindType.CosBra;
+            else if (SubCategory == SubCategory.ClothingUnderwear) selectKindType = SelectKindType.CosShorts;
+            else if (SubCategory == SubCategory.ClothingGloves) selectKindType = SelectKindType.CosGloves;
+            else if (SubCategory == SubCategory.ClothingPantyhose) selectKindType = SelectKindType.CosPanst;
+            else if (SubCategory == SubCategory.ClothingLegwear) selectKindType = SelectKindType.CosSocks;
+#if KK
+            else if (SubCategory == SubCategory.ClothingShoesInDoors) selectKindType = SelectKindType.CosInnerShoes;
+            else if (SubCategory == SubCategory.ClothingShoesOutdoors) selectKindType = SelectKindType.CosOuterShoes;
+#else
+            else if (SubCategory == SubCategory.ClothingShoes) selectKindType = SelectKindType.CosOuterShoes;
+#endif
+            AddPickerRow(selectKindType);
+            AddSplitter();
+
+            for (int i = 0; i < 3; i++)
+            {
+                AddColorRow(SubCategory, i);
+                AddPickerRow((SelectKindType)Enum.Parse(typeof(SelectKindType), $"{selectKindType}Ptn0{i + 1}", true));
+                AddSliderRow(SubCategory, i, PatternValue.Horizontal);
+                AddSliderRow(SubCategory, i, PatternValue.Vertical);
+#if KKS
+                AddSliderRow(SubCategory, i, PatternValue.Rotation);
+                AddSliderRow(SubCategory, i, PatternValue.Width);
+                AddSliderRow(SubCategory, i, PatternValue.Height);
+#endif
+                AddSplitter();
+            }
         }
 
         public GameObject AddSplitter()
@@ -206,11 +242,24 @@ namespace Plugins
             );
         }
 
+        private void AddSliderRow(SubCategory subCategory, int colorNr, PatternValue pattern)
+        {
+            int clothingKind = StudioSkinColorCharaController.SubCategoryToKind(subCategory);
+
+            AddSliderRow(
+                $"Pattern {colorNr + 1} {pattern}",
+                () => StudioSkinColor.selectedCharacterController.GetPatternValue(clothingKind, colorNr, pattern),
+                () => 0.5f,
+                value => StudioSkinColor.selectedCharacterController.SetPatternValue(clothingKind, colorNr, pattern, value),
+                () => StudioSkinColor.selectedCharacterController.SetPatternValue(clothingKind, colorNr, pattern, 0.5f)
+            );
+        }
+
         public ColorComponent AddColorRow(string name, Func<Color> getCurrentValueAction, Func<Color> getOriginalValueAction, Action<Color> setValueAction, Action resetValueAction)
         {
             var button = Instantiate(ColorTemplate, ColorTemplate.transform.parent);
             button.name = $"ColorPicker{name.Replace(" ", "")}";
-            
+
             var colorComponent = button.AddComponent<ColorComponent>();
             colorComponent.Name = name;
             colorComponent.GetCurrentValue = getCurrentValueAction;
@@ -229,6 +278,19 @@ namespace Plugins
                 () => StudioSkinColor.selectedCharacterController.GetOriginalColorPropertyValue(colorType),
                 c => StudioSkinColor.selectedCharacterController.UpdateColorProperty(c, colorType),
                 () => StudioSkinColor.selectedCharacterController.ResetColorProperty(colorType)
+            );
+        }
+
+        private void AddColorRow(SubCategory subCategory, int colorNr)
+        {
+            int clothingKind = StudioSkinColorCharaController.SubCategoryToKind(subCategory);
+
+            AddColorRow(
+                $"Cloth Color {colorNr + 1}",
+                () => StudioSkinColor.selectedCharacterController.GetClothingColor(clothingKind, colorNr),
+                () => StudioSkinColor.selectedCharacterController.GetOriginalClothingColor(clothingKind, colorNr),
+                c => StudioSkinColor.selectedCharacterController.SetClothingColor(clothingKind, colorNr, c),
+                () => StudioSkinColor.selectedCharacterController.ResetClothingColor(clothingKind, colorNr)
             );
         }
 
