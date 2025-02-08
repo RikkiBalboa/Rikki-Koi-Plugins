@@ -142,6 +142,7 @@ namespace Plugins
                     StudioSkinColor.PickerWindowWidth.Value = Canvas.sizeDelta.x;
                     StudioSkinColor.PickerWindowHeight.Value = Canvas.sizeDelta.y;
                     PopulateEntryCache();
+                    isDirty = true;
                 }
             );
 
