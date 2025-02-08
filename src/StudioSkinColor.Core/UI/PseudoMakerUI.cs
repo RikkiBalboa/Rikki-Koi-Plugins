@@ -28,7 +28,7 @@ namespace Plugins
         {
             MainCanvas = (RectTransform)MainWindow.transform.Find("MainCanvas").transform;
             MainCanvas.anchoredPosition = new Vector2(70, 65);
-            MainCanvas.offsetMax = new Vector2(70 + StudioSkinColor.WindowWidth.Value, 65 + StudioSkinColor.WindowHeight.Value);
+            MainCanvas.offsetMax = new Vector2(70 + StudioSkinColor.MainWindowWidth.Value, 65 + StudioSkinColor.MainWindowHeight.Value);
             MainCanvas.offsetMin = new Vector2(70, 65);
 
             PickerPanel = MainWindow.transform.Find("CategoryPicker").gameObject.AddComponent<PickerPanel>();
@@ -42,8 +42,8 @@ namespace Plugins
                 new Vector2(400, 200), MainWindow.GetComponent<CanvasScaler>(),
                 false,
                 () => {
-                    StudioSkinColor.WindowWidth.Value = MainCanvas.sizeDelta.x;
-                    StudioSkinColor.WindowHeight.Value = MainCanvas.sizeDelta.y;
+                    StudioSkinColor.MainWindowWidth.Value = MainCanvas.sizeDelta.x;
+                    StudioSkinColor.MainWindowHeight.Value = MainCanvas.sizeDelta.y;
                 }
             );
 

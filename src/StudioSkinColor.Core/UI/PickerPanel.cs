@@ -90,6 +90,13 @@ namespace Plugins
         {
             instance = this;
             Canvas = (RectTransform)transform;
+
+            Canvas.anchoredPosition = new Vector2(70, 65);
+            Canvas.offsetMax = new Vector2(
+                Canvas.anchoredPosition.x + StudioSkinColor.PickerWindowWidth.Value,
+                Canvas.anchoredPosition.y + StudioSkinColor.PickerWindowHeight.Value
+            );
+
             DragPanel = (RectTransform)transform.Find("DragPanel").transform;
             Title = DragPanel.Find("UITitleText").gameObject.GetComponent<Text>();
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
@@ -131,7 +138,11 @@ namespace Plugins
                 new Vector2(120, 200),
                 PseudoMakerUI.MainWindow.GetComponent<CanvasScaler>(),
                 false,
-                PopulateEntryCache
+                () => {
+                    StudioSkinColor.PickerWindowWidth.Value = Canvas.sizeDelta.x;
+                    StudioSkinColor.PickerWindowHeight.Value = Canvas.sizeDelta.y;
+                    PopulateEntryCache();
+                }
             );
 
             PopulateEntryCache();

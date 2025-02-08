@@ -39,8 +39,10 @@ namespace Plugins
         internal static Dictionary<ChaControl, List<CharacterClothing>> selectedCharacterClothing = new Dictionary<ChaControl, List<CharacterClothing>>();
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<bool> UseWideLayout { get; private set; }
-        public static ConfigEntry<float> WindowWidth { get; private set; }
-        public static ConfigEntry<float> WindowHeight { get; private set; }
+        public static ConfigEntry<float> MainWindowWidth { get; private set; }
+        public static ConfigEntry<float> MainWindowHeight { get; private set; }
+        public static ConfigEntry<float> PickerWindowWidth { get; private set; }
+        public static ConfigEntry<float> PickerWindowHeight { get; private set; }
         public static ConfigEntry<float> UIScale { get; set; }
 
         internal static Dictionary<CustomSelectKind.SelectKindType, CategoryPicker> categoryPickers = new Dictionary<CustomSelectKind.SelectKindType, CategoryPicker>();
@@ -71,15 +73,25 @@ namespace Plugins
                 new KeyboardShortcut(KeyCode.Q, KeyCode.RightControl),
                 new ConfigDescription("Open a window to control KKPRim values on selected characters/objects")
             );
-            WindowWidth = Config.Bind(
-                "UI", "Window Width",
+            MainWindowWidth = Config.Bind(
+                "UI", "Main Window Width",
                 600f,
-                new ConfigDescription("", new AcceptableValueRange<float>(400f, 2000f))
+                new ConfigDescription("", new AcceptableValueRange<float>(400f, 2000f), null, new ConfigurationManagerAttributes { Order = 90 })
             );
-            WindowHeight = Config.Bind(
-                "UI", "Window Height",
-                400f,
-                new ConfigDescription("", new AcceptableValueRange<float>(200f, 2000f))
+            MainWindowHeight = Config.Bind(
+                "UI", "Main Window Height",
+                260f,
+                new ConfigDescription("", new AcceptableValueRange<float>(200f, 2000f), null, new ConfigurationManagerAttributes { Order = 80 })
+            );
+            PickerWindowWidth = Config.Bind(
+                "UI", "Picker Window Width",
+                430f,
+                new ConfigDescription("", new AcceptableValueRange<float>(120f, 2000f), null, new ConfigurationManagerAttributes { Order = 70 })
+            );
+            PickerWindowHeight = Config.Bind(
+                "UI", "Picker Window Height",
+                375f,
+                new ConfigDescription("", new AcceptableValueRange<float>(200f, 2000f), null, new ConfigurationManagerAttributes { Order = 60 })
             );
             UseWideLayout = Config.Bind(
                 "UI", "Use wide layout",
@@ -89,16 +101,14 @@ namespace Plugins
             UIScale = Config.Bind(
                 "UI", "UI Scale",
                 1f,
-                new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0.1f, 3f))
+                new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0.1f, 3f), null, new ConfigurationManagerAttributes { Order = 100 })
             );
             CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
 
-            uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
-            WindowWidth.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
-            WindowHeight.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
+            uiRect = new Rect(20, Screen.height / 2 - 150, MainWindowWidth.Value, MainWindowHeight.Value);
             UIScale.SettingChanged += (e, a) => SetUIScale();
 
-            pickerRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
+            pickerRect = new Rect(20, Screen.height / 2 - 150, MainWindowWidth.Value, MainWindowHeight.Value);
 
             c2aAdapterType = Type.GetType("KK_Plugins.ClothesToAccessoriesAdapter, KKS_ClothesToAccessories", throwOnError: false);
             if (c2aAdapterType != null)
@@ -204,10 +214,10 @@ namespace Plugins
                 uiShow = !uiShow;
             }
 
-            if (uiRect.width != WindowWidth.Value)
-                WindowWidth.Value = uiRect.width;
-            if (uiRect.height != WindowHeight.Value)
-                WindowHeight.Value = uiRect.height;
+            if (uiRect.width != MainWindowWidth.Value)
+                MainWindowWidth.Value = uiRect.width;
+            if (uiRect.height != MainWindowHeight.Value)
+                MainWindowHeight.Value = uiRect.height;
         }
 
         private void RegisterStudioControls()
