@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Illusion.Game;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,9 +19,14 @@ namespace Plugins
         public GameObject PickerTemplate;
         public GameObject SplitterTemplate;
 
-        public List<SliderComponent> sliders;
+        private Action clothingChangeAction;
+        private Action<int> patternChangeAction;
 
-        public void Awake()
+
+        private Dictionary<int, List<GameObject>> clothingColorGameobjects;
+        private Dictionary<int, List<GameObject>> clothingPatternGameobjects;
+
+        private void Awake()
         {
             scrollRect = GetComponent<ScrollRect>();
 
@@ -35,6 +41,11 @@ namespace Plugins
             Destroy(ColorTemplate);
             Destroy(PickerTemplate);
             Destroy(SplitterTemplate);
+        }
+
+        private void OnEnable()
+        {
+            if (clothingChangeAction != null) clothingChangeAction();
         }
 
         public void Initialize()
@@ -176,6 +187,9 @@ namespace Plugins
 
         private void DrawClothesCategories()
         {
+            clothingColorGameobjects = new Dictionary<int, List<GameObject>>();
+            clothingPatternGameobjects = new Dictionary<int, List<GameObject>>();
+
             SelectKindType selectKindType = SelectKindType.CosTop;
             if (SubCategory == SubCategory.ClothingTop) selectKindType = SelectKindType.CosTop;
             else if (SubCategory == SubCategory.ClothingBottom) selectKindType = SelectKindType.CosBot;
@@ -190,7 +204,28 @@ namespace Plugins
 #else
             else if (SubCategory == SubCategory.ClothingShoes) selectKindType = SelectKindType.CosOuterShoes;
 #endif
-            AddPickerRow(selectKindType);
+            patternChangeAction = pattern =>
+            {
+                if (clothingPatternGameobjects != null && clothingPatternGameobjects.TryGetValue(pattern, out var _gameObjects))
+                {
+                    var usePattern = StudioSkinColor.selectedCharacterController.ClothingUsesPattern(StudioSkinColorCharaController.SubCategoryToKind(SubCategory), pattern);
+                    foreach (var _gameObject in _gameObjects)
+                        _gameObject.SetActive(usePattern);
+                }
+            };
+            clothingChangeAction = () =>
+            {
+                var useCols = StudioSkinColor.selectedCharacterController.CheckClothingUseColor(StudioSkinColorCharaController.SelectKindToIntKind(selectKindType));
+                for (int colorNr = 0; colorNr < useCols.Length; colorNr++)
+                {
+                    if (clothingColorGameobjects != null && clothingColorGameobjects.TryGetValue(colorNr, out var _gameObjects))
+                        foreach (var _gameObject in _gameObjects)
+                            _gameObject.SetActive(useCols[colorNr]);
+                    patternChangeAction(colorNr);
+                }
+            };
+
+            AddPickerRow(selectKindType, clothingChangeAction);
             if (SubCategory == SubCategory.ClothingTop)
             {
                 AddPickerRow(SelectKindType.CosJacket01);
@@ -207,17 +242,26 @@ namespace Plugins
 
         private void AddPatternRows(SubCategory subcategory, SelectKindType selectKindType, int colorNr)
         {
-            AddSplitter();
-            AddColorRow(SubCategory, colorNr);
-            AddPickerRow((SelectKindType)Enum.Parse(typeof(SelectKindType), $"{selectKindType}Ptn0{colorNr + 1}", true));
-            AddSliderRow(SubCategory, colorNr, PatternValue.Horizontal);
-            AddSliderRow(SubCategory, colorNr, PatternValue.Vertical);
+            var colorGameObjects = new List<GameObject>()
+            {
+                AddSplitter(),
+                AddColorRow(SubCategory, colorNr).gameObject,
+                AddPickerRow((SelectKindType)Enum.Parse(typeof(SelectKindType), $"{selectKindType}Ptn0{colorNr + 1}", true), () => patternChangeAction?.Invoke(colorNr + 1)).gameObject,
+            };
+            var patternGameObjects = new List<GameObject>()
+            {
+                AddSliderRow(SubCategory, colorNr, PatternValue.Horizontal).gameObject,
+                AddSliderRow(SubCategory, colorNr, PatternValue.Vertical).gameObject,
 #if KKS
-            AddSliderRow(SubCategory, colorNr, PatternValue.Rotation);
-            AddSliderRow(SubCategory, colorNr, PatternValue.Width);
-            AddSliderRow(SubCategory, colorNr, PatternValue.Height);
+                AddSliderRow(SubCategory, colorNr, PatternValue.Rotation).gameObject,
+                AddSliderRow(SubCategory, colorNr, PatternValue.Width).gameObject,
+                AddSliderRow(SubCategory, colorNr, PatternValue.Height).gameObject,
 #endif
-            AddColorRow(SubCategory, colorNr, true);
+                AddColorRow(SubCategory, colorNr, true).gameObject,
+            };
+            colorGameObjects.AddRange(patternGameObjects);
+            clothingColorGameobjects[colorNr] = colorGameObjects;
+            clothingPatternGameobjects[colorNr] = patternGameObjects;
         }
 
         public GameObject AddSplitter()
@@ -245,9 +289,9 @@ namespace Plugins
             return sliderComponent;
         }
 
-        private void AddSliderRow(string name, FloatType floatType)
+        private SliderComponent AddSliderRow(string name, FloatType floatType)
         {
-            AddSliderRow(
+            return AddSliderRow(
                 name,
                 () => StudioSkinColor.selectedCharacterController.GetFloatValue(floatType),
                 () => StudioSkinColor.selectedCharacterController.GetOriginalFloatValue(floatType),
@@ -256,11 +300,11 @@ namespace Plugins
             );
         }
 
-        private void AddSliderRow(SubCategory subCategory, int colorNr, PatternValue pattern)
+        private SliderComponent AddSliderRow(SubCategory subCategory, int colorNr, PatternValue pattern)
         {
             int clothingKind = StudioSkinColorCharaController.SubCategoryToKind(subCategory);
 
-            AddSliderRow(
+            return AddSliderRow(
                 $"Pattern {colorNr + 1} {pattern}",
                 () => StudioSkinColor.selectedCharacterController.GetPatternValue(clothingKind, colorNr, pattern),
                 () => 0.5f,
@@ -284,9 +328,9 @@ namespace Plugins
             return colorComponent;
         }
 
-        private void AddColorRow(string name, ColorType colorType)
+        private ColorComponent AddColorRow(string name, ColorType colorType)
         {
-            AddColorRow(
+            return AddColorRow(
                 name,
                 () => StudioSkinColor.selectedCharacterController.GetColorPropertyValue(colorType),
                 () => StudioSkinColor.selectedCharacterController.GetOriginalColorPropertyValue(colorType),
@@ -295,11 +339,11 @@ namespace Plugins
             );
         }
 
-        private void AddColorRow(SubCategory subCategory, int colorNr, bool isPattern = false)
+        private ColorComponent AddColorRow(SubCategory subCategory, int colorNr, bool isPattern = false)
         {
             int clothingKind = StudioSkinColorCharaController.SubCategoryToKind(subCategory);
 
-            AddColorRow(
+            return AddColorRow(
                 isPattern ? $"Pattern Color {colorNr + 1}" : $"Cloth Color {colorNr + 1}",
                 () => StudioSkinColor.selectedCharacterController.GetClothingColor(clothingKind, colorNr, isPattern: isPattern),
                 () => StudioSkinColor.selectedCharacterController.GetOriginalClothingColor(clothingKind, colorNr, isPattern: isPattern),
@@ -308,7 +352,7 @@ namespace Plugins
             );
         }
 
-        public PickerComponent AddPickerRow(SelectKindType selectKind)
+        public PickerComponent AddPickerRow(SelectKindType selectKind, Action onChange = null)
         {
             var name = UIMappings.GetSelectKindTypeName(selectKind);
 
@@ -424,7 +468,11 @@ namespace Plugins
             pickerComponent.Name = name;
             pickerComponent.CategoryNo = cn;
             pickerComponent.GetCurrentValue = () => StudioSkinColor.selectedCharacterController.GetSelected(selectKind);
-            pickerComponent.SetCurrentValue = (value) => StudioSkinColor.selectedCharacterController.SetSelectKind(selectKind, value);
+            pickerComponent.SetCurrentValue = (value) =>
+            {
+                StudioSkinColor.selectedCharacterController.SetSelectKind(selectKind, value);
+                onChange?.Invoke();
+            };
 
             return pickerComponent;
         }
