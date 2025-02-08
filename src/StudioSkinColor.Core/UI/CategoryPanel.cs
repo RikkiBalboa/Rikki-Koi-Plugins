@@ -75,10 +75,10 @@ namespace Plugins
                 case Category.Body:
                 case Category.Face:
                 case Category.Clothing:
+                case Category.Hair:
                     return Enum.GetValues(typeof(SubCategory))
                         .Cast<SubCategory>()
-                        .Where(x => x.ToString().Contains(Category.ToString()));
-                case Category.Hair:
+                        .Where(x => x.ToString().StartsWith(Category.ToString()));
                 case Category.Accessories:
                 default:
                     return new List<SubCategory>();

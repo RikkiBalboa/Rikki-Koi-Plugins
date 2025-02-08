@@ -250,9 +250,17 @@ namespace Plugins
                     {
                         ChaControl.fileHair.parts[i].glossColor = color;
                         ChaControl.ChangeSettingHairGlossColor(i);
+                        ChaControl.ChangeSettingHairOutlineColor(i);
                     }
                     break;
 #endif
+                case ColorType.HairOutline:
+                    for (int i = 0; i < 4; i++)
+                    {
+                        ChaControl.fileHair.parts[i].outlineColor = color;
+                        ChaControl.ChangeSettingHairOutlineColor(i);
+                    }
+                    break;
                 case ColorType.Eyebrow:
                     ChaControl.fileFace.eyebrowColor = color;
                     ChaControl.ChangeSettingEyebrowColor();
@@ -314,6 +322,8 @@ namespace Plugins
                 case ColorType.HairGloss:
                     return ChaControl.fileHair.parts[0].glossColor;
 #endif
+                case ColorType.HairOutline:
+                    return ChaControl.fileHair.parts[0].outlineColor;
                 case ColorType.Eyebrow:
                     return ChaControl.fileFace.eyebrowColor;
             }
@@ -433,6 +443,12 @@ namespace Plugins
                 case FloatType.LipGloss:
                     ChaFileControl.custom.face.lipGlossPower = value;
                     ChaControl.ChangeSettingLipGlossPower();
+                    ChaFileControl.custom.hair.parts[1].length = value;
+                    ChaControl.ChangeSettingHairFrontLength();
+                    break;
+                case FloatType.HairFrontLenght:
+                    ChaFileControl.custom.hair.parts[1].length = value;
+                    ChaControl.ChangeSettingHairFrontLength();
                     break;
             }
         }
@@ -500,6 +516,8 @@ namespace Plugins
                     return ChaFileControl.custom.face.pupil[0].gradScale;
                 case FloatType.LipGloss:
                     return ChaFileControl.custom.face.lipGlossPower;
+                case FloatType.HairFrontLenght:
+                    return ChaFileControl.custom.hair.parts[1].length;
                 default:
                     return 0f;
             }

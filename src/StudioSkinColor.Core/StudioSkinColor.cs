@@ -304,6 +304,7 @@ namespace Plugins
         HairStart,
         HairEnd,
         HairGloss,
+        HairOutline,
         Eyebrow,
         EyebrowColor,
         EyelineColor,
@@ -344,6 +345,7 @@ namespace Plugins
         EyeGradientVertical,
         EyeGradientSize,
         LipGloss,
+        HairFrontLenght,
     }
 
     internal enum PatternValue
