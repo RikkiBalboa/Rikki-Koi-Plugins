@@ -191,26 +191,40 @@ namespace Plugins
             else if (SubCategory == SubCategory.ClothingShoes) selectKindType = SelectKindType.CosOuterShoes;
 #endif
             AddPickerRow(selectKindType);
-            AddSplitter();
+            if (SubCategory == SubCategory.ClothingTop)
+            {
+                AddPickerRow(SelectKindType.CosJacket01);
+                AddPickerRow(SelectKindType.CosJacket02);
+                AddPickerRow(SelectKindType.CosJacket03);
+                AddPickerRow(SelectKindType.CosSailor01);
+                AddPickerRow(SelectKindType.CosSailor02);
+                AddPickerRow(SelectKindType.CosSailor03);
+            }
 
             for (int i = 0; i < 3; i++)
-            {
-                AddColorRow(SubCategory, i);
-                AddPickerRow((SelectKindType)Enum.Parse(typeof(SelectKindType), $"{selectKindType}Ptn0{i + 1}", true));
-                AddSliderRow(SubCategory, i, PatternValue.Horizontal);
-                AddSliderRow(SubCategory, i, PatternValue.Vertical);
+                AddPatternRows(SubCategory, selectKindType, i);
+        }
+
+        private void AddPatternRows(SubCategory subcategory, SelectKindType selectKindType, int colorNr)
+        {
+            AddSplitter();
+            AddColorRow(SubCategory, colorNr);
+            AddPickerRow((SelectKindType)Enum.Parse(typeof(SelectKindType), $"{selectKindType}Ptn0{colorNr + 1}", true));
+            AddSliderRow(SubCategory, colorNr, PatternValue.Horizontal);
+            AddSliderRow(SubCategory, colorNr, PatternValue.Vertical);
 #if KKS
-                AddSliderRow(SubCategory, i, PatternValue.Rotation);
-                AddSliderRow(SubCategory, i, PatternValue.Width);
-                AddSliderRow(SubCategory, i, PatternValue.Height);
+            AddSliderRow(SubCategory, colorNr, PatternValue.Rotation);
+            AddSliderRow(SubCategory, colorNr, PatternValue.Width);
+            AddSliderRow(SubCategory, colorNr, PatternValue.Height);
 #endif
-                AddSplitter();
-            }
+            AddColorRow(SubCategory, colorNr, true);
         }
 
         public GameObject AddSplitter()
         {
-            return Instantiate(SplitterTemplate, SplitterTemplate.transform.parent);
+            var splitter = Instantiate(SplitterTemplate, SplitterTemplate.transform.parent);
+            splitter.name = "Splitter";
+            return splitter;
         }
 
         public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2)
@@ -281,16 +295,16 @@ namespace Plugins
             );
         }
 
-        private void AddColorRow(SubCategory subCategory, int colorNr)
+        private void AddColorRow(SubCategory subCategory, int colorNr, bool isPattern = false)
         {
             int clothingKind = StudioSkinColorCharaController.SubCategoryToKind(subCategory);
 
             AddColorRow(
-                $"Cloth Color {colorNr + 1}",
-                () => StudioSkinColor.selectedCharacterController.GetClothingColor(clothingKind, colorNr),
-                () => StudioSkinColor.selectedCharacterController.GetOriginalClothingColor(clothingKind, colorNr),
-                c => StudioSkinColor.selectedCharacterController.SetClothingColor(clothingKind, colorNr, c),
-                () => StudioSkinColor.selectedCharacterController.ResetClothingColor(clothingKind, colorNr)
+                isPattern ? $"Pattern Color {colorNr + 1}" : $"Cloth Color {colorNr + 1}",
+                () => StudioSkinColor.selectedCharacterController.GetClothingColor(clothingKind, colorNr, isPattern: isPattern),
+                () => StudioSkinColor.selectedCharacterController.GetOriginalClothingColor(clothingKind, colorNr, isPattern: isPattern),
+                c => StudioSkinColor.selectedCharacterController.SetClothingColor(clothingKind, colorNr, c, isPattern: isPattern),
+                () => StudioSkinColor.selectedCharacterController.ResetClothingColor(clothingKind, colorNr, isPattern: isPattern)
             );
         }
 
