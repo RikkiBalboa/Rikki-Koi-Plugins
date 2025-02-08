@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Illusion.Extensions;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,7 +10,7 @@ namespace Plugins
         public static ResizableWindow MakeObjectResizable(RectTransform clickableDragZone, RectTransform resizableObject, Vector2 minDimensions, Vector2 referenceResolution, bool preventCameraControl = true, Action onResize = null)
         {
             ResizableWindow mv = clickableDragZone.gameObject.AddComponent<ResizableWindow>();
-            mv.toDrag = resizableObject;
+            mv.toResize = resizableObject;
             mv.preventCameraControl = preventCameraControl;
 
             mv.minDimensions = minDimensions;
@@ -26,7 +27,7 @@ namespace Plugins
 
         private Action onResize;
 
-        public RectTransform toDrag;
+        public RectTransform toResize;
         public bool preventCameraControl;
 
         public Vector2 minDimensions;
@@ -46,7 +47,7 @@ namespace Plugins
                 _cameraControl.NoCtrlCondition = () => true;
             }
             _pointerDownCalled = true;
-            _cachedDragPosition = toDrag.position;
+            _cachedDragPosition = toResize.position;
             _cachedMousePosition = Input.mousePosition;
         }
 
@@ -55,8 +56,13 @@ namespace Plugins
             if (_pointerDownCalled == false)
                 return;
 
-            toDrag.offsetMin = new Vector2(toDrag.offsetMin.x, Input.mousePosition.y * (referenceResolution.y / Screen.height));
-            toDrag.offsetMax = new Vector2(Input.mousePosition.x * ((float)Screen.width / Screen.height * referenceResolution.y / Screen.width), toDrag.offsetMax.y);
+            var newHeightOffset = Mathf.Clamp(Input.mousePosition.y * (referenceResolution.y / Screen.height), 0, toResize.offsetMax.y - minDimensions.y);
+            var newWidthOffset = Mathf.Clamp(Input.mousePosition.x * ((float)Screen.width / Screen.height * referenceResolution.y / Screen.width), toResize.offsetMin.x + minDimensions.x, 9999);
+
+            toResize.offsetMin = new Vector2(toResize.offsetMin.x, newHeightOffset);
+            toResize.offsetMax = new Vector2(newWidthOffset, toResize.offsetMax.y);
+
+
             if (onResize != null)
                 onResize();
         }

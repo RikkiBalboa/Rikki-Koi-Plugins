@@ -37,7 +37,7 @@ namespace Plugins
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
             ResizeHandle = (RectTransform)MainCanvas.transform.Find("ResizeHandle").transform;
             MovableWindow.MakeObjectDraggable(DragPanel, MainCanvas, false);
-            ResizableWindow.MakeObjectResizable(ResizeHandle, MainCanvas, new Vector2(100, 100), MainWindow.GetComponent<CanvasScaler>().referenceResolution, false);
+            ResizableWindow.MakeObjectResizable(ResizeHandle, MainCanvas, new Vector2(400, 200), MainWindow.GetComponent<CanvasScaler>().referenceResolution, false);
 
             CloseButton.gameObject.GetComponent<Button>().onClick.AddListener(() => MainWindow.SetActive(false));
 

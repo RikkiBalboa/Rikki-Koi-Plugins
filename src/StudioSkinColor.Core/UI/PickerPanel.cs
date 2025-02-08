@@ -128,7 +128,7 @@ namespace Plugins
             ResizableWindow.MakeObjectResizable(
                 ResizeHandle,
                 Canvas,
-                new Vector2(100, 100),
+                new Vector2(120, 200),
                 PseudoMakerUI.MainWindow.GetComponent<CanvasScaler>().referenceResolution,
                 false,
                 PopulateEntryCache
