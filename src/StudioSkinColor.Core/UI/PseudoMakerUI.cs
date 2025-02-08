@@ -29,12 +29,6 @@ namespace Plugins
 
         public Dictionary<Category, CategoryPanel> CategoryPanels = new Dictionary<Category, CategoryPanel>();
 
-        //public GameObject SubCategoryPanelTemplate;
-        //public GameObject SubCategoryToggleTemplate;
-        //public Dictionary<string, GameObject> CategoryPannels = new Dictionary<string, GameObject>();
-        //public ToggleGroup SubCategoryToggleGroup;
-        //public ScrollRect SubCategoryScrollRectTemplate;
-
         public void Awake()
         {
             MainCanvas = (RectTransform)MainWindow.transform.Find("MainCanvas").transform;
@@ -56,14 +50,6 @@ namespace Plugins
         {
             CategorySelectorPanel = MainCanvas.transform.Find("CategorySelectorPanel").gameObject;
             CategoryToggleGroup = CategorySelectorPanel.GetComponent<ToggleGroup>();
-
-
-
-            //SubCategoryPanelTemplate = CategoryPanelTemplate.transform.Find("SubCategoryPanel").gameObject;
-            //SubCategoryToggleGroup = SubCategoryPanelTemplate.GetComponent<ToggleGroup>();
-            //SubCategoryScrollRectTemplate = SubCategoryPanelTemplate.GetComponent<ScrollRect>();
-            //SubCategoryToggleTemplate = SubCategoryScrollRectTemplate.content.Find("ToggleTemplate").gameObject;
-            //SubCategoryToggleTemplate.SetActive(false);
         }
 
         private void InitializeCategories()
@@ -108,28 +94,6 @@ namespace Plugins
             CategoryPanels[category].gameObject.SetActive(true);
         }
 
-        private void InitializeSubCategories(string name, IEnumerable<string> keys)
-        {
-            //var panel = Instantiate(SubCategoryPanelTemplate);
-            //panel.transform.SetParent(SubCategoryPanelTemplate.transform.parent, false);
-            //var toggleGroup = panel.GetComponent<ToggleGroup>();
-            //var scrollRect = panel.GetComponent<ScrollRect>();
-
-            //CategoryPannels[name] = panel;
-
-            //foreach (var key in keys)
-            //{
-            //    var go = Instantiate(SubCategoryToggleTemplate);
-            //    go.name = $"Toggle{key.Replace(" ", "")}";
-            //    go.SetActive(true);
-            //    go.transform.SetParent(scrollRect.content, false);
-            //    var toggle = go.GetComponent<Toggle>();
-            //    toggle.group = toggleGroup;
-            //    var text = go.GetComponentInChildren<Text>();
-            //    text.text = key;
-            //}
-        }
-
         public static GameObject Initialize()
         {
             if (MainWindow != null) return MainWindow;
@@ -146,6 +110,15 @@ namespace Plugins
             Destroy(canvasObj);
             ab.Unload(false);
             return MainWindow;
+        }
+
+        public void RefreshValues()
+        {
+            // Values are always refreshed by the components in OnEnable
+            // So toggling the UI off/on refreshed all currently visible values
+            // and the UI doesn't flicker at all too
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
         }
     }
 }

@@ -191,6 +191,7 @@ namespace Plugins
                 ClearBuffers();
                 selectedCharacter = newChar;
                 selectedCharacterController = StudioSkinColorCharaController.GetController(selectedCharacter);
+                MainWindow.RefreshValues();
             }
 
             if (KeyToggleGui.Value.IsDown())
