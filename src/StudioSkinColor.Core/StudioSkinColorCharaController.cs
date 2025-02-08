@@ -819,6 +819,7 @@ namespace Plugins
 
         public void SetPatternValue(int kind, int colorNr, PatternValue patternValue, float value)
         {
+            InitBaseCustomTextureClothesIfNotExists(kind);
             Vector2 vector;
             switch (patternValue)
             {
@@ -952,6 +953,7 @@ namespace Plugins
         {
             void UpdateClothesPattern(int kind, int pattern)
             {
+                InitBaseCustomTextureClothesIfNotExists(kind);
                 Clothes.parts[kind].colorInfo[pattern].pattern = id;
                 SetClothes.parts[kind].colorInfo[pattern].pattern = id;
                 if (IsMultiPartTop(kind))
