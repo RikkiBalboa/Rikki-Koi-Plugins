@@ -73,13 +73,13 @@ namespace Plugins
             );
             WindowWidth = Config.Bind(
                 "UI", "Window Width",
-                400f,
-                new ConfigDescription("", new AcceptableValueRange<float>(200f, 800f))
+                600f,
+                new ConfigDescription("", new AcceptableValueRange<float>(400f, 2000f))
             );
             WindowHeight = Config.Bind(
                 "UI", "Window Height",
-                260f,
-                new ConfigDescription("", new AcceptableValueRange<float>(200f, 800f))
+                400f,
+                new ConfigDescription("", new AcceptableValueRange<float>(200f, 2000f))
             );
             UseWideLayout = Config.Bind(
                 "UI", "Use wide layout",

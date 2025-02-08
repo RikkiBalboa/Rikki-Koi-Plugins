@@ -1,13 +1,8 @@
-﻿using ADV.Commands.Effect;
-using BepInEx;
-using KKAPI.Utilities;
+﻿using KKAPI.Utilities;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Plugins
@@ -32,12 +27,25 @@ namespace Plugins
         public void Awake()
         {
             MainCanvas = (RectTransform)MainWindow.transform.Find("MainCanvas").transform;
+            MainCanvas.anchoredPosition = new Vector2(70, 65);
+            MainCanvas.offsetMax = new Vector2(70 + StudioSkinColor.WindowWidth.Value, 65 + StudioSkinColor.WindowHeight.Value);
+            MainCanvas.offsetMin = new Vector2(70, 65);
+
             PickerPanel = MainWindow.transform.Find("CategoryPicker").gameObject.AddComponent<PickerPanel>();
             DragPanel = (RectTransform)MainCanvas.transform.Find("DragPanel").transform;
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
             ResizeHandle = (RectTransform)MainCanvas.transform.Find("ResizeHandle").transform;
             MovableWindow.MakeObjectDraggable(DragPanel, MainCanvas, false);
-            ResizableWindow.MakeObjectResizable(ResizeHandle, MainCanvas, new Vector2(400, 200), MainWindow.GetComponent<CanvasScaler>(), false);
+            ResizableWindow.MakeObjectResizable(
+                ResizeHandle,
+                MainCanvas,
+                new Vector2(400, 200), MainWindow.GetComponent<CanvasScaler>(),
+                false,
+                () => {
+                    StudioSkinColor.WindowWidth.Value = MainCanvas.sizeDelta.x;
+                    StudioSkinColor.WindowHeight.Value = MainCanvas.sizeDelta.y;
+                }
+            );
 
             CloseButton.gameObject.GetComponent<Button>().onClick.AddListener(() => MainWindow.SetActive(false));
 
