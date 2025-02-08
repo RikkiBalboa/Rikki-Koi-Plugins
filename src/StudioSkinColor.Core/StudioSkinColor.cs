@@ -41,6 +41,7 @@ namespace Plugins
         public static ConfigEntry<bool> UseWideLayout { get; private set; }
         public static ConfigEntry<float> WindowWidth { get; private set; }
         public static ConfigEntry<float> WindowHeight { get; private set; }
+        public static ConfigEntry<float> UIScale { get; set; }
 
         internal static Dictionary<CustomSelectKind.SelectKindType, CategoryPicker> categoryPickers = new Dictionary<CustomSelectKind.SelectKindType, CategoryPicker>();
 
@@ -85,11 +86,17 @@ namespace Plugins
                 true,
                 new ConfigDescription("Labels are next to sliders/color pickers, instead of above them")
             );
+            UIScale = Config.Bind(
+                "UI", "UI Scale",
+                1f,
+                new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0.1f, 3f))
+            );
             CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
 
             uiRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
             WindowWidth.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
             WindowHeight.SettingChanged += (e, a) => uiRect = new Rect(uiRect.x, uiRect.y, WindowWidth.Value, WindowHeight.Value);
+            UIScale.SettingChanged += (e, a) => SetUIScale();
 
             pickerRect = new Rect(20, Screen.height / 2 - 150, WindowWidth.Value, WindowHeight.Value);
 
@@ -242,6 +249,11 @@ namespace Plugins
                 StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, hairColor);
         }
 
+        private static void SetUIScale()
+        {
+            MainWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920 / UIScale.Value, 1080 / UIScale.Value);
+        }
+
         private static void InitUI(string sceneName)
         {
             if (sceneName != "Studio") return;
@@ -276,7 +288,7 @@ namespace Plugins
             PseudoMakerStudioButton.onClick.AddListener(() => {
                 if (StudioAPI.GetSelectedCharacters().Count() > 0)
                 {
-                    MainWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920, 1080);
+                    SetUIScale();
                     MainWindow.gameObject.SetActive(true);
                 }
             });
