@@ -1,6 +1,4 @@
-﻿using Cysharp.Threading.Tasks.Linq;
-using Illusion.Game;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,6 +16,7 @@ namespace Plugins
         public GameObject SliderTemplate;
         public GameObject ColorTemplate;
         public GameObject PickerTemplate;
+        public GameObject ClothingOptionTemplate;
         public GameObject SplitterTemplate;
 
         private Action clothingChangeAction;
@@ -28,6 +27,7 @@ namespace Plugins
         private Dictionary<int, List<GameObject>> clothingPatternGameobjects;
         private List<GameObject> clothingSailorGameObjects;
         private List<GameObject> clothingJacketGameObjects;
+        private GameObject clothingOptionObject;
 
         private void Awake()
         {
@@ -36,6 +36,7 @@ namespace Plugins
             SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
             ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
             PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
+            ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
             SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
 
             Initialize();
@@ -43,6 +44,7 @@ namespace Plugins
             Destroy(SliderTemplate);
             Destroy(ColorTemplate);
             Destroy(PickerTemplate);
+            Destroy(ClothingOptionTemplate);
             Destroy(SplitterTemplate);
         }
 
@@ -235,9 +237,15 @@ namespace Plugins
                     clothingSailorGameObjects?.ForEach(x => x.SetActive(true));
                 if (SubCategory == SubCategory.ClothingTop && current == 2)
                     clothingJacketGameObjects?.ForEach(x => x.SetActive(true));
+
+                if (StudioSkinColor.selectedCharacterController.GetClothingUsesOptPart(kind, 0) || StudioSkinColor.selectedCharacterController.GetClothingUsesOptPart(kind, 1))
+                    clothingOptionObject?.SetActive(true);
+                else clothingOptionObject?.SetActive(false);
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
+            clothingOptionObject = AddClothingOption(SubCategory).gameObject;
+
             if (SubCategory == SubCategory.ClothingTop)
             {
                 clothingSailorGameObjects = new List<GameObject>()
@@ -287,6 +295,21 @@ namespace Plugins
             var splitter = Instantiate(SplitterTemplate, SplitterTemplate.transform.parent);
             splitter.name = "Splitter";
             return splitter;
+        }
+
+        public ClothingOptionComponent AddClothingOption(SubCategory subCategory)
+        {
+            var clothingOption = Instantiate(ClothingOptionTemplate, ClothingOptionTemplate.transform.parent);
+            clothingOption.name = "ClothingOptions";
+
+            var kind = StudioSkinColorCharaController.SubCategoryToKind(SubCategory);
+
+            var clothingOptionComponent = clothingOption.AddComponent<ClothingOptionComponent>();
+            clothingOptionComponent.GetCurrentValue = option => !StudioSkinColor.selectedCharacterController.GetHideOpt(kind, option);
+            clothingOptionComponent.SetValueAction = (option, value) => StudioSkinColor.selectedCharacterController.SetHideOpt(kind, option, !value);
+            clothingOptionComponent.CheckUsePart = (option) => StudioSkinColor.selectedCharacterController.GetClothingUsesOptPart(kind, option);
+
+            return clothingOptionComponent;
         }
 
         public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2)

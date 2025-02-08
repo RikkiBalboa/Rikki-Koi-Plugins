@@ -864,6 +864,17 @@ namespace Plugins
             return Convert.ToInt32(component?.objOpt01?.Any()) + Convert.ToInt32(component?.objOpt02?.Any());
         }
 
+        public bool GetClothingUsesOptPart(int kind, int part)
+        {
+            var clothesComponent = selectedCharacter.GetCustomClothesComponent(kind);
+            if (clothesComponent == null)
+                return false;
+
+            if (part == 0) return clothesComponent.objOpt01.Any();
+            else if (part == 1) return clothesComponent.objOpt02.Any();
+            return false;
+        }
+
         internal void ChangeCoordinateEvent()
         {
             StartCoroutine(ChangeCoordinateTypeCoroutine());

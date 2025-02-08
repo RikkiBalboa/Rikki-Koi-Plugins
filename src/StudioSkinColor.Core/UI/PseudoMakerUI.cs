@@ -117,8 +117,11 @@ namespace Plugins
             // Values are always refreshed by the components in OnEnable
             // So toggling the UI off/on refreshed all currently visible values
             // and the UI doesn't flicker at all too
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            if (gameObject.activeSelf)
+            {
+                gameObject.SetActive(false);
+                gameObject.SetActive(true);
+            }
         }
     }
 }

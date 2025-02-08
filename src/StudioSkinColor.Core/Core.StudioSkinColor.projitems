@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StudioSkinColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibilityHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CategoryPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ClothingOptionComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ColorComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\MovableWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\PickerComponent.cs" />
