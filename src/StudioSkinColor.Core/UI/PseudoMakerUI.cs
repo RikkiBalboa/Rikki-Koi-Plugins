@@ -37,7 +37,7 @@ namespace Plugins
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
             ResizeHandle = (RectTransform)MainCanvas.transform.Find("ResizeHandle").transform;
             MovableWindow.MakeObjectDraggable(DragPanel, MainCanvas, false);
-            ResizableWindow.MakeObjectResizable(ResizeHandle, MainCanvas, new Vector2(400, 200), MainWindow.GetComponent<CanvasScaler>().referenceResolution, false);
+            ResizableWindow.MakeObjectResizable(ResizeHandle, MainCanvas, new Vector2(400, 200), MainWindow.GetComponent<CanvasScaler>(), false);
 
             CloseButton.gameObject.GetComponent<Button>().onClick.AddListener(() => MainWindow.SetActive(false));
 
@@ -97,12 +97,12 @@ namespace Plugins
         public static GameObject Initialize()
         {
             if (MainWindow != null) return MainWindow;
-            //var data = ResourceUtils.GetEmbeddedResource("pseudo_maker_interface");
-            //var ab = AssetBundle.LoadFromMemory(data);
-            var ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, @"scripts\Assets\pseudo_maker_interface.unity3d"));
+            var data = ResourceUtils.GetEmbeddedResource("pseudo_maker_interface.unity3d");
+            var ab = AssetBundle.LoadFromMemory(data);
+            //var ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, @"scripts\Assets\pseudo_maker_interface.unity3d"));
 
             var canvasObj = ab.LoadAsset<GameObject>("StudioPseudoMakerCanvas.prefab");
-            if (canvasObj == null) throw new ArgumentException("Could not find QuickAccessBoxCanvas.prefab in loaded AB");
+            if (canvasObj == null) throw new ArgumentException("Could not find prefab in loaded AB");
 
             MainWindow = Instantiate(canvasObj);
             MainWindow.SetActive(false);

@@ -129,7 +129,7 @@ namespace Plugins
                 ResizeHandle,
                 Canvas,
                 new Vector2(120, 200),
-                PseudoMakerUI.MainWindow.GetComponent<CanvasScaler>().referenceResolution,
+                PseudoMakerUI.MainWindow.GetComponent<CanvasScaler>(),
                 false,
                 PopulateEntryCache
             );

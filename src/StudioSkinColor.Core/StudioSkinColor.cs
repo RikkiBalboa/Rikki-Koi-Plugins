@@ -30,7 +30,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColorControl";
         public const string PluginName = "StudioSkinColorControl";
         public const string PluginNameInternal = Constants.Prefix + "_StudioSkinColorControl";
-        public const string PluginVersion = "1.1.1";
+        public const string PluginVersion = "1.2.1";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
@@ -101,11 +101,8 @@ namespace Plugins
                 c2aClothingKindField = c2aAdapterType.GetField("_clothingKind", AccessTools.all);
             }
 
-            StudioAPI.StudioLoadedChanged += (sender, e) => PickerPanel.InitializeCategories();
-            MainWindow = PseudoMakerUI.Initialize().AddComponent<PseudoMakerUI>();
-
 #if DEBUG
-            PickerPanel.InitializeCategories();
+            InitUI("Studio");
             foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)
             {
                 if (item is OCIChar oCIChar)
@@ -119,9 +116,9 @@ namespace Plugins
             if (StudioAPI.InsideStudio)
             {
                 RegisterStudioControls();
-                SceneManager.sceneLoaded += (s, lsm) => AddStudioButton(s.name);
+                SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
 #if DEBUG
-                AddStudioButton("Studio");
+                AddStudioButton();
 #endif
                 TimelineCompatibilityHelper.PopulateTimeline();
             }
@@ -245,11 +242,19 @@ namespace Plugins
                 StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, hairColor);
         }
 
-        private static void AddStudioButton(string sceneName)
+        private static void InitUI(string sceneName)
         {
             if (sceneName != "Studio") return;
-            SceneManager.sceneLoaded -= (s, lsm) => AddStudioButton(s.name);
+            SceneManager.sceneLoaded -= (s, lsm) => InitUI(s.name);
 
+
+            PickerPanel.InitializeCategories();
+            MainWindow = PseudoMakerUI.Initialize().AddComponent<PseudoMakerUI>();
+            AddStudioButton();
+        }
+
+        private static void AddStudioButton()
+        {
             RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Route").GetComponent<RectTransform>();
 
             PseudoMakerStudioButton = Instantiate(original.gameObject, original.parent, false).GetComponent<Button>();
@@ -268,9 +273,12 @@ namespace Plugins
             icon.color = Color.white;
 
             PseudoMakerStudioButton.onClick = new Button.ButtonClickedEvent();
-            PseudoMakerStudioButton.onClick.AddListener(() => { 
+            PseudoMakerStudioButton.onClick.AddListener(() => {
                 if (StudioAPI.GetSelectedCharacters().Count() > 0)
+                {
+                    MainWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920, 1080);
                     MainWindow.gameObject.SetActive(true);
+                }
             });
         }
 

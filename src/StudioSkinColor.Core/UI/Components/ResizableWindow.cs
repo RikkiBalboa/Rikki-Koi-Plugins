@@ -2,19 +2,20 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Plugins
 {
     internal class ResizableWindow : UIBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
-        public static ResizableWindow MakeObjectResizable(RectTransform clickableDragZone, RectTransform resizableObject, Vector2 minDimensions, Vector2 referenceResolution, bool preventCameraControl = true, Action onResize = null)
+        public static ResizableWindow MakeObjectResizable(RectTransform clickableDragZone, RectTransform resizableObject, Vector2 minDimensions, CanvasScaler canvasScaler, bool preventCameraControl = true, Action onResize = null)
         {
             ResizableWindow mv = clickableDragZone.gameObject.AddComponent<ResizableWindow>();
             mv.toResize = resizableObject;
             mv.preventCameraControl = preventCameraControl;
 
             mv.minDimensions = minDimensions;
-            mv.referenceResolution = referenceResolution;
+            mv.canvasScaler = canvasScaler;
             mv.onResize = onResize;
             return mv;
         }
@@ -31,7 +32,7 @@ namespace Plugins
         public bool preventCameraControl;
 
         public Vector2 minDimensions;
-        public Vector2 referenceResolution;
+        public CanvasScaler canvasScaler;
 
         public override void Awake()
         {
@@ -56,8 +57,8 @@ namespace Plugins
             if (_pointerDownCalled == false)
                 return;
 
-            var newHeightOffset = Mathf.Clamp(Input.mousePosition.y * (referenceResolution.y / Screen.height), 0, toResize.offsetMax.y - minDimensions.y);
-            var newWidthOffset = Mathf.Clamp(Input.mousePosition.x * ((float)Screen.width / Screen.height * referenceResolution.y / Screen.width), toResize.offsetMin.x + minDimensions.x, 9999);
+            var newHeightOffset = Mathf.Clamp(Input.mousePosition.y * (canvasScaler.referenceResolution.y / Screen.height), 0, toResize.offsetMax.y - minDimensions.y);
+            var newWidthOffset = Mathf.Clamp(Input.mousePosition.x * ((float)Screen.width / Screen.height * canvasScaler.referenceResolution.y / Screen.width), toResize.offsetMin.x + minDimensions.x, 9999);
 
             toResize.offsetMin = new Vector2(toResize.offsetMin.x, newHeightOffset);
             toResize.offsetMax = new Vector2(newWidthOffset, toResize.offsetMax.y);

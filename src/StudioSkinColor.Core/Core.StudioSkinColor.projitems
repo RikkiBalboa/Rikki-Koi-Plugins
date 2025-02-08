@@ -32,9 +32,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Mappings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Assets\pseudo_maker_interface.unity3d">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\pseudo_maker_interface.unity3d">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\StudioIcon.png">
