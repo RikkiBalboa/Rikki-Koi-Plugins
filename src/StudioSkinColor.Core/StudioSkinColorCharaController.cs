@@ -552,30 +552,6 @@ namespace Plugins
             return GetCurrentBodyValue(index);
         }
         #endregion
-
-        public bool IsBodyCategoryEdited(string category)
-        {
-            var isEdited = false;
-            if (shapeBodyValueMap.TryGetValue(category, out var keys))
-            {
-                isEdited |= OriginalBodyShapeValues
-                    .Where(x => keys.ContainsKey(x.Key))
-                    .Select(x => x.Value)
-                    .Any(x => Mathf.Abs(x.Value - x.OriginalValue) > 0.001f);
-            }
-            isEdited |= OriginalColors.Any(x =>
-                GetCategoryTypes(x.Key) == "Body"
-                && GetCategoryTypes(x.Key, true) == category
-                && x.Value.OriginalValue != x.Value.Value
-            );
-            isEdited |= OriginalFloats.Any(x =>
-                GetCategoryTypes(x.Key) == "Body"
-                && GetCategoryTypes(x.Key, true) == category
-                && Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f
-            );
-
-            return isEdited;
-        }
         #endregion
 
         #region Face shape
@@ -605,44 +581,9 @@ namespace Plugins
                 return shapeValue.OriginalValue;
             return GetCurrentFaceValue(index);
         }
-
-        public bool IsFaceEdited(string category)
-        {
-            var isEdited = false;
-            if (shapeFaceValueMap.TryGetValue(category, out var keys))
-            {
-                isEdited |= OriginalFaceShapeValues
-                    .Where(x => keys.ContainsKey(x.Key))
-                    .Select(x => x.Value)
-                    .Any(x => Mathf.Abs(x.Value - x.OriginalValue) > 0.001f);
-            }
-            isEdited |= OriginalColors.Any(x =>
-                GetCategoryTypes(x.Key) == "Face"
-                && GetCategoryTypes(x.Key, true) == category
-                && x.Value.OriginalValue != x.Value.Value
-            );
-            isEdited |= OriginalFloats.Any(x =>
-                GetCategoryTypes(x.Key) == "Face"
-                && GetCategoryTypes(x.Key, true) == category
-                && Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f
-            );
-            return isEdited;
-        }
         #endregion
 
         #region Clothes
-        public bool ClothingKindExists(int kind)
-        {
-            return selectedCharacterClothing[ChaControl].Any(c => c.Kind == kind);
-        }
-
-        public string GetclothingName(int kind, int slotNr = -1)
-        {
-            if (slotNr < 0)
-                return ChaControl.infoClothes[kind]?.Name;
-            return ChaControl.infoAccessory[slotNr]?.Name;
-        }
-
         public void InitBaseCustomTextureClothesIfNotExists(int kind)
         {
             try
@@ -892,46 +833,6 @@ namespace Plugins
             if (part == 0) return clothesComponent.objOpt01.Any();
             else if (part == 1) return clothesComponent.objOpt02.Any();
             return false;
-        }
-
-        internal void ChangeCoordinateEvent()
-        {
-            StartCoroutine(ChangeCoordinateTypeCoroutine());
-        }
-
-        private IEnumerator ChangeCoordinateTypeCoroutine()
-        {
-            yield return null;
-
-            selectedCharacterClothing.Remove(ChaControl);
-            var characterClothing = new List<CharacterClothing>();
-
-            foreach (var kind in clothingKinds)
-            {
-                var name = GetclothingName(kind.Value);
-                characterClothing.Add(new CharacterClothing(kind.Value, name, CheckClothingUseColor(kind.Value)));
-            }
-
-            if (c2aAIlnstances != null && c2aAIlnstances.Contains(ChaControl))
-            {
-                foreach (var adapterList in c2aAIlnstances[ChaControl] as IEnumerable)
-                {
-                    for (int i = 0; i < ((IList)adapterList).Count; i++)
-                    {
-                        var adapter = ((IList)adapterList)[i];
-
-                        var kind = (int)c2aClothingKindField.GetValue(adapter);
-                        var name = ((MonoBehaviour)adapter).gameObject.name;
-                        var slotNr = -1;
-                        if (name.Contains("ca_slot"))
-                            slotNr = Int32.Parse(name.Substring(7));
-
-                        characterClothing.Add(new CharacterClothing(kind, GetclothingName(kind, slotNr), CheckClothingUseColor(kind, slotNr), slotNr));
-                    }
-                }
-            }
-
-            selectedCharacterClothing[ChaControl] = characterClothing;
         }
 
         public bool IsClothingKindEdited(int kind)
@@ -1961,25 +1862,6 @@ namespace Plugins
             return returnSubCategory ? subCategory : category;
         }
         #endregion
-
-        public bool IsCategoryEdited(SelectedTab tab)
-        {
-            switch (tab)
-            {
-                case SelectedTab.Body:
-                    return OriginalColors.Any(x => GetCategoryTypes(x.Key) == "Body" && x.Value.Value != x.Value.OriginalValue)
-                        || OriginalFloats.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
-                        || OriginalBodyShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f);
-                case SelectedTab.Face:
-                    return OriginalFaceShapeValues.Any(x => Mathf.Abs(x.Value.Value - x.Value.OriginalValue) > 0.001f)
-                        || OriginalColors.Any(x => GetCategoryTypes(x.Key) == "Face" && x.Value.Value != x.Value.OriginalValue);
-                case SelectedTab.Hair:
-                    return OriginalColors.Any(x => GetCategoryTypes(x.Key) == "Hair" && x.Value.Value != x.Value.OriginalValue);
-                case SelectedTab.Clothes:
-                    return OriginalClothingColors.Any(x => x.Value.Value != x.Value.OriginalValue);
-            }
-            return false;
-        }
 
         private new void OnDestroy()
         {

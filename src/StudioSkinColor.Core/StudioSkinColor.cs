@@ -22,7 +22,6 @@ using UnityEngine.UI;
 namespace Plugins
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInProcess(Constants.StudioProcessName)]
     public partial class StudioSkinColor : BaseUnityPlugin
@@ -36,30 +35,15 @@ namespace Plugins
 
         internal static ChaControl selectedCharacter;
         internal static StudioSkinColorCharaController selectedCharacterController;
-        internal static Dictionary<ChaControl, List<CharacterClothing>> selectedCharacterClothing = new Dictionary<ChaControl, List<CharacterClothing>>();
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
-        public static ConfigEntry<bool> UseWideLayout { get; private set; }
         public static ConfigEntry<float> MainWindowWidth { get; private set; }
         public static ConfigEntry<float> MainWindowHeight { get; private set; }
         public static ConfigEntry<float> PickerWindowWidth { get; private set; }
         public static ConfigEntry<float> PickerWindowHeight { get; private set; }
         public static ConfigEntry<float> UIScale { get; set; }
 
-        internal static Dictionary<CustomSelectKind.SelectKindType, CategoryPicker> categoryPickers = new Dictionary<CustomSelectKind.SelectKindType, CategoryPicker>();
-
-        internal static IDictionary c2aAIlnstances = null;
-        internal static Type c2aAdapterType = null;
-        internal static FieldInfo c2aClothingKindField = null;
-
-        private readonly int uiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4);
-        private readonly int pickerUiWindowHash = ('S' << 24) | ('S' << 16) | ('C' << 8) | ('C' << 4) | ('P' << 2) | 'I';
-        internal Rect uiRect;
-        internal static Rect pickerRect;
-        internal Action pickerWindowFunc;
-        internal string pickerWindowName = "Picker";
-        private bool uiShow = false;
         private static StudioSkinColor instance;
-        private static PseudoMakerUI MainWindow;
+        internal static PseudoMakerUI MainWindow;
         private static Button PseudoMakerStudioButton;
 
         private void Awake()
@@ -93,11 +77,6 @@ namespace Plugins
                 375f,
                 new ConfigDescription("", new AcceptableValueRange<float>(200f, 2000f), null, new ConfigurationManagerAttributes { Order = 60 })
             );
-            UseWideLayout = Config.Bind(
-                "UI", "Use wide layout",
-                true,
-                new ConfigDescription("Labels are next to sliders/color pickers, instead of above them")
-            );
             UIScale = Config.Bind(
                 "UI", "UI Scale",
                 1f,
@@ -105,18 +84,7 @@ namespace Plugins
             );
             CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
 
-            uiRect = new Rect(20, Screen.height / 2 - 150, MainWindowWidth.Value, MainWindowHeight.Value);
             UIScale.SettingChanged += (e, a) => SetUIScale();
-
-            pickerRect = new Rect(20, Screen.height / 2 - 150, MainWindowWidth.Value, MainWindowHeight.Value);
-
-            c2aAdapterType = Type.GetType("KK_Plugins.ClothesToAccessoriesAdapter, KKS_ClothesToAccessories", throwOnError: false);
-            if (c2aAdapterType != null)
-            {
-                var field = c2aAdapterType.GetField("AllInstances", AccessTools.all);
-                c2aAIlnstances = field.GetValue(c2aAdapterType) as IDictionary;
-                c2aClothingKindField = c2aAdapterType.GetField("_clothingKind", AccessTools.all);
-            }
 
 #if DEBUG
             InitUI("Studio");
@@ -141,83 +109,15 @@ namespace Plugins
             }
         }
 
-        protected void OnGUI()
-        {
-            //var skin = GUI.skin;
-            //GUI.skin = IMGUIUtils.SolidBackgroundGuiSkin;
-            //GUI.skin.label.normal.textColor = Color.white;
-
-            //if (uiShow && selectedCharacter != null)
-            //{
-            //    InitializeStyles();
-            //    uiRect = GUILayout.Window(uiWindowHash, uiRect, DrawWindow, "Studio Pseudo Maker");
-            //    IMGUIUtils.EatInputInRect(uiRect);
-
-            //    if (pickerWindowFunc != null)
-            //    {
-            //        pickerRect = GUILayout.Window(pickerUiWindowHash, pickerRect, DrawPickerWindow, pickerWindowName);
-            //        IMGUIUtils.EatInputInRect(pickerRect);
-            //    }
-            //}
-            //GUI.skin = skin;
-        }
-
-        //private void InitializeCategories()
-        //{
-        //    CategoryPicker.InitializeCategories();
-        //    foreach (var category in Enum.GetValues(typeof(CustomSelectKind.SelectKindType)).Cast<CustomSelectKind.SelectKindType>())
-        //    {
-        //        var cat = new CategoryPicker(category);
-        //        cat.OnActivateAction = () =>
-        //        {
-        //            if (pickerWindowFunc == null || pickerWindowFunc != cat.DrawWindow)
-        //            {
-        //                pickerWindowName = cat.name;
-        //                pickerWindowFunc = cat.DrawWindow;
-        //            }
-        //            else
-        //                cat.OnCloseAction();
-        //        };
-        //        cat.OnCloseAction = () => pickerWindowFunc = null;
-        //        categoryPickers[category] = cat;
-        //    }
-        //}
-
-        private void DrawPickerWindow(int id)
-        {
-            int visibleAreaSize = GUI.skin.window.border.top - 4;
-            if (GUI.Button(new Rect(pickerRect.width - visibleAreaSize - 2, 2, visibleAreaSize, visibleAreaSize), "X"))
-            {
-                pickerWindowFunc = null;
-                return;
-            }
-
-            pickerWindowFunc();
-
-            pickerRect = IMGUIUtils.DragResizeEatWindow(id, pickerRect);
-        }
-
         private void Update()
         {
             var newChar = StudioAPI.GetSelectedCharacters().FirstOrDefault()?.GetChaControl();
             if (newChar != selectedCharacter && newChar != null)
             {
-                ClearBuffers();
                 selectedCharacter = newChar;
                 selectedCharacterController = StudioSkinColorCharaController.GetController(selectedCharacter);
                 MainWindow.RefreshValues();
             }
-
-            if (KeyToggleGui.Value.IsDown())
-            {
-                MainWindow.gameObject.SetActive(!MainWindow.gameObject.activeSelf);
-                uiShow = !uiShow;
-            }
-
-            if (uiRect.width != MainWindowWidth.Value)
-                MainWindowWidth.Value = uiRect.width;
-            if (uiRect.height != MainWindowHeight.Value)
-                MainWindowHeight.Value = uiRect.height;
         }
 
         private void RegisterStudioControls()
@@ -313,13 +213,6 @@ namespace Plugins
             harmony.UnpatchSelf();
         }
 #endif
-
-        internal static object GetC2aAdapter(ChaControl chaControl, int kind, int index)
-        {
-            var kindArray = c2aAIlnstances[chaControl] as object[];
-            var adapterList = kindArray[kind] as IList;
-            return adapterList[index];
-        }
     }
 
     internal enum ColorType

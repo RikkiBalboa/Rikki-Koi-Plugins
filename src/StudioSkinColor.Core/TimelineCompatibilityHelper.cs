@@ -156,7 +156,7 @@ namespace Plugins
                 checkIntegrity: null
             );
 
-            foreach (var category in shapeBodyValueMap)
+            foreach (var category in UIMappings.ShapeBodyValueMap)
                 foreach (var shape in category.Value)
                     TimelineCompatibility.AddInterpolableModelDynamic(
                         owner: "StudioSkinColor",
@@ -172,7 +172,7 @@ namespace Plugins
                         checkIntegrity: null
                     );
 
-            foreach (var category in shapeFaceValueMap)
+            foreach (var category in UIMappings.ShapeBodyValueMap)
                 foreach (var shape in category.Value)
                     TimelineCompatibility.AddInterpolableModelDynamic(
                         owner: "StudioSkinColor",
