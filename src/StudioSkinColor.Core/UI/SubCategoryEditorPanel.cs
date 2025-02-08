@@ -213,7 +213,7 @@ namespace Plugins
             {
                 if (clothingPatternGameobjects != null && clothingPatternGameobjects.TryGetValue(pattern, out var _gameObjects))
                 {
-                    var usePattern = StudioSkinColor.selectedCharacterController.ClothingUsesPattern(StudioSkinColorCharaController.SubCategoryToKind(SubCategory), pattern);
+                    var usePattern = StudioSkinColor.selectedCharacterController.ClothingUsesPattern(StudioSkinColorCharaController.SubCategoryToKind(SubCategory), pattern+1);
                     foreach (var _gameObject in _gameObjects)
                         _gameObject.SetActive(usePattern);
                 }
@@ -272,7 +272,7 @@ namespace Plugins
             {
                 AddSplitter(),
                 AddColorRow(SubCategory, colorNr).gameObject,
-                AddPickerRow((SelectKindType)Enum.Parse(typeof(SelectKindType), $"{selectKindType}Ptn0{colorNr + 1}", true), () => patternChangeAction?.Invoke(colorNr + 1)).gameObject,
+                AddPickerRow((SelectKindType)Enum.Parse(typeof(SelectKindType), $"{selectKindType}Ptn0{colorNr + 1}", true), () => patternChangeAction?.Invoke(colorNr)).gameObject,
             };
             var patternGameObjects = new List<GameObject>()
             {
