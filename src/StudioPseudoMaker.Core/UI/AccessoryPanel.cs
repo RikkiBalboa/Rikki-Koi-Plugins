@@ -1,8 +1,6 @@
 ﻿using KKAPI.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,7 +41,11 @@ namespace Plugins
                 text.resizeTextMaxSize = 14;
                 text.resizeTextForBestFit = true;
                 text.resizeTextMinSize = 6;
-                if (accessory != null) TranslationHelper.TranslateAsync(accessory.Name, value => text.text = $"{i + 1}. {value}");
+                if (accessory != null)
+                {
+                    text.text = $"{i + 1}. {accessory.Name}";
+                    TranslationHelper.TranslateAsync(accessory.Name, value => text.text = $"{i + 1}. {value}");
+                }
                 else text.text = $"Slot {i + 1}";
 
                 var toggle = go.GetComponent<Toggle>();
