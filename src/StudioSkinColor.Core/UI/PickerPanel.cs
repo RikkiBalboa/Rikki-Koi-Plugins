@@ -24,7 +24,7 @@ namespace Plugins
         public RectTransform ResizeHandle;
         public GameObject Content;
 
-        public Text Title;
+        public static Text Title;
         public InputField NameField;
         public InputField SearchField;
         public Button ClearButton;
@@ -77,6 +77,8 @@ namespace Plugins
             }
 
             titleText = name;
+            if (Title != null)
+                Title.text = titleText;
             CategoryNo = categoryNo;
             GetCurrentValue = getCurrentValue;
             SetCurrentValue = setCurrentValue;
