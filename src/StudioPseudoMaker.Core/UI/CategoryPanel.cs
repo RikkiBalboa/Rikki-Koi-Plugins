@@ -55,9 +55,14 @@ namespace Plugins
                 SubCategoryPanels[subCategory] = categoryPanel;
             }
             if (toggles.Count > 0)
+            {
                 toggles[0].isOn = true;
-            Destroy(toggleTemplate);
-            Destroy(editorPanelTemplate);
+                if (Category != Category.Accessories)
+                {
+                    Destroy(toggleTemplate);
+                    Destroy(editorPanelTemplate);
+                }
+            }
         }
 
         private void SubCategoryToggleValueChanged(SubCategory subCategory)
@@ -79,9 +84,10 @@ namespace Plugins
                         .Cast<SubCategory>()
                         .Where(x => x.ToString().StartsWith(Category.ToString()));
                 case Category.Accessories:
-                default:
-                    return new List<SubCategory>();
+                    SubCategorySelectorPanel.AddComponent<AccessoryPanel>();
+                    break;
             }
+            return new List<SubCategory>();
         }
     }
 }

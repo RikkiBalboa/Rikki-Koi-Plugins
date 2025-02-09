@@ -6,7 +6,7 @@ public class CreateAssetBundles
     [MenuItem("Assets/Build AssetBundles")]
     static void BuildAllAssetBundles()
     {
-        string assetBundleDirectory = "../StudioSkinColor.Core/Assets";
+        string assetBundleDirectory = "../StudioPseudoMaker.Core/Assets";
         if (!Directory.Exists(assetBundleDirectory))
         {
             Directory.CreateDirectory(assetBundleDirectory);

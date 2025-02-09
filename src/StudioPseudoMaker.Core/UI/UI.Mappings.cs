@@ -451,5 +451,6 @@ namespace Plugins
         HairSide,
         HairExtensions,
         HairMiscellaneous,
+        Accessories,
     }
 }

@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CurrentStateColorSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PseudoMaker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibilityHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\AccessoryPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CategoryPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ClothingOptionComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ColorComponent.cs" />
