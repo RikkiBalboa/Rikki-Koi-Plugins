@@ -23,6 +23,8 @@ namespace Plugins
 
         public static Text Title;
         public InputField NameField;
+        public Button DecreaseSizeButton;
+        public Button IncreaseSizeButton;
         public Button CurrentButton;
         public InputField SearchField;
         public Button ClearButton;
@@ -94,6 +96,7 @@ namespace Plugins
             Content = ScrollRect.transform.Find("Viewport/Content").gameObject;
 
             GridLayoutGroup = Content.GetComponent<GridLayoutGroup>();
+            GridLayoutGroup.cellSize = new Vector2(StudioSkinColor.PickerThumbnailSize.Value, StudioSkinColor.PickerThumbnailSize.Value);
             InitialBotPadding = GridLayoutGroup.padding.bottom;
             InitialTopPadding = GridLayoutGroup.padding.top;
 
@@ -120,6 +123,12 @@ namespace Plugins
 
             CurrentButton = transform.Find("CurrentButton").gameObject.GetComponent<Button>();
             CurrentButton.onClick.AddListener(ScrollToSelection);
+
+            DecreaseSizeButton = transform.Find("DecreaseSizeButton").gameObject.GetComponent<Button>();
+            DecreaseSizeButton.onClick.AddListener(() => AdjustGridSize(false));
+
+            IncreaseSizeButton = transform.Find("IncreaseSizeButton").gameObject.GetComponent<Button>();
+            IncreaseSizeButton.onClick.AddListener(() => AdjustGridSize(true));
 
             CloseButton.gameObject.GetComponent<Button>().onClick.AddListener(() => gameObject.SetActive(false));
 
@@ -271,14 +280,25 @@ namespace Plugins
             var _rowCount = ((int)rectTransform.rect.height) / (int)GridLayoutGroup.cellSize.x + 2;
 
             var totalVisibleItems = _columnCount * _rowCount;
-
-            if (totalVisibleItems <= columnCount * rowCount)
-                return;
+            var newEntries = totalVisibleItems - cachedEntries.Count;
 
             rowCount = _rowCount;
             columnCount = _columnCount;
 
-            var newEntries = totalVisibleItems - cachedEntries.Count;
+            if (newEntries <= 0)
+            {
+                if (newEntries < 0)
+                {
+                    for (var i = 0; i < newEntries * -1; i++)
+                    {
+                        var component = cachedEntries[cachedEntries.Count - 1];
+                        cachedEntries.Remove(component);
+                        Destroy(component.gameObject);
+                    }
+                }
+                return;
+            }
+
             for (int i = 0; i < newEntries; i++)
             {
                 var copy = Instantiate(pickerEntryTemplate, GridLayoutGroup.transform, false);
@@ -307,6 +327,16 @@ namespace Plugins
                 copy.SetActive(false);
             }
             canScroll = true;
+        }
+
+        private void AdjustGridSize(bool increase)
+        {
+            var currentSize = GridLayoutGroup.cellSize.x;
+            var newSize = increase ? currentSize + 5 : currentSize - 5;
+            StudioSkinColor.PickerThumbnailSize.Value = (int)newSize;
+            GridLayoutGroup.cellSize = new Vector2(newSize, newSize);
+            PopulateEntryCache();
+            isDirty = true;
         }
 
         public static Sprite GetThumbSprite(CustomSelectInfo item)

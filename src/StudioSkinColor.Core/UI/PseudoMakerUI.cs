@@ -107,7 +107,6 @@ namespace Plugins
             if (MainWindow != null) return MainWindow;
             var data = ResourceUtils.GetEmbeddedResource("pseudo_maker_interface.unity3d");
             var ab = AssetBundle.LoadFromMemory(data);
-            //var ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, @"scripts\Assets\pseudo_maker_interface.unity3d"));
 
             var canvasObj = ab.LoadAsset<GameObject>("StudioPseudoMakerCanvas.prefab");
             if (canvasObj == null) throw new ArgumentException("Could not find prefab in loaded AB");

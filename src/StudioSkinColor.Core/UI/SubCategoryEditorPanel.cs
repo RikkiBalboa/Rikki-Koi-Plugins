@@ -84,7 +84,7 @@ namespace Plugins
             if (SubCategory == SubCategory.BodyGeneral)
             {
                 AddPickerRow(SelectKindType.BodyDetail);
-                AddSliderRow("Skin Type Strenth", FloatType.SkinTypeStrenth);
+                AddSliderRow("Skin Type Strength", FloatType.SkinTypeStrenth);
                 AddSplitter();
                 AddColorRow("Main Skin Color", ColorType.SkinMain);
                 AddColorRow("Sub Skin Color", ColorType.SkinSub);

@@ -41,6 +41,7 @@ namespace Plugins
         public static ConfigEntry<float> PickerWindowWidth { get; private set; }
         public static ConfigEntry<float> PickerWindowHeight { get; private set; }
         public static ConfigEntry<float> UIScale { get; set; }
+        public static ConfigEntry<int> PickerThumbnailSize { get; set; }
 
         private static StudioSkinColor instance;
         internal static PseudoMakerUI MainWindow;
@@ -56,6 +57,11 @@ namespace Plugins
                 "Keyboard Shortcuts", "Open editor window",
                 new KeyboardShortcut(KeyCode.Q, KeyCode.RightControl),
                 new ConfigDescription("Open a window to control KKPRim values on selected characters/objects")
+            );
+            UIScale = Config.Bind(
+                "UI", "UI Scale",
+                1f,
+                new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0.1f, 3f), null, new ConfigurationManagerAttributes { Order = 100 })
             );
             MainWindowWidth = Config.Bind(
                 "UI", "Main Window Width",
@@ -77,10 +83,13 @@ namespace Plugins
                 375f,
                 new ConfigDescription("", new AcceptableValueRange<float>(200f, 2000f), null, new ConfigurationManagerAttributes { Order = 60 })
             );
-            UIScale = Config.Bind(
-                "UI", "UI Scale",
-                1f,
-                new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0.1f, 3f), null, new ConfigurationManagerAttributes { Order = 100 })
+            PickerThumbnailSize = Config.Bind(
+                "UI", "Picker Thumbnail Size",
+                100,
+                new ConfigDescription(
+                    "Controls the size of the thumbnails in picker windows (Choosing clothes, skin types, etc)",
+                    new AcceptableValueRange<int>(30, 200), null, new ConfigurationManagerAttributes { Order = 95 }
+                )
             );
             CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
 
