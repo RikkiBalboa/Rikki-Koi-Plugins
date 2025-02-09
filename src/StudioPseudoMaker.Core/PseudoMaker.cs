@@ -7,7 +7,6 @@ using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
-using Studio;
 using System.Linq;
 using UniRx;
 using UnityEngine;

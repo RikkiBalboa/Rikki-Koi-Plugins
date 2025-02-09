@@ -44,11 +44,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.ShadowColorSwapper", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioPseudoMaker", "StudioPseudoMaker", "{46C251DF-D506-47F9-8C56-E3B9FA56C116}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioPseudoMaker", "src\StudioSkinColor.KK\KK.StudioPseudoMaker.csproj", "{E2151100-2A2D-497F-A4EA-0D938FE630E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioPseudoMaker", "src\StudioPseudoMaker.KK\KK.StudioPseudoMaker.csproj", "{E2151100-2A2D-497F-A4EA-0D938FE630E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioPseudoMaker", "src\StudioSkinColor.KKS\KKS.StudioPseudoMaker.csproj", "{494E4E72-DC3A-4691-93B9-3245A6825B0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioPseudoMaker", "src\StudioPseudoMaker.KKS\KKS.StudioPseudoMaker.csproj", "{494E4E72-DC3A-4691-93B9-3245A6825B0A}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioSkinColor", "src\StudioSkinColor.Core\Core.StudioSkinColor.shproj", "{15089A5B-2887-47AA-B444-52F2E5987D37}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioPseudoMaker", "src\StudioPseudoMaker.Core\Core.StudioPseudoMaker.shproj", "{15089A5B-2887-47AA-B444-52F2E5987D37}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectorUtils", "ProjectorUtils", "{B1EFB045-CBFC-4C0E-920E-40BD2E8DA314}"
 EndProject
@@ -175,13 +175,13 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{079df383-c1e8-4d30-95ac-6c0892ddc2f5}*SharedItemsImports = 4
-		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{15089a5b-2887-47aa-b444-52f2e5987d37}*SharedItemsImports = 13
+		src\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems*{15089a5b-2887-47aa-b444-52f2e5987d37}*SharedItemsImports = 13
 		src\Shared\Shared.projitems*{1e399eaf-e2b1-4c3b-a609-f7cc1a9aaec5}*SharedItemsImports = 4
 		src\StudioVoiceControl.Core\Core.StudioVoiceControl\Core.StudioVoiceControl.projitems*{1e399eaf-e2b1-4c3b-a609-f7cc1a9aaec5}*SharedItemsImports = 4
 		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
-		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
+		src\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
 		src\StudioVoiceControl.Core\Core.StudioVoiceControl\Core.StudioVoiceControl.projitems*{5c4142c8-54f4-471a-98e9-0f44e0c5f37f}*SharedItemsImports = 13
 		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{5eacf7ac-4989-4bde-ab51-d3822f9a4ced}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{5eacf7ac-4989-4bde-ab51-d3822f9a4ced}*SharedItemsImports = 4
@@ -206,7 +206,7 @@ Global
 		src\Shared\Shared.projitems*{d14138e1-6593-4b53-872a-a1b3b6fd2b2b}*SharedItemsImports = 4
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{daf47fdd-df83-4a52-b198-0d097840d65f}*SharedItemsImports = 13
 		src\Shared\Shared.projitems*{e2151100-2a2d-497f-a4ea-0d938fe630e0}*SharedItemsImports = 4
-		src\StudioSkinColor.Core\Core.StudioSkinColor.projitems*{e2151100-2a2d-497f-a4ea-0d938fe630e0}*SharedItemsImports = 4
+		src\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems*{e2151100-2a2d-497f-a4ea-0d938fe630e0}*SharedItemsImports = 4
 		src\SaveCameraObjectFov.Core\SaveCameraObjectFov.Core.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{f113381a-aa2c-4aa9-8ee3-a7a01255a642}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{fa9b57e6-576d-4971-9147-1032d0150b0f}*SharedItemsImports = 4
