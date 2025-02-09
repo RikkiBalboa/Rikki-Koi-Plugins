@@ -4,13 +4,11 @@
 
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
-using Shared;
 using Studio;
 using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using static Illusion.Utils;
 using Object = UnityEngine.Object;
 #if TMP
 using Text = TMPro.TextMeshProUGUI;

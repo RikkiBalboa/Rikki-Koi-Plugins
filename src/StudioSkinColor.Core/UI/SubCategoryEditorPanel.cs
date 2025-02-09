@@ -59,19 +59,19 @@ namespace Plugins
                 foreach (var value in values)
                     AddSliderRow(
                         value.Value,
-                        () => StudioSkinColor.selectedCharacterController.GetCurrentBodyValue(value.Key),
-                        () => StudioSkinColor.selectedCharacterController.GetOriginalBodyShapeValue(value.Key),
-                        f => StudioSkinColor.selectedCharacterController.UpdateBodyShapeValue(value.Key, f),
-                        () => StudioSkinColor.selectedCharacterController.ResetBodyShapeValue(value.Key)
+                        () => PseudoMaker.selectedCharacterController.GetCurrentBodyValue(value.Key),
+                        () => PseudoMaker.selectedCharacterController.GetOriginalBodyShapeValue(value.Key),
+                        f => PseudoMaker.selectedCharacterController.UpdateBodyShapeValue(value.Key, f),
+                        () => PseudoMaker.selectedCharacterController.ResetBodyShapeValue(value.Key)
                     );
             if (UIMappings.ShapeFaceValueMap.TryGetValue(SubCategory, out values))
                 foreach (var value in values)
                     AddSliderRow(
                         value.Value,
-                        () => StudioSkinColor.selectedCharacterController.GetCurrentFaceValue(value.Key),
-                        () => StudioSkinColor.selectedCharacterController.GetOriginalFaceShapeValue(value.Key),
-                        f => StudioSkinColor.selectedCharacterController.UpdateFaceShapeValue(value.Key, f),
-                        () => StudioSkinColor.selectedCharacterController.ResetFaceShapeValue(value.Key)
+                        () => PseudoMaker.selectedCharacterController.GetCurrentFaceValue(value.Key),
+                        () => PseudoMaker.selectedCharacterController.GetOriginalFaceShapeValue(value.Key),
+                        f => PseudoMaker.selectedCharacterController.UpdateFaceShapeValue(value.Key, f),
+                        () => PseudoMaker.selectedCharacterController.ResetFaceShapeValue(value.Key)
                     );
 
             if (
@@ -247,15 +247,15 @@ namespace Plugins
             {
                 if (clothingPatternGameobjects != null && clothingPatternGameobjects.TryGetValue(pattern, out var _gameObjects))
                 {
-                    var usePattern = StudioSkinColor.selectedCharacterController.ClothingUsesPattern(StudioSkinColorCharaController.SubCategoryToKind(SubCategory), pattern+1);
+                    var usePattern = PseudoMaker.selectedCharacterController.ClothingUsesPattern(PseudoMakerCharaController.SubCategoryToKind(SubCategory), pattern+1);
                     foreach (var _gameObject in _gameObjects)
                         _gameObject.SetActive(usePattern);
                 }
             };
             clothingChangeAction = () =>
             {
-                var kind = StudioSkinColorCharaController.SelectKindToIntKind(selectKindType);
-                var useCols = StudioSkinColor.selectedCharacterController.CheckClothingUseColor(kind);
+                var kind = PseudoMakerCharaController.SelectKindToIntKind(selectKindType);
+                var useCols = PseudoMaker.selectedCharacterController.CheckClothingUseColor(kind);
                 for (int colorNr = 0; colorNr < useCols.Length; colorNr++)
                 {
                     if (clothingColorGameobjects != null && clothingColorGameobjects.TryGetValue(colorNr, out var _gameObjects))
@@ -263,7 +263,7 @@ namespace Plugins
                             _gameObject.SetActive(useCols[colorNr]);
                     patternChangeAction(colorNr);
                 }
-                var current = StudioSkinColor.selectedCharacterController.GetSelected(selectKindType);
+                var current = PseudoMaker.selectedCharacterController.GetSelected(selectKindType);
                 clothingSailorGameObjects?.ForEach(x => x.SetActive(false));
                 clothingJacketGameObjects?.ForEach(x => x.SetActive(false));
 
@@ -272,7 +272,7 @@ namespace Plugins
                 if (SubCategory == SubCategory.ClothingTop && current == 2)
                     clothingJacketGameObjects?.ForEach(x => x.SetActive(true));
 
-                if (StudioSkinColor.selectedCharacterController.GetClothingUsesOptPart(kind, 0) || StudioSkinColor.selectedCharacterController.GetClothingUsesOptPart(kind, 1))
+                if (PseudoMaker.selectedCharacterController.GetClothingUsesOptPart(kind, 0) || PseudoMaker.selectedCharacterController.GetClothingUsesOptPart(kind, 1))
                     clothingOptionObject?.SetActive(true);
                 else clothingOptionObject?.SetActive(false);
             };
@@ -336,12 +336,12 @@ namespace Plugins
             var clothingOption = Instantiate(ClothingOptionTemplate, ClothingOptionTemplate.transform.parent);
             clothingOption.name = "ClothingOptions";
 
-            var kind = StudioSkinColorCharaController.SubCategoryToKind(SubCategory);
+            var kind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
 
             var clothingOptionComponent = clothingOption.AddComponent<ClothingOptionComponent>();
-            clothingOptionComponent.GetCurrentValue = option => !StudioSkinColor.selectedCharacterController.GetHideOpt(kind, option);
-            clothingOptionComponent.SetValueAction = (option, value) => StudioSkinColor.selectedCharacterController.SetHideOpt(kind, option, !value);
-            clothingOptionComponent.CheckUsePart = (option) => StudioSkinColor.selectedCharacterController.GetClothingUsesOptPart(kind, option);
+            clothingOptionComponent.GetCurrentValue = option => !PseudoMaker.selectedCharacterController.GetHideOpt(kind, option);
+            clothingOptionComponent.SetValueAction = (option, value) => PseudoMaker.selectedCharacterController.SetHideOpt(kind, option, !value);
+            clothingOptionComponent.CheckUsePart = (option) => PseudoMaker.selectedCharacterController.GetClothingUsesOptPart(kind, option);
 
             return clothingOptionComponent;
         }
@@ -368,23 +368,23 @@ namespace Plugins
         {
             return AddSliderRow(
                 name,
-                () => StudioSkinColor.selectedCharacterController.GetFloatValue(floatType),
-                () => StudioSkinColor.selectedCharacterController.GetOriginalFloatValue(floatType),
-                value => StudioSkinColor.selectedCharacterController.SetFloatTypeValue(value, floatType),
-                () => StudioSkinColor.selectedCharacterController.ResetFloatTypeValue(floatType)
+                () => PseudoMaker.selectedCharacterController.GetFloatValue(floatType),
+                () => PseudoMaker.selectedCharacterController.GetOriginalFloatValue(floatType),
+                value => PseudoMaker.selectedCharacterController.SetFloatTypeValue(value, floatType),
+                () => PseudoMaker.selectedCharacterController.ResetFloatTypeValue(floatType)
             );
         }
 
         private SliderComponent AddSliderRow(SubCategory subCategory, int colorNr, PatternValue pattern)
         {
-            int clothingKind = StudioSkinColorCharaController.SubCategoryToKind(subCategory);
+            int clothingKind = PseudoMakerCharaController.SubCategoryToKind(subCategory);
 
             return AddSliderRow(
                 $"Pattern {colorNr + 1} {pattern}",
-                () => StudioSkinColor.selectedCharacterController.GetPatternValue(clothingKind, colorNr, pattern),
+                () => PseudoMaker.selectedCharacterController.GetPatternValue(clothingKind, colorNr, pattern),
                 () => 0.5f,
-                value => StudioSkinColor.selectedCharacterController.SetPatternValue(clothingKind, colorNr, pattern, value),
-                () => StudioSkinColor.selectedCharacterController.SetPatternValue(clothingKind, colorNr, pattern, 0.5f)
+                value => PseudoMaker.selectedCharacterController.SetPatternValue(clothingKind, colorNr, pattern, value),
+                () => PseudoMaker.selectedCharacterController.SetPatternValue(clothingKind, colorNr, pattern, 0.5f)
             );
         }
 
@@ -407,23 +407,23 @@ namespace Plugins
         {
             return AddColorRow(
                 name,
-                () => StudioSkinColor.selectedCharacterController.GetColorPropertyValue(colorType),
-                () => StudioSkinColor.selectedCharacterController.GetOriginalColorPropertyValue(colorType),
-                c => StudioSkinColor.selectedCharacterController.UpdateColorProperty(c, colorType),
-                () => StudioSkinColor.selectedCharacterController.ResetColorProperty(colorType)
+                () => PseudoMaker.selectedCharacterController.GetColorPropertyValue(colorType),
+                () => PseudoMaker.selectedCharacterController.GetOriginalColorPropertyValue(colorType),
+                c => PseudoMaker.selectedCharacterController.UpdateColorProperty(c, colorType),
+                () => PseudoMaker.selectedCharacterController.ResetColorProperty(colorType)
             );
         }
 
         private ColorComponent AddColorRow(SubCategory subCategory, int colorNr, bool isPattern = false)
         {
-            int clothingKind = StudioSkinColorCharaController.SubCategoryToKind(subCategory);
+            int clothingKind = PseudoMakerCharaController.SubCategoryToKind(subCategory);
 
             return AddColorRow(
                 isPattern ? $"Pattern Color {colorNr + 1}" : $"Cloth Color {colorNr + 1}",
-                () => StudioSkinColor.selectedCharacterController.GetClothingColor(clothingKind, colorNr, isPattern: isPattern),
-                () => StudioSkinColor.selectedCharacterController.GetOriginalClothingColor(clothingKind, colorNr, isPattern: isPattern),
-                c => StudioSkinColor.selectedCharacterController.SetClothingColor(clothingKind, colorNr, c, isPattern: isPattern),
-                () => StudioSkinColor.selectedCharacterController.ResetClothingColor(clothingKind, colorNr, isPattern: isPattern)
+                () => PseudoMaker.selectedCharacterController.GetClothingColor(clothingKind, colorNr, isPattern: isPattern),
+                () => PseudoMaker.selectedCharacterController.GetOriginalClothingColor(clothingKind, colorNr, isPattern: isPattern),
+                c => PseudoMaker.selectedCharacterController.SetClothingColor(clothingKind, colorNr, c, isPattern: isPattern),
+                () => PseudoMaker.selectedCharacterController.ResetClothingColor(clothingKind, colorNr, isPattern: isPattern)
             );
         }
 
@@ -542,10 +542,10 @@ namespace Plugins
             var pickerComponent = picker.AddComponent<PickerComponent>();
             pickerComponent.Name = name;
             pickerComponent.CategoryNo = cn;
-            pickerComponent.GetCurrentValue = () => StudioSkinColor.selectedCharacterController.GetSelected(selectKind);
+            pickerComponent.GetCurrentValue = () => PseudoMaker.selectedCharacterController.GetSelected(selectKind);
             pickerComponent.SetCurrentValue = (value) =>
             {
-                StudioSkinColor.selectedCharacterController.SetSelectKind(selectKind, value);
+                PseudoMaker.selectedCharacterController.SetSelectKind(selectKind, value);
                 onChange?.Invoke();
             };
 

@@ -1,6 +1,6 @@
 ﻿using Plugins;
 using System.Reflection;
-using static Plugins.StudioSkinColor;
+using static Plugins.PseudoMaker;
 
 [assembly: AssemblyTitle(PluginNameInternal)]
 [assembly: AssemblyProduct(PluginNameInternal)]

@@ -4,7 +4,6 @@ using KKAPI.Utilities;
 using Studio;
 using System.Xml;
 using UnityEngine;
-using static Plugins.StudioSkinColor;
 
 namespace Plugins
 {
@@ -207,9 +206,9 @@ namespace Plugins
             );
         }
 
-        private static StudioSkinColorCharaController GetParameter(ObjectCtrlInfo oci)
+        private static PseudoMakerCharaController GetParameter(ObjectCtrlInfo oci)
         {
-            return StudioSkinColorCharaController.GetController(((OCIChar)oci).GetChaControl());
+            return PseudoMakerCharaController.GetController(((OCIChar)oci).GetChaControl());
         }
     }
 }

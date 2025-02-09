@@ -84,8 +84,8 @@ namespace Plugins
 
             Canvas.anchoredPosition = new Vector2(70, 65);
             Canvas.offsetMax = new Vector2(
-                Canvas.anchoredPosition.x + StudioSkinColor.PickerWindowWidth.Value,
-                Canvas.anchoredPosition.y + StudioSkinColor.PickerWindowHeight.Value
+                Canvas.anchoredPosition.x + PseudoMaker.PickerWindowWidth.Value,
+                Canvas.anchoredPosition.y + PseudoMaker.PickerWindowHeight.Value
             );
 
             DragPanel = (RectTransform)transform.Find("DragPanel").transform;
@@ -96,7 +96,7 @@ namespace Plugins
             Content = ScrollRect.transform.Find("Viewport/Content").gameObject;
 
             GridLayoutGroup = Content.GetComponent<GridLayoutGroup>();
-            GridLayoutGroup.cellSize = new Vector2(StudioSkinColor.PickerThumbnailSize.Value, StudioSkinColor.PickerThumbnailSize.Value);
+            GridLayoutGroup.cellSize = new Vector2(PseudoMaker.PickerThumbnailSize.Value, PseudoMaker.PickerThumbnailSize.Value);
             InitialBotPadding = GridLayoutGroup.padding.bottom;
             InitialTopPadding = GridLayoutGroup.padding.top;
 
@@ -142,8 +142,8 @@ namespace Plugins
                 () => {
                     PopulateEntryCache();
                     AdjustCanvasSizeToColumns();
-                    StudioSkinColor.PickerWindowWidth.Value = Canvas.sizeDelta.x;
-                    StudioSkinColor.PickerWindowHeight.Value = Canvas.sizeDelta.y;
+                    PseudoMaker.PickerWindowWidth.Value = Canvas.sizeDelta.x;
+                    PseudoMaker.PickerWindowHeight.Value = Canvas.sizeDelta.y;
                     isDirty = true;
                 }
             );
@@ -335,7 +335,7 @@ namespace Plugins
         {
             var currentSize = GridLayoutGroup.cellSize.x;
             var newSize = increase ? currentSize + 5 : currentSize - 5;
-            StudioSkinColor.PickerThumbnailSize.Value = (int)newSize;
+            PseudoMaker.PickerThumbnailSize.Value = (int)newSize;
             GridLayoutGroup.cellSize = new Vector2(newSize, newSize);
             PopulateEntryCache();
             isDirty = true;

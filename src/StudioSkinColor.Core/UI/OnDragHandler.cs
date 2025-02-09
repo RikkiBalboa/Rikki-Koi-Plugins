@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine.EventSystems;
 using UnityEngine;
-using MaterialEditorAPI;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Plugins
 {

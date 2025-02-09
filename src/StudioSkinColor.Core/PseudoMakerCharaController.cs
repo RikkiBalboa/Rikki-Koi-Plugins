@@ -1,23 +1,21 @@
-﻿using KKAPI;
-using KKAPI.Chara;
-using System.Collections.Generic;
-using static Plugins.StudioSkinColor;
-using UnityEngine;
-using KK_Plugins.MaterialEditor;
-using System.Linq;
-using System.Collections;
-using System;
-using MessagePack;
+﻿using ChaCustom;
 using ExtensibleSaveFormat;
+using KK_Plugins.MaterialEditor;
+using KKAPI;
+using KKAPI.Chara;
+using MessagePack;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using static ChaCustom.CustomSelectKind;
-using static Illusion.Utils;
-using ChaCustom;
+using static Plugins.PseudoMaker;
 
 namespace Plugins
 {
-    internal class StudioSkinColorCharaController : CharaCustomFunctionController
+    internal class PseudoMakerCharaController : CharaCustomFunctionController
     {
-        internal static readonly Dictionary<ChaControl, StudioSkinColorCharaController> allControllers = new Dictionary<ChaControl, StudioSkinColorCharaController>();
+        internal static readonly Dictionary<ChaControl, PseudoMakerCharaController> allControllers = new Dictionary<ChaControl, PseudoMakerCharaController>();
 
         #region Save Lists
         private Dictionary<ClothingStorageKey, ColorStorage> OriginalClothingColors = new Dictionary<ClothingStorageKey, ColorStorage>();
@@ -99,16 +97,16 @@ namespace Plugins
                 OriginalFaceShapeValues = MessagePackSerializer.Deserialize<Dictionary<int, FloatStorage>>((byte[])originalFaceShapeValues);
         }
 
-        public static StudioSkinColorCharaController GetController(ChaControl chaCtrl)
+        public static PseudoMakerCharaController GetController(ChaControl chaCtrl)
         {
             if (chaCtrl == null)
                 return null;
             if (allControllers.ContainsKey(chaCtrl))
                 return allControllers[chaCtrl];
 #if DEBUG
-            return chaCtrl.gameObject.GetOrAddComponent<StudioSkinColorCharaController>();
+            return chaCtrl.gameObject.GetOrAddComponent<PseudoMakerCharaController>();
 #else
-            return chaCtrl.gameObject.GetComponent<StudioSkinColorCharaController>();
+            return chaCtrl.gameObject.GetComponent<PseudoMakerCharaController>();
 #endif
         }
 
@@ -593,8 +591,8 @@ namespace Plugins
             }
             catch (Exception e)
             {
-                StudioSkinColor.Logger.LogMessage("Selected option is broken and was switched back to the first option");
-                StudioSkinColor.Logger.LogError(e);
+                PseudoMaker.Logger.LogMessage("Selected option is broken and was switched back to the first option");
+                PseudoMaker.Logger.LogError(e);
                 if (kind == 0) SetSelectKind(SelectKindType.CosTop, 0);
                 else if (kind == 1) SetSelectKind(SelectKindType.CosBot, 0);
                 else if (kind == 2) SetSelectKind(SelectKindType.CosBra, 0);
@@ -610,12 +608,12 @@ namespace Plugins
         public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1, bool isPattern = false)
         {
             InitBaseCustomTextureClothesIfNotExists(kind);
-            StudioSkinColor.Logger.LogInfo(kind);
-            StudioSkinColor.Logger.LogInfo(colorNr);
-            StudioSkinColor.Logger.LogInfo(color);
-            StudioSkinColor.Logger.LogInfo(slotNr);
-            StudioSkinColor.Logger.LogInfo(isPattern);
-            StudioSkinColor.Logger.LogInfo(IsMultiPartTop(kind));
+            PseudoMaker.Logger.LogInfo(kind);
+            PseudoMaker.Logger.LogInfo(colorNr);
+            PseudoMaker.Logger.LogInfo(color);
+            PseudoMaker.Logger.LogInfo(slotNr);
+            PseudoMaker.Logger.LogInfo(isPattern);
+            PseudoMaker.Logger.LogInfo(IsMultiPartTop(kind));
             var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
             if (MEController != null)
             {
@@ -645,7 +643,7 @@ namespace Plugins
                 SetClothes.parts[kind].colorInfo[colorNr].baseColor = color;
                 if (!IsMultiPartTop(kind))
                 {
-                    StudioSkinColor.Logger.LogInfo("AAAAAAAAAAAAAAAAAAAAAA");
+                    PseudoMaker.Logger.LogInfo("AAAAAAAAAAAAAAAAAAAAAA");
                     ChaControl.ChangeCustomClothes(true, kind, true, true, true, true, true);
                 }
                 else

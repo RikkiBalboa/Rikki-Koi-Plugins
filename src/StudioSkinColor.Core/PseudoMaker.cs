@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using ChaCustom;
 using HarmonyLib;
 using KK_Plugins.MaterialEditor;
 using KKAPI.Chara;
@@ -9,11 +8,7 @@ using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
 using Studio;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,19 +17,20 @@ using UnityEngine.UI;
 namespace Plugins
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInIncompatibility("com.rikkibalboa.bepinex.studioSkinColorControl")]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInProcess(Constants.StudioProcessName)]
-    public partial class StudioSkinColor : BaseUnityPlugin
+    public partial class PseudoMaker : BaseUnityPlugin
     {
-        public const string PluginGUID = "com.rikkibalboa.bepinex.studioSkinColorControl";
-        public const string PluginName = "StudioSkinColorControl";
-        public const string PluginNameInternal = Constants.Prefix + "_StudioSkinColorControl";
-        public const string PluginVersion = "1.2.1";
+        public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
+        public const string PluginName = "StudioPseudoMaker";
+        public const string PluginNameInternal = Constants.Prefix + "_StudioPseudoMaker";
+        public const string PluginVersion = "0.1";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
         internal static ChaControl selectedCharacter;
-        internal static StudioSkinColorCharaController selectedCharacterController;
+        internal static PseudoMakerCharaController selectedCharacterController;
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<float> MainWindowWidth { get; private set; }
         public static ConfigEntry<float> MainWindowHeight { get; private set; }
@@ -43,7 +39,7 @@ namespace Plugins
         public static ConfigEntry<float> UIScale { get; set; }
         public static ConfigEntry<int> PickerThumbnailSize { get; set; }
 
-        private static StudioSkinColor instance;
+        private static PseudoMaker instance;
         internal static PseudoMakerUI MainWindow;
         private static Button PseudoMakerStudioButton;
 
@@ -91,7 +87,7 @@ namespace Plugins
                     new AcceptableValueRange<int>(30, 200), null, new ConfigurationManagerAttributes { Order = 95 }
                 )
             );
-            CharacterApi.RegisterExtraBehaviour<StudioSkinColorCharaController>(PluginGUID);
+            CharacterApi.RegisterExtraBehaviour<PseudoMakerCharaController>(PluginGUID);
 
             UIScale.SettingChanged += (e, a) => SetUIScale();
 
@@ -100,7 +96,7 @@ namespace Plugins
             foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)
             {
                 if (item is OCIChar oCIChar)
-                    oCIChar.GetChaControl().GetOrAddComponent<StudioSkinColorCharaController>();
+                    oCIChar.GetChaControl().GetOrAddComponent<PseudoMakerCharaController>();
             }
 #endif
         }
@@ -124,7 +120,7 @@ namespace Plugins
             if (newChar != selectedCharacter && newChar != null)
             {
                 selectedCharacter = newChar;
-                selectedCharacterController = StudioSkinColorCharaController.GetController(selectedCharacter);
+                selectedCharacterController = PseudoMakerCharaController.GetController(selectedCharacter);
                 MainWindow.RefreshValues();
             }
         }
@@ -153,19 +149,19 @@ namespace Plugins
         internal static void UpdateTextureColor(Color color, ColorType textureColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, textureColor);
+                PseudoMakerCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, textureColor);
         }
 
         internal static void UpdateBustSoftness(float value, FloatType bust)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.SetFloatTypeValue(value, bust);
+                PseudoMakerCharaController.GetController(cha.GetChaControl())?.SetFloatTypeValue(value, bust);
         }
 
         internal static void UpdateColorProperty(Color color, ColorType hairColor)
         {
             foreach (var cha in StudioAPI.GetSelectedCharacters())
-                StudioSkinColorCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, hairColor);
+                PseudoMakerCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, hairColor);
         }
 
         private static void SetUIScale()
@@ -218,7 +214,7 @@ namespace Plugins
         {
             if (PseudoMakerStudioButton.gameObject != null) Destroy(PseudoMakerStudioButton);
             if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow);
-            StudioSkinColorCharaController.allControllers.Clear();
+            PseudoMakerCharaController.allControllers.Clear();
             harmony.UnpatchSelf();
         }
 #endif

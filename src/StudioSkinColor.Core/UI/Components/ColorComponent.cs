@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine.UI;
+﻿using Shared;
+using System;
 using UnityEngine;
-using Shared;
+using UnityEngine.UI;
 
 namespace Plugins
 {

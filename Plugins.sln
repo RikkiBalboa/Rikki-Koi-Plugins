@@ -42,11 +42,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ShadowColorSwapper", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.ShadowColorSwapper", "src\ShadowColorSwapper.KKS\KKS.ShadowColorSwapper.csproj", "{9588E76A-723E-47BE-8250-25E1E206634D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioSkinColor", "StudioSkinColor", "{46C251DF-D506-47F9-8C56-E3B9FA56C116}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioPseudoMaker", "StudioPseudoMaker", "{46C251DF-D506-47F9-8C56-E3B9FA56C116}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioSkinColor", "src\StudioSkinColor.KK\KK.StudioSkinColor.csproj", "{E2151100-2A2D-497F-A4EA-0D938FE630E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioPseudoMaker", "src\StudioSkinColor.KK\KK.StudioPseudoMaker.csproj", "{E2151100-2A2D-497F-A4EA-0D938FE630E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioSkinColor", "src\StudioSkinColor.KKS\KKS.StudioSkinColor.csproj", "{494E4E72-DC3A-4691-93B9-3245A6825B0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioPseudoMaker", "src\StudioSkinColor.KKS\KKS.StudioPseudoMaker.csproj", "{494E4E72-DC3A-4691-93B9-3245A6825B0A}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioSkinColor", "src\StudioSkinColor.Core\Core.StudioSkinColor.shproj", "{15089A5B-2887-47AA-B444-52F2E5987D37}"
 EndProject
