@@ -140,14 +140,16 @@ namespace Plugins
                 PseudoMakerUI.MainWindow.GetComponent<CanvasScaler>(),
                 false,
                 () => {
+                    PopulateEntryCache();
+                    AdjustCanvasSizeToColumns();
                     StudioSkinColor.PickerWindowWidth.Value = Canvas.sizeDelta.x;
                     StudioSkinColor.PickerWindowHeight.Value = Canvas.sizeDelta.y;
-                    PopulateEntryCache();
                     isDirty = true;
                 }
             );
 
             PopulateEntryCache();
+            AdjustCanvasSizeToColumns();
 
             gameObject.SetActive(false);
         }
@@ -337,6 +339,15 @@ namespace Plugins
             GridLayoutGroup.cellSize = new Vector2(newSize, newSize);
             PopulateEntryCache();
             isDirty = true;
+            AdjustCanvasSizeToColumns();
+        }
+
+        private void AdjustCanvasSizeToColumns()
+        {
+            Canvas.offsetMax = new Vector2(
+                18 + columnCount * GridLayoutGroup.cellSize.x + Canvas.offsetMin.x + GridLayoutGroup.spacing.x * (columnCount - 1),
+                Canvas.offsetMax.y
+            );
         }
 
         public static Sprite GetThumbSprite(CustomSelectInfo item)
