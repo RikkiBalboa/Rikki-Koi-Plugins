@@ -1,16 +1,13 @@
 ﻿using ChaCustom;
 using KKAPI.Utilities;
 using Sideloader.AutoResolver;
-using Studio;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UGUI_AssistLibrary;
-using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static ChaCustom.CustomSelectKind;
 
 namespace Plugins
 {
@@ -26,6 +23,7 @@ namespace Plugins
 
         public static Text Title;
         public InputField NameField;
+        public Button CurrentButton;
         public InputField SearchField;
         public Button ClearButton;
         public static ScrollRect ScrollRect;
@@ -51,28 +49,16 @@ namespace Plugins
         public int InitialBotPadding;
         public int InitialTopPadding;
 
-        private bool _selectionChanged;
-        private CustomSelectInfo _selectedItem;
-        private CustomSelectInfo SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                if (_selectedItem != value)
-                {
-                    _selectedItem = value;
-                    _selectionChanged = true;
-                }
-            }
-        }
+        private static bool canScroll;
+        private static bool shouldScroll;
 
         private GameObject pickerEntryTemplate;
 
         public static void SetCategory(string name, ChaListDefine.CategoryNo categoryNo, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
         {
-            if (CategoryNo == categoryNo && instance.gameObject.activeSelf)
+            if (CategoryNo == categoryNo)
             {
-                instance.gameObject.SetActive(false);
+                instance.gameObject.SetActive(!instance.gameObject.activeSelf);
                 return;
             }
 
@@ -86,6 +72,7 @@ namespace Plugins
             isDirty = true;
             instance.gameObject.SetActive(true);
             ScrollRect.content.localPosition = Vector2.zero;
+            shouldScroll = true;
         }
 
         private void Awake()
@@ -131,6 +118,9 @@ namespace Plugins
             ClearButton = transform.Find("ClearButton").gameObject.GetComponent<Button>();
             ClearButton.onClick.AddListener(() => SearchField.text = "");
 
+            CurrentButton = transform.Find("CurrentButton").gameObject.GetComponent<Button>();
+            CurrentButton.onClick.AddListener(ScrollToSelection);
+
             CloseButton.gameObject.GetComponent<Button>().onClick.AddListener(() => gameObject.SetActive(false));
 
             MovableWindow.MakeObjectDraggable(DragPanel, Canvas, false);
@@ -169,7 +159,7 @@ namespace Plugins
             var rowsAboveViewRect = Mathf.FloorToInt(Mathf.Clamp(ScrollRect.content.localPosition.y / (int)GridLayoutGroup.cellSize.x, 0, offscreenItemCount));
             var itemsAboveViewRect = rowsAboveViewRect * columnCount;
 
-            if (lastItemsAboveViewRect == itemsAboveViewRect && !isDirty) return;
+            if (lastItemsAboveViewRect == itemsAboveViewRect && !isDirty && !shouldScroll) return;
 
             lastItemsAboveViewRect = itemsAboveViewRect;
             isDirty = false;
@@ -209,6 +199,10 @@ namespace Plugins
             }
 
             UpdateSelection();
+            if (shouldScroll && canScroll)
+            {
+                StartCoroutine(ScrollToSelectionCoroutine());
+            }
 
             // Apply top and bottom offsets to create the illusion of having all of the list items
             var topOffset = Mathf.RoundToInt(rowsAboveViewRect * GridLayoutGroup.cellSize.x);
@@ -223,23 +217,33 @@ namespace Plugins
             LayoutRebuilder.MarkLayoutForRebuild(Content.transform as RectTransform);
         }
 
+        public IEnumerator ScrollToSelectionCoroutine()
+        {
+            yield return null;
+            ScrollToSelection();
+            shouldScroll = false;
+        }
+
+        public void ScrollToSelection()
+        {
+            var itemRow =itemList.FindIndex(x => x.index == GetCurrentValue());
+            itemRow = itemRow < 0 ? -1 : itemRow / columnCount;
+
+            if (itemRow >= 0)
+            {
+                var minScroll = (itemRow - 4f) * GridLayoutGroup.cellSize.x;
+                var maxScroll = (itemRow + 0.5f) * GridLayoutGroup.cellSize.x;
+                var targetScroll = itemRow * GridLayoutGroup.cellSize.x;
+                if (ScrollRect.content.localPosition.y < minScroll || ScrollRect.content.localPosition.y > maxScroll)
+                    ScrollRect.content.localPosition = new Vector2(ScrollRect.content.localPosition.x, Mathf.Max(0, targetScroll - GridLayoutGroup.cellSize.x * 1.7f));
+            }
+        }
+
         private void UpdateSelection()
         {
             cachedEntries.ForEach(x => x.tgl.isOn = false);
             var onToggle = cachedEntries.FirstOrDefault(x => x.info.index == GetCurrentValue());
             if (onToggle != null) onToggle.tgl.isOn = true;
-            //if (SelectedItem != null)
-            //{
-            //    if (SelectedItem.sic != null)
-            //        SelectedItem.sic.tgl.isOn = true;
-
-            //    //if (_selectionChanged && IsVisible) // Only update the scroll after the list is fully loaded and shown, or it will get reset to 0
-            //    //{
-            //    //    if (ScrollListsToSelection.Value)
-            //    //        ScrollToSelection();
-            //    //    _selectionChanged = false;
-            //    //}
-            //}
         }
 
         private bool FilterInfo(CustomSelectInfo info, string search)
@@ -302,6 +306,7 @@ namespace Plugins
                 cachedEntries.Add(copyInfoComp);
                 copy.SetActive(false);
             }
+            canScroll = true;
         }
 
         public static Sprite GetThumbSprite(CustomSelectInfo item)
