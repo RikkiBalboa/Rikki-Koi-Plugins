@@ -14,7 +14,7 @@ namespace Plugins
         public ScrollRect PanelScroll;
         public ToggleGroup PanelToggleGroup;
 
-        public Dictionary<SubCategory, SubCategoryEditorPanel> SubCategoryPanels = new Dictionary<SubCategory, SubCategoryEditorPanel>();
+        public Dictionary<SubCategory, BaseEditorPanel> SubCategoryPanels = new Dictionary<SubCategory, BaseEditorPanel>();
 
         private void Awake()
         {
@@ -50,7 +50,13 @@ namespace Plugins
                 panel.name = $"Category{subCategory}Editor";
                 panel.transform.SetParent(editorPanelTemplate.transform.parent, false);
 
-                var categoryPanel = panel.AddComponent<SubCategoryEditorPanel>();
+                BaseEditorPanel categoryPanel;
+                if (Category == Category.Body) categoryPanel = panel.AddComponent<BodyEditorPanel>();
+                else if (Category == Category.Face) categoryPanel = panel.AddComponent<FaceEditorPanel>();
+                else if (Category == Category.Hair) categoryPanel = panel.AddComponent<HairEditorPanel>();
+                else if (Category == Category.Clothing) categoryPanel = panel.AddComponent<ClothingEditorPanel>();
+                else categoryPanel = panel.AddComponent<BaseEditorPanel>();
+
                 categoryPanel.SubCategory = subCategory;
                 SubCategoryPanels[subCategory] = categoryPanel;
             }

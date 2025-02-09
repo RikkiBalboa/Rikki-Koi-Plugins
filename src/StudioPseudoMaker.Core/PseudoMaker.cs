@@ -220,7 +220,7 @@ namespace Plugins
 #endif
     }
 
-    internal enum ColorType
+    public enum ColorType
     {
         SkinMain,
         SkinSub,
@@ -250,7 +250,7 @@ namespace Plugins
         LipColor,
     }
 
-    internal enum FloatType
+    public enum FloatType
     {
         SkinTypeStrenth,
         SkinGloss,
@@ -276,7 +276,7 @@ namespace Plugins
         HairFrontLenght,
     }
 
-    internal enum PatternValue
+    public enum PatternValue
     {
         Horizontal,
         Vertical,
