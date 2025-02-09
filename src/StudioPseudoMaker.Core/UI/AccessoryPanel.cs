@@ -10,6 +10,8 @@ namespace Plugins
 {
     public class AccessoryPanel : MonoBehaviour
     {
+        public AccessoryEditorPanel editorPanel;
+
         public GameObject ToggleTemplate;
 
         public ScrollRect PanelScroll;
@@ -31,6 +33,7 @@ namespace Plugins
             var accessories = PseudoMaker.selectedCharacter.infoAccessory;
             for (int i = 0; i < accessories.Length; i++)
             {
+                var _i = i;
                 var accessory = accessories[i];
 
                 var go = Instantiate(ToggleTemplate, PanelScroll.content, false);
@@ -45,7 +48,10 @@ namespace Plugins
 
                 var toggle = go.GetComponent<Toggle>();
                 toggle.isOn = false;
-                //toggle.onValueChanged.AddListener((change) => SubCategoryToggleValueChanged(subCategory));
+                toggle.onValueChanged.AddListener((change) => 
+                {
+                    editorPanel?.ChangeSelectedAccessory(_i);
+                });
                 toggle.group = PanelToggleGroup;
                 toggles.Add(toggle);
             }

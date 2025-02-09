@@ -19,9 +19,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\CategoryPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ClothingOptionComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ColorComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\DropdownComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\MovableWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\PickerComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\SelectListInfoHoverComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\BodyEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\ClothingEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\FaceEditorPanel.cs" />

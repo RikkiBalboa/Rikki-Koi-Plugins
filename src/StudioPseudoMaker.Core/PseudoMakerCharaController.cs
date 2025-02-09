@@ -1,5 +1,6 @@
 ﻿using ChaCustom;
 using ExtensibleSaveFormat;
+using Illusion.Game;
 using KK_Plugins.MaterialEditor;
 using KKAPI;
 using KKAPI.Chara;
@@ -840,7 +841,20 @@ namespace Plugins
                 .Select(c => c.Value)
                 .Any(c => c.Value != c.OriginalValue);
         }
-#endregion
+        #endregion
+
+        #region Accessories
+        public void SetAccessoryColor(int slotNr, int colorNr, Color color)
+        {
+            Accessories.parts[slotNr].color[colorNr] = color;
+            SetAccessories.parts[slotNr].color[colorNr] = color;
+            ChaControl.ChangeAccessoryColor(slotNr);
+        }
+        public Color GetAccessoryColor(int slotNr, int colorNr)
+        {
+            return Accessories.parts[slotNr].color[colorNr];
+        }
+        #endregion
 
         #region Category pickers
         public void SetSelectKind(SelectKindType type, CustomSelectInfo info)

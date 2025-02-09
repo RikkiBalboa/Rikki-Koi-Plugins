@@ -50,24 +50,30 @@ namespace Plugins
                 panel.name = $"Category{subCategory}Editor";
                 panel.transform.SetParent(editorPanelTemplate.transform.parent, false);
 
-                BaseEditorPanel categoryPanel;
-                if (Category == Category.Body) categoryPanel = panel.AddComponent<BodyEditorPanel>();
-                else if (Category == Category.Face) categoryPanel = panel.AddComponent<FaceEditorPanel>();
-                else if (Category == Category.Hair) categoryPanel = panel.AddComponent<HairEditorPanel>();
-                else if (Category == Category.Clothing) categoryPanel = panel.AddComponent<ClothingEditorPanel>();
-                else categoryPanel = panel.AddComponent<BaseEditorPanel>();
+                BaseEditorPanel editorPanel;
+                if (Category == Category.Body) editorPanel = panel.AddComponent<BodyEditorPanel>();
+                else if (Category == Category.Face) editorPanel = panel.AddComponent<FaceEditorPanel>();
+                else if (Category == Category.Hair) editorPanel = panel.AddComponent<HairEditorPanel>();
+                else if (Category == Category.Clothing) editorPanel = panel.AddComponent<ClothingEditorPanel>();
+                else if (Category == Category.Accessories)
+                {
+                    toggle.onValueChanged.RemoveAllListeners();
+                    editorPanel = panel.AddComponent<AccessoryEditorPanel>();
+                    editorPanel.gameObject.SetActive(true);
+                    var accessoryPanel = SubCategorySelectorPanel.AddComponent<AccessoryPanel>();
+                    accessoryPanel.editorPanel = editorPanel as AccessoryEditorPanel;
+                }
+                else editorPanel = panel.AddComponent<BaseEditorPanel>();
 
-                categoryPanel.SubCategory = subCategory;
-                SubCategoryPanels[subCategory] = categoryPanel;
+                editorPanel.SubCategory = subCategory;
+                SubCategoryPanels[subCategory] = editorPanel;
             }
             if (toggles.Count > 0)
             {
                 toggles[0].isOn = true;
+                Destroy(editorPanelTemplate);
                 if (Category != Category.Accessories)
-                {
                     Destroy(toggleTemplate);
-                    Destroy(editorPanelTemplate);
-                }
             }
         }
 
@@ -90,8 +96,7 @@ namespace Plugins
                         .Cast<SubCategory>()
                         .Where(x => x.ToString().StartsWith(Category.ToString()));
                 case Category.Accessories:
-                    SubCategorySelectorPanel.AddComponent<AccessoryPanel>();
-                    break;
+                    return new SubCategory[] { SubCategory.Accessories };
             }
             return new List<SubCategory>();
         }

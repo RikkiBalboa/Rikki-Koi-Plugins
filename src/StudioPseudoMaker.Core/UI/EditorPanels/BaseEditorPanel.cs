@@ -16,6 +16,7 @@ namespace Plugins
         public GameObject SliderTemplate;
         public GameObject ColorTemplate;
         public GameObject PickerTemplate;
+        public GameObject DropdownTemplate;
         public GameObject ClothingOptionTemplate;
         public GameObject SplitterTemplate;
 
@@ -26,6 +27,7 @@ namespace Plugins
             SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
             ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
             PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
+            DropdownTemplate= scrollRect.content.Find("DropdownTemplate").gameObject;
             ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
             SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
 
@@ -34,6 +36,7 @@ namespace Plugins
             Destroy(SliderTemplate);
             Destroy(ColorTemplate);
             Destroy(PickerTemplate);
+            Destroy(DropdownTemplate);
             Destroy(ClothingOptionTemplate);
             Destroy(SplitterTemplate);
         }
@@ -225,6 +228,16 @@ namespace Plugins
             };
 
             return pickerComponent;
+        }
+
+        public DropdownComponent AddDropdownRow(string name, IEnumerable<string> options)
+        {
+            var dropdown = Instantiate(DropdownTemplate, DropdownTemplate.transform.parent);
+            dropdown.name = $"Dropdown{name.Replace(" ", "")}";
+
+            var dropdownComponent = dropdown.AddComponent<DropdownComponent>();
+
+            return dropdownComponent;
         }
     }
 }

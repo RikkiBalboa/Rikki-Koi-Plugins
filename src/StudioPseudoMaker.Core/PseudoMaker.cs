@@ -107,9 +107,6 @@ namespace Plugins
             {
                 RegisterStudioControls();
                 SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
-#if DEBUG
-                AddStudioButton();
-#endif
                 TimelineCompatibilityHelper.PopulateTimeline();
             }
         }
@@ -212,8 +209,8 @@ namespace Plugins
 #if DEBUG
         private void OnDestroy()
         {
-            if (PseudoMakerStudioButton.gameObject != null) Destroy(PseudoMakerStudioButton);
-            if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow);
+            if (PseudoMakerStudioButton.gameObject != null) Destroy(PseudoMakerStudioButton.gameObject);
+            if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow.gameObject);
             PseudoMakerCharaController.allControllers.Clear();
             harmony.UnpatchSelf();
         }
