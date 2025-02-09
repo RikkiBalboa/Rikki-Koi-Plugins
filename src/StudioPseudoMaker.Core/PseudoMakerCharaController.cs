@@ -854,6 +854,17 @@ namespace Plugins
         {
             return Accessories.parts[slotNr].color[colorNr];
         }
+
+        public bool[] CheckAccessoryUseColor(int slotNr)
+        {
+            var component = selectedCharacter.GetAccessoryComponent(slotNr);
+            return new bool[]
+            {
+                component == null ? false : component.useColor01,
+                component == null ? false : component.useColor02,
+                component == null ? false : component.useColor03,
+            };
+        }
         #endregion
 
         #region Category pickers
