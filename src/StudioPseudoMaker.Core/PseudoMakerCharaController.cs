@@ -958,6 +958,11 @@ namespace Plugins
                 return key.OriginalValue;
             return GetAccessoryTransform(slotNr, correctNr, transform, vector);
         }
+
+        public bool CheckAccessoryUsesSecondTransform(int slotNr)
+        {
+            return selectedCharacter.objAcsMove[slotNr, 1] != null;
+        }
         #endregion
 
         #region Category pickers

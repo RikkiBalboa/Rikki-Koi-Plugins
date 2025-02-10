@@ -20,6 +20,7 @@ namespace Plugins
         public GameObject DropdownTemplate;
         public GameObject ClothingOptionTemplate;
         public GameObject SplitterTemplate;
+        public GameObject HeaderTemplate;
 
         protected void Awake()
         {
@@ -32,6 +33,7 @@ namespace Plugins
             DropdownTemplate= scrollRect.content.Find("DropdownTemplate").gameObject;
             ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
             SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
+            HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
 
             Initialize();
 
@@ -42,6 +44,7 @@ namespace Plugins
             Destroy(DropdownTemplate);
             Destroy(ClothingOptionTemplate);
             Destroy(SplitterTemplate);
+            Destroy(HeaderTemplate);
         }
 
         protected virtual void Initialize() { }
@@ -51,6 +54,14 @@ namespace Plugins
             var splitter = Instantiate(SplitterTemplate, SplitterTemplate.transform.parent);
             splitter.name = "Splitter";
             return splitter;
+        }
+        public GameObject AddHeader(string name)
+        {
+            var header = Instantiate(HeaderTemplate, SplitterTemplate.transform.parent);
+            header.name = "Header";
+
+            header.GetComponentInChildren<Text>().text = name;
+            return header;
         }
 
         public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1)

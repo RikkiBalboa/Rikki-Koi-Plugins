@@ -52,7 +52,7 @@ namespace Plugins
                 toggle.isOn = false;
                 toggle.onValueChanged.AddListener((change) => 
                 {
-                    editorPanel?.ChangeSelectedAccessory(_i);
+                    editorPanel?.ChangeSelectedAccessory(_i, accessory != null);
                 });
                 toggle.group = PanelToggleGroup;
                 toggles.Add(toggle);
