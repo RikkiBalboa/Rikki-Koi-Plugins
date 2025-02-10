@@ -19,27 +19,22 @@ namespace Plugins
         public float MaxValue = 2;
         public float IncrementValue = 1;
         public bool Repeat = false;
-        public bool IsInt = false;
         public Func<float> GetCurrentValue;
         public Func<float> GetOriginalValue;
         public Action<float> SetValueAction;
         public Action ResetValueAction;
 
-        // This value is used to smooth over dragging the label
-        // KK(S) internally rounds the values to only one decimal (or in case of rotation, to 0 decimals (as int))
-        private float currentValue;
-
         private void Awake()
         {
             text = GetComponentInChildren<Text>(true);
             var dragHandler = text.gameObject.AddComponent<OnDragHandler>();
-            dragHandler.UpdateAction = value => UpdateValue(currentValue + value * IncrementValue * 100);
+            dragHandler.UpdateAction = value => UpdateValue(GetCurrentValue() + value * IncrementValue * 100);
 
             DecreaseButton = transform.Find("DecreaseButton").GetComponent<Button>();
-            DecreaseButton.onClick.AddListener(() => UpdateValue(currentValue - IncrementValue * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f)));
+            DecreaseButton.onClick.AddListener(() => UpdateValue(GetCurrentValue() - IncrementValue * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f)));
 
             IncreaseButton = transform.Find("IncreaseButton").GetComponent<Button>();
-            IncreaseButton.onClick.AddListener(() => UpdateValue(currentValue + IncrementValue * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f)));
+            IncreaseButton.onClick.AddListener(() => UpdateValue(GetCurrentValue() + IncrementValue * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f)));
 
             inputField = GetComponentInChildren<InputField>(true);
             inputField.onEndEdit.AddListener(UpdateValue);
@@ -51,8 +46,6 @@ namespace Plugins
         private void Start()
         {
             text.text = Name;
-            if (IsInt)
-                inputField.contentType = InputField.ContentType.IntegerNumber;
         }
 
         private void OnEnable()
@@ -60,14 +53,13 @@ namespace Plugins
             if (GetCurrentValue == null)
                 return;
 
-            currentValue = GetCurrentValue();
-            UpdateValue(currentValue);
+            UpdateValue(GetCurrentValue());
         }
 
         public void UpdateValue(float value)
         {
-            currentValue = ClampValue(value);
-            var stringValue = IsInt ? ((int)currentValue).ToString() : currentValue.ToString("0.00");
+            var currentValue = ClampValue(value);
+            var stringValue = currentValue.ToString("0.000");
             inputField.text = stringValue;
 
             if (currentValue != GetCurrentValue())
@@ -77,11 +69,11 @@ namespace Plugins
         {
             if (float.TryParse(value, out var floatValue))
             {
-                currentValue = ClampValue(floatValue);
+                var currentValue = ClampValue(floatValue);
                 if (currentValue != GetCurrentValue())
                     SetValueAction(currentValue);
                 if (currentValue != floatValue)
-                    inputField.text = IsInt ? ((int)currentValue).ToString() : currentValue.ToString("0.00");
+                    inputField.text = currentValue.ToString("0.000");
             }
         }
 
@@ -93,8 +85,7 @@ namespace Plugins
 
         private float ClampValue(float value)
         {
-            if (Repeat)
-                return Mathf.Repeat(value, MaxValue);
+            if (Repeat) return Mathf.Repeat(value, MaxValue);
             return Mathf.Clamp(value, MinValue, MaxValue);
         }
     }

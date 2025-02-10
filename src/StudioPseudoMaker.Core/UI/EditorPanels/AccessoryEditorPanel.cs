@@ -124,14 +124,12 @@ namespace Plugins
             float maxValue = 100;
             float incrementValue = 0.1f;
             bool repeat = false;
-            bool isInt = false;
             if (transform == AccessoryTransform.Rotation)
             {
                 minValue = -360;
                 maxValue = 360;
                 incrementValue = 1f;
                 repeat = true;
-                isInt = true;
             }
             else if (transform == AccessoryTransform.Scale)
             {
@@ -150,7 +148,6 @@ namespace Plugins
             );
             input.Repeat = repeat;
             input.IncrementValue = incrementValue;
-            input.IsInt = isInt;
             return input;
         }
     }

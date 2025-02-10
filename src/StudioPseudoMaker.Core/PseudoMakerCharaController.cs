@@ -912,21 +912,33 @@ namespace Plugins
             else
                 OriginalAccessoryFloats[accessoryKey].Value = value;
 
+            // Not using the base Set methods because they internally round their values for some reason
             if (transform == AccessoryTransform.Location)
             {
-                selectedCharacter.SetAccessoryPos(slotNr, correctNr, value, false, (int)vector);
+                //selectedCharacter.SetAccessoryPos(slotNr, correctNr, value, false, (int)vector);
+                if (vector == TransformVector.X) Accessories.parts[slotNr].addMove[correctNr, 0].x = value;
+                else if (vector == TransformVector.Y) Accessories.parts[slotNr].addMove[correctNr, 0].y = value;
+                else if (vector == TransformVector.Z) Accessories.parts[slotNr].addMove[correctNr, 0].z = value;
                 SetAccessories.parts[slotNr].addMove[correctNr, 0] = Accessories.parts[slotNr].addMove[correctNr, 0];
+                selectedCharacter.objAcsMove[slotNr, correctNr].transform.localPosition = Accessories.parts[slotNr].addMove[correctNr, 0] * 0.01f;
             }
-
             else if (transform == AccessoryTransform.Rotation)
             {
-                selectedCharacter.SetAccessoryRot(slotNr, correctNr, value, false, (int)vector);
+                //selectedCharacter.SetAccessoryRot(slotNr, correctNr, value, false, (int)vector);
+                if (vector == TransformVector.X) Accessories.parts[slotNr].addMove[correctNr, 1].x = value;
+                else if (vector == TransformVector.Y) Accessories.parts[slotNr].addMove[correctNr, 1].y = value;
+                else if (vector == TransformVector.Z) Accessories.parts[slotNr].addMove[correctNr, 1].z = value;
                 SetAccessories.parts[slotNr].addMove[correctNr, 1] = Accessories.parts[slotNr].addMove[correctNr, 1];
+                selectedCharacter.objAcsMove[slotNr, correctNr].transform.localEulerAngles = Accessories.parts[slotNr].addMove[correctNr, 1];
             }
             else if (transform == AccessoryTransform.Scale)
             {
-                selectedCharacter.SetAccessoryScl(slotNr, correctNr, value, false, (int)vector);
+                //selectedCharacter.SetAccessoryScl(slotNr, correctNr, value, false, (int)vector);
+                if (vector == TransformVector.X) Accessories.parts[slotNr].addMove[correctNr, 2].x = value;
+                else if (vector == TransformVector.Y) Accessories.parts[slotNr].addMove[correctNr, 2].y = value;
+                else if (vector == TransformVector.Z) Accessories.parts[slotNr].addMove[correctNr, 2].z = value;
                 SetAccessories.parts[slotNr].addMove[correctNr, 2] = Accessories.parts[slotNr].addMove[correctNr, 2];
+                selectedCharacter.objAcsMove[slotNr, correctNr].transform.localScale = Accessories.parts[slotNr].addMove[correctNr, 2];
             }
         }
 
