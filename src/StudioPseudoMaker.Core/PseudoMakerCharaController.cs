@@ -865,6 +865,30 @@ namespace Plugins
                 component == null ? false : component.useColor03,
             };
         }
+
+        public void SetAccessoryTransform(int slotNr, int correctNr, float value, AccessoryTransform transform, TransformVector vector)
+        {
+            if (transform == AccessoryTransform.Location)
+                selectedCharacter.SetAccessoryPos(slotNr, correctNr, value, false, (int)vector);
+            else if (transform == AccessoryTransform.Rotation)
+                selectedCharacter.SetAccessoryRot(slotNr, correctNr, value, false, (int)vector);
+            else if (transform == AccessoryTransform.Scale)
+                selectedCharacter.SetAccessoryScl(slotNr, correctNr, value, false, (int)vector);
+        }
+
+        public float GetAccessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
+        {
+            switch (vector)
+            {
+                case TransformVector.X:
+                    return Accessories.parts[slotNr].addMove[correctNr, (int)transform].x;
+                case TransformVector.Y:
+                    return Accessories.parts[slotNr].addMove[correctNr, (int)transform].y;
+                case TransformVector.Z:
+                    return Accessories.parts[slotNr].addMove[correctNr, (int)transform].z;
+            }
+            return 0f;
+        }
         #endregion
 
         #region Category pickers
@@ -1890,6 +1914,20 @@ namespace Plugins
         {
             allControllers.Remove(ChaControl);
         }
+    }
+
+    public enum AccessoryTransform
+    {
+        Location = 0,
+        Rotation = 1,
+        Scale = 2,
+    }
+
+    public enum TransformVector
+    {
+        X = 1,
+        Y = 2,
+        Z = 4,
     }
 
     #region Storage classes

@@ -1,19 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Plugins
 {
-    public class SliderComponent : MonoBehaviour
+    public class InputFieldComponent : MonoBehaviour
     {
         private Text text;
-        private Slider slider;
+        private Button DecreaseButton;
+        private Button IncreaseButton;
         private InputField inputField;
         private Button resetButton;
 
         public string Name;
         public float MinValue = -1;
         public float MaxValue = 2;
+        public float IncrementValue = 1;
         public Func<float> GetCurrentValue;
         public Func<float> GetOriginalValue;
         public Action<float> SetValueAction;
@@ -23,10 +27,13 @@ namespace Plugins
         {
             text = GetComponentInChildren<Text>(true);
             var dragHandler = text.gameObject.AddComponent<OnDragHandler>();
-            dragHandler.UpdateAction = value => inputField.onEndEdit.Invoke((slider.value + value).ToString());
+            dragHandler.UpdateAction = value => UpdateValue((GetCurrentValue() + value));
 
-            slider = GetComponentInChildren<Slider>(true);
-            slider.onValueChanged.AddListener(UpdateValue);
+            DecreaseButton = transform.Find("DecreaseButton").GetComponent<Button>();
+            DecreaseButton.onClick.AddListener(() => UpdateValue(GetCurrentValue() - IncrementValue));
+
+            IncreaseButton = transform.Find("IncreaseButton").GetComponent<Button>();
+            IncreaseButton.onClick.AddListener(() => UpdateValue(GetCurrentValue() + IncrementValue));
 
             inputField = GetComponentInChildren<InputField>(true);
             inputField.onEndEdit.AddListener(UpdateValue);
@@ -38,8 +45,6 @@ namespace Plugins
         private void Start()
         {
             text.text = Name;
-            slider.minValue = MinValue;
-            slider.maxValue = MaxValue;
         }
 
         private void OnEnable()
@@ -52,22 +57,22 @@ namespace Plugins
 
         public void UpdateValue(float value)
         {
-            var stringValue = value.ToString("0.00");
-            if (slider.value != value) slider.value = value;
-            if (inputField.text != stringValue) inputField.text = stringValue;
+            var _value = Mathf.Clamp(value, MinValue, MaxValue);
+            var stringValue = _value.ToString("0.00");
+            inputField.text = stringValue;
 
-            if (value != GetCurrentValue())
-                SetValueAction(value);
+            if (_value != GetCurrentValue())
+                SetValueAction(_value);
         }
-
         public void UpdateValue(string value)
         {
             if (float.TryParse(value, out var floatValue))
             {
-                if (slider.value != floatValue) slider.value = floatValue;
-
-                if (floatValue != GetCurrentValue())
-                    SetValueAction(floatValue);
+                var _floatValue = Mathf.Clamp(floatValue, MinValue, MaxValue);
+                if (_floatValue != GetCurrentValue())
+                    SetValueAction(_floatValue);
+                if (_floatValue != floatValue)
+                    inputField.text = _floatValue.ToString("0.00");
             }
         }
 

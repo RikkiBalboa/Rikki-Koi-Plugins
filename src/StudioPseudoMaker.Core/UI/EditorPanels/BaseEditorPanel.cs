@@ -14,6 +14,7 @@ namespace Plugins
         public ScrollRect scrollRect;
 
         public GameObject SliderTemplate;
+        public GameObject InputTemplate;
         public GameObject ColorTemplate;
         public GameObject PickerTemplate;
         public GameObject DropdownTemplate;
@@ -25,6 +26,7 @@ namespace Plugins
             scrollRect = GetComponent<ScrollRect>();
 
             SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
+            InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
             ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
             PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
             DropdownTemplate= scrollRect.content.Find("DropdownTemplate").gameObject;
@@ -34,6 +36,7 @@ namespace Plugins
             Initialize();
 
             Destroy(SliderTemplate);
+            Destroy(InputTemplate);
             Destroy(ColorTemplate);
             Destroy(PickerTemplate);
             Destroy(DropdownTemplate);
@@ -48,6 +51,24 @@ namespace Plugins
             var splitter = Instantiate(SplitterTemplate, SplitterTemplate.transform.parent);
             splitter.name = "Splitter";
             return splitter;
+        }
+
+        public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1)
+        {
+            var inputField = Instantiate(InputTemplate, InputTemplate.transform.parent);
+            inputField.name = $"InputField{name.Replace(" ", "")}";
+
+            var inputFieldComponent = inputField.AddComponent<InputFieldComponent>();
+            inputFieldComponent.Name = name;
+            inputFieldComponent.MinValue = minValue;
+            inputFieldComponent.MaxValue = maxValue;
+            inputFieldComponent.IncrementValue = incrementValue;
+            inputFieldComponent.GetCurrentValue = getCurrentValueAction;
+            inputFieldComponent.GetOriginalValue = getOriginalValueAction;
+            inputFieldComponent.SetValueAction = setValueAction;
+            inputFieldComponent.ResetValueAction = resetValueAction;
+
+            return inputFieldComponent;
         }
 
         public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2)

@@ -21,6 +21,22 @@ namespace Plugins
             color1 = AddColorRow("Color 1", 0);
             color2 = AddColorRow("Color 2", 1);
             color3 = AddColorRow("Color 3", 2);
+
+            AddSplitter();
+
+            AddInputRow("X Location", 0, AccessoryTransform.Location, TransformVector.X);
+            AddInputRow("Y Location", 0, AccessoryTransform.Location, TransformVector.Y);
+            AddInputRow("Z Location", 0, AccessoryTransform.Location, TransformVector.Z);
+            AddSplitter();
+
+            AddInputRow("X Rotation", 0, AccessoryTransform.Rotation, TransformVector.X);
+            AddInputRow("Y Rotation", 0, AccessoryTransform.Rotation, TransformVector.Y);
+            AddInputRow("Z Rotation", 0, AccessoryTransform.Rotation, TransformVector.Z);
+            AddSplitter();
+
+            AddInputRow("X Scale", 0, AccessoryTransform.Scale, TransformVector.X);
+            AddInputRow("Y Scale", 0, AccessoryTransform.Scale, TransformVector.Y);
+            AddInputRow("Z Scale", 0, AccessoryTransform.Scale, TransformVector.Z);
         }
 
         private void OnEnable()
@@ -46,6 +62,32 @@ namespace Plugins
                 () => Color.white,
                 c => PseudoMaker.selectedCharacterController.SetAccessoryColor(currentAccessoryNr, colorNr, c),
                 () => { }
+            );
+        }
+
+        private InputFieldComponent AddInputRow(string name, int correctNo, AccessoryTransform transform, TransformVector vector)
+        {
+            float minValue = -100;
+            float maxValue = 100;
+            if (transform == AccessoryTransform.Rotation)
+            {
+                minValue = -360;
+                maxValue = 360;
+            }
+            else if (transform == AccessoryTransform.Scale)
+            {
+                minValue = 0.01f;
+                maxValue = 100;
+            }
+
+            return AddInputRow(
+                name,
+                () => PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNo, transform, vector),
+                () => 0,
+                value => PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNo, value, transform, vector),
+                () => { },
+                minValue,
+                maxValue
             );
         }
     }
