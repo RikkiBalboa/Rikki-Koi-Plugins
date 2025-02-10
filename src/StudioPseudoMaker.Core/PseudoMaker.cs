@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using KK_Plugins.MaterialEditor;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
@@ -19,6 +20,7 @@ namespace Plugins
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [BepInIncompatibility("com.rikkibalboa.bepinex.studioSkinColorControl")]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInProcess(Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
     {
@@ -211,7 +213,8 @@ namespace Plugins
         {
             if (PseudoMakerStudioButton.gameObject != null) Destroy(PseudoMakerStudioButton.gameObject);
             if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow.gameObject);
-            PseudoMakerCharaController.allControllers.Clear();
+            foreach (var controller in PseudoMakerCharaController.allControllers)
+                DestroyImmediate(controller.Value);
             harmony.UnpatchSelf();
         }
 #endif

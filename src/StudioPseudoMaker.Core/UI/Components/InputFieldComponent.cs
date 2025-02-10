@@ -36,10 +36,10 @@ namespace Plugins
             dragHandler.UpdateAction = value => UpdateValue(currentValue + value * IncrementValue * 100);
 
             DecreaseButton = transform.Find("DecreaseButton").GetComponent<Button>();
-            DecreaseButton.onClick.AddListener(() => UpdateValue(currentValue - IncrementValue));
+            DecreaseButton.onClick.AddListener(() => UpdateValue(currentValue - IncrementValue * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f)));
 
             IncreaseButton = transform.Find("IncreaseButton").GetComponent<Button>();
-            IncreaseButton.onClick.AddListener(() => UpdateValue(currentValue + IncrementValue));
+            IncreaseButton.onClick.AddListener(() => UpdateValue(currentValue + IncrementValue * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f)));
 
             inputField = GetComponentInChildren<InputField>(true);
             inputField.onEndEdit.AddListener(UpdateValue);
@@ -67,7 +67,7 @@ namespace Plugins
         public void UpdateValue(float value)
         {
             currentValue = ClampValue(value);
-            var stringValue = IsInt ? ((int)currentValue).ToString() : currentValue.ToString("0.0");
+            var stringValue = IsInt ? ((int)currentValue).ToString() : currentValue.ToString("0.00");
             inputField.text = stringValue;
 
             if (currentValue != GetCurrentValue())
@@ -81,7 +81,7 @@ namespace Plugins
                 if (currentValue != GetCurrentValue())
                     SetValueAction(currentValue);
                 if (currentValue != floatValue)
-                    inputField.text = IsInt ? ((int)currentValue).ToString() : currentValue.ToString("0.0");
+                    inputField.text = IsInt ? ((int)currentValue).ToString() : currentValue.ToString("0.00");
             }
         }
 

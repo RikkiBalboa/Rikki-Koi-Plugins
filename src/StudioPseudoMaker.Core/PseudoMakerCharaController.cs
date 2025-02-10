@@ -1,6 +1,5 @@
 ﻿using ChaCustom;
 using ExtensibleSaveFormat;
-using Illusion.Game;
 using KK_Plugins.MaterialEditor;
 using KKAPI;
 using KKAPI.Chara;
@@ -20,8 +19,10 @@ namespace Plugins
 
         #region Save Lists
         private Dictionary<ClothingStorageKey, ColorStorage> OriginalClothingColors = new Dictionary<ClothingStorageKey, ColorStorage>();
+        private Dictionary<AccessoryStorageKey, ColorStorage> OriginalAccessoryColors = new Dictionary<AccessoryStorageKey, ColorStorage>();
         private Dictionary<ColorType, ColorStorage> OriginalColors = new Dictionary<ColorType, ColorStorage>();
         private Dictionary<FloatType, FloatStorage> OriginalFloats = new Dictionary<FloatType, FloatStorage>();
+        private Dictionary<AccessoryStorageKey, FloatStorage> OriginalAccessoryFloats = new Dictionary<AccessoryStorageKey, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalBodyShapeValues = new Dictionary<int, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalFaceShapeValues = new Dictionary<int, FloatStorage>();
         #endregion
@@ -43,6 +44,11 @@ namespace Plugins
             else
                 data.data.Add(nameof(OriginalClothingColors), null);
 
+            if (OriginalAccessoryColors.Count > 0)
+                data.data.Add(nameof(OriginalAccessoryColors), MessagePackSerializer.Serialize(OriginalAccessoryColors));
+            else
+                data.data.Add(nameof(OriginalAccessoryColors), null);
+
             if (OriginalColors.Count > 0)
                 data.data.Add(nameof(OriginalColors), MessagePackSerializer.Serialize(OriginalColors));
             else
@@ -52,6 +58,11 @@ namespace Plugins
                 data.data.Add(nameof(OriginalFloats), MessagePackSerializer.Serialize(OriginalFloats));
             else
                 data.data.Add(nameof(OriginalFloats), null);
+
+            if (OriginalAccessoryFloats.Count > 0)
+                data.data.Add(nameof(OriginalAccessoryFloats), MessagePackSerializer.Serialize(OriginalAccessoryFloats));
+            else
+                data.data.Add(nameof(OriginalAccessoryFloats), null);
 
             if (OriginalBodyShapeValues.Count > 0)
                 data.data.Add(nameof(OriginalBodyShapeValues), MessagePackSerializer.Serialize(OriginalBodyShapeValues));
@@ -85,8 +96,14 @@ namespace Plugins
             if (data.data.TryGetValue(nameof(OriginalClothingColors), out var originalClothingColors) && originalClothingColors != null)
                 OriginalClothingColors = MessagePackSerializer.Deserialize<Dictionary<ClothingStorageKey, ColorStorage>>((byte[])originalClothingColors);
 
+            if (data.data.TryGetValue(nameof(OriginalAccessoryColors), out var originalAccessoryColors) && originalAccessoryColors != null)
+                OriginalAccessoryColors = MessagePackSerializer.Deserialize<Dictionary<AccessoryStorageKey, ColorStorage>>((byte[])originalAccessoryColors);
+
             if (data.data.TryGetValue(nameof(OriginalColors), out var originalHairColors) && originalHairColors != null)
                 OriginalColors = MessagePackSerializer.Deserialize<Dictionary<ColorType, ColorStorage>>((byte[])originalHairColors);
+
+            if (data.data.TryGetValue(nameof(OriginalAccessoryFloats), out var originalAccessoryFloats) && originalAccessoryFloats != null)
+                OriginalAccessoryFloats = MessagePackSerializer.Deserialize<Dictionary<AccessoryStorageKey, FloatStorage>>((byte[])originalAccessoryFloats);
 
             if (data.data.TryGetValue(nameof(OriginalFloats), out var originalBustValues) && originalBustValues != null)
                 OriginalFloats = MessagePackSerializer.Deserialize<Dictionary<FloatType, FloatStorage>>((byte[])originalBustValues);
@@ -846,6 +863,12 @@ namespace Plugins
         #region Accessories
         public void SetAccessoryColor(int slotNr, int colorNr, Color color)
         {
+            var accessoryColor = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
+            if (!OriginalAccessoryColors.Any(x => x.Key == accessoryColor))
+                OriginalAccessoryColors[accessoryColor] = new ColorStorage(GetAccessoryColor(slotNr, colorNr), color);
+            else
+                OriginalAccessoryColors[accessoryColor].Value = color;
+
             Accessories.parts[slotNr].color[colorNr] = color;
             SetAccessories.parts[slotNr].color[colorNr] = color;
             ChaControl.ChangeAccessoryColor(slotNr);
@@ -853,6 +876,21 @@ namespace Plugins
         public Color GetAccessoryColor(int slotNr, int colorNr)
         {
             return Accessories.parts[slotNr].color[colorNr];
+        }
+
+        public void ResetAcessoryColor(int slotNr, int colorNr)
+        {
+            var accessoryColor = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
+            if (OriginalAccessoryColors.TryGetValue(accessoryColor, out var color))
+                SetAccessoryColor(slotNr, colorNr, color.OriginalValue);
+        }
+
+        public Color GetOriginalAccessoryColor(int slotNr, int colorNr)
+        {
+            var accessoryColor = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
+            if (OriginalAccessoryColors.TryGetValue(accessoryColor, out var color))
+                return color.OriginalValue;
+            return GetAccessoryColor(slotNr, colorNr);
         }
 
         public bool[] CheckAccessoryUseColor(int slotNr)
@@ -868,12 +906,28 @@ namespace Plugins
 
         public void SetAccessoryTransform(int slotNr, int correctNr, float value, AccessoryTransform transform, TransformVector vector)
         {
+            var accessoryKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, 0, correctNr, transform, vector);
+            if (!OriginalAccessoryFloats.Any(x => x.Key == accessoryKey))
+                OriginalAccessoryFloats[accessoryKey] = new FloatStorage(GetAccessoryTransform(slotNr, correctNr, transform, vector), value);
+            else
+                OriginalAccessoryFloats[accessoryKey].Value = value;
+
             if (transform == AccessoryTransform.Location)
+            {
                 selectedCharacter.SetAccessoryPos(slotNr, correctNr, value, false, (int)vector);
+                SetAccessories.parts[slotNr].addMove[correctNr, 0] = Accessories.parts[slotNr].addMove[correctNr, 0];
+            }
+
             else if (transform == AccessoryTransform.Rotation)
+            {
                 selectedCharacter.SetAccessoryRot(slotNr, correctNr, value, false, (int)vector);
+                SetAccessories.parts[slotNr].addMove[correctNr, 1] = Accessories.parts[slotNr].addMove[correctNr, 1];
+            }
             else if (transform == AccessoryTransform.Scale)
+            {
                 selectedCharacter.SetAccessoryScl(slotNr, correctNr, value, false, (int)vector);
+                SetAccessories.parts[slotNr].addMove[correctNr, 2] = Accessories.parts[slotNr].addMove[correctNr, 2];
+            }
         }
 
         public float GetAccessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
@@ -888,6 +942,21 @@ namespace Plugins
                     return Accessories.parts[slotNr].addMove[correctNr, (int)transform].z;
             }
             return 0f;
+        }
+
+        public void ResetAcessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
+        {
+            var accessoryKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, 0, correctNr, transform, vector);
+            if (OriginalAccessoryFloats.TryGetValue(accessoryKey, out var key))
+                SetAccessoryTransform(slotNr, correctNr, key.OriginalValue, transform, vector);
+        }
+
+        public float GetOriginalAccessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
+        {
+            var accessoryKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, 0, correctNr, transform, vector);
+            if (OriginalAccessoryFloats.TryGetValue(accessoryKey, out var key))
+                return key.OriginalValue;
+            return GetAccessoryTransform(slotNr, correctNr, transform, vector);
         }
         #endregion
 
@@ -1918,6 +1987,7 @@ namespace Plugins
 
     public enum AccessoryTransform
     {
+        None = -1,
         Location = 0,
         Rotation = 1,
         Scale = 2,
@@ -1925,6 +1995,7 @@ namespace Plugins
 
     public enum TransformVector
     {
+        None = 0,
         X = 1,
         Y = 2,
         Z = 4,
@@ -1984,6 +2055,44 @@ namespace Plugins
             )
                 return true;
             return false;
+        }
+    }
+
+    [Serializable]
+    [MessagePackObject]
+    public struct AccessoryStorageKey
+    {
+        [Key("OutfitSlot")]
+        public int OutfitSlot { get; set; }
+        [Key("ColorNr")]
+        public int ColorNr { get; set; }
+        [Key("SlotNr")]
+        public int SlotNr { get; set; }
+        [Key("CorrectNr")]
+        public int CorrectNr { get; set; }
+        [Key("AccessoryTransform")]
+        public AccessoryTransform AccessoryTransform { get; set; }
+        [Key("TransformVector")]
+        public TransformVector TransformVector { get; set; }
+
+        public AccessoryStorageKey(int outfitSlot, int slotNr, int colorNr, int correctNr = 0, AccessoryTransform accessoryTransform = AccessoryTransform.None, TransformVector vector = TransformVector.None)
+        {
+            OutfitSlot = outfitSlot;
+            ColorNr = colorNr;
+            SlotNr = slotNr;
+            CorrectNr = correctNr;
+            AccessoryTransform = accessoryTransform;
+            TransformVector = vector;
+        }
+
+        public static bool operator ==(AccessoryStorageKey c1, AccessoryStorageKey c2)
+        {
+            return c1.Equals(c2);
+        }
+
+        public static bool operator !=(AccessoryStorageKey c1, AccessoryStorageKey c2)
+        {
+            return !c1.Equals(c2);
         }
     }
 
