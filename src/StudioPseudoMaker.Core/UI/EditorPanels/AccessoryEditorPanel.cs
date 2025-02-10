@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
+using static Illusion.Utils;
 
 namespace Plugins
 {
@@ -13,7 +15,9 @@ namespace Plugins
 
         private List<GameObject> colorRows;
         private GameObject colorSplitter;
+        private Toggle transformHeader1;
         private List<GameObject> tranformRows1;
+        private Toggle transformHeader2;
         private List<GameObject> tranformRows2;
 
         protected override void Initialize()
@@ -28,11 +32,10 @@ namespace Plugins
 
             colorSplitter = AddSplitter();
 
-            var header1 = AddHeader("Adjustment 1");
+            transformHeader1 = AddHeaderToggle("Adjustment 1 ▶", value => tranformRows1.ForEach(x => x.SetActive(value)));
             var input = AddInputRow("X Location", 0, AccessoryTransform.Location, TransformVector.X);
             input.IncrementValue *= -1;
             tranformRows1 = new List<GameObject>() {
-                header1,
                 input.gameObject,
                 AddInputRow("Y Location", 0, AccessoryTransform.Location, TransformVector.Y).gameObject,
                 AddInputRow("Z Location", 0, AccessoryTransform.Location, TransformVector.Z).gameObject,
@@ -48,13 +51,12 @@ namespace Plugins
                 AddInputRow("Z Scale", 0, AccessoryTransform.Scale, TransformVector.Z).gameObject,
             };
 
-            var transform2Splitter = AddSplitter();
-            var header2 = AddHeader("Adjustment 2");
+            var transform2Splitter =
+
+            transformHeader2 = AddHeaderToggle("Adjustment 2 ▶", value => tranformRows2.ForEach(x => x.SetActive(value)));
             var input2 = AddInputRow("X Location", 1, AccessoryTransform.Location, TransformVector.X);
             input2.IncrementValue *= -1;
             tranformRows2 = new List<GameObject>() {
-                transform2Splitter,
-                header2,
                 input2.gameObject,
                 AddInputRow("Y Location", 1, AccessoryTransform.Location, TransformVector.Y).gameObject,
                 AddInputRow("Z Location", 1, AccessoryTransform.Location, TransformVector.Z).gameObject,
@@ -80,14 +82,19 @@ namespace Plugins
                 for (int i = 0; i < useCols.Length; i++)
                     colorRows[i].gameObject.SetActive(useCols[i]);
                 colorSplitter.SetActive(useCols.Any(x => x == true));
-                tranformRows1.ForEach(x => x.SetActive(true));
-                tranformRows2.ForEach(x => x.SetActive(PseudoMaker.selectedCharacterController.CheckAccessoryUsesSecondTransform(currentAccessoryNr)));
+                transformHeader1.gameObject.SetActive(true);
+                tranformRows1.ForEach(x => x.SetActive(transformHeader1.isOn));
+                var hasSecondTransform = PseudoMaker.selectedCharacterController.CheckAccessoryUsesSecondTransform(currentAccessoryNr);
+                transformHeader2.gameObject.SetActive(hasSecondTransform);
+                tranformRows2.ForEach(x => x.SetActive(hasSecondTransform && transformHeader2.isOn));
             }
             else
             {
                 colorRows.ForEach(x => x.SetActive(false));
                 colorSplitter.SetActive(false);
+                transformHeader1.gameObject.SetActive(false);
                 tranformRows1.ForEach(x => x.SetActive(false));
+                transformHeader2.gameObject.SetActive(false);
                 tranformRows2.ForEach(x => x.SetActive(false));
             }
         }

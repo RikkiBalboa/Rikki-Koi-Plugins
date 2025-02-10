@@ -55,6 +55,7 @@ namespace Plugins
             splitter.name = "Splitter";
             return splitter;
         }
+
         public GameObject AddHeader(string name)
         {
             var header = Instantiate(HeaderTemplate, SplitterTemplate.transform.parent);
@@ -62,6 +63,20 @@ namespace Plugins
 
             header.GetComponentInChildren<Text>().text = name;
             return header;
+        }
+
+        public Toggle AddHeaderToggle(string name, Action<bool> onValueChanged)
+        {
+            var header = Instantiate(HeaderTemplate, SplitterTemplate.transform.parent);
+            header.name = "Header";
+
+            var text = header.GetComponentInChildren<Text>();
+            text.text = name;
+            var toggle = text.gameObject.AddComponent<Toggle>();
+            toggle.m_Colors.highlightedColor = new Color(0.74f, 0.8f, 0.96f);
+            toggle.onValueChanged.AddListener(value => onValueChanged(value));
+
+            return toggle;
         }
 
         public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1)
