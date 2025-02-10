@@ -24,7 +24,8 @@ namespace Plugins
 
             AddSplitter();
 
-            AddInputRow("X Location", 0, AccessoryTransform.Location, TransformVector.X);
+            var input = AddInputRow("X Location", 0, AccessoryTransform.Location, TransformVector.X);
+            input.IncrementValue *= -1;
             AddInputRow("Y Location", 0, AccessoryTransform.Location, TransformVector.Y);
             AddInputRow("Z Location", 0, AccessoryTransform.Location, TransformVector.Z);
             AddSplitter();
@@ -69,10 +70,16 @@ namespace Plugins
         {
             float minValue = -100;
             float maxValue = 100;
+            float incrementValue = 0.1f;
+            bool repeat = false;
+            bool isInt = false;
             if (transform == AccessoryTransform.Rotation)
             {
                 minValue = -360;
                 maxValue = 360;
+                incrementValue = 1f;
+                repeat = true;
+                isInt = true;
             }
             else if (transform == AccessoryTransform.Scale)
             {
@@ -80,7 +87,7 @@ namespace Plugins
                 maxValue = 100;
             }
 
-            return AddInputRow(
+            var input = AddInputRow(
                 name,
                 () => PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNo, transform, vector),
                 () => 0,
@@ -89,6 +96,10 @@ namespace Plugins
                 minValue,
                 maxValue
             );
+            input.Repeat = repeat;
+            input.IncrementValue = incrementValue;
+            input.IsInt = isInt;
+            return input;
         }
     }
 }

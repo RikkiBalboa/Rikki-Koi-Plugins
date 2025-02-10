@@ -18,22 +18,28 @@ namespace Plugins
         public float MinValue = -1;
         public float MaxValue = 2;
         public float IncrementValue = 1;
+        public bool Repeat = false;
+        public bool IsInt = false;
         public Func<float> GetCurrentValue;
         public Func<float> GetOriginalValue;
         public Action<float> SetValueAction;
         public Action ResetValueAction;
 
+        // This value is used to smooth over dragging the label
+        // KK(S) internally rounds the values to only one decimal (or in case of rotation, to 0 decimals (as int))
+        private float currentValue;
+
         private void Awake()
         {
             text = GetComponentInChildren<Text>(true);
             var dragHandler = text.gameObject.AddComponent<OnDragHandler>();
-            dragHandler.UpdateAction = value => UpdateValue((GetCurrentValue() + value));
+            dragHandler.UpdateAction = value => UpdateValue(currentValue + value * IncrementValue * 100);
 
             DecreaseButton = transform.Find("DecreaseButton").GetComponent<Button>();
-            DecreaseButton.onClick.AddListener(() => UpdateValue(GetCurrentValue() - IncrementValue));
+            DecreaseButton.onClick.AddListener(() => UpdateValue(currentValue - IncrementValue));
 
             IncreaseButton = transform.Find("IncreaseButton").GetComponent<Button>();
-            IncreaseButton.onClick.AddListener(() => UpdateValue(GetCurrentValue() + IncrementValue));
+            IncreaseButton.onClick.AddListener(() => UpdateValue(currentValue + IncrementValue));
 
             inputField = GetComponentInChildren<InputField>(true);
             inputField.onEndEdit.AddListener(UpdateValue);
@@ -45,6 +51,8 @@ namespace Plugins
         private void Start()
         {
             text.text = Name;
+            if (IsInt)
+                inputField.contentType = InputField.ContentType.IntegerNumber;
         }
 
         private void OnEnable()
@@ -52,27 +60,28 @@ namespace Plugins
             if (GetCurrentValue == null)
                 return;
 
-            UpdateValue(GetCurrentValue());
+            currentValue = GetCurrentValue();
+            UpdateValue(currentValue);
         }
 
         public void UpdateValue(float value)
         {
-            var _value = Mathf.Clamp(value, MinValue, MaxValue);
-            var stringValue = _value.ToString("0.00");
+            currentValue = ClampValue(value);
+            var stringValue = IsInt ? ((int)currentValue).ToString() : currentValue.ToString("0.0");
             inputField.text = stringValue;
 
-            if (_value != GetCurrentValue())
-                SetValueAction(_value);
+            if (currentValue != GetCurrentValue())
+                SetValueAction(currentValue);
         }
         public void UpdateValue(string value)
         {
             if (float.TryParse(value, out var floatValue))
             {
-                var _floatValue = Mathf.Clamp(floatValue, MinValue, MaxValue);
-                if (_floatValue != GetCurrentValue())
-                    SetValueAction(_floatValue);
-                if (_floatValue != floatValue)
-                    inputField.text = _floatValue.ToString("0.00");
+                currentValue = ClampValue(floatValue);
+                if (currentValue != GetCurrentValue())
+                    SetValueAction(currentValue);
+                if (currentValue != floatValue)
+                    inputField.text = IsInt ? ((int)currentValue).ToString() : currentValue.ToString("0.0");
             }
         }
 
@@ -80,6 +89,13 @@ namespace Plugins
         {
             ResetValueAction();
             UpdateValue(GetCurrentValue());
+        }
+
+        private float ClampValue(float value)
+        {
+            if (Repeat)
+                return Mathf.Repeat(value, MaxValue);
+            return Mathf.Clamp(value, MinValue, MaxValue);
         }
     }
 }
