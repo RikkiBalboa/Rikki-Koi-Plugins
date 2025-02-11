@@ -942,6 +942,13 @@ namespace Plugins
             }
         }
 
+        public void SetAccessoryTransform(int slotNr, int correctNr, Vector3 value, AccessoryTransform transform)
+        {
+            SetAccessoryTransform(slotNr, correctNr, value.x, transform, TransformVector.X);
+            SetAccessoryTransform(slotNr, correctNr, value.y, transform, TransformVector.Y);
+            SetAccessoryTransform(slotNr, correctNr, value.z, transform, TransformVector.Z);
+        }
+
         public float GetAccessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
         {
             switch (vector)

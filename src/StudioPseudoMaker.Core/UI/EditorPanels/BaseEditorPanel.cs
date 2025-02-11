@@ -15,6 +15,7 @@ namespace Plugins
 
         public GameObject SliderTemplate;
         public GameObject InputTemplate;
+        public GameObject ButtonGroupTemplate;
         public GameObject ColorTemplate;
         public GameObject PickerTemplate;
         public GameObject DropdownTemplate;
@@ -28,6 +29,7 @@ namespace Plugins
 
             SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
             InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
+            ButtonGroupTemplate = scrollRect.content.Find("ButtonGroupTemplate").gameObject;
             ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
             PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
             DropdownTemplate= scrollRect.content.Find("DropdownTemplate").gameObject;
@@ -39,6 +41,7 @@ namespace Plugins
 
             Destroy(SliderTemplate);
             Destroy(InputTemplate);
+            Destroy(ButtonGroupTemplate);
             Destroy(ColorTemplate);
             Destroy(PickerTemplate);
             Destroy(DropdownTemplate);
@@ -77,6 +80,17 @@ namespace Plugins
             toggle.onValueChanged.AddListener(value => onValueChanged(value));
 
             return toggle;
+        }
+
+        public ButtonGroupComponent AddButtonGroupRow(Dictionary<string, Action> buttonsMap)
+        {
+            var buttonGroup = Instantiate(ButtonGroupTemplate, ButtonGroupTemplate.transform.parent);
+            buttonGroup.name = "ButtonsGroup";
+
+            var buttonGroupComponent = buttonGroup.AddComponent<ButtonGroupComponent>();
+            buttonGroupComponent.ButtonsMap = buttonsMap;
+
+            return buttonGroupComponent;
         }
 
         public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1)

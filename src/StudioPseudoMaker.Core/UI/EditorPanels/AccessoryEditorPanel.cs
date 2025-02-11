@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
-using static Illusion.Utils;
 
 namespace Plugins
 {
     public class AccessoryEditorPanel : BaseEditorPanel
     {
+        private static Vector3[] CopiedTransforms;
         private int currentAccessoryNr;
         private bool currentAccessoryExists;
 
@@ -49,6 +49,13 @@ namespace Plugins
                 AddInputRow("X Scale", 0, AccessoryTransform.Scale, TransformVector.X).gameObject,
                 AddInputRow("Y Scale", 0, AccessoryTransform.Scale, TransformVector.Y).gameObject,
                 AddInputRow("Z Scale", 0, AccessoryTransform.Scale, TransformVector.Z).gameObject,
+                AddButtonGroupRow(new Dictionary<string, Action>
+                {
+                    { "Copy Values", () => CopyValues(0) },
+                    { "Paste Values", () => PasteValues(0) },
+                    { "Mirror", () => Mirror(0) },
+                    { "Reset All", () => ResetAll(0) },
+                }).gameObject,
             };
 
             var transform2Splitter =
@@ -70,6 +77,13 @@ namespace Plugins
                 AddInputRow("X Scale", 1, AccessoryTransform.Scale, TransformVector.X).gameObject,
                 AddInputRow("Y Scale", 1, AccessoryTransform.Scale, TransformVector.Y).gameObject,
                 AddInputRow("Z Scale", 1, AccessoryTransform.Scale, TransformVector.Z).gameObject,
+                AddButtonGroupRow(new Dictionary<string, Action>
+                {
+                    { "Copy Values", () => CopyValues(1) },
+                    { "Paste Values", () => PasteValues(1) },
+                    { "Mirror", () => Mirror(1) },
+                    { "Reset All", () => ResetAll(1) },
+                }).gameObject,
             };
         }
 
@@ -133,7 +147,7 @@ namespace Plugins
             }
             else if (transform == AccessoryTransform.Scale)
             {
-                minValue = 0.01f;
+                minValue = -100;
                 maxValue = 100;
             }
 
@@ -149,6 +163,54 @@ namespace Plugins
             input.Repeat = repeat;
             input.IncrementValue = incrementValue;
             return input;
+        }
+
+        private void CopyValues(int correctNr)
+        {
+            CopiedTransforms = new Vector3[] {
+                PseudoMaker.selectedCharacter.nowCoordinate.accessory.parts[currentAccessoryNr].addMove[correctNr, 0],
+                PseudoMaker.selectedCharacter.nowCoordinate.accessory.parts[currentAccessoryNr].addMove[correctNr, 1],
+                PseudoMaker.selectedCharacter.nowCoordinate.accessory.parts[currentAccessoryNr].addMove[correctNr, 2],
+            };
+        }
+
+        private void PasteValues(int correctNr)
+        {
+            if (CopiedTransforms == null) return;
+
+            PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, CopiedTransforms[0], AccessoryTransform.Location);
+            PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, CopiedTransforms[1], AccessoryTransform.Rotation);
+            PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, CopiedTransforms[2], AccessoryTransform.Scale);
+
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
+        }
+
+        private void Mirror(int correctNr)
+        {
+            var currentXPos = PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.X);
+            var currentYRot = PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Y);
+            var currentZRot = PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Z);
+
+            PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, currentXPos * -1, AccessoryTransform.Location, TransformVector.X);
+            PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, 360 - currentYRot, AccessoryTransform.Rotation, TransformVector.Y);
+            PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, 360 - currentZRot, AccessoryTransform.Rotation, TransformVector.Z);
+        }
+
+        private void ResetAll(int correctNr)
+        {
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.X);
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.Y);
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.Z);
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.X);
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Y);
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Z);
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.X);
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.Y);
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.Z);
+
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
         }
     }
 }
