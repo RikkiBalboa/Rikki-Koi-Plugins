@@ -117,6 +117,9 @@ namespace Plugins
                 else itemList = dictSelectInfo[CategoryNo];
                 isDirty = true;
             });
+# if KKS
+            SearchField.m_Colors.selectedColor = SearchField.colors.highlightedColor;
+#endif
 
             ClearButton = transform.Find("ClearButton").gameObject.GetComponent<Button>();
             ClearButton.onClick.AddListener(() => SearchField.text = "");

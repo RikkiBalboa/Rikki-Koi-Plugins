@@ -38,6 +38,9 @@ namespace Plugins
 
             inputField = GetComponentInChildren<InputField>(true);
             inputField.onEndEdit.AddListener(UpdateValue);
+# if KKS
+            inputField.m_Colors.selectedColor = inputField.colors.highlightedColor;
+#endif
 
             resetButton = transform.Find("ResetButton").gameObject.GetComponent<Button>();
             resetButton.onClick.AddListener(ResetValue);
