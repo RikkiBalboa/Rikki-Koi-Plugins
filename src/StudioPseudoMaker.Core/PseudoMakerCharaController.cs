@@ -868,14 +868,43 @@ namespace Plugins
                 OriginalAccessoryColors[accessoryColor] = new ColorStorage(GetAccessoryColor(slotNr, colorNr), color);
             else
                 OriginalAccessoryColors[accessoryColor].Value = color;
-
-            Accessories.parts[slotNr].color[colorNr] = color;
-            SetAccessories.parts[slotNr].color[colorNr] = color;
-            ChaControl.ChangeAccessoryColor(slotNr);
+            if (colorNr < 3) 
+            {
+                Accessories.parts[slotNr].color[colorNr] = color;
+                SetAccessories.parts[slotNr].color[colorNr] = color;
+                ChaControl.ChangeAccessoryColor(slotNr);
+            }
+            else if (colorNr == (int)HairColor.AccessoryColor)
+            {
+                selectedHairAccessoryController.SetAccessoryColor(color, slotNr);
+                selectedHairAccessoryController.UpdateAccessory(slotNr);
+            }
+#if KKS
+            else if (colorNr == (int)HairColor.GlossColor)
+            {
+                selectedHairAccessoryController.SetGlossColor(color, slotNr);
+                selectedHairAccessoryController.UpdateAccessory(slotNr);
+            }
+#endif
+            else if (colorNr == (int)HairColor.OutlineColor)
+            {
+                selectedHairAccessoryController.SetOutlineColor(color, slotNr);
+                selectedHairAccessoryController.UpdateAccessory(slotNr);
+            }
         }
         public Color GetAccessoryColor(int slotNr, int colorNr)
         {
-            return Accessories.parts[slotNr].color[colorNr];
+            if (colorNr < 3)
+                return Accessories.parts[slotNr].color[colorNr];
+            else if (colorNr == (int)HairColor.AccessoryColor)
+                return selectedHairAccessoryController.GetAccessoryColor(slotNr);
+#if KKS
+            else if (colorNr == (int)HairColor.GlossColor)
+                return selectedHairAccessoryController.GetGlossColor(slotNr);
+#endif
+            else if (colorNr == (int)HairColor.OutlineColor)
+                return selectedHairAccessoryController.GetOutlineColor(slotNr);
+            return Color.black;
         }
 
         public void ResetAcessoryColor(int slotNr, int colorNr)
@@ -902,6 +931,13 @@ namespace Plugins
                 component == null ? false : component.useColor02,
                 component == null ? false : component.useColor03,
             };
+        }
+
+        public bool CheckAccessoryHasAccessoryPart(int slotNr)
+        {
+            if (selectedHairAccessoryController != null)
+                return selectedHairAccessoryController.HasAccessoryPart();
+            return false;
         }
 
         public void SetAccessoryTransform(int slotNr, int correctNr, float value, AccessoryTransform transform, TransformVector vector)
@@ -982,6 +1018,70 @@ namespace Plugins
         {
             return selectedCharacter.objAcsMove[slotNr, 1] != null;
         }
+
+        #region HairAccessoryCustomizer
+        public bool GetAccessoryIsHair(int slotNr)
+        {
+            if (selectedHairAccessoryController != null)
+                return selectedHairAccessoryController.IsHairAccessory(slotNr);
+            return false;
+        }
+
+        public bool GetAccessoryColorMatchHair(int slotNr)
+        {
+            if (selectedHairAccessoryController != null)
+                return selectedHairAccessoryController.GetColorMatch(slotNr);
+            return false;
+        }
+
+        public void SetAccessoryColorMatchHair(int slotNr, bool value)
+        {
+            if (selectedHairAccessoryController != null)
+            {
+                selectedHairAccessoryController.SetColorMatch(value, slotNr);
+                selectedHairAccessoryController.UpdateAccessory(slotNr);
+            }
+        }
+
+        public bool GetAccessoryUseGloss(int slotNr)
+        {
+            if (selectedHairAccessoryController != null)
+                return selectedHairAccessoryController.GetHairGloss(slotNr);
+            return false;
+        }
+
+        public void SetAccessoryUseGloss(int slotNr, bool value)
+        {
+            if (selectedHairAccessoryController != null)
+            {
+                selectedHairAccessoryController.SetHairGloss(value, slotNr);
+                selectedHairAccessoryController.UpdateAccessory(slotNr);
+            }
+        }
+
+        public bool CheckAccessoryUsesHairLength(int slotNr)
+        {
+            if (selectedHairAccessoryController != null)
+                return selectedHairAccessoryController.HasLengthTransforms();
+            return false;
+        }
+
+        public float GetAccessoryHairLength(int slotNr)
+        {
+            if (selectedHairAccessoryController != null)
+                return selectedHairAccessoryController.GetHairLength(slotNr);
+            return 0f;
+        }
+
+        public void SetAccessoryHairLength(int slotNr, float value)
+        {
+            if (selectedHairAccessoryController != null)
+            {
+                selectedHairAccessoryController.SetHairLength(value, slotNr);
+                selectedHairAccessoryController.UpdateAccessory(slotNr);
+            }
+        }
+        #endregion
         #endregion
 
         #region Category pickers
@@ -2023,6 +2123,16 @@ namespace Plugins
         X = 1,
         Y = 2,
         Z = 4,
+    }
+
+    public enum HairColor
+    {
+        Color1 = 0,
+        Color2 = 1,
+        Color3 = 2,
+        AccessoryColor = 3,
+        OutlineColor = 4,
+        GlossColor = 5,
     }
 
     #region Storage classes

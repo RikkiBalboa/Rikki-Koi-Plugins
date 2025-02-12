@@ -61,8 +61,12 @@
       <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.19.5.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KKS_HairAccessoryCustomizer">
+      <HintPath>..\..\lib\KKS_HairAccessoryCustomizer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KKS_MaterialEditor">
-      <HintPath>E:\projects\Koikatsu\Plugins\lib\KKS_MaterialEditor.dll</HintPath>
+      <HintPath>..\..\lib\KKS_MaterialEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

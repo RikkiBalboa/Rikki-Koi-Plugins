@@ -20,6 +20,7 @@ namespace Plugins
         public GameObject PickerTemplate;
         public GameObject DropdownTemplate;
         public GameObject ClothingOptionTemplate;
+        public GameObject ToggleOptionTemplate;
         public GameObject SplitterTemplate;
         public GameObject HeaderTemplate;
 
@@ -34,6 +35,7 @@ namespace Plugins
             PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
             DropdownTemplate= scrollRect.content.Find("DropdownTemplate").gameObject;
             ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
+            ToggleOptionTemplate = scrollRect.content.Find("ToggleOptionTemplate").gameObject;
             SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
             HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
 
@@ -46,6 +48,7 @@ namespace Plugins
             Destroy(PickerTemplate);
             Destroy(DropdownTemplate);
             Destroy(ClothingOptionTemplate);
+            Destroy(ToggleOptionTemplate);
             Destroy(SplitterTemplate);
             Destroy(HeaderTemplate);
         }
@@ -91,6 +94,19 @@ namespace Plugins
             buttonGroupComponent.ButtonsMap = buttonsMap;
 
             return buttonGroupComponent;
+        }
+
+        public ToggleComponent AddToggleRow(string name, Action<bool> onValueChanged, Func<bool> GetCurrentValue)
+        {
+            var toggleObject = Instantiate(ToggleOptionTemplate, ToggleOptionTemplate.transform.parent);
+            toggleObject.name = $"Toggle{name.Replace(" ", "")}";
+
+            var toggle = toggleObject.AddComponent<ToggleComponent>();
+            toggle.Name = name;
+            toggle.SetValueAction = onValueChanged;
+            toggle.GetCurrentValue = GetCurrentValue;
+
+            return toggle;
         }
 
         public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1)

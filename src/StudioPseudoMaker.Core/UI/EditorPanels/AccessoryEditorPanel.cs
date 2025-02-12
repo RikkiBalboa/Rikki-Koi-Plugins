@@ -4,16 +4,21 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using static Illusion.Utils;
 
 namespace Plugins
 {
     public class AccessoryEditorPanel : BaseEditorPanel
     {
         private static Vector3[] CopiedTransforms;
-        private int currentAccessoryNr;
+        internal static int currentAccessoryNr = -1;
         private bool currentAccessoryExists;
 
         private List<GameObject> colorRows;
+        private GameObject matchHairColorToggle;
+        private GameObject useHairGlossToggle;
+        private GameObject hairLengthSlider;
+        private GameObject hairAccessoryColor;
         private GameObject colorSplitter;
         private Toggle transformHeader1;
         private List<GameObject> tranformRows1;
@@ -28,6 +33,9 @@ namespace Plugins
                 AddColorRow("Color 1", 0).gameObject,
                 AddColorRow("Color 2", 1).gameObject,
                 AddColorRow("Color 3", 2).gameObject,
+                AddColorRow("Outline Color", (int)HairColor.OutlineColor).gameObject,
+                AddColorRow("Accessory Color", (int)HairColor.AccessoryColor).gameObject,
+                AddColorRow("Gloss Color", (int)HairColor.GlossColor).gameObject,
             };
 
             colorSplitter = AddSplitter();
@@ -85,6 +93,38 @@ namespace Plugins
                     { "Reset All", () => ResetAll(1) },
                 }).gameObject,
             };
+
+            AddSplitter();
+
+            matchHairColorToggle = AddToggleRow(
+                "Match Color With Hair",
+                value =>
+                {
+                    PseudoMaker.selectedCharacterController.SetAccessoryColorMatchHair(currentAccessoryNr, value);
+                    RefreshPanel();
+                },
+                () => PseudoMaker.selectedCharacterController.GetAccessoryColorMatchHair(currentAccessoryNr)
+            ).gameObject;
+
+            useHairGlossToggle = AddToggleRow(
+                "Use Hair Gloss",
+                value =>
+                {
+                    PseudoMaker.selectedCharacterController.SetAccessoryUseGloss(currentAccessoryNr, value);
+                    RefreshPanel();
+                },
+                () => PseudoMaker.selectedCharacterController.GetAccessoryUseGloss(currentAccessoryNr)
+            ).gameObject;
+
+            hairLengthSlider = AddSliderRow(
+                "Hair Length",
+                () => PseudoMaker.selectedCharacterController.GetAccessoryHairLength(currentAccessoryNr),
+                () => 0f,
+                value => PseudoMaker.selectedCharacterController.SetAccessoryHairLength(currentAccessoryNr, value),
+                () => PseudoMaker.selectedCharacterController.SetAccessoryHairLength(currentAccessoryNr, 0f),
+                0,
+                1
+            ).gameObject;
         }
 
         private void OnEnable()
@@ -92,23 +132,40 @@ namespace Plugins
             if (currentAccessoryExists)
             {
                 var useCols = PseudoMaker.selectedCharacterController.CheckAccessoryUseColor(currentAccessoryNr);
+                var matchHair = PseudoMaker.selectedCharacterController.GetAccessoryColorMatchHair(currentAccessoryNr);
+                var isHair = PseudoMaker.selectedCharacterController.GetAccessoryIsHair(currentAccessoryNr);
+                var hasLength = PseudoMaker.selectedCharacterController.CheckAccessoryUsesHairLength(currentAccessoryNr);
+                var usesGloss = PseudoMaker.selectedCharacterController.GetAccessoryUseGloss(currentAccessoryNr);
+                var hasAccessoryPart = PseudoMaker.selectedCharacterController.CheckAccessoryHasAccessoryPart(currentAccessoryNr);
 
                 for (int i = 0; i < useCols.Length; i++)
-                    colorRows[i].gameObject.SetActive(useCols[i]);
-                colorSplitter.SetActive(useCols.Any(x => x == true));
-                transformHeader1.gameObject.SetActive(true);
+                    colorRows[i].gameObject.SetActive(useCols[i] && !(matchHair && isHair));
+#if KKS
+                colorRows[5].SetActive(!(matchHair && isHair) && usesGloss);
+#endif
+                colorRows[3].SetActive(!(matchHair && isHair));
+                colorRows[4].SetActive(isHair && hasAccessoryPart);
+                matchHairColorToggle.SetActive(isHair);
+                useHairGlossToggle.SetActive(isHair);
+                hairLengthSlider.SetActive(isHair && hasLength);
+
+                colorSplitter.SetActive(useCols.Any(x => x == true && !(matchHair && isHair)));
+                transformHeader1.transform.parent.gameObject.SetActive(true);
                 tranformRows1.ForEach(x => x.SetActive(transformHeader1.isOn));
                 var hasSecondTransform = PseudoMaker.selectedCharacterController.CheckAccessoryUsesSecondTransform(currentAccessoryNr);
-                transformHeader2.gameObject.SetActive(hasSecondTransform);
+                transformHeader2.transform.parent.gameObject.SetActive(hasSecondTransform);
                 tranformRows2.ForEach(x => x.SetActive(hasSecondTransform && transformHeader2.isOn));
             }
             else
             {
                 colorRows.ForEach(x => x.SetActive(false));
+                matchHairColorToggle.SetActive(false);
+                useHairGlossToggle.SetActive(false);
+                hairLengthSlider.SetActive(false);
                 colorSplitter.SetActive(false);
-                transformHeader1.gameObject.SetActive(false);
+                transformHeader1.transform.parent.gameObject.SetActive(false);
                 tranformRows1.ForEach(x => x.SetActive(false));
-                transformHeader2.gameObject.SetActive(false);
+                transformHeader2.transform.parent.gameObject.SetActive(false);
                 tranformRows2.ForEach(x => x.SetActive(false));
             }
         }
@@ -182,8 +239,7 @@ namespace Plugins
             PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, CopiedTransforms[1], AccessoryTransform.Rotation);
             PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, CopiedTransforms[2], AccessoryTransform.Scale);
 
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            RefreshPanel();
         }
 
         private void Mirror(int correctNr)
@@ -208,7 +264,11 @@ namespace Plugins
             PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.X);
             PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.Y);
             PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.Z);
+            RefreshPanel();
+        }
 
+        public void RefreshPanel()
+        {
             gameObject.SetActive(false);
             gameObject.SetActive(true);
         }

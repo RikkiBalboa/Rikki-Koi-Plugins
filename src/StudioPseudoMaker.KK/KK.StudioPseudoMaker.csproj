@@ -61,8 +61,14 @@
       <HintPath>..\..\packages\IllusionModdingAPI.KKAPI.1.38.0\lib\net35\KKAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KK_MaterialEditor">
-      <HintPath>E:\projects\Koikatsu\Plugins\lib\KK_MaterialEditor.dll</HintPath>
+    <Reference Include="KK_HairAccessoryCustomizer">
+      <HintPath>..\..\lib\KK_HairAccessoryCustomizer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KK_MaterialEditor, Version=3.1.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\KK_MaterialEditor.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sideloader.Koikatu.20.0.0\lib\net35\Sideloader.dll</HintPath>
