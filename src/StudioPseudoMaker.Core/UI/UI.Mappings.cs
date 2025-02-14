@@ -417,12 +417,14 @@ namespace Plugins
             ChaListDefine.CategoryNo.ao_arm,
             ChaListDefine.CategoryNo.ao_hand,
             ChaListDefine.CategoryNo.ao_kokan,
+            ChaListDefine.CategoryNo.mt_underhair,
         };
 
         public static string GetAccessoryTypeName(ChaListDefine.CategoryNo category)
         {
             switch (category)
             {
+                case ChaListDefine.CategoryNo.mt_underhair: return "Uknown";
                 case ChaListDefine.CategoryNo.ao_none: return "None";
                 case ChaListDefine.CategoryNo.ao_hair: return "Hair";
                 case ChaListDefine.CategoryNo.ao_head: return "Head";
@@ -459,7 +461,7 @@ namespace Plugins
         public static int GetAccessoryTypeIndex(int categoryNr)
         {
             var index = AccessoryTypes.ToList().IndexOf((ChaListDefine.CategoryNo)categoryNr);
-            return index < 0 ? 0 : index;
+            return index < 0 ? AccessoryTypes.Length - 1 : index;
         }
     }
 
