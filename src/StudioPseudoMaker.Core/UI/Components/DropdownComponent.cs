@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Contexts;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,6 +30,9 @@ namespace Plugins
             var scrollbar = dropdown.GetComponentInChildren<Scrollbar>(true);
             var autoscroll = scrollbar.gameObject.AddComponent<AutoScrollToSelectionWithDropdown>();
             autoscroll.Dropdown = dropdown;
+
+            var inputFilter = dropdown.transform.Find("Template").gameObject.AddComponent<InputFilter>();
+            inputFilter.Dropdown = dropdown;
         }
 
         private void Start()
@@ -47,6 +52,73 @@ namespace Plugins
                 shouldNotUpdate = true;
                 dropdown.value = GetCurrentValue();
                 shouldNotUpdate = false;
+            }
+        }
+
+        // Shamelessly stolen from https://github.com/IllusionMods/KK_Plugins/blob/master/src/MaterialEditor.Base/UI/UI.DropdownFilter.cs
+        private class InputFilter : MonoBehaviour
+        {
+            public Dropdown Dropdown;
+
+            private InputField inputField;
+            private RectTransform content;
+
+            private float itemStride = 20f;
+
+            private void Awake()
+            {
+                inputField = GetComponentInChildren<InputField>(true);
+                inputField.onValueChanged.AddListener(OnChangeFilter);
+#if KKS
+                inputField.m_Colors.selectedColor = inputField.colors.highlightedColor;
+#endif
+
+                content = transform.Find("Viewport/Content") as RectTransform;
+
+                if (content.childCount >= 3)
+                {
+                    var item1 = (RectTransform)content.GetChild(1);
+                    var item2 = (RectTransform)content.GetChild(2);
+                    itemStride = Mathf.Abs(item1.offsetMin.y - item2.offsetMin.y);
+                }
+                else
+                {
+                    itemStride = 20f;
+                }
+            }
+
+            private void OnChangeFilter(string filter)
+            {
+                PseudoMaker.Logger.LogInfo(filter);
+                if (string.IsNullOrEmpty(filter))
+                    filter = "*";
+
+                var regex = new Regex(Regex.Escape(filter).Replace("\\*", ".*").Replace("\\?", "."), RegexOptions.IgnoreCase);
+                int activeItems = 0;
+
+                foreach (Transform item in content)
+                {
+                    var name = item.name;
+                    int colon = name.IndexOf(":");
+                    if (colon < 0)
+                        continue;
+
+                    bool isShown = regex.IsMatch(name.Substring(colon + 1).Trim());
+                    item.gameObject.SetActive(isShown);
+                    if (isShown)
+                        ++activeItems;
+                }
+
+                var sizeDelta = content.sizeDelta;
+                sizeDelta.y = itemStride * activeItems + 8f;
+                content.sizeDelta = sizeDelta;
+
+                var scrollbar = GetComponentInChildren<Scrollbar>();
+                if (scrollbar != null)
+                {
+                    scrollbar.value = 0f;
+                    scrollbar.Rebuild(CanvasUpdate.Prelayout);
+                }
             }
         }
 
