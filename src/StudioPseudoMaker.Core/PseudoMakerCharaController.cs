@@ -1036,11 +1036,24 @@ namespace Plugins
             return 0;
         }
 
+        public string GetCurrentAccessoryParent(int slotNr)
+        {
+            if (slotNr >= 0)
+                return Accessories.parts[slotNr].parentKey;
+            return "Unknown";
+        }
+
         public void SetAccessory(int slotNr, int type, int id, string parentKey)
         {
             selectedCharacter.ChangeAccessory(slotNr, type, id, parentKey);
             typeof(AccessoriesApi).GetMethod("OnAccessoryKindChanged", AccessTools.all).Invoke(null, new object[] { this, slotNr });
 
+            SetAccessories.parts[slotNr] = Accessories.parts[slotNr];
+        }
+
+        public void SetAccessoryParent(int slotNr, string parentKey)
+        {
+            selectedCharacter.ChangeAccessoryParent(slotNr, parentKey);
             SetAccessories.parts[slotNr] = Accessories.parts[slotNr];
         }
 

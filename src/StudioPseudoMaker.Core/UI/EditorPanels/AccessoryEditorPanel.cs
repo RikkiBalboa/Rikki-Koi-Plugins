@@ -48,6 +48,16 @@ namespace Plugins
 
             accessoryPicker = AddPickerRow(ChaListDefine.CategoryNo.ao_none);
 
+            AddDropdownRow(
+                "Parent",
+                UIMappings.AccessoryParents.Values.ToList(),
+                () => UIMappings.GetAccessoryParentIndex(PseudoMaker.selectedCharacterController.GetCurrentAccessoryParent(currentAccessoryNr)),
+                index => {
+                    if (index == UIMappings.AccessoryParents.Count - 1) return;
+                    PseudoMaker.selectedCharacterController.SetAccessoryParent(currentAccessoryNr, UIMappings.AccessoryParents.ElementAt(index).Key);
+                }
+            );
+
             AddSplitter();
 
             colorRows = new List<GameObject>() {

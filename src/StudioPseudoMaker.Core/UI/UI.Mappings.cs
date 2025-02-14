@@ -421,6 +421,65 @@ namespace Plugins
             ChaListDefine.CategoryNo.mt_underhair,
         };
 
+        public static Dictionary<string, string> AccessoryParents = new Dictionary<string, string>()
+        {
+            { "a_n_hair_pony", "Hair: Ponytail" },
+            { "a_n_hair_twin_L", "Hair: L.Twin" },
+            { "a_n_hair_twin_R", "Hair: R.Twin" },
+            { "a_n_hair_pin", "Hair: L.Hairpin" },
+            { "a_n_hair_pin_R", "Hair: R.Hairpin" },
+            { "a_n_headtop", "Head: Hat" },
+            { "a_n_headflont", "Head: Brow" },
+            { "a_n_head", "Head: Forehead" },
+            { "a_n_headside", "Head: Center of Head" },
+            { "a_n_earrings_L", "Face: L.Earring" },
+            { "a_n_earrings_R", "Face: R.Earring" },
+            { "a_n_megane", "Face: Glasses" },
+            { "a_n_nose", "Face: Nose" },
+            { "a_n_mouth", "Face: Mouth" },
+            { "a_n_neck", "Neck: Neck" },
+            { "a_n_bust_f", "Neck: Throat" },
+            { "a_n_bust", "Neck: Center of Neck" },
+            { "a_n_nip_L", "Body: L.Chest" },
+            { "a_n_nip_R", "Body: R.Chest" },
+            { "a_n_back", "Body: Mid Back" },
+            { "a_n_back_L", "Body: L.Back" },
+            { "a_n_back_R", "Body: R.Back" },
+            { "a_n_waist", "Waist: Hips" },
+            { "a_n_waist_f", "Waist: Front Waist" },
+            { "a_n_waist_b", "Waist: Back Waist" },
+            { "a_n_waist_L", "Waist: Left Hip" },
+            { "a_n_waist_R", "Waist: Right Hip" },
+            { "a_n_leg_L", "Legs: Left Thigh" },
+            { "a_n_knee_L", "Legs: Left Knee" },
+            { "a_n_ankle_L", "Legs:  Left Ankle" },
+            { "a_n_heel_L", "Legs: Left Heel" },
+            { "a_n_leg_R", "Legs: Right Thigh" },
+            { "a_n_knee_R", "Legs: Right Knee" },
+            { "a_n_ankle_R", "Legs: Right Ankle" },
+            { "a_n_heel_R", "Legs: Right Heel" },
+            { "a_n_shoulder_L", "Arms: Left Shoulder" },
+            { "a_n_elbo_L", "Arms: Left Elbow" },
+            { "a_n_arm_L", "Arms: Left Upper Arm" },
+            { "a_n_wrist_L", "Arms: Left Wrist" },
+            { "a_n_shoulder_R", "Arms: Right Shoulder" },
+            { "a_n_elbo_R", "Arms: Right Elbow" },
+            { "a_n_arm_R", "Arms: Right Upper Arm" },
+            { "a_n_wrist_R", "Arms: Right Wrist" },
+            { "a_n_hand_L", "Hands: Left Hand" },
+            { "a_n_ind_L", "Hands: Left Index Finger" },
+            { "a_n_mid_L", "Hands: Left Mid Finger" },
+            { "a_n_ring_L", "Hands: Left Ring Finger" },
+            { "a_n_hand_R", "Hands: Right Hand" },
+            { "a_n_ind_R", "Hands: Right Index Finger" },
+            { "a_n_mid_R", "Hands: Right Mid Finger" },
+            { "a_n_ring_R", "Hands: Right Ring Finger" },
+            { "a_n_dan", "Crotch: Crotch 1" },
+            { "a_n_kokan", "Crotch: Crotch 2" },
+            { "a_n_ana", "Crotch: Crotch 3" },
+            { "none", "Unknown" },
+        };
+
         internal static void AddC2AAccessoryTypes()
         {
             Type type = Type.GetType("KK_Plugins.ClothesToAccessoriesPlugin, KKS_ClothesToAccessories", throwOnError: false);
@@ -491,6 +550,13 @@ namespace Plugins
         {
             var index = AccessoryTypes.ToList().IndexOf((ChaListDefine.CategoryNo)categoryNr);
             return index < 0 ? AccessoryTypes.Count - 1 : index;
+        }
+
+        public static int GetAccessoryParentIndex(string parentKey)
+        {
+            if (AccessoryParents.ContainsKey(parentKey))
+                return AccessoryParents.Keys.ToList().IndexOf(parentKey);
+            return AccessoryParents.Count - 1;
         }
     }
 
