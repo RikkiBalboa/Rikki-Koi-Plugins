@@ -186,7 +186,7 @@ namespace Plugins
         {
             var name = UIMappings.GetSelectKindTypeName(selectKind);
 
-            var picker = Instantiate(PickerTemplate, SliderTemplate.transform.parent);
+            var picker = Instantiate(PickerTemplate, PickerTemplate.transform.parent);
             picker.name = $"CategoryPicker{name.Replace(" ", "")}";
 
             ChaListDefine.CategoryNo[] array = new ChaListDefine.CategoryNo[100]
@@ -307,12 +307,16 @@ namespace Plugins
             return pickerComponent;
         }
 
-        public DropdownComponent AddDropdownRow(string name, IEnumerable<string> options)
+        public DropdownComponent AddDropdownRow(string name, List<string> options, Func<int> getCurrentValueAction, Action<int> setValueAction)
         {
             var dropdown = Instantiate(DropdownTemplate, DropdownTemplate.transform.parent);
             dropdown.name = $"Dropdown{name.Replace(" ", "")}";
 
             var dropdownComponent = dropdown.AddComponent<DropdownComponent>();
+            dropdownComponent.DropdownOptions = options;
+            dropdownComponent.Name = name;
+            dropdownComponent.GetCurrentValue = getCurrentValueAction;
+            dropdownComponent.SetValueAction = setValueAction;
 
             return dropdownComponent;
         }

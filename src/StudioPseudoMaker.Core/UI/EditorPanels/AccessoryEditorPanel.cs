@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
-using static Illusion.Utils;
 
 namespace Plugins
 {
@@ -13,8 +11,10 @@ namespace Plugins
         private static Vector3[] CopiedTransforms;
         internal static int currentAccessoryNr = -1;
         private bool currentAccessoryExists;
+        private ChaListDefine.CategoryNo currentAccessoryType;
 
         private List<GameObject> colorRows;
+        private GameObject hairAccessorySplitter;
         private GameObject matchHairColorToggle;
         private GameObject useHairGlossToggle;
         private GameObject hairLengthSlider;
@@ -24,15 +24,36 @@ namespace Plugins
         private List<GameObject> tranformRows1;
         private Toggle transformHeader2;
         private List<GameObject> tranformRows2;
+        private PickerComponent accessoryPicker;
 
         protected override void Initialize()
         {
             base.Initialize();
 
+            AddDropdownRow(
+                "Type",
+                UIMappings.AccessoryTypes.Select(x => UIMappings.GetAccessoryTypeName(x)).ToList(),
+                () => UIMappings.GetAccessoryTypeIndex(PseudoMaker.selectedCharacterController.GetCurrentAccessoryType(currentAccessoryNr)),
+                index => {
+                    PseudoMaker.selectedCharacterController.SetAccessory(
+                        currentAccessoryNr,
+                        (int)UIMappings.AccessoryTypes[index],
+                        0,
+                        ""
+                    );
+                    ChangeSelectedAccessory(currentAccessoryNr, UIMappings.AccessoryTypes[index]);
+                }
+            );
+
+            accessoryPicker = AddPickerRow(ChaListDefine.CategoryNo.ao_none);
+
+            AddSplitter();
+
             colorRows = new List<GameObject>() {
                 AddColorRow("Color 1", 0).gameObject,
                 AddColorRow("Color 2", 1).gameObject,
                 AddColorRow("Color 3", 2).gameObject,
+                AddColorRow("Color 4", 3).gameObject,
                 AddColorRow("Outline Color", (int)HairColor.OutlineColor).gameObject,
                 AddColorRow("Accessory Color", (int)HairColor.AccessoryColor).gameObject,
                 AddColorRow("Gloss Color", (int)HairColor.GlossColor).gameObject,
@@ -66,8 +87,6 @@ namespace Plugins
                 }).gameObject,
             };
 
-            var transform2Splitter =
-
             transformHeader2 = AddHeaderToggle("Adjustment 2 ▶", value => tranformRows2.ForEach(x => x.SetActive(value)));
             var input2 = AddInputRow("X Location", 1, AccessoryTransform.Location, TransformVector.X);
             input2.IncrementValue *= -1;
@@ -94,7 +113,7 @@ namespace Plugins
                 }).gameObject,
             };
 
-            AddSplitter();
+            hairAccessorySplitter = AddSplitter();
 
             matchHairColorToggle = AddToggleRow(
                 "Match Color With Hair",
@@ -129,6 +148,8 @@ namespace Plugins
 
         private void OnEnable()
         {
+            accessoryPicker.gameObject.SetActive(currentAccessoryType != ChaListDefine.CategoryNo.ao_none);
+
             if (currentAccessoryExists)
             {
                 var useCols = PseudoMaker.selectedCharacterController.CheckAccessoryUseColor(currentAccessoryNr);
@@ -141,10 +162,11 @@ namespace Plugins
                 for (int i = 0; i < useCols.Length; i++)
                     colorRows[i].gameObject.SetActive(useCols[i] && !(matchHair && isHair));
 #if KKS
-                colorRows[5].SetActive(!(matchHair && isHair) && usesGloss);
+                colorRows[6].SetActive(!(matchHair && isHair) && usesGloss);
 #endif
-                colorRows[3].SetActive(!(matchHair && isHair));
-                colorRows[4].SetActive(isHair && hasAccessoryPart);
+                colorRows[4].SetActive(!(matchHair && isHair));
+                colorRows[5].SetActive(isHair && hasAccessoryPart);
+                hairAccessorySplitter.SetActive(isHair);
                 matchHairColorToggle.SetActive(isHair);
                 useHairGlossToggle.SetActive(isHair);
                 hairLengthSlider.SetActive(isHair && hasLength);
@@ -159,6 +181,7 @@ namespace Plugins
             else
             {
                 colorRows.ForEach(x => x.SetActive(false));
+                hairAccessorySplitter.SetActive(false);
                 matchHairColorToggle.SetActive(false);
                 useHairGlossToggle.SetActive(false);
                 hairLengthSlider.SetActive(false);
@@ -174,8 +197,14 @@ namespace Plugins
         {
             currentAccessoryNr = slotNr;
             currentAccessoryExists = exists;
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            currentAccessoryType = (ChaListDefine.CategoryNo)PseudoMaker.selectedCharacterController.GetCurrentAccessoryType(slotNr);
+            accessoryPicker.CategoryNo = currentAccessoryType;
+            RefreshPanel();
+        }
+
+        public void ChangeSelectedAccessory(int slotNr, ChaListDefine.CategoryNo categoryNr)
+        {
+            ChangeSelectedAccessory(slotNr, categoryNr != ChaListDefine.CategoryNo.ao_none);
         }
 
         private ColorComponent AddColorRow(string name, int colorNr)
@@ -220,6 +249,24 @@ namespace Plugins
             input.Repeat = repeat;
             input.IncrementValue = incrementValue;
             return input;
+        }
+
+        public PickerComponent AddPickerRow(ChaListDefine.CategoryNo categoryNr)
+        {
+            var picker = Instantiate(PickerTemplate, PickerTemplate.transform.parent);
+            picker.name = "CategoryPickerAccessories";
+
+            var pickerComponent = picker.AddComponent<PickerComponent>();
+            pickerComponent.Name = "Type";
+            pickerComponent.CategoryNo = categoryNr;
+            pickerComponent.GetCurrentValue = () => PseudoMaker.selectedCharacterController.GetCurrentAccessoryId(currentAccessoryNr);
+            pickerComponent.SetCurrentValue = (value) =>
+            {
+                PseudoMaker.selectedCharacterController.SetAccessory(currentAccessoryNr, (int)currentAccessoryType, value.index, "");
+                RefreshPanel();
+            };
+
+            return pickerComponent;
         }
 
         private void CopyValues(int correctNr)

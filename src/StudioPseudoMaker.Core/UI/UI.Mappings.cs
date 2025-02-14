@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using static ChaCustom.CustomSelectKind;
 
 namespace Plugins
@@ -401,6 +402,64 @@ namespace Plugins
                     return "Emblem 02 Type";
             }
             return "Undefined";
+        }
+
+        public static ChaListDefine.CategoryNo[] AccessoryTypes = new ChaListDefine.CategoryNo[]
+        {
+            ChaListDefine.CategoryNo.ao_none,
+            ChaListDefine.CategoryNo.ao_hair,
+            ChaListDefine.CategoryNo.ao_head,
+            ChaListDefine.CategoryNo.ao_face,
+            ChaListDefine.CategoryNo.ao_neck,
+            ChaListDefine.CategoryNo.ao_body,
+            ChaListDefine.CategoryNo.ao_waist,
+            ChaListDefine.CategoryNo.ao_leg,
+            ChaListDefine.CategoryNo.ao_arm,
+            ChaListDefine.CategoryNo.ao_hand,
+            ChaListDefine.CategoryNo.ao_kokan,
+        };
+
+        public static string GetAccessoryTypeName(ChaListDefine.CategoryNo category)
+        {
+            switch (category)
+            {
+                case ChaListDefine.CategoryNo.ao_none: return "None";
+                case ChaListDefine.CategoryNo.ao_hair: return "Hair";
+                case ChaListDefine.CategoryNo.ao_head: return "Head";
+                case ChaListDefine.CategoryNo.ao_face: return "Face";
+                case ChaListDefine.CategoryNo.ao_neck: return "Neck";
+                case ChaListDefine.CategoryNo.ao_body: return "Torso";
+                case ChaListDefine.CategoryNo.ao_waist: return "Hips";
+                case ChaListDefine.CategoryNo.ao_leg: return "Legs";
+                case ChaListDefine.CategoryNo.ao_arm: return "Arms";
+                case ChaListDefine.CategoryNo.ao_hand: return "Hands";
+                case ChaListDefine.CategoryNo.ao_kokan: return "Crotch";
+                case ChaListDefine.CategoryNo.bo_hair_b: return "Hair Back";
+                case ChaListDefine.CategoryNo.bo_hair_f: return "Hair Front";
+                case ChaListDefine.CategoryNo.bo_hair_s: return "Hair Side";
+                case ChaListDefine.CategoryNo.bo_hair_o: return "Hair Option";
+                case ChaListDefine.CategoryNo.co_top: return "Clothes Top";
+                case ChaListDefine.CategoryNo.co_bot: return "Clothes Bottom";
+                case ChaListDefine.CategoryNo.co_bra: return "Clothes Bra";
+                case ChaListDefine.CategoryNo.co_shorts: return "Clothes Panties";
+                case ChaListDefine.CategoryNo.co_gloves: return "Clothes Gloves";
+                case ChaListDefine.CategoryNo.co_panst: return "Clothes Pantyhose";
+                case ChaListDefine.CategoryNo.co_socks: return "Clothes Socks";
+                case ChaListDefine.CategoryNo.co_shoes: return "Clothes Shoes";
+                case ChaListDefine.CategoryNo.cpo_sailor_a: return "Clothes Sailor A";
+                case ChaListDefine.CategoryNo.cpo_sailor_b: return "Clothes Sailor B";
+                case ChaListDefine.CategoryNo.cpo_sailor_c: return "Clothes Sailor C";
+                case ChaListDefine.CategoryNo.cpo_jacket_a: return "Clothes Jacket A";
+                case ChaListDefine.CategoryNo.cpo_jacket_b: return "Clothes Jacket B";
+                case ChaListDefine.CategoryNo.cpo_jacket_c: return "Clothes Jacket C";
+                default: return "Unknown";
+            }
+        }
+
+        public static int GetAccessoryTypeIndex(int categoryNr)
+        {
+            var index = AccessoryTypes.ToList().IndexOf((ChaListDefine.CategoryNo)categoryNr);
+            return index < 0 ? 0 : index;
         }
     }
 

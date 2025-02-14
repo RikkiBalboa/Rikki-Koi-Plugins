@@ -1,8 +1,10 @@
 ﻿using ChaCustom;
 using ExtensibleSaveFormat;
+using HarmonyLib;
 using KK_Plugins.MaterialEditor;
 using KKAPI;
 using KKAPI.Chara;
+using KKAPI.Maker;
 using MessagePack;
 using System;
 using System.Collections.Generic;
@@ -868,7 +870,7 @@ namespace Plugins
                 OriginalAccessoryColors[accessoryColor] = new ColorStorage(GetAccessoryColor(slotNr, colorNr), color);
             else
                 OriginalAccessoryColors[accessoryColor].Value = color;
-            if (colorNr < 3) 
+            if (colorNr < 4) 
             {
                 Accessories.parts[slotNr].color[colorNr] = color;
                 SetAccessories.parts[slotNr].color[colorNr] = color;
@@ -894,7 +896,7 @@ namespace Plugins
         }
         public Color GetAccessoryColor(int slotNr, int colorNr)
         {
-            if (colorNr < 3)
+            if (colorNr < 4)
                 return Accessories.parts[slotNr].color[colorNr];
             else if (colorNr == (int)HairColor.AccessoryColor)
                 return selectedHairAccessoryController.GetAccessoryColor(slotNr);
@@ -930,6 +932,7 @@ namespace Plugins
                 component == null ? false : component.useColor01,
                 component == null ? false : component.useColor02,
                 component == null ? false : component.useColor03,
+                component == null ? false : component.rendAlpha != null && component.rendAlpha.Length > 0
             };
         }
 
@@ -1017,6 +1020,26 @@ namespace Plugins
         public bool CheckAccessoryUsesSecondTransform(int slotNr)
         {
             return selectedCharacter.objAcsMove[slotNr, 1] != null;
+        }
+
+        public int GetCurrentAccessoryType(int slotNr)
+        {
+            if (slotNr >= 0 && selectedCharacter.infoAccessory[slotNr] != null)
+                return selectedCharacter.infoAccessory[slotNr].Category;
+            return (int)ChaListDefine.CategoryNo.ao_none;
+        }
+
+        public int GetCurrentAccessoryId(int slotNr)
+        {
+            if (slotNr >= 0 && selectedCharacter.infoAccessory[slotNr] != null)
+                return selectedCharacter.infoAccessory[slotNr].Id;
+            return 0;
+        }
+
+        public void SetAccessory(int slotNr, int type, int id, string parentKey)
+        {
+            selectedCharacter.ChangeAccessory(slotNr, type, id, parentKey);
+            typeof(AccessoriesApi).GetMethod("OnAccessoryKindChanged", AccessTools.all).Invoke(null, new object[] { this, slotNr });
         }
 
         #region HairAccessoryCustomizer
@@ -2130,9 +2153,9 @@ namespace Plugins
         Color1 = 0,
         Color2 = 1,
         Color3 = 2,
-        AccessoryColor = 3,
-        OutlineColor = 4,
-        GlossColor = 5,
+        AccessoryColor = 4,
+        OutlineColor = 5,
+        GlossColor = 6,
     }
 
     #region Storage classes
