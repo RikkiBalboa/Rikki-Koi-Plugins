@@ -35,7 +35,7 @@ namespace Plugins
                 UIMappings.AccessoryTypes.Select(x => UIMappings.GetAccessoryTypeName(x)).ToList(),
                 () => UIMappings.GetAccessoryTypeIndex(PseudoMaker.selectedCharacterController.GetCurrentAccessoryType(currentAccessoryNr)),
                 index => {
-                    if (index == UIMappings.AccessoryTypes.Length - 1) return;
+                    if (index == UIMappings.AccessoryTypes.Count - 1) return;
                     PseudoMaker.selectedCharacterController.SetAccessory(
                         currentAccessoryNr,
                         (int)UIMappings.AccessoryTypes[index],

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using static ChaCustom.CustomSelectKind;
 
@@ -404,7 +405,7 @@ namespace Plugins
             return "Undefined";
         }
 
-        public static ChaListDefine.CategoryNo[] AccessoryTypes = new ChaListDefine.CategoryNo[]
+        public static List<ChaListDefine.CategoryNo> AccessoryTypes = new List<ChaListDefine.CategoryNo>()
         {
             ChaListDefine.CategoryNo.ao_none,
             ChaListDefine.CategoryNo.ao_hair,
@@ -419,6 +420,34 @@ namespace Plugins
             ChaListDefine.CategoryNo.ao_kokan,
             ChaListDefine.CategoryNo.mt_underhair,
         };
+
+        internal static void AddC2AAccessoryTypes()
+        {
+            Type type = Type.GetType("KK_Plugins.ClothesToAccessoriesPlugin, KKS_ClothesToAccessories", throwOnError: false);
+            if (type == null) return;
+
+            AccessoryTypes.InsertRange(AccessoryTypes.Count - 1, new ChaListDefine.CategoryNo[]
+            {
+                ChaListDefine.CategoryNo.bo_hair_b,
+                ChaListDefine.CategoryNo.bo_hair_f,
+                ChaListDefine.CategoryNo.bo_hair_s,
+                ChaListDefine.CategoryNo.bo_hair_o,
+                ChaListDefine.CategoryNo.co_top,
+                ChaListDefine.CategoryNo.co_bot,
+                ChaListDefine.CategoryNo.co_bra,
+                ChaListDefine.CategoryNo.co_shorts,
+                ChaListDefine.CategoryNo.co_gloves,
+                ChaListDefine.CategoryNo.co_panst,
+                ChaListDefine.CategoryNo.co_socks,
+                ChaListDefine.CategoryNo.co_shoes,
+                ChaListDefine.CategoryNo.cpo_sailor_a,
+                ChaListDefine.CategoryNo.cpo_sailor_b,
+                ChaListDefine.CategoryNo.cpo_sailor_c,
+                ChaListDefine.CategoryNo.cpo_jacket_a,
+                ChaListDefine.CategoryNo.cpo_jacket_b,
+                ChaListDefine.CategoryNo.cpo_jacket_c,
+            });
+        }
 
         public static string GetAccessoryTypeName(ChaListDefine.CategoryNo category)
         {
@@ -461,7 +490,7 @@ namespace Plugins
         public static int GetAccessoryTypeIndex(int categoryNr)
         {
             var index = AccessoryTypes.ToList().IndexOf((ChaListDefine.CategoryNo)categoryNr);
-            return index < 0 ? AccessoryTypes.Length - 1 : index;
+            return index < 0 ? AccessoryTypes.Count - 1 : index;
         }
     }
 

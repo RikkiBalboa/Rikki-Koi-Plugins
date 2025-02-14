@@ -96,6 +96,8 @@ namespace Plugins
             );
             CharacterApi.RegisterExtraBehaviour<PseudoMakerCharaController>(PluginGUID);
 
+            UIMappings.AddC2AAccessoryTypes();
+
             UIScale.SettingChanged += (e, a) => SetUIScale();
 
 #if DEBUG
