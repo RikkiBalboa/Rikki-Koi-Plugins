@@ -323,7 +323,7 @@ namespace Plugins
                 });
 
                 var hoverComponent = copy.AddComponent<SelectListInfoHoverComponent>();
-                hoverComponent.onEnterAction = () => NameField.text = copyInfoComp.info.name;
+                hoverComponent.onEnterAction = () => TranslationHelper.TranslateAsync(copyInfoComp.info.name, value => NameField.text = value);
                 hoverComponent.onExitAction = () => NameField.text = "";
 
                 copyInfoComp.img = copy.GetComponent<Image>();
