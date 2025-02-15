@@ -2,7 +2,6 @@
 using HarmonyLib;
 using KK_Plugins;
 using System;
-using static KK_Plugins.HairAccessoryCustomizer;
 
 namespace Plugins
 {
@@ -53,9 +52,9 @@ namespace Plugins
         // HairAccessoryCustomizer tries to enable stuff in the UI here. One that of course doesn't exist.
         // This prevents that code from running
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(HairAccessoryCustomizer), "InitCurrentSlot", new Type[0])]
-        [HarmonyPatch(typeof(HairAccessoryCustomizer), "InitCurrentSlot", new Type[] { typeof(HairAccessoryController), typeof(bool) })]
-        [HarmonyPatch(typeof(HairAccessoryCustomizer), "InitCurrentSlot", new Type[] { typeof(HairAccessoryController) })]
+        [HarmonyPatch(typeof(HairAccessoryCustomizer), nameof(HairAccessoryCustomizer.InitCurrentSlot), new Type[0])]
+        [HarmonyPatch(typeof(HairAccessoryCustomizer), nameof(HairAccessoryCustomizer.InitCurrentSlot), new Type[] { typeof(HairAccessoryCustomizer.HairAccessoryController), typeof(bool) })]
+        [HarmonyPatch(typeof(HairAccessoryCustomizer), nameof(HairAccessoryCustomizer.InitCurrentSlot), new Type[] { typeof(HairAccessoryCustomizer.HairAccessoryController) })]
         private static bool MakerGetCharacterControlPrefix()
         {
             return false;

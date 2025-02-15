@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using KK_Plugins;
 using KK_Plugins.MaterialEditor;
 using KKAPI;
 using KKAPI.Chara;
@@ -15,7 +14,6 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static KK_Plugins.HairAccessoryCustomizer;
 
 namespace Plugins
 {
@@ -23,7 +21,7 @@ namespace Plugins
     [BepInIncompatibility("com.rikkibalboa.bepinex.studioSkinColorControl")]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
-    [BepInDependency(HairAccessoryCustomizer.GUID, HairAccessoryCustomizer.Version)]
+    [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
     [BepInProcess(Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
     {
@@ -36,7 +34,7 @@ namespace Plugins
 
         internal static ChaControl selectedCharacter;
         internal static PseudoMakerCharaController selectedCharacterController;
-        internal static HairAccessoryController selectedHairAccessoryController;
+        internal static KK_Plugins.HairAccessoryCustomizer.HairAccessoryController selectedHairAccessoryController;
 
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<float> MainWindowWidth { get; private set; }
@@ -127,7 +125,7 @@ namespace Plugins
             {
                 selectedCharacter = newChar;
                 selectedCharacterController = PseudoMakerCharaController.GetController(selectedCharacter);
-                selectedHairAccessoryController = selectedCharacter.gameObject.GetComponent<HairAccessoryController>();
+                selectedHairAccessoryController = selectedCharacter.gameObject.GetComponent<KK_Plugins.HairAccessoryCustomizer.HairAccessoryController>();
                 MainWindow.RefreshValues();
             }
         }
