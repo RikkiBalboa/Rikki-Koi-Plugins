@@ -477,7 +477,7 @@ namespace Plugins
             { "a_n_dan", "Crotch: Crotch 1" },
             { "a_n_kokan", "Crotch: Crotch 2" },
             { "a_n_ana", "Crotch: Crotch 3" },
-            { "none", "Unknown" },
+            { "other", "Other" },
         };
 
         internal static void AddOtherPluginMappings()
@@ -505,7 +505,7 @@ namespace Plugins
                     ChaListDefine.CategoryNo.cpo_jacket_c,
                 });
 
-            if (Compatibility.CheckA12Installed())
+            if (Compatibility.HasA12)
                 AccessoryParents["A12"] = "A12";
         }
 
@@ -557,7 +557,7 @@ namespace Plugins
         {
             if (AccessoryParents.ContainsKey(parentKey))
                 return AccessoryParents.Keys.ToList().IndexOf(parentKey);
-            return AccessoryParents.Keys.ToList().IndexOf("none");
+            return AccessoryParents.Keys.ToList().IndexOf("other");
         }
     }
 

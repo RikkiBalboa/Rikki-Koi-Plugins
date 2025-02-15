@@ -1050,9 +1050,9 @@ namespace Plugins
 
         public void SetAccessoryParent(int slotNr, string parentKey)
         {
-            //Compatibility.A12ChangeAccessoryParent();
             selectedCharacter.ChangeAccessoryParent(slotNr, parentKey);
             SetAccessories.parts[slotNr] = Accessories.parts[slotNr];
+            Compatibility.A12ChangeAccessoryParent(slotNr);
         }
 
         public bool CheckAccessoryHasA12Parent(int slotNr)

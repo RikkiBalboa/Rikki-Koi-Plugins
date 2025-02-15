@@ -10,7 +10,7 @@ namespace Plugins
     public class DropdownComponent : MonoBehaviour
     {
         private Text text;
-        private Dropdown dropdown;
+        public Dropdown dropdown;
 
         public string Name;
         public List<string> DropdownOptions;

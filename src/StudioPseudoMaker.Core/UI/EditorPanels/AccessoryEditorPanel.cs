@@ -1,8 +1,10 @@
-﻿using System;
+﻿using ADV.Commands.Object;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static RootMotion.Demos.Turret;
 
 namespace Plugins
 {
@@ -25,6 +27,7 @@ namespace Plugins
         private Toggle transformHeader2;
         private List<GameObject> tranformRows2;
         private PickerComponent accessoryPicker;
+        private DropdownComponent parentDropdown;
 
         protected override void Initialize()
         {
@@ -48,10 +51,18 @@ namespace Plugins
 
             accessoryPicker = AddPickerRow(ChaListDefine.CategoryNo.ao_none);
 
-            AddDropdownRow(
+            parentDropdown = AddDropdownRow(
                 "Parent",
                 UIMappings.AccessoryParents.Values.ToList(),
-                () => UIMappings.GetAccessoryParentIndex(PseudoMaker.selectedCharacterController.GetCurrentAccessoryParent(currentAccessoryNr)),
+                () => {
+                    var parent = PseudoMaker.selectedCharacterController.GetCurrentAccessoryParent(currentAccessoryNr);
+                    if (parent == "A12")
+                        parentDropdown.dropdown.options.First(x => x.text.StartsWith("A12")).text = $"A12: {Compatibility.A12GetBoneName(currentAccessoryNr)}";
+                    else if (!UIMappings.AccessoryParents.Keys.Contains(parent))
+                        parentDropdown.dropdown.options.First(x => x.text.StartsWith("Other")).text = $"Other: {parent}";
+
+                    return UIMappings.GetAccessoryParentIndex(parent);
+                },
                 index => {
                     if (index == UIMappings.AccessoryParents.Count - 1) return;
                     PseudoMaker.selectedCharacterController.SetAccessoryParent(currentAccessoryNr, UIMappings.AccessoryParents.ElementAt(index).Key);
@@ -206,6 +217,10 @@ namespace Plugins
 
         public void ChangeSelectedAccessory(int slotNr, bool exists)
         {
+            if (Compatibility.HasA12)
+                parentDropdown.dropdown.options.First(x => x.text.StartsWith("A12")).text = "A12";
+            parentDropdown.dropdown.options.First(x => x.text.StartsWith("Other")).text = "Other";
+
             currentAccessoryNr = slotNr;
             currentAccessoryExists = exists;
             currentAccessoryType = (ChaListDefine.CategoryNo)PseudoMaker.selectedCharacterController.GetCurrentAccessoryType(slotNr);

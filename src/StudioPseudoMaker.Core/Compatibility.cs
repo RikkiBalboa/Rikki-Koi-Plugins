@@ -1,10 +1,11 @@
-﻿using ChaCustom;
+﻿using BepInEx;
+using BepInEx.Bootstrap;
+using ChaCustom;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Security.AccessControl;
-using System.Text;
 
 namespace Plugins
 {
@@ -13,49 +14,66 @@ namespace Plugins
         public static CvsAccessory CvsAccessory;
         public static int SelectedSlotNr;
 
+        public static bool HasA12 { get; private set; }
+
         static Compatibility()
         {
-            CvsAccessory = new CvsAccessory();
-
-            A12ControllerType = Type.GetType("AAAAAAAAAAAA.CardDataController, AAAAAAAAAAAA.KoikatsuSunshine", throwOnError: false);
-            if (A12ControllerType != null)
-                A12CustomAccParentsField = A12ControllerType.GetField("customAccParents", AccessTools.all);
-            //A12HookPatchType = Type.GetType("AAAAAAAAAAAA.HookPatch+Maker, AAAAAAAAAAAA.KoikatsuSunshine", throwOnError: false);
-            //if (A12HookPatchType != null)
-            //{
-            //    A12CvsAccessoryAfterUpdateSelectAccessoryParent = A12HookPatchType.GetMethod("CvsAccessoryAfterUpdateSelectAccessoryParent", AccessTools.all);
-            //    A12MakerLoader = A12HookPatchType.GetField("makerLoaded", AccessTools.all);
-            //    A12MakerLoader?.SetValue(null, true);
-            //}
-
             C2AType = Type.GetType("KK_Plugins.ClothesToAccessoriesPlugin, KKS_ClothesToAccessories", throwOnError: false);
+
+            var plugins = Chainloader.PluginInfos.Values.Select(x => x.Instance)
+                .Where(plugin => plugin != null)
+                .Union(UnityEngine.Object.FindObjectsOfType(typeof(BaseUnityPlugin)).Cast<BaseUnityPlugin>())
+                .ToArray();
+            foreach (var plugin in plugins)
+                switch (plugin.Info.Metadata.GUID)
+                {
+                    case "starstorm.aaaaaaaaaaaa": HasA12 = true; break;
+                }
         }
 
         #region A12
-        public static Type A12ControllerType;
-        public static Type A12HookPatchType;
-        public static FieldInfo A12CustomAccParentsField;
-        public static FieldInfo A12MakerLoader;
-        public static MethodInfo A12CvsAccessoryAfterUpdateSelectAccessoryParent;
-
-        public static bool CheckA12Installed()
-        {
-            return A12ControllerType != null;
-        }
-
         public static Dictionary<int, Dictionary<int, string>> GetA12A12CustomAccParents()
         {
-            if (A12ControllerType == null) return null;
+            if (!HasA12) return null;
 
-            return A12CustomAccParentsField.GetValue(PseudoMaker.selectedCharacter.GetComponent(A12ControllerType)) as Dictionary<int, Dictionary<int, string>>;
+            return GetValue();
+            Dictionary<int, Dictionary<int, string>> GetValue()
+            {
+                return PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>().customAccParents;
+            }
         }
 
-        //public static void A12ChangeAccessoryParent()
-        //{
-        //    PseudoMaker.Logger.LogInfo($"Invoking A12 Parent Change: {A12CvsAccessoryAfterUpdateSelectAccessoryParent != null}");
-        //    A12CvsAccessoryAfterUpdateSelectAccessoryParent?.Invoke(null, new object[] { CvsAccessory, (int)1 });
-        //}
+        public static void A12ChangeAccessoryParent(int slotNr)
+        {
+            if (!HasA12) return;
+
+            RemoveData();
+            void RemoveData()
+            {
+                var coord = PseudoMaker.selectedCharacter.fileStatus.coordinateType;
+                var customAccParents = PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>().customAccParents;
+                if (customAccParents.ContainsKey(coord))
+                    customAccParents[coord].Remove(slotNr);
+            }
+        }
+
+        public static string A12GetBoneName(int slotNr)
+        {
+            if (!HasA12) return "";
+
+            return GetBoneName();
+            string GetBoneName()
+            {
+                var coord = PseudoMaker.selectedCharacter.fileStatus.coordinateType;
+                var customAccParents = PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>().customAccParents;
+                var dicHashBones = PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>().dicHashBones;
+                if (customAccParents.ContainsKey(coord))
+                    return dicHashBones[customAccParents[coord][slotNr]].bone.name;
+                return "Unknown";
+            }
+        }
         #endregion
+
         #region C2AA
         public static Type C2AType;
 

@@ -44,7 +44,7 @@ namespace Plugins
         public static ConfigEntry<float> UIScale { get; set; }
         public static ConfigEntry<int> PickerThumbnailSize { get; set; }
 
-        private static PseudoMaker instance;
+        internal static PseudoMaker instance;
         internal static PseudoMakerUI MainWindow;
         private static Button PseudoMakerStudioButton;
 
