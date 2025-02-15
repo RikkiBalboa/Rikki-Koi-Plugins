@@ -1,11 +1,10 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
 using ChaCustom;
-using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using UnityEngine;
 
 namespace Plugins
 {
@@ -61,15 +60,22 @@ namespace Plugins
         {
             if (!HasA12) return "";
 
-            return GetBoneName();
-            string GetBoneName()
+            return A12GetBoneTransform(slotNr)?.name ?? "Unknown";
+        }
+
+        public static Transform A12GetBoneTransform(int slotNr)
+        {
+            if (!HasA12) return null;
+
+            return GetBone();
+            Transform GetBone()
             {
                 var coord = PseudoMaker.selectedCharacter.fileStatus.coordinateType;
                 var customAccParents = PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>().customAccParents;
                 var dicHashBones = PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>().dicHashBones;
                 if (customAccParents.ContainsKey(coord))
-                    return dicHashBones[customAccParents[coord][slotNr]].bone.name;
-                return "Unknown";
+                    return dicHashBones[customAccParents[coord][slotNr]].bone;
+                return null;
             }
         }
         #endregion
