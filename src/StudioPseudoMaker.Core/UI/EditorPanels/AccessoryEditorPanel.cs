@@ -173,9 +173,9 @@ namespace Plugins
                 for (int i = 0; i < useCols.Length; i++)
                     colorRows[i].gameObject.SetActive(useCols[i] && !(matchHair && isHair));
 #if KKS
-                colorRows[6].SetActive(!(matchHair && isHair) && usesGloss);
+                colorRows[6].SetActive(!matchHair && isHair && usesGloss);
 #endif
-                colorRows[4].SetActive(!(matchHair && isHair));
+                colorRows[4].SetActive(!matchHair && isHair);
                 colorRows[5].SetActive(isHair && hasAccessoryPart);
                 hairAccessorySplitter.SetActive(isHair);
                 matchHairColorToggle.SetActive(isHair);
