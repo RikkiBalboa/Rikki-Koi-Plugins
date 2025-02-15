@@ -1064,6 +1064,13 @@ namespace Plugins
             return false;
         }
 
+        public void AccessorySwapParent(int slotNr)
+        {
+            var reverseParent = ChaAccessoryDefine.GetReverseParent(GetCurrentAccessoryParent(slotNr));
+            if (reverseParent != "")
+                SetAccessoryParent(slotNr, reverseParent);
+        }
+
         #region HairAccessoryCustomizer
         public bool GetAccessoryIsHair(int slotNr)
         {

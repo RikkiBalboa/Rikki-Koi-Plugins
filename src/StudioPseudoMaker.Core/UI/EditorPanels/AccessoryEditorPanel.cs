@@ -72,7 +72,10 @@ namespace Plugins
                     PseudoMaker.selectedCharacterController.SetAccessoryParent(currentAccessoryNr, UIMappings.AccessoryParents.ElementAt(index).Key);
                 }
             );
-            AddButtonRow("Swap Sides", () => { });
+            AddButtonRow("Swap Sides", () => {
+                PseudoMaker.selectedCharacterController.AccessorySwapParent(currentAccessoryNr);
+                RefreshPanel();
+            });
 
             AddSplitter();
             #endregion
