@@ -7,6 +7,7 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using MessagePack;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -628,12 +629,6 @@ namespace Plugins
         public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1, bool isPattern = false)
         {
             InitBaseCustomTextureClothesIfNotExists(kind);
-            PseudoMaker.Logger.LogInfo(kind);
-            PseudoMaker.Logger.LogInfo(colorNr);
-            PseudoMaker.Logger.LogInfo(color);
-            PseudoMaker.Logger.LogInfo(slotNr);
-            PseudoMaker.Logger.LogInfo(isPattern);
-            PseudoMaker.Logger.LogInfo(IsMultiPartTop(kind));
             var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
             if (MEController != null)
             {
@@ -1038,6 +1033,8 @@ namespace Plugins
 
         public string GetCurrentAccessoryParent(int slotNr)
         {
+            if (CheckAccessoryHasA12Parent(slotNr))
+                return "A12";
             if (slotNr >= 0)
                 return Accessories.parts[slotNr].parentKey;
             return "Unknown";
@@ -1053,8 +1050,18 @@ namespace Plugins
 
         public void SetAccessoryParent(int slotNr, string parentKey)
         {
+            //Compatibility.A12ChangeAccessoryParent();
             selectedCharacter.ChangeAccessoryParent(slotNr, parentKey);
             SetAccessories.parts[slotNr] = Accessories.parts[slotNr];
+        }
+
+        public bool CheckAccessoryHasA12Parent(int slotNr)
+        {
+            var customAccParents = Compatibility.GetA12A12CustomAccParents();
+
+            if (customAccParents != null && customAccParents.ContainsKey(CurrentOutfitSlot))
+                return customAccParents[CurrentOutfitSlot].ContainsKey(slotNr);
+            return false;
         }
 
         #region HairAccessoryCustomizer

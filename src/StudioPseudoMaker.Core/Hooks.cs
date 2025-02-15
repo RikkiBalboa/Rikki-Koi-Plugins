@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using ChaCustom;
+using HarmonyLib;
 using KK_Plugins;
 using System;
 using static KK_Plugins.HairAccessoryCustomizer;
@@ -66,6 +67,17 @@ namespace Plugins
         private static bool MakerGetCharacterControlPrefix(ref ChaControl __result)
         {
             __result = PseudoMaker.selectedCharacter;
+            return false;
+        }
+
+
+        [HarmonyPrefix]
+        [HarmonyPatch(MethodType.Getter)]
+        [HarmonyPatch(typeof(CvsAccessory), "nSlotNo")]
+        private static bool CvsAccessoryNSlotNoPrefix(ref int __result)
+        {
+            PseudoMaker.Logger.LogInfo($"Getting nSlotNo: {Compatibility.SelectedSlotNr}");
+            __result = Compatibility.SelectedSlotNr;
             return false;
         }
     }

@@ -480,32 +480,33 @@ namespace Plugins
             { "none", "Unknown" },
         };
 
-        internal static void AddC2AAccessoryTypes()
+        internal static void AddOtherPluginMappings()
         {
-            Type type = Type.GetType("KK_Plugins.ClothesToAccessoriesPlugin, KKS_ClothesToAccessories", throwOnError: false);
-            if (type == null) return;
+            if (Compatibility.CheckC2AInstalled())
+                AccessoryTypes.InsertRange(AccessoryTypes.Count - 1, new ChaListDefine.CategoryNo[]
+                {
+                    ChaListDefine.CategoryNo.bo_hair_b,
+                    ChaListDefine.CategoryNo.bo_hair_f,
+                    ChaListDefine.CategoryNo.bo_hair_s,
+                    ChaListDefine.CategoryNo.bo_hair_o,
+                    ChaListDefine.CategoryNo.co_top,
+                    ChaListDefine.CategoryNo.co_bot,
+                    ChaListDefine.CategoryNo.co_bra,
+                    ChaListDefine.CategoryNo.co_shorts,
+                    ChaListDefine.CategoryNo.co_gloves,
+                    ChaListDefine.CategoryNo.co_panst,
+                    ChaListDefine.CategoryNo.co_socks,
+                    ChaListDefine.CategoryNo.co_shoes,
+                    ChaListDefine.CategoryNo.cpo_sailor_a,
+                    ChaListDefine.CategoryNo.cpo_sailor_b,
+                    ChaListDefine.CategoryNo.cpo_sailor_c,
+                    ChaListDefine.CategoryNo.cpo_jacket_a,
+                    ChaListDefine.CategoryNo.cpo_jacket_b,
+                    ChaListDefine.CategoryNo.cpo_jacket_c,
+                });
 
-            AccessoryTypes.InsertRange(AccessoryTypes.Count - 1, new ChaListDefine.CategoryNo[]
-            {
-                ChaListDefine.CategoryNo.bo_hair_b,
-                ChaListDefine.CategoryNo.bo_hair_f,
-                ChaListDefine.CategoryNo.bo_hair_s,
-                ChaListDefine.CategoryNo.bo_hair_o,
-                ChaListDefine.CategoryNo.co_top,
-                ChaListDefine.CategoryNo.co_bot,
-                ChaListDefine.CategoryNo.co_bra,
-                ChaListDefine.CategoryNo.co_shorts,
-                ChaListDefine.CategoryNo.co_gloves,
-                ChaListDefine.CategoryNo.co_panst,
-                ChaListDefine.CategoryNo.co_socks,
-                ChaListDefine.CategoryNo.co_shoes,
-                ChaListDefine.CategoryNo.cpo_sailor_a,
-                ChaListDefine.CategoryNo.cpo_sailor_b,
-                ChaListDefine.CategoryNo.cpo_sailor_c,
-                ChaListDefine.CategoryNo.cpo_jacket_a,
-                ChaListDefine.CategoryNo.cpo_jacket_b,
-                ChaListDefine.CategoryNo.cpo_jacket_c,
-            });
+            if (Compatibility.CheckA12Installed())
+                AccessoryParents["A12"] = "A12";
         }
 
         public static string GetAccessoryTypeName(ChaListDefine.CategoryNo category)
@@ -556,7 +557,7 @@ namespace Plugins
         {
             if (AccessoryParents.ContainsKey(parentKey))
                 return AccessoryParents.Keys.ToList().IndexOf(parentKey);
-            return AccessoryParents.Count - 1;
+            return AccessoryParents.Keys.ToList().IndexOf("none");
         }
     }
 

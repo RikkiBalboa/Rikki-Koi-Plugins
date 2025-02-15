@@ -210,6 +210,7 @@ namespace Plugins
             currentAccessoryExists = exists;
             currentAccessoryType = (ChaListDefine.CategoryNo)PseudoMaker.selectedCharacterController.GetCurrentAccessoryType(slotNr);
             accessoryPicker.CategoryNo = currentAccessoryType;
+            Compatibility.SelectedSlotNr = slotNr;
             RefreshPanel();
         }
 
