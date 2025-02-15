@@ -96,6 +96,11 @@ namespace Plugins
             return buttonGroupComponent;
         }
 
+        public void AddButtonRow(string name, Action onPressAction)
+        {
+            AddButtonGroupRow(new Dictionary<string, Action>() { { name, onPressAction } });
+        }
+
         public ToggleComponent AddToggleRow(string name, Action<bool> onValueChanged, Func<bool> GetCurrentValue)
         {
             var toggleObject = Instantiate(ToggleOptionTemplate, ToggleOptionTemplate.transform.parent);

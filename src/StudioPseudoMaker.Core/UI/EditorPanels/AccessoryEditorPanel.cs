@@ -33,6 +33,7 @@ namespace Plugins
         {
             base.Initialize();
 
+            #region Accessory Selection
             AddDropdownRow(
                 "Type",
                 UIMappings.AccessoryTypes.Select(x => UIMappings.GetAccessoryTypeName(x)).ToList(),
@@ -56,10 +57,13 @@ namespace Plugins
                 UIMappings.AccessoryParents.Values.ToList(),
                 () => {
                     var parent = PseudoMaker.selectedCharacterController.GetCurrentAccessoryParent(currentAccessoryNr);
-                    if (parent == "A12")
-                        parentDropdown.dropdown.options.First(x => x.text.StartsWith("A12")).text = $"A12: {Compatibility.A12GetBoneName(currentAccessoryNr)}";
-                    else if (!UIMappings.AccessoryParents.Keys.Contains(parent))
-                        parentDropdown.dropdown.options.First(x => x.text.StartsWith("Other")).text = $"Other: {parent}";
+                    if (parentDropdown.dropdown.options.Count > 0)
+                    {
+                        if (parent == "A12")
+                            parentDropdown.dropdown.options.First(x => x.text.StartsWith("A12")).text = $"A12: {Compatibility.A12GetBoneName(currentAccessoryNr)}";
+                        else if (!UIMappings.AccessoryParents.Keys.Contains(parent))
+                            parentDropdown.dropdown.options.First(x => x.text.StartsWith("Other")).text = $"Other: {parent}";
+                    }
 
                     return UIMappings.GetAccessoryParentIndex(parent);
                 },
@@ -68,9 +72,12 @@ namespace Plugins
                     PseudoMaker.selectedCharacterController.SetAccessoryParent(currentAccessoryNr, UIMappings.AccessoryParents.ElementAt(index).Key);
                 }
             );
+            AddButtonRow("Swap Sides", () => { });
 
             AddSplitter();
+            #endregion
 
+            #region Accessory Colors
             colorRows = new List<GameObject>() {
                 AddColorRow("Color 1", 0).gameObject,
                 AddColorRow("Color 2", 1).gameObject,
@@ -82,7 +89,9 @@ namespace Plugins
             };
 
             colorSplitter = AddSplitter();
+            #endregion
 
+            #region Accessory Transforms
             transformHeader1 = AddHeaderToggle("Adjustment 1 ▶", value => tranformRows1.ForEach(x => x.SetActive(value)));
             var input = AddInputRow("X Location", 0, AccessoryTransform.Location, TransformVector.X);
             input.IncrementValue *= -1;
@@ -134,7 +143,9 @@ namespace Plugins
                     { "Reset All", () => ResetAll(1) },
                 }).gameObject,
             };
+            #endregion
 
+            #region HairAccessoryCustomizer
             hairAccessorySplitter = AddSplitter();
 
             matchHairColorToggle = AddToggleRow(
@@ -166,6 +177,7 @@ namespace Plugins
                 0,
                 1
             ).gameObject;
+            #endregion
         }
 
         private void OnEnable()
@@ -181,6 +193,7 @@ namespace Plugins
                 var usesGloss = PseudoMaker.selectedCharacterController.GetAccessoryUseGloss(currentAccessoryNr);
                 var hasAccessoryPart = PseudoMaker.selectedCharacterController.CheckAccessoryHasAccessoryPart(currentAccessoryNr);
 
+                // Color Stuff
                 for (int i = 0; i < useCols.Length; i++)
                     colorRows[i].gameObject.SetActive(useCols[i] && !(matchHair && isHair));
 #if KKS
@@ -188,17 +201,20 @@ namespace Plugins
 #endif
                 colorRows[4].SetActive(!matchHair && isHair);
                 colorRows[5].SetActive(isHair && hasAccessoryPart);
-                hairAccessorySplitter.SetActive(isHair);
-                matchHairColorToggle.SetActive(isHair);
-                useHairGlossToggle.SetActive(isHair);
-                hairLengthSlider.SetActive(isHair && hasLength);
-
                 colorSplitter.SetActive(useCols.Any(x => x == true && !(matchHair && isHair)));
+
+                // Transform stuff
                 transformHeader1.transform.parent.gameObject.SetActive(true);
                 tranformRows1.ForEach(x => x.SetActive(transformHeader1.isOn));
                 var hasSecondTransform = PseudoMaker.selectedCharacterController.CheckAccessoryUsesSecondTransform(currentAccessoryNr);
                 transformHeader2.transform.parent.gameObject.SetActive(hasSecondTransform);
                 tranformRows2.ForEach(x => x.SetActive(hasSecondTransform && transformHeader2.isOn));
+
+                // HairAccessoryCustomizer
+                hairAccessorySplitter.SetActive(isHair);
+                matchHairColorToggle.SetActive(isHair);
+                useHairGlossToggle.SetActive(isHair);
+                hairLengthSlider.SetActive(isHair && hasLength);
             }
             else
             {
@@ -217,9 +233,12 @@ namespace Plugins
 
         public void ChangeSelectedAccessory(int slotNr, bool exists)
         {
-            if (Compatibility.HasA12)
-                parentDropdown.dropdown.options.First(x => x.text.StartsWith("A12")).text = "A12";
-            parentDropdown.dropdown.options.First(x => x.text.StartsWith("Other")).text = "Other";
+            if (parentDropdown?.dropdown?.options?.Count > 0)
+            {
+                if (Compatibility.HasA12)
+                    parentDropdown.dropdown.options.First(x => x.text.StartsWith("A12")).text = "A12";
+                parentDropdown.dropdown.options.First(x => x.text.StartsWith("Other")).text = "Other";
+            }
 
             currentAccessoryNr = slotNr;
             currentAccessoryExists = exists;
