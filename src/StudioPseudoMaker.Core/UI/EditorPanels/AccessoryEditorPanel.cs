@@ -315,7 +315,7 @@ namespace Plugins
                 () => PseudoMaker.selectedCharacterController.GetAccessoryColor(currentAccessoryNr, colorNr),
                 () => PseudoMaker.selectedCharacterController.GetOriginalAccessoryColor(currentAccessoryNr, colorNr),
                 c => PseudoMaker.selectedCharacterController.SetAccessoryColor(currentAccessoryNr, colorNr, c),
-                () => PseudoMaker.selectedCharacterController.ResetAcessoryColor(currentAccessoryNr, colorNr, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed())
+                () => PseudoMaker.selectedCharacterController.ResetAcessoryColor(currentAccessoryNr, colorNr, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed())
             );
         }
 
@@ -409,15 +409,15 @@ namespace Plugins
 
         private void ResetAll(int correctNr)
         {
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.X, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.Y, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.Z, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.X, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Y, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Z, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.X, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.Y, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
-            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.Z, getDefault: PseudoMaker.KeyToggleGui.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.X, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.Y, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.Z, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.X, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Y, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Z, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.X, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.Y, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+            PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Scale, TransformVector.Z, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
             RefreshPanel();
         }
 

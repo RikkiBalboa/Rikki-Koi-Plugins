@@ -61,7 +61,7 @@ namespace Plugins
                 new KeyboardShortcut(KeyCode.Q, KeyCode.RightControl),
                 new ConfigDescription("Open a window to control KKPRim values on selected characters/objects")
             );
-            KeyToggleGui = Config.Bind(
+            KeyAltReset = Config.Bind(
                 "Keyboard Shortcuts", "Alt reset function",
                 new KeyboardShortcut(KeyCode.LeftShift),
                 new ConfigDescription("When pressing the 'reset' button on certain values, it will use the actual default value instead of the stored original value (like how it works in maker)")
@@ -135,6 +135,8 @@ namespace Plugins
                 selectedHairAccessoryController = selectedCharacter.gameObject.GetComponent<KK_Plugins.HairAccessoryCustomizer.HairAccessoryController>();
                 MainWindow.RefreshValues();
             }
+            if (KeyToggleGui.Value.IsDown()) 
+                OpenUI();
         }
 
         private void RegisterStudioControls()
@@ -212,13 +214,16 @@ namespace Plugins
             icon.color = Color.white;
 
             PseudoMakerStudioButton.onClick = new Button.ButtonClickedEvent();
-            PseudoMakerStudioButton.onClick.AddListener(() => {
-                if (StudioAPI.GetSelectedCharacters().Count() > 0)
-                {
-                    SetUIScale();
-                    MainWindow.gameObject.SetActive(true);
-                }
-            });
+            PseudoMakerStudioButton.onClick.AddListener(OpenUI);
+        }
+
+        private static void OpenUI()
+        {
+            if (StudioAPI.GetSelectedCharacters().Count() > 0)
+            {
+                SetUIScale();
+                MainWindow.gameObject.SetActive(true);
+            }
         }
 
 #if DEBUG
