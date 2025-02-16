@@ -75,7 +75,6 @@ namespace Plugins
         [HarmonyPatch(typeof(CvsAccessory), "nSlotNo")]
         private static bool CvsAccessoryNSlotNoPrefix(ref int __result)
         {
-            PseudoMaker.Logger.LogInfo($"Getting nSlotNo: {Compatibility.SelectedSlotNr}");
             __result = Compatibility.SelectedSlotNr;
             return false;
         }

@@ -89,7 +89,6 @@ namespace Plugins
 
             private void OnChangeFilter(string filter)
             {
-                PseudoMaker.Logger.LogInfo(filter);
                 if (string.IsNullOrEmpty(filter))
                     filter = "*";
 

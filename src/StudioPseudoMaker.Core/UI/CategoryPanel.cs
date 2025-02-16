@@ -34,16 +34,19 @@ namespace Plugins
 
             foreach (var subCategory in GetSubCategories())
             {
-                var go = Instantiate(toggleTemplate);
-                go.transform.SetParent(PanelScroll.content, false);
+                if (Category != Category.Accessories)
+                {
+                    var go = Instantiate(toggleTemplate);
+                    go.transform.SetParent(PanelScroll.content, false);
 
-                var toggle = go.GetComponent<Toggle>();
-                toggle.onValueChanged.AddListener((change) => SubCategoryToggleValueChanged(subCategory));
-                toggle.group = PanelToggleGroup;
-                toggles.Add(toggle);
+                    var toggle = go.GetComponent<Toggle>();
+                    toggle.onValueChanged.AddListener((change) => SubCategoryToggleValueChanged(subCategory));
+                    toggle.group = PanelToggleGroup;
+                    toggles.Add(toggle);
 
-                var text = go.GetComponentInChildren<Text>(true);
-                text.text = UIMappings.GetSubcategoryName(subCategory);
+                    var text = go.GetComponentInChildren<Text>(true);
+                    text.text = UIMappings.GetSubcategoryName(subCategory);
+                }
 
                 var panel = Instantiate(editorPanelTemplate);
                 panel.SetActive(false);
@@ -57,7 +60,6 @@ namespace Plugins
                 else if (Category == Category.Clothing) editorPanel = panel.AddComponent<ClothingEditorPanel>();
                 else if (Category == Category.Accessories)
                 {
-                    toggle.onValueChanged.RemoveAllListeners();
                     editorPanel = panel.AddComponent<AccessoryEditorPanel>();
                     editorPanel.gameObject.SetActive(true);
                     var accessoryPanel = SubCategorySelectorPanel.AddComponent<AccessoryPanel>();

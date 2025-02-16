@@ -658,7 +658,6 @@ namespace Plugins
                 SetClothes.parts[kind].colorInfo[colorNr].baseColor = color;
                 if (!IsMultiPartTop(kind))
                 {
-                    PseudoMaker.Logger.LogInfo("AAAAAAAAAAAAAAAAAAAAAA");
                     ChaControl.ChangeCustomClothes(true, kind, true, true, true, true, true);
                 }
                 else

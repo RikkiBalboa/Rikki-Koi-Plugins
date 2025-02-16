@@ -1,4 +1,5 @@
 ﻿using KKAPI.Utilities;
+using NodeCanvas.Tasks.Actions;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Plugins
         public ScrollRect PanelScroll;
         public ToggleGroup PanelToggleGroup;
 
+        private List<Toggle> toggles = new List<Toggle>();
+
         private void Awake()
         {
             gameObject.name = "AccessorySelectorPanel";
@@ -26,15 +29,37 @@ namespace Plugins
 
         private void OnEnable()
         {
-            clearChildren();
-            var toggles = new List<Toggle>();
             var accessories = PseudoMaker.selectedCharacter.infoAccessory;
-            for (int i = 0; i < accessories.Length; i++)
+            int processedAccessories = 0;
+
+            for (int i = 0; i < toggles.Count && i < accessories.Length; i++)
+            {
+                var _i = i;
+                var accessory = accessories[i];
+
+                toggles[i].onValueChanged.RemoveAllListeners();
+                toggles[i].onValueChanged.AddListener((change) =>
+                {
+                    editorPanel?.ChangeSelectedAccessory(_i, accessory != null);
+                });
+
+                var text = toggles[i].gameObject.GetComponentInChildren<Text>(true);
+                if (accessory != null)
+                {
+                    text.text = $"{i + 1}. {accessory.Name}";
+                    TranslationHelper.TranslateAsync(accessory.Name, value => text.text = $"{i + 1}. {value}");
+                }
+                else text.text = $"Slot {i + 1}";
+                processedAccessories++;
+            }
+
+            for (int i = processedAccessories; i < accessories.Length; i++)
             {
                 var _i = i;
                 var accessory = accessories[i];
 
                 var go = Instantiate(ToggleTemplate, PanelScroll.content, false);
+                go.name = $"AccessoryToggle{i}";
                 go.SetActive(true);
 
                 var text = go.GetComponentInChildren<Text>(true);
@@ -56,29 +81,15 @@ namespace Plugins
                 });
                 toggle.group = PanelToggleGroup;
                 toggles.Add(toggle);
+                processedAccessories++;
             }
-            toggles[0].isOn = true;
+
+            for (var i = toggles.Count - 1; i >= processedAccessories; i--)
+            {
+                Destroy(toggles[i].gameObject);
+                toggles.RemoveAt(i);
+            }
+            //toggles[0].isOn = true;
         }
-
-        private void clearChildren()
-        {
-            int i = 0;
-
-            //Array to hold all child obj
-            GameObject[] allChildren = new GameObject[PanelScroll.content.childCount];
-
-            //Find all child obj and store to that array
-            foreach (Transform child in PanelScroll.content)
-            {
-                allChildren[i] = child.gameObject;
-                i += 1;
-            }
-
-            //Now destroy them
-            foreach (GameObject child in allChildren.Skip(1))
-            {
-                DestroyImmediate(child.gameObject);
-            }
-        } 
     }
 }
