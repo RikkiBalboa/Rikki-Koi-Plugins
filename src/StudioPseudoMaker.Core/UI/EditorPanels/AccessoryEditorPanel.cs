@@ -196,6 +196,9 @@ namespace Plugins
 
         private void OnEnable()
         {
+            if (currentAccessoryNr > PseudoMaker.selectedCharacter.infoAccessory.Length)
+                currentAccessoryNr = 0;
+
             accessoryPicker.gameObject.SetActive(currentAccessoryType != ChaListDefine.CategoryNo.ao_none);
 
             if (currentAccessoryExists)
