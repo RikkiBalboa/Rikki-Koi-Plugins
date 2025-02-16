@@ -61,6 +61,7 @@ namespace Plugins
                         keepParent
                     );
                     ChangeSelectedAccessory(currentAccessoryNr, UIMappings.AccessoryTypes[index]);
+                    AccessoryPanel.UpdateSlotName(currentAccessoryNr);
                 }
             );
 
@@ -368,6 +369,7 @@ namespace Plugins
                     value.index,
                     keepParent
                 );
+                AccessoryPanel.UpdateSlotName(currentAccessoryNr);
                 RefreshPanel();
             };
 

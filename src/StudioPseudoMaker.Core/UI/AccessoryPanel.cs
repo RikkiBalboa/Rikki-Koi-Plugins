@@ -16,7 +16,7 @@ namespace Plugins
         public ScrollRect PanelScroll;
         public ToggleGroup PanelToggleGroup;
 
-        private List<Toggle> toggles = new List<Toggle>();
+        private static List<Toggle> toggles = new List<Toggle>();
 
         private void Awake()
         {
@@ -44,12 +44,7 @@ namespace Plugins
                 });
 
                 var text = toggles[i].gameObject.GetComponentInChildren<Text>(true);
-                if (accessory != null)
-                {
-                    text.text = $"{i + 1}. {accessory.Name}";
-                    TranslationHelper.TranslateAsync(accessory.Name, value => text.text = $"{i + 1}. {value}");
-                }
-                else text.text = $"Slot {i + 1}";
+                SetAccessoryName(i, text);
                 processedAccessories++;
             }
 
@@ -66,12 +61,7 @@ namespace Plugins
                 text.resizeTextMaxSize = 14;
                 text.resizeTextForBestFit = true;
                 text.resizeTextMinSize = 6;
-                if (accessory != null)
-                {
-                    text.text = $"{i + 1}. {accessory.Name}";
-                    TranslationHelper.TranslateAsync(accessory.Name, value => text.text = $"{i + 1}. {value}");
-                }
-                else text.text = $"Slot {i + 1}";
+                SetAccessoryName(i, text);
 
                 var toggle = go.GetComponent<Toggle>();
                 toggle.isOn = false;
@@ -89,6 +79,23 @@ namespace Plugins
                 Destroy(toggles[i].gameObject);
                 toggles.RemoveAt(i);
             }
+        }
+
+        private static void SetAccessoryName(int slotNr, Text text)
+        {
+            var accessory = PseudoMaker.selectedCharacter.infoAccessory[slotNr];
+            if (accessory != null)
+            {
+                text.text = $"{slotNr + 1}. {accessory.Name}";
+                TranslationHelper.TranslateAsync(accessory.Name, value => text.text = $"{slotNr + 1}. {value}");
+            }
+            else text.text = $"Slot {slotNr + 1}";
+        }
+
+        public static void UpdateSlotName(int slotNr)
+        {
+            if (slotNr < toggles.Count)
+                SetAccessoryName(slotNr, toggles[slotNr].gameObject.GetComponentInChildren<Text>(true));
         }
     }
 }
