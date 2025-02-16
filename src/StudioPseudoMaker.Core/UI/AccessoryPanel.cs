@@ -89,7 +89,6 @@ namespace Plugins
                 Destroy(toggles[i].gameObject);
                 toggles.RemoveAt(i);
             }
-            //toggles[0].isOn = true;
         }
     }
 }

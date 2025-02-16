@@ -34,7 +34,21 @@ namespace Plugins
 
             foreach (var subCategory in GetSubCategories())
             {
-                if (Category != Category.Accessories)
+                BaseEditorPanel editorPanel;
+
+                var panel = Instantiate(editorPanelTemplate);
+                panel.SetActive(false);
+                panel.name = $"Category{subCategory}Editor";
+                panel.transform.SetParent(editorPanelTemplate.transform.parent, false);
+
+                if (Category == Category.Accessories)
+                {
+                    editorPanel = panel.AddComponent<AccessoryEditorPanel>();
+                    editorPanel.gameObject.SetActive(true);
+                    var accessoryPanel = SubCategorySelectorPanel.AddComponent<AccessoryPanel>();
+                    accessoryPanel.editorPanel = editorPanel as AccessoryEditorPanel;
+                }
+                else
                 {
                     var go = Instantiate(toggleTemplate);
                     go.transform.SetParent(PanelScroll.content, false);
@@ -46,26 +60,13 @@ namespace Plugins
 
                     var text = go.GetComponentInChildren<Text>(true);
                     text.text = UIMappings.GetSubcategoryName(subCategory);
-                }
 
-                var panel = Instantiate(editorPanelTemplate);
-                panel.SetActive(false);
-                panel.name = $"Category{subCategory}Editor";
-                panel.transform.SetParent(editorPanelTemplate.transform.parent, false);
-
-                BaseEditorPanel editorPanel;
-                if (Category == Category.Body) editorPanel = panel.AddComponent<BodyEditorPanel>();
-                else if (Category == Category.Face) editorPanel = panel.AddComponent<FaceEditorPanel>();
-                else if (Category == Category.Hair) editorPanel = panel.AddComponent<HairEditorPanel>();
-                else if (Category == Category.Clothing) editorPanel = panel.AddComponent<ClothingEditorPanel>();
-                else if (Category == Category.Accessories)
-                {
-                    editorPanel = panel.AddComponent<AccessoryEditorPanel>();
-                    editorPanel.gameObject.SetActive(true);
-                    var accessoryPanel = SubCategorySelectorPanel.AddComponent<AccessoryPanel>();
-                    accessoryPanel.editorPanel = editorPanel as AccessoryEditorPanel;
+                    if (Category == Category.Body) editorPanel = panel.AddComponent<BodyEditorPanel>();
+                    else if (Category == Category.Face) editorPanel = panel.AddComponent<FaceEditorPanel>();
+                    else if (Category == Category.Hair) editorPanel = panel.AddComponent<HairEditorPanel>();
+                    else if (Category == Category.Clothing) editorPanel = panel.AddComponent<ClothingEditorPanel>();
+                    else editorPanel = panel.AddComponent<BaseEditorPanel>();
                 }
-                else editorPanel = panel.AddComponent<BaseEditorPanel>();
 
                 editorPanel.SubCategory = subCategory;
                 SubCategoryPanels[subCategory] = editorPanel;
