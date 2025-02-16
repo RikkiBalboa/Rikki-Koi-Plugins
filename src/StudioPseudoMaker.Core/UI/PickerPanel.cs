@@ -26,7 +26,7 @@ namespace Plugins
         public Button DecreaseSizeButton;
         public Button IncreaseSizeButton;
         public Button CurrentButton;
-        public InputField SearchField;
+        public static InputField SearchField;
         public Button ClearButton;
         public static ScrollRect ScrollRect;
         public GridLayoutGroup GridLayoutGroup;
@@ -74,6 +74,7 @@ namespace Plugins
             isDirty = true;
             instance.gameObject.SetActive(true);
             ScrollRect.content.localPosition = Vector2.zero;
+            SearchField.text = "";
             shouldScroll = true;
         }
 
@@ -263,6 +264,8 @@ namespace Plugins
         private bool FilterInfo(CustomSelectInfo info, string search)
         {
             var show = false;
+            if (info == null) return show;
+
             show |= info.name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
             //show |= info.assetBundle.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
 
@@ -270,10 +273,8 @@ namespace Plugins
                 show |= translation.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
 
             var _info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)info.category, info.index);
-            if (_info != null)
-            {
-                show |= _info.Author.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
-            }
+            show |= _info?.Author?.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
             return show;
         }
 
