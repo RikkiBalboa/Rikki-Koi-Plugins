@@ -1044,8 +1044,9 @@ namespace Plugins
             return "Unknown";
         }
 
-        public void SetAccessory(int slotNr, int type, int id, string parentKey)
+        public void SetAccessory(int slotNr, int type, int id, bool keepParent)
         {
+            var parentKey = keepParent ? PseudoMaker.selectedCharacterController.GetCurrentAccessoryParent(slotNr) : "";
             selectedCharacter.ChangeAccessory(slotNr, type, id, parentKey);
             typeof(AccessoriesApi).GetMethod("OnAccessoryKindChanged", AccessTools.all).Invoke(null, new object[] { this, slotNr });
 

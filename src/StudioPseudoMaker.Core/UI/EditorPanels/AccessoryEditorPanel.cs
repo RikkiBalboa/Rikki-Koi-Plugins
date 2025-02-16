@@ -34,12 +34,20 @@ namespace Plugins
 
         private bool isRefreshing = false;
         private bool[] showingGuideObject = { false, false };
+        private bool keepParent = false;
+        private bool keepColor = true;
 
         protected override void Initialize()
         {
             base.Initialize();
 
             #region Accessory Selection
+            AddToggleRow(
+                "Use Previous Parent When Changing Accessory Type",
+                value => keepParent = value,
+                () => keepParent
+            );
+
             AddDropdownRow(
                 "Type",
                 UIMappings.AccessoryTypes.Select(x => UIMappings.GetAccessoryTypeName(x)).ToList(),
@@ -50,7 +58,7 @@ namespace Plugins
                         currentAccessoryNr,
                         (int)UIMappings.AccessoryTypes[index],
                         0,
-                        ""
+                        keepParent
                     );
                     ChangeSelectedAccessory(currentAccessoryNr, UIMappings.AccessoryTypes[index]);
                 }
@@ -354,7 +362,12 @@ namespace Plugins
             pickerComponent.GetCurrentValue = () => PseudoMaker.selectedCharacterController.GetCurrentAccessoryId(currentAccessoryNr);
             pickerComponent.SetCurrentValue = (value) =>
             {
-                PseudoMaker.selectedCharacterController.SetAccessory(currentAccessoryNr, (int)currentAccessoryType, value.index, "");
+                PseudoMaker.selectedCharacterController.SetAccessory(
+                    currentAccessoryNr,
+                    (int)currentAccessoryType,
+                    value.index,
+                    keepParent
+                );
                 RefreshPanel();
             };
 
