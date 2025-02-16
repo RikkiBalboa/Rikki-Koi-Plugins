@@ -217,6 +217,7 @@ namespace Plugins
 #if DEBUG
         private void OnDestroy()
         {
+            AccessoryGuideObjectManager.DestroyGuideObject();
             if (PseudoMakerStudioButton.gameObject != null) Destroy(PseudoMakerStudioButton.gameObject);
             if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow.gameObject);
             foreach (var controller in PseudoMakerCharaController.allControllers)

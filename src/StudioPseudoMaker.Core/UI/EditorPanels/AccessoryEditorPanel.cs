@@ -1,10 +1,10 @@
-﻿using ADV.Commands.Object;
+﻿using KKAPI.Studio;
+using Studio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static RootMotion.Demos.Turret;
 
 namespace Plugins
 {
@@ -24,10 +24,16 @@ namespace Plugins
         private GameObject colorSplitter;
         private Toggle transformHeader1;
         private List<GameObject> tranformRows1;
+        private ToggleComponent transform1GuideObjectToggle;
         private Toggle transformHeader2;
         private List<GameObject> tranformRows2;
+        private ToggleComponent transform2GuideObjectToggle;
         private PickerComponent accessoryPicker;
         private DropdownComponent parentDropdown;
+        private ToggleGroup guideObjectToggleGroup;
+
+        private bool isRefreshing = false;
+        private bool[] showingGuideObject = { false, false };
 
         protected override void Initialize()
         {
@@ -95,6 +101,9 @@ namespace Plugins
             #endregion
 
             #region Accessory Transforms
+            guideObjectToggleGroup = gameObject.AddComponent<ToggleGroup>();
+            guideObjectToggleGroup.allowSwitchOff = true;
+
             transformHeader1 = AddHeaderToggle("Adjustment 1 ▶", value => tranformRows1.ForEach(x => x.SetActive(value)));
             var input = AddInputRow("X Location", 0, AccessoryTransform.Location, TransformVector.X);
             input.IncrementValue *= -1;
@@ -120,6 +129,7 @@ namespace Plugins
                     { "Reset All", () => ResetAll(0) },
                 }).gameObject,
             };
+            transform1GuideObjectToggle = AddToggleRow(0);
 
             transformHeader2 = AddHeaderToggle("Adjustment 2 ▶", value => tranformRows2.ForEach(x => x.SetActive(value)));
             var input2 = AddInputRow("X Location", 1, AccessoryTransform.Location, TransformVector.X);
@@ -146,6 +156,7 @@ namespace Plugins
                     { "Reset All", () => ResetAll(1) },
                 }).gameObject,
             };
+            transform2GuideObjectToggle = AddToggleRow(1);
             #endregion
 
             #region HairAccessoryCustomizer
@@ -209,9 +220,11 @@ namespace Plugins
                 // Transform stuff
                 transformHeader1.transform.parent.gameObject.SetActive(true);
                 tranformRows1.ForEach(x => x.SetActive(transformHeader1.isOn));
+                transform1GuideObjectToggle.gameObject.SetActive(true);
                 var hasSecondTransform = PseudoMaker.selectedCharacterController.CheckAccessoryUsesSecondTransform(currentAccessoryNr);
                 transformHeader2.transform.parent.gameObject.SetActive(hasSecondTransform);
                 tranformRows2.ForEach(x => x.SetActive(hasSecondTransform && transformHeader2.isOn));
+                transform2GuideObjectToggle.gameObject.SetActive(hasSecondTransform);
 
                 // HairAccessoryCustomizer
                 hairAccessorySplitter.SetActive(isHair);
@@ -229,9 +242,18 @@ namespace Plugins
                 colorSplitter.SetActive(false);
                 transformHeader1.transform.parent.gameObject.SetActive(false);
                 tranformRows1.ForEach(x => x.SetActive(false));
+                transform1GuideObjectToggle.gameObject.SetActive(false);
                 transformHeader2.transform.parent.gameObject.SetActive(false);
                 tranformRows2.ForEach(x => x.SetActive(false));
+                transform2GuideObjectToggle.gameObject.SetActive(false);
             }
+        }
+
+        private void OnDisable()
+        {
+            //if (PseudoMakerUI.CurrentCategory != Category.Accessories)
+            if (!isRefreshing)
+                AccessoryGuideObjectManager.DestroyGuideObject();
         }
 
         public void ChangeSelectedAccessory(int slotNr, bool exists)
@@ -248,12 +270,30 @@ namespace Plugins
             currentAccessoryType = (ChaListDefine.CategoryNo)PseudoMaker.selectedCharacterController.GetCurrentAccessoryType(slotNr);
             accessoryPicker.CategoryNo = currentAccessoryType;
             Compatibility.SelectedSlotNr = slotNr;
+            transform1GuideObjectToggle.toggle.isOn = false;
+            transform2GuideObjectToggle.toggle.isOn = false;
             RefreshPanel();
         }
 
         public void ChangeSelectedAccessory(int slotNr, ChaListDefine.CategoryNo categoryNr)
         {
             ChangeSelectedAccessory(slotNr, categoryNr != ChaListDefine.CategoryNo.ao_none);
+        }
+
+        private ToggleComponent AddToggleRow(int correctNr)
+        {
+            var toggle = AddToggleRow(
+                $"Show Control Axis {correctNr + 1}",
+                value =>
+                {
+                    showingGuideObject[correctNr] = value;
+                    if (value) AccessoryGuideObjectManager.CreateGuideObject(currentAccessoryNr, correctNr, RefreshPanel);
+                    else AccessoryGuideObjectManager.DestroyGuideObject();
+                },
+                () => showingGuideObject[correctNr]
+            );
+            toggle.toggle.group = guideObjectToggleGroup;
+            return toggle;
         }
 
         private ColorComponent AddColorRow(string name, int colorNr)
@@ -288,7 +328,7 @@ namespace Plugins
 
             var input = AddInputRow(
                 name,
-                () => PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNo, transform, vector),
+                () => PseudoMaker.selectedCharacterController.GetAccessoryTransformValue(currentAccessoryNr, correctNo, transform, vector),
                 () => PseudoMaker.selectedCharacterController.GetOriginalAccessoryTransform(currentAccessoryNr, correctNo, transform, vector),
                 value => PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNo, value, transform, vector),
                 () => PseudoMaker.selectedCharacterController.ResetAcessoryTransform(currentAccessoryNr, correctNo, transform, vector),
@@ -340,9 +380,9 @@ namespace Plugins
 
         private void Mirror(int correctNr)
         {
-            var currentXPos = PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.X);
-            var currentYRot = PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Y);
-            var currentZRot = PseudoMaker.selectedCharacterController.GetAccessoryTransform(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Z);
+            var currentXPos = PseudoMaker.selectedCharacterController.GetAccessoryTransformValue(currentAccessoryNr, correctNr, AccessoryTransform.Location, TransformVector.X);
+            var currentYRot = PseudoMaker.selectedCharacterController.GetAccessoryTransformValue(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Y);
+            var currentZRot = PseudoMaker.selectedCharacterController.GetAccessoryTransformValue(currentAccessoryNr, correctNr, AccessoryTransform.Rotation, TransformVector.Z);
 
             PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, currentXPos * -1, AccessoryTransform.Location, TransformVector.X);
             PseudoMaker.selectedCharacterController.SetAccessoryTransform(currentAccessoryNr, correctNr, 360 - currentYRot, AccessoryTransform.Rotation, TransformVector.Y);
@@ -365,8 +405,10 @@ namespace Plugins
 
         public void RefreshPanel()
         {
+            isRefreshing = true;
             gameObject.SetActive(false);
             gameObject.SetActive(true);
+            isRefreshing = false;
         }
     }
 }

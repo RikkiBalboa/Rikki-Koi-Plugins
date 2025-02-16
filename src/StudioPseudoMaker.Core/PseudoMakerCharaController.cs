@@ -942,7 +942,7 @@ namespace Plugins
         {
             var accessoryKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, 0, correctNr, transform, vector);
             if (!OriginalAccessoryFloats.Any(x => x.Key == accessoryKey))
-                OriginalAccessoryFloats[accessoryKey] = new FloatStorage(GetAccessoryTransform(slotNr, correctNr, transform, vector), value);
+                OriginalAccessoryFloats[accessoryKey] = new FloatStorage(GetAccessoryTransformValue(slotNr, correctNr, transform, vector), value);
             else
                 OriginalAccessoryFloats[accessoryKey].Value = value;
 
@@ -983,7 +983,7 @@ namespace Plugins
             SetAccessoryTransform(slotNr, correctNr, value.z, transform, TransformVector.Z);
         }
 
-        public float GetAccessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
+        public float GetAccessoryTransformValue(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
         {
             switch (vector)
             {
@@ -995,6 +995,11 @@ namespace Plugins
                     return Accessories.parts[slotNr].addMove[correctNr, (int)transform].z;
             }
             return 0f;
+        }
+
+        public Transform GetAccessoryTransform(int slotNr, int correctNr)
+        {
+            return selectedCharacter.objAcsMove[slotNr, correctNr].transform;
         }
 
         public void ResetAcessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
@@ -1009,7 +1014,7 @@ namespace Plugins
             var accessoryKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, 0, correctNr, transform, vector);
             if (OriginalAccessoryFloats.TryGetValue(accessoryKey, out var key))
                 return key.OriginalValue;
-            return GetAccessoryTransform(slotNr, correctNr, transform, vector);
+            return GetAccessoryTransformValue(slotNr, correctNr, transform, vector);
         }
 
         public bool CheckAccessoryUsesSecondTransform(int slotNr)

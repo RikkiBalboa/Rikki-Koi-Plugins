@@ -9,6 +9,7 @@
     <Import_RootNamespace>Core.StudioPseudoMaker</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AccessoryGuideObjectManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compatibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hooks.cs" />

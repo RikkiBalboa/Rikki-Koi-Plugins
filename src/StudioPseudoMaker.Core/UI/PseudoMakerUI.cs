@@ -24,6 +24,8 @@ namespace Plugins
 
         public Dictionary<Category, CategoryPanel> CategoryPanels = new Dictionary<Category, CategoryPanel>();
 
+        public static Category CurrentCategory {  get; private set; }
+
         public void Awake()
         {
             MainCanvas = (RectTransform)MainWindow.transform.Find("MainCanvas").transform;
@@ -100,6 +102,7 @@ namespace Plugins
             foreach (var panel in CategoryPanels)
                 panel.Value.gameObject.SetActive(false);
             CategoryPanels[category].gameObject.SetActive(true);
+            CurrentCategory = category;
         }
 
         public static GameObject Initialize()

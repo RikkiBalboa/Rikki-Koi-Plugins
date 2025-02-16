@@ -10,7 +10,7 @@ namespace Plugins
         public Action<bool> SetValueAction;
         public Func<bool> GetCurrentValue;
 
-        private Toggle toggle;
+        public Toggle toggle;
         private Text label;
 
         private void Awake()
