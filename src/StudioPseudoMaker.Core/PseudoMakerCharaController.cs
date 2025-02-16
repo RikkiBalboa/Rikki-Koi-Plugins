@@ -1,4 +1,5 @@
-﻿using ChaCustom;
+﻿using ADV.Commands.Camera;
+using ChaCustom;
 using ExtensibleSaveFormat;
 using HarmonyLib;
 using KK_Plugins.MaterialEditor;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static ChaCustom.CustomSelectKind;
+using static Illusion.Component.UI.MouseButtonCheck;
 using static Plugins.PseudoMaker;
 
 namespace Plugins
@@ -734,11 +736,17 @@ namespace Plugins
             return Accessories.parts[slotNr].color[colorNr];
         }
 
-        public void ResetClothingColor(int kind, int colorNr, int slotNr = -1, bool isPattern = false)
+        public void ResetClothingColor(int kind, int colorNr, int slotNr = -1, bool isPattern = false, bool getDefault = false)
         {
-            var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
-            if (OriginalClothingColors.TryGetValue(clothingColors, out var color))
-                SetClothingColor(kind, colorNr, color.OriginalValue, slotNr, isPattern);
+            Color color = Color.white;
+            if (getDefault && !isPattern)
+                color = selectedCharacter.GetClothesDefaultColor(kind, colorNr);
+            else {
+                var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
+                if (OriginalClothingColors.TryGetValue(clothingColors, out var clothingColor))
+                    color = clothingColor.OriginalValue;
+            }
+            SetClothingColor(kind, colorNr, color, slotNr, isPattern);
         }
 
         public Color GetOriginalClothingColor(int kind, int colorNr, int slotNr = -1, bool isPattern = false)
@@ -903,11 +911,18 @@ namespace Plugins
             return Color.black;
         }
 
-        public void ResetAcessoryColor(int slotNr, int colorNr)
+        public void ResetAcessoryColor(int slotNr, int colorNr, bool getDefault = false)
         {
-            var accessoryColor = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
-            if (OriginalAccessoryColors.TryGetValue(accessoryColor, out var color))
-                SetAccessoryColor(slotNr, colorNr, color.OriginalValue);
+            Color color = Color.white;
+            if (getDefault)
+                selectedCharacter.GetAccessoryDefaultColor(ref color, slotNr, colorNr);
+            else
+            {
+                var colorKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
+                if (OriginalAccessoryColors.TryGetValue(colorKey, out var accessoryColor))
+                    color = accessoryColor.OriginalValue;
+            }
+            SetAccessoryColor(slotNr, colorNr, color);
         }
 
         public Color GetOriginalAccessoryColor(int slotNr, int colorNr)
@@ -1001,11 +1016,21 @@ namespace Plugins
             return selectedCharacter.objAcsMove[slotNr, correctNr].transform;
         }
 
-        public void ResetAcessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)
+        public void ResetAcessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector, bool getDefault = false)
         {
-            var accessoryKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, 0, correctNr, transform, vector);
-            if (OriginalAccessoryFloats.TryGetValue(accessoryKey, out var key))
-                SetAccessoryTransform(slotNr, correctNr, key.OriginalValue, transform, vector);
+            float originalValue = 0f;
+            if (getDefault)
+            {
+                if (transform == AccessoryTransform.Scale)
+                    originalValue = 1f;
+            }
+            else
+            {
+                var accessoryKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, 0, correctNr, transform, vector);
+                if (OriginalAccessoryFloats.TryGetValue(accessoryKey, out var key))
+                    originalValue = key.OriginalValue;
+            }
+            SetAccessoryTransform(slotNr, correctNr, originalValue, transform, vector);
         }
 
         public float GetOriginalAccessoryTransform(int slotNr, int correctNr, AccessoryTransform transform, TransformVector vector)

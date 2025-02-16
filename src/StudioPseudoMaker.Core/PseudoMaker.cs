@@ -37,6 +37,7 @@ namespace Plugins
         internal static KK_Plugins.HairAccessoryCustomizer.HairAccessoryController selectedHairAccessoryController;
 
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> KeyAltReset { get; private set; }
         public static ConfigEntry<float> MainWindowWidth { get; private set; }
         public static ConfigEntry<float> MainWindowHeight { get; private set; }
         public static ConfigEntry<float> PickerWindowWidth { get; private set; }
@@ -50,6 +51,7 @@ namespace Plugins
 
         private void Awake()
         {
+
             instance = this;
             Logger = base.Logger;
             harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
@@ -58,6 +60,11 @@ namespace Plugins
                 "Keyboard Shortcuts", "Open editor window",
                 new KeyboardShortcut(KeyCode.Q, KeyCode.RightControl),
                 new ConfigDescription("Open a window to control KKPRim values on selected characters/objects")
+            );
+            KeyToggleGui = Config.Bind(
+                "Keyboard Shortcuts", "Alt reset function",
+                new KeyboardShortcut(KeyCode.LeftShift),
+                new ConfigDescription("When pressing the 'reset' button on certain values, it will use the actual default value instead of the stored original value (like how it works in maker)")
             );
             UIScale = Config.Bind(
                 "UI", "UI Scale",
