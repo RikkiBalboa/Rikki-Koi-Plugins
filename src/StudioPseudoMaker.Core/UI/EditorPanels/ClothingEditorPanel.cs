@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using static ChaCustom.CustomSelectKind;
 
@@ -16,6 +15,8 @@ namespace Plugins
         private List<GameObject> clothingSailorGameObjects;
         private List<GameObject> clothingJacketGameObjects;
         private GameObject clothingOptionObject;
+        private List<GameObject> pushupBraGameObjects;
+        private List<GameObject> pushupTopGameObjects;
 
         private void OnEnable()
         {
@@ -26,6 +27,12 @@ namespace Plugins
         {
             base.Initialize();
 
+            if (SubCategory != SubCategory.ClothingPushup) InitializeClothing();
+            else InitializePushup();
+        }
+
+        private void InitializeClothing()
+        {
             clothingColorGameobjects = new Dictionary<int, List<GameObject>>();
             clothingPatternGameobjects = new Dictionary<int, List<GameObject>>();
 
@@ -100,6 +107,93 @@ namespace Plugins
                 AddPatternRows(SubCategory, selectKindType, i);
         }
 
+        private void InitializePushup()
+        {
+            KK_Plugins.Pushup.ClothData GetClothData(bool bra)
+            {
+                if (bra) return PseudoMaker.selectedPushupController.CurrentBraData;
+                return PseudoMaker.selectedPushupController.CurrentTopData;
+            }
+
+            foreach (var useBra in new bool[] { true, false })
+            {
+                if (useBra) AddHeaderToggle("Bra ▶", value => pushupBraGameObjects.ForEach(o => o.SetActive(value)));
+                else AddHeaderToggle("Top ▶", value => pushupTopGameObjects.ForEach(o => o.SetActive(value)));
+                var list = new List<GameObject>() {
+                    AddToggleRow(
+                        "Enabled",
+                        value =>
+                        {
+                            GetClothData(useBra).EnablePushup = value;
+                            PseudoMaker.selectedPushupController.RecalculateBody(false);
+                        },
+                        () => GetClothData(useBra).EnablePushup
+                    ).gameObject,
+
+                    AddSliderRow("Firmness", useBra, PushupValue.Firmness).gameObject,
+                    AddSliderRow("Lift", useBra, PushupValue.Lift).gameObject,
+                    AddSliderRow("Push Together", useBra, PushupValue.PushTogether).gameObject,
+                    AddSliderRow("Squeeze", useBra, PushupValue.Squeeze).gameObject,
+                    AddSliderRow("Center Nipples", useBra, PushupValue.CenterNipples).gameObject,
+
+                    AddToggleRow(
+                        "Flatten Nipples",
+                        value =>
+                        {
+                            GetClothData(useBra).FlattenNipples = value;
+                            PseudoMaker.selectedPushupController.RecalculateBody(false);
+                        },
+                        () => GetClothData(useBra).FlattenNipples
+                    ).gameObject,
+
+                    AddSplitter().gameObject,
+
+                    AddToggleRow(
+                        "Advanced Mode",
+                        value =>
+                        {
+                            GetClothData(useBra).UseAdvanced = value;
+                            PseudoMaker.selectedPushupController.RecalculateBody(false);
+                        },
+                        () => GetClothData(useBra).UseAdvanced
+                    ).gameObject,
+
+                    AddButtonGroupRow(new Dictionary<string, Action>
+                    {
+                        { "Copy Body to Advanced", () => {
+                            PseudoMaker.selectedCharacterController.CopyPushupData(useBra, PseudoMaker.selectedPushupController.BaseData);
+                            RefreshPanel();
+                        }},
+                        { "Copy Basic to Advanced", () => {
+                            PseudoMaker.selectedCharacterController.CopyPushupData(useBra, PseudoMaker.selectedPushupController.CurrentPushupData, true);
+                            RefreshPanel();
+                        }},
+                    }).gameObject,
+
+                    AddSliderRow("Firmness", useBra, PushupValue.Firmness).gameObject,
+                    AddSliderRow("Vertical Position", useBra, PushupValue.AdvancedVerticalPosition).gameObject,
+                    AddSliderRow("Vertical Angle", useBra, PushupValue.AdvancedVerticalAngle).gameObject,
+                    AddSliderRow("Horizontal Position", useBra, PushupValue.AdvancedHorizontalPosition).gameObject,
+                    AddSliderRow("Horizontal Angle", useBra, PushupValue.AdvancedHorizontalAngle).gameObject,
+                    AddSliderRow("Depth", useBra, PushupValue.AdvancedDepth).gameObject,
+                    AddSliderRow("Roundness", useBra, PushupValue.AdvancedRoundness).gameObject,
+                    AddSliderRow("Softness", useBra, PushupValue.AdvancedSoftness).gameObject,
+                    AddSliderRow("Weight", useBra, PushupValue.AdvancedWeight).gameObject,
+                    AddSliderRow("Areola Depth", useBra, PushupValue.AdvancedAreolaDepth).gameObject,
+                    AddSliderRow("Nipple Width", useBra, PushupValue.AdvancedNippleWidth).gameObject,
+                    AddSliderRow("Nipple Depth", useBra, PushupValue.AdvancedNippleDepth).gameObject,
+                };
+                if (useBra) 
+                {
+                    AddSplitter();
+                    pushupBraGameObjects = list;
+                }
+                else pushupTopGameObjects = list;
+            }
+            pushupBraGameObjects.ForEach(o => o.SetActive(false));
+            pushupTopGameObjects.ForEach(o => o.SetActive(false));
+        }
+
         public void AddPatternRows(SubCategory subcategory, SelectKindType selectKindType, int colorNr)
         {
             var colorGameObjects = new List<GameObject>()
@@ -163,6 +257,31 @@ namespace Plugins
             clothingOptionComponent.CheckUsePart = (option) => PseudoMaker.selectedCharacterController.GetClothingUsesOptPart(kind, option);
 
             return clothingOptionComponent;
+        }
+
+        private SliderComponent AddSliderRow(string name, bool bra, PushupValue pushupValue)
+        {
+            return AddSliderRow(
+                name,
+                () => PseudoMaker.selectedCharacterController.GetPushupValue(bra, pushupValue),
+                () => PseudoMaker.selectedCharacterController.GetOriginalPushupValue(bra, pushupValue),
+                value => {
+                    PseudoMaker.selectedCharacterController.SetPushupValue(bra, pushupValue, value);
+                    PseudoMaker.selectedPushupController.RecalculateBody(false);
+                },
+                () => {
+                    PseudoMaker.selectedCharacterController.ResetPushupValue(bra, pushupValue, getDefault: PseudoMaker.KeyAltReset.Value.IsPressed());
+                    PseudoMaker.selectedPushupController.RecalculateBody(false);
+                },
+                pushupValue.ToString().StartsWith("Advanced") ? KK_Plugins.Pushup.ConfigSliderMin.Value / 100 : 0,
+                pushupValue.ToString().StartsWith("Advanced") ? KK_Plugins.Pushup.ConfigSliderMax.Value / 100 : 1
+            );
+        }
+
+        private void RefreshPanel()
+        {
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
         }
     }
 }

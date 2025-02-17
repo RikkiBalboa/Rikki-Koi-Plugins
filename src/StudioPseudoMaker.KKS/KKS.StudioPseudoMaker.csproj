@@ -77,6 +77,10 @@
       <HintPath>..\..\lib\KKS_MaterialEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KKS_Pushup">
+      <HintPath>..\..\lib\KKS_Pushup.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KKS_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sideloader.KoikatsuSunshine.20.0.0\lib\net46\KKS_Sideloader.dll</HintPath>
       <Private>False</Private>

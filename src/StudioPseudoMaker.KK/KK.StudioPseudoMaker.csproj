@@ -78,6 +78,10 @@
       <HintPath>..\..\lib\KK_MaterialEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KK_Pushup">
+      <HintPath>..\..\lib\KK_Pushup.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sideloader.Koikatu.20.0.0\lib\net35\Sideloader.dll</HintPath>
       <Private>False</Private>

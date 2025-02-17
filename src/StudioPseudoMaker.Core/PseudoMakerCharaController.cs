@@ -1,5 +1,4 @@
-﻿using ADV.Commands.Camera;
-using ChaCustom;
+﻿using ChaCustom;
 using ExtensibleSaveFormat;
 using HarmonyLib;
 using KK_Plugins.MaterialEditor;
@@ -8,12 +7,12 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using MessagePack;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static ChaCustom.CustomSelectKind;
 using static Illusion.Component.UI.MouseButtonCheck;
+using static KK_Plugins.Pushup;
 using static Plugins.PseudoMaker;
 
 namespace Plugins
@@ -30,6 +29,7 @@ namespace Plugins
         private Dictionary<AccessoryStorageKey, FloatStorage> OriginalAccessoryFloats = new Dictionary<AccessoryStorageKey, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalBodyShapeValues = new Dictionary<int, FloatStorage>();
         private Dictionary<int, FloatStorage> OriginalFaceShapeValues = new Dictionary<int, FloatStorage>();
+        private Dictionary<PushupStorageKey, FloatStorage> OriginalPushupValue = new Dictionary<PushupStorageKey, FloatStorage>();
         #endregion
 
         #region Character Properties shortcuts
@@ -79,6 +79,11 @@ namespace Plugins
             else
                 data.data.Add(nameof(OriginalFaceShapeValues), null);
 
+            if (OriginalPushupValue.Count > 0)
+                data.data.Add(nameof(OriginalPushupValue), MessagePackSerializer.Serialize(OriginalPushupValue));
+            else
+                data.data.Add(nameof(OriginalPushupValue), null);
+
             SetExtendedData(data);
         }
 
@@ -118,6 +123,9 @@ namespace Plugins
 
             if (data.data.TryGetValue(nameof(OriginalFaceShapeValues), out var originalFaceShapeValues) && originalFaceShapeValues != null)
                 OriginalFaceShapeValues = MessagePackSerializer.Deserialize<Dictionary<int, FloatStorage>>((byte[])originalFaceShapeValues);
+
+            if (data.data.TryGetValue(nameof(OriginalPushupValue), out var originalPushupValue) && originalPushupValue != null)
+                OriginalPushupValue = MessagePackSerializer.Deserialize<Dictionary<PushupStorageKey, FloatStorage>>((byte[])originalPushupValue);
         }
 
         public static PseudoMakerCharaController GetController(ChaControl chaCtrl)
@@ -862,6 +870,167 @@ namespace Plugins
                 .Select(c => c.Value)
                 .Any(c => c.Value != c.OriginalValue);
         }
+
+        #region Pushup
+        public float GetPushupValue(bool bra, PushupValue pushupValue)
+        {
+            var data = bra ? selectedPushupController.CurrentBraData : selectedPushupController.CurrentTopData;
+            switch (pushupValue)
+            {
+                case PushupValue.Firmness: return data.Firmness;
+                case PushupValue.Lift: return data.Lift;
+                case PushupValue.PushTogether: return data.PushTogether;
+                case PushupValue.Squeeze: return data.Squeeze;
+                case PushupValue.CenterNipples: return data.CenterNipples;
+                case PushupValue.AdvancedSize: return data.Size;
+                case PushupValue.AdvancedVerticalPosition: return data.VerticalPosition;
+                case PushupValue.AdvancedHorizontalAngle: return data.HorizontalAngle;
+                case PushupValue.AdvancedHorizontalPosition: return data.HorizontalPosition;
+                case PushupValue.AdvancedVerticalAngle: return data.VerticalAngle;
+                case PushupValue.AdvancedDepth: return data.Depth;
+                case PushupValue.AdvancedRoundness: return data.Roundness;
+                case PushupValue.AdvancedSoftness: return data.Softness;
+                case PushupValue.AdvancedWeight: return data.Weight;
+                case PushupValue.AdvancedAreolaDepth: return data.AreolaDepth;
+                case PushupValue.AdvancedNippleWidth: return data.NippleWidth;
+                case PushupValue.AdvancedNippleDepth: return data.NippleDepth;
+            }
+            return 0f;
+        }
+
+        public float GetOriginalPushupValue(bool bra, PushupValue pushupValue)
+        {
+            var pushupKey = new PushupStorageKey(CurrentOutfitSlot, pushupValue);
+            if (OriginalPushupValue.TryGetValue(pushupKey, out var pushup))
+                return pushup.OriginalValue;
+            return GetPushupValue(bra, pushupValue);
+        }
+
+        public float GetDefaultPushupValue(PushupValue pushupValue)
+        {
+            switch (pushupValue)
+            {
+                case PushupValue.Firmness: return ConfigFirmnessDefault.Value;
+                case PushupValue.Lift: return ConfigLiftDefault.Value;
+                case PushupValue.PushTogether: return ConfigPushTogetherDefault.Value;
+                case PushupValue.Squeeze: return ConfigSqueezeDefault.Value;
+                case PushupValue.CenterNipples: return ConfigNippleCenteringDefault.Value;
+                case PushupValue.AdvancedSize:
+                case PushupValue.AdvancedVerticalPosition:
+                case PushupValue.AdvancedHorizontalAngle:
+                case PushupValue.AdvancedHorizontalPosition:
+                case PushupValue.AdvancedVerticalAngle:
+                case PushupValue.AdvancedDepth:
+                case PushupValue.AdvancedRoundness:
+                case PushupValue.AdvancedSoftness:
+                case PushupValue.AdvancedWeight:
+                case PushupValue.AdvancedAreolaDepth:
+                case PushupValue.AdvancedNippleWidth:
+                case PushupValue.AdvancedNippleDepth:
+                    return 0.5f;
+            }
+            return 0f;
+        }
+
+        public void SetPushupValue(bool bra, PushupValue pushupValue, float value)
+        {
+            var pushupKey = new PushupStorageKey(CurrentOutfitSlot, pushupValue);
+            if (!OriginalPushupValue.Any(x => x.Key == pushupKey))
+                OriginalPushupValue[pushupKey] = new FloatStorage(GetPushupValue(bra, pushupValue), value);
+            else
+                OriginalPushupValue[pushupKey].Value = value;
+
+            var data = bra ? selectedPushupController.CurrentBraData : selectedPushupController.CurrentTopData;
+            switch (pushupValue)
+            {
+                case PushupValue.Firmness:
+                    data.Firmness = value;
+                    break;
+                case PushupValue.Lift:
+                    data.Lift = value;
+                    break;
+                case PushupValue.PushTogether:
+                    data.PushTogether = value;
+                    break;
+                case PushupValue.Squeeze:
+                    data.Squeeze = value;
+                    break;
+                case PushupValue.CenterNipples:
+                    data.CenterNipples = value;
+                    break;
+                case PushupValue.AdvancedSize:
+                    data.Size = value;
+                    break;
+                case PushupValue.AdvancedVerticalPosition:
+                    data.VerticalPosition = value;
+                    break;
+                case PushupValue.AdvancedHorizontalAngle:
+                    data.HorizontalAngle = value;
+                    break;
+                case PushupValue.AdvancedHorizontalPosition:
+                    data.HorizontalPosition = value;
+                    break;
+                case PushupValue.AdvancedVerticalAngle:
+                    data.VerticalAngle = value;
+                    break;
+                case PushupValue.AdvancedDepth:
+                    data.Depth = value;
+                    break;
+                case PushupValue.AdvancedRoundness:
+                    data.Roundness = value;
+                    break;
+                case PushupValue.AdvancedSoftness:
+                    data.Softness = value;
+                    break;
+                case PushupValue.AdvancedWeight:
+                    data.Weight = value;
+                    break;
+                case PushupValue.AdvancedAreolaDepth:
+                    data.AreolaDepth = value;
+                    break;
+                case PushupValue.AdvancedNippleWidth:
+                    data.NippleWidth = value;
+                    break;
+                case PushupValue.AdvancedNippleDepth:
+                    data.NippleDepth = value;
+                    break;
+            }
+        }
+
+        public void ResetPushupValue(bool bra, PushupValue pushupValue, bool getDefault = false)
+        {
+            float value = 0.5f;
+            if (getDefault)
+                value = GetDefaultPushupValue(pushupValue);
+            else
+            {
+                var pushupKey = new PushupStorageKey(CurrentOutfitSlot, pushupValue);
+                if (OriginalPushupValue.TryGetValue(pushupKey, out var pushup))
+                    value = pushup.OriginalValue;
+            }
+            SetPushupValue(bra, pushupValue, value);
+        }
+
+        public void CopyPushupData(bool bra, BodyData bodyData, bool calculatePush = false)
+        {
+            var data = bra ? selectedPushupController.CurrentBraData : selectedPushupController.CurrentTopData;
+            if (calculatePush)
+                selectedPushupController.CalculatePushFromClothes(data, false);
+            data.Softness = bodyData.Softness;
+            data.Weight = bodyData.Weight;
+            data.Size = bodyData.Size;
+            data.VerticalPosition = bodyData.VerticalPosition;
+            data.HorizontalPosition = bodyData.HorizontalPosition;
+            data.VerticalAngle = bodyData.VerticalAngle;
+            data.HorizontalAngle = bodyData.HorizontalAngle;
+            data.Depth = bodyData.Depth;
+            data.Roundness = bodyData.Roundness;
+            data.AreolaDepth = bodyData.AreolaDepth;
+            data.NippleWidth = bodyData.NippleWidth;
+            data.NippleDepth = bodyData.NippleDepth;
+            selectedPushupController.RecalculateBody();
+        }
+        #endregion
         #endregion
 
         #region Accessories
@@ -2217,6 +2386,27 @@ namespace Plugins
         GlossColor = 6,
     }
 
+    public enum PushupValue
+    {
+        Firmness,
+        Lift,
+        PushTogether,
+        Squeeze,
+        CenterNipples,
+        AdvancedSize,
+        AdvancedVerticalPosition,
+        AdvancedHorizontalAngle,
+        AdvancedHorizontalPosition,
+        AdvancedVerticalAngle,
+        AdvancedDepth,
+        AdvancedRoundness,
+        AdvancedSoftness,
+        AdvancedWeight,
+        AdvancedAreolaDepth,
+        AdvancedNippleWidth,
+        AdvancedNippleDepth
+    }
+
     #region Storage classes
     internal class CharacterClothing
     {
@@ -2271,6 +2461,32 @@ namespace Plugins
             )
                 return true;
             return false;
+        }
+    }
+
+    [Serializable]
+    [MessagePackObject]
+    public struct PushupStorageKey
+    {
+        [Key("OutfitSlot")]
+        public int OutfitSlot { get; set; }
+        [Key("PushupValue")]
+        public PushupValue PushupValue { get; set; }
+
+        public PushupStorageKey(int outfitSlot, PushupValue pushupValue)
+        {
+            OutfitSlot = outfitSlot;
+            PushupValue = pushupValue;
+        }
+
+        public static bool operator ==(PushupStorageKey c1, PushupStorageKey c2)
+        {
+            return c1.Equals(c2);
+        }
+
+        public static bool operator !=(PushupStorageKey c1, PushupStorageKey c2)
+        {
+            return !c1.Equals(c2);
         }
     }
 

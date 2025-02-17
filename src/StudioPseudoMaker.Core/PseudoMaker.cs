@@ -21,6 +21,8 @@ namespace Plugins
     [BepInIncompatibility("com.rikkibalboa.bepinex.studioSkinColorControl")]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(KK_Plugins.Pushup.GUID)]
+    [BepInDependency(KKABMX.Core.KKABMX_Core.GUID)]
     [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
     [BepInProcess(Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
@@ -35,6 +37,7 @@ namespace Plugins
         internal static ChaControl selectedCharacter;
         internal static PseudoMakerCharaController selectedCharacterController;
         internal static KK_Plugins.HairAccessoryCustomizer.HairAccessoryController selectedHairAccessoryController;
+        internal static KK_Plugins.Pushup.PushupController selectedPushupController;
 
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<KeyboardShortcut> KeyAltReset { get; private set; }
@@ -133,6 +136,7 @@ namespace Plugins
                 selectedCharacter = newChar;
                 selectedCharacterController = PseudoMakerCharaController.GetController(selectedCharacter);
                 selectedHairAccessoryController = selectedCharacter.gameObject.GetComponent<KK_Plugins.HairAccessoryCustomizer.HairAccessoryController>();
+                selectedPushupController = selectedCharacter.gameObject.GetComponent<KK_Plugins.Pushup.PushupController>();
                 MainWindow.RefreshValues();
             }
             if (KeyToggleGui.Value.IsDown()) 

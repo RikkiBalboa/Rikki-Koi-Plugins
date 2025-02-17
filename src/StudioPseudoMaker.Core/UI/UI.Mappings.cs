@@ -222,6 +222,7 @@ namespace Plugins
                 case SubCategory.ClothingTop: return "Top";
                 case SubCategory.ClothingBottom: return "Bottom";
                 case SubCategory.ClothingBra: return "Bra";
+                case SubCategory.ClothingPushup: return "Pushup";
                 case SubCategory.ClothingUnderwear: return "Underwear";
                 case SubCategory.ClothingGloves: return "Gloves";
                 case SubCategory.ClothingPantyhose: return "Pantyhose";
@@ -593,6 +594,7 @@ namespace Plugins
         ClothingTop,
         ClothingBottom,
         ClothingBra,
+        ClothingPushup,
         ClothingUnderwear,
         ClothingGloves,
         ClothingPantyhose,
