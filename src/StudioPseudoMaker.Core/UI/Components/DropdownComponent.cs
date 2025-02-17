@@ -51,6 +51,8 @@ namespace Plugins
             {
                 shouldNotUpdate = true;
                 dropdown.value = GetCurrentValue();
+                if (dropdown.value > 0)
+                    dropdown.captionText.text = dropdown.options[dropdown.value].text;
                 shouldNotUpdate = false;
             }
         }

@@ -1,6 +1,5 @@
-﻿using KKAPI.Studio;
-using Studio;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -87,6 +86,11 @@ namespace Plugins
                     PseudoMaker.selectedCharacterController.SetAccessoryParent(currentAccessoryNr, UIMappings.AccessoryParents.ElementAt(index).Key);
                 }
             );
+            AddButtonRow("Update A12 Parent", () => {
+                Compatibility.A12RegisterParent(currentAccessoryNr);
+                RefreshPanel();
+            });
+
             AddButtonRow("Swap Sides", () => {
                 PseudoMaker.selectedCharacterController.AccessorySwapParent(currentAccessoryNr);
                 RefreshPanel();

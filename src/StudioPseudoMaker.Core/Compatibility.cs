@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using AAAAAAAAAAAA;
+using BepInEx;
 using BepInEx.Bootstrap;
 using ChaCustom;
 using System;
@@ -76,6 +77,45 @@ namespace Plugins
                 if (customAccParents.ContainsKey(coord))
                     return dicHashBones[customAccParents[coord][slotNr]].bone;
                 return null;
+            }
+        }
+
+        public static void A12RegisterParent(int slotNr)
+        {
+            if (!HasA12) return;
+
+            RegisterBone();
+            void RegisterBone()
+            {
+                Transform selected = KKABMX.GUI.KKABMX_AdvancedGUI._selectedTransform.Value;
+                if (selected == null)
+                {
+                    PseudoMaker.Logger.LogMessage("[AAAAAAAAAAAA] Please select a bone in ABMX!");
+                    return;
+                }
+                var controller = PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>();
+                var accTransform = PseudoMaker.selectedCharacter.objAccessory[slotNr]?.transform;
+
+                if (accTransform != null && controller.dicTfBones.TryGetValue(accTransform, out var accBone) && controller.dicTfBones.TryGetValue(selected, out var parentBone))
+                {
+                    // Make sure not to parent anything to itself or its children
+                    if (parentBone.IsChildOf(accBone))
+                    {
+                        PseudoMaker.Logger.LogMessage("[AAAAAAAAAAAA] Can't parent accessory to itself or its children!");
+                        return;
+                    }
+
+                    accBone.SetParent(parentBone);
+                    accBone.PerformBoneUpdate();
+
+                    var coord = PseudoMaker.selectedCharacter.fileStatus.coordinateType;
+                    // Save parentage to dictionary
+                    if (!controller.customAccParents.ContainsKey(coord))
+                    {
+                        controller.customAccParents[coord] = new Dictionary<int, string>();
+                    }
+                    controller.customAccParents[coord][slotNr] = parentBone.Hash;
+                }
             }
         }
         #endregion
