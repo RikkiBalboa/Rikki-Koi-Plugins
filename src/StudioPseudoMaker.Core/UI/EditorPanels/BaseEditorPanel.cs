@@ -96,9 +96,9 @@ namespace Plugins
             return buttonGroupComponent;
         }
 
-        public void AddButtonRow(string name, Action onPressAction)
+        public ButtonGroupComponent AddButtonRow(string name, Action onPressAction)
         {
-            AddButtonGroupRow(new Dictionary<string, Action>() { { name, onPressAction } });
+            return AddButtonGroupRow(new Dictionary<string, Action>() { { name, onPressAction } });
         }
 
         public ToggleComponent AddToggleRow(string name, Action<bool> onValueChanged, Func<bool> GetCurrentValue)

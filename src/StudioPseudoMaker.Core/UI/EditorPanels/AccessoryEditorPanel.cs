@@ -31,6 +31,8 @@ namespace Plugins
         private DropdownComponent parentDropdown;
         private ToggleGroup guideObjectToggleGroup;
 
+        private GameObject a12UpdateButton;
+
         private bool isRefreshing = false;
         private bool[] showingGuideObject = { false, false };
         private bool keepParent = false;
@@ -82,14 +84,16 @@ namespace Plugins
                     return UIMappings.GetAccessoryParentIndex(parent);
                 },
                 index => {
+                    a12UpdateButton.SetActive(UIMappings.AccessoryParents.ElementAt(index).Key == "A12");
                     if (index == UIMappings.AccessoryParents.Count - 1) return;
                     PseudoMaker.selectedCharacterController.SetAccessoryParent(currentAccessoryNr, UIMappings.AccessoryParents.ElementAt(index).Key);
                 }
             );
-            AddButtonRow("Update A12 Parent", () => {
+
+            a12UpdateButton = AddButtonRow("Update A12 Parent", () => {
                 Compatibility.A12RegisterParent(currentAccessoryNr);
                 RefreshPanel();
-            });
+            }).gameObject;
 
             AddButtonRow("Swap Sides", () => {
                 PseudoMaker.selectedCharacterController.AccessorySwapParent(currentAccessoryNr);
@@ -247,6 +251,8 @@ namespace Plugins
                 matchHairColorToggle.SetActive(isHair);
                 useHairGlossToggle.SetActive(isHair);
                 hairLengthSlider.SetActive(isHair && hasLength);
+
+                a12UpdateButton.SetActive(PseudoMaker.selectedCharacterController.GetCurrentAccessoryParent(currentAccessoryNr) == "A12");
             }
             else
             {
@@ -262,6 +268,7 @@ namespace Plugins
                 transformHeader2.transform.parent.gameObject.SetActive(false);
                 tranformRows2.ForEach(x => x.SetActive(false));
                 transform2GuideObjectToggle.gameObject.SetActive(false);
+                a12UpdateButton.SetActive(false);
             }
         }
 
