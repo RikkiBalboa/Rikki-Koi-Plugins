@@ -753,6 +753,7 @@ namespace Plugins
                 var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
                 if (OriginalClothingColors.TryGetValue(clothingColors, out var clothingColor))
                     color = clothingColor.OriginalValue;
+                else return;
             }
             SetClothingColor(kind, colorNr, color, slotNr, isPattern);
         }
@@ -1007,6 +1008,7 @@ namespace Plugins
                 var pushupKey = new PushupStorageKey(CurrentOutfitSlot, pushupValue);
                 if (OriginalPushupValue.TryGetValue(pushupKey, out var pushup))
                     value = pushup.OriginalValue;
+                else return;
             }
             SetPushupValue(bra, pushupValue, value);
         }
@@ -1090,6 +1092,7 @@ namespace Plugins
                 var colorKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
                 if (OriginalAccessoryColors.TryGetValue(colorKey, out var accessoryColor))
                     color = accessoryColor.OriginalValue;
+                else return;
             }
             SetAccessoryColor(slotNr, colorNr, color);
         }
@@ -1198,6 +1201,7 @@ namespace Plugins
                 var accessoryKey = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, 0, correctNr, transform, vector);
                 if (OriginalAccessoryFloats.TryGetValue(accessoryKey, out var key))
                     originalValue = key.OriginalValue;
+                else return;
             }
             SetAccessoryTransform(slotNr, correctNr, originalValue, transform, vector);
         }
