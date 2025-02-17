@@ -30,7 +30,7 @@ namespace Plugins
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "0.3";
+        public const string PluginVersion = "0.4";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
@@ -54,7 +54,6 @@ namespace Plugins
 
         private void Awake()
         {
-
             instance = this;
             Logger = base.Logger;
             harmony = Harmony.CreateAndPatchAll(typeof(Hooks));

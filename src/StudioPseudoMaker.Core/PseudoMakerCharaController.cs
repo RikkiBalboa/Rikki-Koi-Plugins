@@ -1361,6 +1361,20 @@ namespace Plugins
                 SetAccessoryParent(slotNr, reverseParent);
         }
 
+        public bool GetAccessoryNoShake(int slotNr)
+        {
+            if (slotNr >= 0)
+                return Accessories.parts[slotNr].noShake;
+            return false;
+        }
+
+        public void SetAccessoryNoShake(int slotNr, bool value)
+        {
+            Accessories.parts[slotNr].noShake = value;
+            SetAccessories.parts[slotNr].noShake = value;
+            selectedCharacter.ChangeShakeAccessory(slotNr);
+        }
+
         #region HairAccessoryCustomizer
         public bool GetAccessoryIsHair(int slotNr)
         {
@@ -1422,6 +1436,17 @@ namespace Plugins
                 selectedHairAccessoryController.SetHairLength(value, slotNr);
                 selectedHairAccessoryController.UpdateAccessory(slotNr);
             }
+        }
+
+        public bool GetHairNoShake(int part)
+        {
+            return selectedCharacter.fileHair.parts[part].noShake;
+        }
+
+        public void SetHairNoShake(int part, bool value)
+        {
+            selectedCharacter.fileHair.parts[part].noShake = value;
+            selectedCharacter.ChangeShakeHair(part);
         }
         #endregion
         #endregion

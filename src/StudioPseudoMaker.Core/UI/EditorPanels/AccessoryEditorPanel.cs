@@ -30,6 +30,7 @@ namespace Plugins
         private PickerComponent accessoryPicker;
         private DropdownComponent parentDropdown;
         private ToggleGroup guideObjectToggleGroup;
+        private GameObject noShake;
 
         private GameObject a12UpdateButton;
 
@@ -99,6 +100,12 @@ namespace Plugins
                 PseudoMaker.selectedCharacterController.AccessorySwapParent(currentAccessoryNr);
                 RefreshPanel();
             });
+
+            noShake = AddToggleRow(
+                "Don't Move",
+                value => PseudoMaker.selectedCharacterController.SetAccessoryNoShake(currentAccessoryNr, value),
+                () => PseudoMaker.selectedCharacterController.GetAccessoryNoShake(currentAccessoryNr)
+            ).gameObject;
 
             AddSplitter();
             #endregion
@@ -217,6 +224,8 @@ namespace Plugins
                 currentAccessoryNr = 0;
 
             accessoryPicker.gameObject.SetActive(currentAccessoryType != ChaListDefine.CategoryNo.ao_none);
+            parentDropdown.gameObject.SetActive(currentAccessoryType != ChaListDefine.CategoryNo.ao_none);
+            noShake.SetActive(currentAccessoryType != ChaListDefine.CategoryNo.ao_none);
 
             if (currentAccessoryExists)
             {
@@ -269,6 +278,8 @@ namespace Plugins
                 tranformRows2.ForEach(x => x.SetActive(false));
                 transform2GuideObjectToggle.gameObject.SetActive(false);
                 a12UpdateButton.SetActive(false);
+                parentDropdown.gameObject.SetActive(false);
+                noShake.SetActive(false);
             }
         }
 
