@@ -397,10 +397,12 @@ namespace Plugins
                     ChaControl.VisibleAddBodyLine();
                     break;
                 case FloatType.Softness:
-                    ChaControl.ChangeBustSoftness(value);
+                    //ChaControl.ChangeBustSoftness(value);
+                    SetPushupBaseValue(PushupValue.AdvancedSoftness, value);
                     break;
                 case FloatType.Weight:
-                    ChaControl.ChangeBustGravity(value);
+                    //ChaControl.ChangeBustGravity(value);
+                    SetPushupBaseValue(PushupValue.AdvancedWeight, value);
                     break;
                 case FloatType.NippleGloss:
                     ChaFileControl.custom.body.nipGlossPower = value;
@@ -506,9 +508,11 @@ namespace Plugins
                 case FloatType.DisplaySkinDetailLines:
                     return Convert.ToSingle(ChaFileControl.custom.body.drawAddLine);
                 case FloatType.Softness:
-                    return ChaControl.fileBody.bustSoftness;
+                    //return ChaControl.fileBody.bustSoftness;
+                    return GetPushupBaseValue(PushupValue.AdvancedSoftness);
                 case FloatType.Weight:
-                    return ChaControl.fileBody.bustWeight;
+                    //return ChaControl.fileBody.bustWeight;
+                    return GetPushupBaseValue(PushupValue.AdvancedWeight);
                 case FloatType.NippleGloss:
                     return ChaFileControl.custom.body.nipGlossPower;
                 case FloatType.NailGloss:
@@ -560,11 +564,17 @@ namespace Plugins
                 OriginalBodyShapeValues[index] = new FloatStorage(GetCurrentBodyValue(index), value);
             else
                 OriginalBodyShapeValues[index].Value = value;
-            ChaControl.SetShapeBodyValue(index, value);
+
+            if (index >= 4 && index <= 14)
+                SetPushupBaseValue((PushupValue)index, value);
+            else
+                ChaControl.SetShapeBodyValue(index, value);
         }
 
         public float GetCurrentBodyValue(int index)
         {
+            if (index >= 4 && index <= 14)
+                return GetPushupBaseValue((PushupValue)index);
             return ChaControl.GetShapeBodyValue(index);
         }
 
@@ -897,6 +907,83 @@ namespace Plugins
                 case PushupValue.AdvancedNippleDepth: return data.NippleDepth;
             }
             return 0f;
+        }
+
+        public float GetPushupBaseValue(PushupValue pushupValue)
+        {
+            switch (pushupValue)
+            {
+                case PushupValue.AdvancedSize:
+                    return selectedPushupController.BaseData.Size;
+                case PushupValue.AdvancedVerticalPosition:
+                    return selectedPushupController.BaseData.VerticalPosition;
+                case PushupValue.AdvancedHorizontalAngle:
+                    return selectedPushupController.BaseData.HorizontalAngle;
+                case PushupValue.AdvancedHorizontalPosition:
+                    return selectedPushupController.BaseData.HorizontalPosition;
+                case PushupValue.AdvancedVerticalAngle:
+                    return selectedPushupController.BaseData.VerticalAngle;
+                case PushupValue.AdvancedDepth:
+                    return selectedPushupController.BaseData.Depth;
+                case PushupValue.AdvancedRoundness:
+                    return selectedPushupController.BaseData.Roundness;
+                case PushupValue.AdvancedAreolaDepth:
+                    return selectedPushupController.BaseData.Depth;
+                case PushupValue.AdvancedNippleWidth:
+                    return selectedPushupController.BaseData.NippleWidth;
+                case PushupValue.AdvancedNippleDepth:
+                    return selectedPushupController.BaseData.NippleDepth;
+                case PushupValue.AdvancedSoftness:
+                    return selectedPushupController.BaseData.Softness;
+                case PushupValue.AdvancedWeight:
+                    return selectedPushupController.BaseData.Weight;
+                default:
+                    return 0f;
+            }
+        }
+
+        public void SetPushupBaseValue(PushupValue pushupValue, float value)
+        {
+            switch (pushupValue)
+            {
+                case PushupValue.AdvancedSize:
+                    selectedPushupController.BaseData.Size = value;
+                    break;
+                case PushupValue.AdvancedVerticalPosition:
+                    selectedPushupController.BaseData.VerticalPosition = value;
+                    break;
+                case PushupValue.AdvancedHorizontalAngle:
+                    selectedPushupController.BaseData.HorizontalAngle = value;
+                    break;
+                case PushupValue.AdvancedHorizontalPosition:
+                    selectedPushupController.BaseData.HorizontalPosition = value;
+                    break;
+                case PushupValue.AdvancedVerticalAngle:
+                    selectedPushupController.BaseData.VerticalAngle = value;
+                    break;
+                case PushupValue.AdvancedDepth:
+                    selectedPushupController.BaseData.Depth = value;
+                    break;
+                case PushupValue.AdvancedRoundness:
+                    selectedPushupController.BaseData.Roundness = value;
+                    break;
+                case PushupValue.AdvancedAreolaDepth:
+                    selectedPushupController.BaseData.Depth = value;
+                    break;
+                case PushupValue.AdvancedNippleWidth:
+                    selectedPushupController.BaseData.NippleWidth = value;
+                    break;
+                case PushupValue.AdvancedNippleDepth:
+                    selectedPushupController.BaseData.NippleDepth = value;
+                    break;
+                case PushupValue.AdvancedSoftness:
+                    selectedPushupController.BaseData.Softness = value;
+                    break;
+                case PushupValue.AdvancedWeight:
+                    selectedPushupController.BaseData.Weight = value;
+                    break;
+            }
+            selectedPushupController.RecalculateBody();
         }
 
         public float GetOriginalPushupValue(bool bra, PushupValue pushupValue)
@@ -2392,23 +2479,23 @@ namespace Plugins
 
     public enum PushupValue
     {
-        Firmness,
-        Lift,
-        PushTogether,
-        Squeeze,
-        CenterNipples,
-        AdvancedSize,
-        AdvancedVerticalPosition,
-        AdvancedHorizontalAngle,
-        AdvancedHorizontalPosition,
-        AdvancedVerticalAngle,
-        AdvancedDepth,
-        AdvancedRoundness,
-        AdvancedSoftness,
-        AdvancedWeight,
-        AdvancedAreolaDepth,
-        AdvancedNippleWidth,
-        AdvancedNippleDepth
+        Firmness = 20,
+        Lift = 21,
+        PushTogether = 22,
+        Squeeze = 23,
+        CenterNipples = 24,
+        AdvancedSize = 4,
+        AdvancedVerticalPosition = 5,
+        AdvancedHorizontalAngle = 6,
+        AdvancedHorizontalPosition = 7,
+        AdvancedVerticalAngle = 8,
+        AdvancedDepth = 9,
+        AdvancedRoundness = 10,
+        AdvancedSoftness = 14,
+        AdvancedWeight = 15,
+        AdvancedAreolaDepth = 11,
+        AdvancedNippleWidth = 12,
+        AdvancedNippleDepth = 13
     }
 
     #region Storage classes
