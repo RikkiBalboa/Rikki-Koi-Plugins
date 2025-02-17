@@ -19,6 +19,8 @@ namespace Plugins
         public Action<float> SetValueAction;
         public Action ResetValueAction;
 
+        private bool shouldNotUpdate = false;
+
         private void Awake()
         {
             text = GetComponentInChildren<Text>(true);
@@ -50,7 +52,9 @@ namespace Plugins
             if (GetCurrentValue == null)
                 return;
 
+            shouldNotUpdate = true;
             UpdateValue(GetCurrentValue());
+            shouldNotUpdate = false;
         }
 
         public void UpdateValue(float value)
@@ -59,7 +63,7 @@ namespace Plugins
             if (slider.value != value) slider.value = value;
             if (inputField.text != stringValue) inputField.text = stringValue;
 
-            if (value != GetCurrentValue())
+            if (value != GetCurrentValue() && !shouldNotUpdate)
                 SetValueAction(value);
         }
 
@@ -69,7 +73,7 @@ namespace Plugins
             {
                 if (slider.value != floatValue) slider.value = floatValue;
 
-                if (floatValue != GetCurrentValue())
+                if (floatValue != GetCurrentValue() && !shouldNotUpdate)
                     SetValueAction(floatValue);
             }
         }
