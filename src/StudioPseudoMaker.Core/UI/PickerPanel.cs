@@ -36,6 +36,7 @@ namespace Plugins
 
         private static string titleText;
         private static ChaListDefine.CategoryNo CategoryNo;
+        private static SelectKindType SelectKindType;
         private static Func<int> GetCurrentValue;
         private static Action<CustomSelectInfo> SetCurrentValue;
 
@@ -56,9 +57,9 @@ namespace Plugins
 
         private GameObject pickerEntryTemplate;
 
-        public static void SetCategory(string name, ChaListDefine.CategoryNo categoryNo, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
+        public static void SetCategory(string name, ChaListDefine.CategoryNo categoryNo, SelectKindType selectKindType, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
         {
-            if (CategoryNo == categoryNo)
+            if (CategoryNo == categoryNo && SelectKindType == selectKindType)
             {
                 instance.gameObject.SetActive(!instance.gameObject.activeSelf);
                 return;

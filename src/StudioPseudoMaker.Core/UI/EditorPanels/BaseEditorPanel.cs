@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static ChaCustom.CustomSelectKind;
 
 namespace Plugins
 {
@@ -194,7 +193,7 @@ namespace Plugins
             var picker = Instantiate(PickerTemplate, PickerTemplate.transform.parent);
             picker.name = $"CategoryPicker{name.Replace(" ", "")}";
 
-            ChaListDefine.CategoryNo[] array = new ChaListDefine.CategoryNo[100]
+            ChaListDefine.CategoryNo[] array = new ChaListDefine.CategoryNo[104]
             {
                 ChaListDefine.CategoryNo.mt_face_detail,
                 ChaListDefine.CategoryNo.mt_eyebrow,
@@ -295,13 +294,18 @@ namespace Plugins
                 ChaListDefine.CategoryNo.mt_emblem,
                 ChaListDefine.CategoryNo.mt_emblem,
                 ChaListDefine.CategoryNo.mt_emblem,
-                ChaListDefine.CategoryNo.mt_emblem
+                ChaListDefine.CategoryNo.mt_emblem,
+                ChaListDefine.CategoryNo.mt_eye,
+                ChaListDefine.CategoryNo.mt_eye_gradation,
+                ChaListDefine.CategoryNo.mt_eye,
+                ChaListDefine.CategoryNo.mt_eye_gradation,
             };
             ChaListDefine.CategoryNo cn = array[(int)selectKind];
 
             var pickerComponent = picker.AddComponent<PickerComponent>();
             pickerComponent.Name = name;
             pickerComponent.CategoryNo = cn;
+            pickerComponent.SelectKindType = selectKind;
             pickerComponent.GetCurrentValue = () => PseudoMaker.selectedCharacterController.GetSelected(selectKind);
             pickerComponent.SetCurrentValue = (value) =>
             {

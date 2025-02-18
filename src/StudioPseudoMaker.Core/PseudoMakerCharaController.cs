@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static ChaCustom.CustomSelectKind;
 using static Illusion.Component.UI.MouseButtonCheck;
 using static KK_Plugins.Pushup;
 using static Plugins.PseudoMaker;
@@ -220,21 +219,33 @@ namespace Plugins
                     ChaControl.fileFace.hlDownColor = color;
                     ChaControl.ChangeSettingEyeHiDownColor();
                     break;
+                case ColorType.EyeColor1:
+                    ChaControl.fileFace.pupil[0].baseColor = color;
+                    ChaControl.fileFace.pupil[1].baseColor = color;
+                    ChaControl.ChangeSettingEyeL(true, true, true);
+                    ChaControl.ChangeSettingEyeR(true, true, true);
+                    break;
+                case ColorType.EyeColor2:
+                    ChaControl.fileFace.pupil[0].subColor = color;
+                    ChaControl.fileFace.pupil[1].subColor = color;
+                    ChaControl.ChangeSettingEyeL(true, true, true);
+                    ChaControl.ChangeSettingEyeR(true, true, true);
+                    break;
                 case ColorType.EyeColor1Left:
                     ChaControl.fileFace.pupil[0].baseColor = color;
-                    ChaControl.ChangeSettingEyeL(true, true, false);
+                    ChaControl.ChangeSettingEyeL(true, true, true);
                     break;
                 case ColorType.EyeColor2Left:
                     ChaControl.fileFace.pupil[0].subColor = color;
-                    ChaControl.ChangeSettingEyeL(true, true, false);
+                    ChaControl.ChangeSettingEyeL(true, true, true);
                     break;
                 case ColorType.EyeColor1Right:
                     ChaControl.fileFace.pupil[1].baseColor = color;
-                    ChaControl.ChangeSettingEyeR(true, true, false);
+                    ChaControl.ChangeSettingEyeR(true, true, true);
                     break;
                 case ColorType.EyeColor2Right:
-                    ChaControl.fileFace.pupil[2].subColor = color;
-                    ChaControl.ChangeSettingEyeR(true, true, false);
+                    ChaControl.fileFace.pupil[1].subColor = color;
+                    ChaControl.ChangeSettingEyeR(true, true, true);
                     break;
                 case ColorType.LipLineColor:
                     ChaControl.fileFace.lipLineColor = color;
@@ -325,8 +336,10 @@ namespace Plugins
                     return ChaControl.fileFace.hlUpColor;
                 case ColorType.LowerHightlightColor:
                     return ChaControl.fileFace.hlDownColor;
+                case ColorType.EyeColor1:
                 case ColorType.EyeColor1Left:
                     return ChaControl.fileFace.pupil[0].baseColor;
+                case ColorType.EyeColor2:
                 case ColorType.EyeColor2Left:
                     return ChaControl.fileFace.pupil[0].subColor;
                 case ColorType.EyeColor1Right:
@@ -466,8 +479,32 @@ namespace Plugins
                     ChaFileControl.custom.face.pupil[1].gradOffsetY = value;
                     ChaControl.ChangeSettingEye(true, true, true);
                     break;
+                case FloatType.EyeGradientStrenthLeft:
+                    ChaFileControl.custom.face.pupil[0].gradBlend = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
+                case FloatType.EyeGradientVerticalLeft:
+                    ChaFileControl.custom.face.pupil[0].gradOffsetY = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
+                case FloatType.EyeGradientStrenthRight:
+                    ChaFileControl.custom.face.pupil[1].gradBlend = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
+                case FloatType.EyeGradientVerticalRight:
+                    ChaFileControl.custom.face.pupil[1].gradOffsetY = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
                 case FloatType.EyeGradientSize:
                     ChaFileControl.custom.face.pupil[0].gradScale = value;
+                    ChaFileControl.custom.face.pupil[1].gradScale = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
+                case FloatType.EyeGradientSizeLeft:
+                    ChaFileControl.custom.face.pupil[0].gradScale = value;
+                    ChaControl.ChangeSettingEye(true, true, true);
+                    break;
+                case FloatType.EyeGradientSizeRight:
                     ChaFileControl.custom.face.pupil[1].gradScale = value;
                     ChaControl.ChangeSettingEye(true, true, true);
                     break;
@@ -542,11 +579,20 @@ namespace Plugins
                 case FloatType.IrisHeight:
                     return ChaFileControl.custom.face.pupilHeight;
                 case FloatType.EyeGradientStrenth:
+                case FloatType.EyeGradientStrenthLeft:
                     return ChaFileControl.custom.face.pupil[0].gradBlend;
                 case FloatType.EyeGradientVertical:
+                case FloatType.EyeGradientVerticalLeft:
                     return ChaFileControl.custom.face.pupil[0].gradOffsetY;
+                case FloatType.EyeGradientStrenthRight:
+                    return ChaFileControl.custom.face.pupil[1].gradBlend;
+                case FloatType.EyeGradientVerticalRight:
+                    return ChaFileControl.custom.face.pupil[1].gradOffsetY;
                 case FloatType.EyeGradientSize:
+                case FloatType.EyeGradientSizeLeft:
                     return ChaFileControl.custom.face.pupil[0].gradScale;
+                case FloatType.EyeGradientSizeRight:
+                    return ChaFileControl.custom.face.pupil[1].gradScale;
                 case FloatType.LipGloss:
                     return ChaFileControl.custom.face.lipGlossPower;
                 case FloatType.HairFrontLenght:
@@ -593,7 +639,8 @@ namespace Plugins
         #endregion
         #endregion
 
-        #region Face shape
+        #region Face
+        #region Shape
         public void UpdateFaceShapeValue(int index, float value)
         {
             if (!OriginalFaceShapeValues.ContainsKey(index))
@@ -619,6 +666,13 @@ namespace Plugins
             if (OriginalFaceShapeValues.TryGetValue(index, out var shapeValue))
                 return shapeValue.OriginalValue;
             return GetCurrentFaceValue(index);
+        }
+        #endregion
+
+        public void CopyPupil(int from, int to)
+        {
+            selectedCharacter.fileFace.pupil[from].Copy(selectedCharacter.fileFace.pupil[to]);
+            selectedCharacter.ChangeSettingEye(true, true, true);
         }
         #endregion
 
@@ -1541,11 +1595,29 @@ namespace Plugins
                     break;
                 case SelectKindType.Pupil:
                     selectedCharacter.fileFace.pupil[0].id = id;
-                    selectedCharacter.ChangeSettingEye(true, false, false);
+                    selectedCharacter.fileFace.pupil[1].id = id;
+                    selectedCharacter.ChangeSettingEye(true, true, true);
                     break;
                 case SelectKindType.PupilGrade:
                     selectedCharacter.fileFace.pupil[0].gradMaskId = id;
-                    selectedCharacter.ChangeSettingEye(false, true, false);
+                    selectedCharacter.fileFace.pupil[1].gradMaskId = id;
+                    selectedCharacter.ChangeSettingEye(true, true, true);
+                    break;
+                case SelectKindType.PupilLeft:
+                    selectedCharacter.fileFace.pupil[0].id = id;
+                    selectedCharacter.ChangeSettingEye(true, true, true);
+                    break;
+                case SelectKindType.PupilGradeLeft:
+                    selectedCharacter.fileFace.pupil[0].gradMaskId = id;
+                    selectedCharacter.ChangeSettingEye(true, true, true);
+                    break;
+                case SelectKindType.PupilRight:
+                    selectedCharacter.fileFace.pupil[1].id = id;
+                    selectedCharacter.ChangeSettingEye(true, true, true);
+                    break;
+                case SelectKindType.PupilGradeRight:
+                    selectedCharacter.fileFace.pupil[1].gradMaskId = id;
+                    selectedCharacter.ChangeSettingEye(true, true, true);
                     break;
                 case SelectKindType.Nose:
                     selectedCharacter.fileFace.noseId = id;
@@ -1914,9 +1986,15 @@ namespace Plugins
                 case SelectKindType.EyeHLDown:
                     return selectedCharacter.fileFace.hlDownId;
                 case SelectKindType.Pupil:
+                case SelectKindType.PupilLeft:
                     return selectedCharacter.fileFace.pupil[0].id;
                 case SelectKindType.PupilGrade:
+                case SelectKindType.PupilGradeLeft:
                     return selectedCharacter.fileFace.pupil[0].gradMaskId;
+                case SelectKindType.PupilRight:
+                    return selectedCharacter.fileFace.pupil[1].id;
+                case SelectKindType.PupilGradeRight:
+                    return selectedCharacter.fileFace.pupil[1].gradMaskId;
                 case SelectKindType.Nose:
                     return selectedCharacter.fileFace.noseId;
                 case SelectKindType.Lipline:
@@ -2291,182 +2369,6 @@ namespace Plugins
             else if (subCategory == SubCategory.ClothingShoes) clothingKind = 8;
 #endif
             return clothingKind;
-        }
-        #endregion
-
-        #region Category mappings
-        public string GetCategoryTypes(ColorType colorType, bool returnSubCategory = false)
-        {
-            string category;
-            string subCategory;
-
-            switch (colorType)
-            {
-                case ColorType.SkinMain:
-                    category = "Body";
-                    subCategory = "General";
-                    break;
-                case ColorType.SkinSub:
-                    category = "Body";
-                    subCategory = "General";
-                    break;
-                case ColorType.SkinTan:
-                    category = "Body";
-                    subCategory = "Suntan";
-                    break;
-                case ColorType.NippleColor:
-                    category = "Body";
-                    subCategory = "Chest";
-                    break;
-                case ColorType.NailColor:
-                    category = "Body";
-                    subCategory = "General";
-                    break;
-                case ColorType.PubicHairColor:
-                    category = "Body";
-                    subCategory = "Pubic Hair";
-                    break;
-                case ColorType.HairBase:
-                    category = "Hair";
-                    subCategory = "";
-                    break;
-                case ColorType.HairStart:
-                    category = "Hair";
-                    subCategory = "";
-                    break;
-                case ColorType.HairEnd:
-                    category = "Hair";
-                    subCategory = "";
-                    break;
-                case ColorType.HairGloss:
-                    category = "Hair";
-                    subCategory = "";
-                    break;
-                case ColorType.Eyebrow:
-                    category = "Face";
-                    subCategory = "Eyebrows";
-                    break;
-                case ColorType.EyebrowColor:
-                    category = "Face";
-                    subCategory = "Eyebrows";
-                    break;
-                case ColorType.EyelineColor:
-                    category = "Face";
-                    subCategory = "Eyes";
-                    break;
-                case ColorType.ScleraColor1:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case ColorType.ScleraColor2:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case ColorType.UpperHighlightColor:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case ColorType.LowerHightlightColor:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case ColorType.EyeColor1Left:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case ColorType.EyeColor2Left:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case ColorType.EyeColor1Right:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case ColorType.EyeColor2Right:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case ColorType.LipLineColor:
-                    category = "Face";
-                    subCategory = "Mouth";
-                    break;
-                case ColorType.EyeShadowColor:
-                    category = "Face";
-                    subCategory = "Makeup";
-                    break;
-                case ColorType.CheekColor:
-                    category = "Face";
-                    subCategory = "Makeup";
-                    break;
-                case ColorType.LipColor:
-                    category = "Face";
-                    subCategory = "Makeup";
-                    break;
-                default:
-                    category = "Undefined";
-                    subCategory = "Undefined";
-                    break;
-            }
-
-            return returnSubCategory ? subCategory : category;
-        }
-
-        public string GetCategoryTypes(FloatType floatType, bool returnSubCategory = false)
-        {
-            string category;
-            string subCategory;
-
-            switch (floatType)
-            {
-                case FloatType.SkinTypeStrenth:
-                case FloatType.SkinGloss:
-                case FloatType.DisplaySkinDetailLines:
-                    category = "Body";
-                    subCategory = "General";
-                    break;
-                case FloatType.Softness:
-                case FloatType.Weight:
-                case FloatType.NippleGloss:
-                    category = "Body";
-                    subCategory = "Chest";
-                    break;
-                case FloatType.NailGloss:
-                    category = "Body";
-                    subCategory = "General";
-                    break;
-                case FloatType.FaceOverlayStrenth:
-                    category = "Face";
-                    subCategory = "General";
-                    break;
-                case FloatType.CheekGloss:
-                    category = "Face";
-                    subCategory = "Cheeks";
-                    break;
-                case FloatType.UpperHighlightVertical:
-                case FloatType.UpperHighlightHorizontal:
-                case FloatType.LowerHightlightVertical:
-                case FloatType.LowerHightlightHorizontal:
-                case FloatType.IrisSpacing:
-                case FloatType.IrisVerticalPosition:
-                case FloatType.IrisWidth:
-                case FloatType.IrisHeight:
-                case FloatType.EyeGradientStrenth:
-                case FloatType.EyeGradientVertical:
-                case FloatType.EyeGradientSize:
-                    category = "Face";
-                    subCategory = "Iris";
-                    break;
-                case FloatType.LipGloss:
-                    category = "Face";
-                    subCategory = "Mouth";
-                    break;
-                default:
-                    category = "Undefined";
-                    subCategory = "Undefined";
-                    break;
-            }
-
-            return returnSubCategory ? subCategory : category;
         }
         #endregion
 

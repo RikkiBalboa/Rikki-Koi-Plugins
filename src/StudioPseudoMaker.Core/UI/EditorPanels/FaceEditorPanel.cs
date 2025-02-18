@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using static ChaCustom.CustomSelectKind;
+using UnityEngine;
 
 namespace Plugins
 {
     public class FaceEditorPanel : BaseEditorPanel
     {
+        private int eyesToEdit = 0;
+        private Dictionary<int, List<GameObject>> lists = new Dictionary<int, List<GameObject>>();
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -70,14 +73,60 @@ namespace Plugins
                 AddSliderRow("Iris Width", FloatType.IrisWidth);
                 AddSliderRow("Iris Height", FloatType.IrisHeight);
                 AddSplitter();
-                AddPickerRow(SelectKindType.Pupil);
-                AddColorRow("Eye Color 1 (Left)", ColorType.EyeColor1Left);
-                AddColorRow("Eye Color 2 (Left)", ColorType.EyeColor2Left);
-                AddColorRow("Eye Color 1 (Right)", ColorType.EyeColor1Right);
-                AddColorRow("Eye Color 2 (Right)", ColorType.EyeColor2Right);
-                AddPickerRow(SelectKindType.PupilGrade);
-                AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrenth);
-                AddSliderRow("Eye Gradient Vertical", FloatType.EyeGradientSize);
+
+                AddDropdownRow(
+                    "Eye To Edit",
+                    new List<string> { "Both Eyes", "Left Eye", "Right Eye" },
+                    () => eyesToEdit, idx => { 
+                        eyesToEdit = idx;
+                        foreach (var kvp in lists)
+                        {
+                            if (kvp.Key != idx) kvp.Value.ForEach(o => o.SetActive(false));
+                            else kvp.Value.ForEach(o => o.SetActive(true));
+                        }
+                        RefreshPanel();
+                    });
+
+                lists[0] = new List<GameObject>
+                {
+                    AddPickerRow(SelectKindType.Pupil).gameObject,
+                    AddColorRow("Eye Color 1", ColorType.EyeColor1).gameObject,
+                    AddColorRow("Eye Color 2", ColorType.EyeColor2).gameObject,
+                    AddPickerRow(SelectKindType.PupilGrade).gameObject,
+                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrenth).gameObject,
+                    AddSliderRow("Eye Gradient Vertical", FloatType.EyeGradientVertical).gameObject,
+                    AddSliderRow("Eye Gradient Size", FloatType.EyeGradientSize).gameObject,
+                };
+                lists[1] = new List<GameObject>
+                {
+                    AddPickerRow(SelectKindType.PupilLeft).gameObject,
+                    AddColorRow("Eye Color 1", ColorType.EyeColor1Left).gameObject,
+                    AddColorRow("Eye Color 2", ColorType.EyeColor2Left).gameObject,
+                    AddPickerRow(SelectKindType.PupilGradeLeft).gameObject,
+                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrenthLeft).gameObject,
+                    AddSliderRow("Eye Gradient Vertical", FloatType.EyeGradientVerticalLeft).gameObject,
+                    AddSliderRow("Eye Gradient Size", FloatType.EyeGradientSizeLeft).gameObject,
+                };
+                lists[2] = new List<GameObject>
+                {
+                    AddPickerRow(SelectKindType.PupilRight).gameObject,
+                    AddColorRow("Eye Color 1", ColorType.EyeColor1Right).gameObject,
+                    AddColorRow("Eye Color 2", ColorType.EyeColor2Right).gameObject,
+                    AddPickerRow(SelectKindType.PupilGradeRight).gameObject,
+                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrenthRight).gameObject,
+                    AddSliderRow("Eye Gradient Vertical", FloatType.EyeGradientVerticalRight).gameObject,
+                    AddSliderRow("Eye Gradient Size", FloatType.EyeGradientSizeRight).gameObject,
+                };
+
+                AddButtonGroupRow(new Dictionary<string, Action>
+                {
+                    { "Copy Left To Right", () => { PseudoMaker.selectedCharacterController.CopyPupil(0, 1); RefreshPanel();  } },
+                    { "Copy Right To Left", () => { PseudoMaker.selectedCharacterController.CopyPupil(1, 0); RefreshPanel();  } }
+                });
+
+                foreach (var kvp in lists)
+                    if (kvp.Key != 0)
+                        kvp.Value.ForEach(o => o.SetActive(false));
             }
             else if (SubCategory == SubCategory.FaceNose)
             {
@@ -102,6 +151,12 @@ namespace Plugins
                 AddColorRow("Lip Color", ColorType.LipColor);
                 AddSplitter();
             }
+        }
+
+        private void RefreshPanel()
+        {
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
         }
     }
 }

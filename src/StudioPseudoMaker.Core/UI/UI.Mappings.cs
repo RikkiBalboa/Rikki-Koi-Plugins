@@ -261,8 +261,12 @@ namespace Plugins
                 case SelectKindType.EyeHLDown:
                     return "Lower Highlight Type";
                 case SelectKindType.Pupil:
+                case SelectKindType.PupilLeft:
+                case SelectKindType.PupilRight:
                     return "Eye Type";
                 case SelectKindType.PupilGrade:
+                case SelectKindType.PupilGradeLeft:
+                case SelectKindType.PupilGradeRight:
                     return "Eye Gradient Type";
                 case SelectKindType.Nose:
                     return "Nose Type";
