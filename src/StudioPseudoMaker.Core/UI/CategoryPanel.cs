@@ -29,6 +29,7 @@ namespace Plugins
         {
             var toggleTemplate = PanelScroll.content.Find("ToggleTemplate").gameObject;
             var editorPanelTemplate = gameObject.transform.Find("EditorPanelTemplate").gameObject;
+            editorPanelTemplate.SetActive(false);
 
             var toggles = new List<Toggle>();
 

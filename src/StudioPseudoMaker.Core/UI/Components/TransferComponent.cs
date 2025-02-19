@@ -18,6 +18,8 @@ namespace Plugins
         public string AccessoryName;
         public ToggleGroup FromToggleGroup;
         public ToggleGroup ToToggleGroup;
+        public Action<int> fromEnabledAction;
+        public Action<int> toEnabledAction;
 
         private void Awake()
         {
@@ -39,7 +41,9 @@ namespace Plugins
             }
 
             fromToggle.group = FromToggleGroup;
+            fromToggle.onValueChanged.AddListener(value => { if(value) fromEnabledAction(SlotNr); });
             toToggle.group = ToToggleGroup;
+            toToggle.onValueChanged.AddListener(value => { if (value) toEnabledAction(SlotNr); });
             RefreshText();
         }
 

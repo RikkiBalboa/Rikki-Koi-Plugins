@@ -1,7 +1,8 @@
-﻿using System;
+﻿using HarmonyLib;
+using KKAPI.Maker;
+using MessagePack;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,9 +16,15 @@ namespace Plugins
         private ToggleGroup fromToggleGroup;
         private ToggleGroup toToggleGroup;
 
+        private int fromSlotNr;
+        private int toSlotNr;
+
         protected override void Initialize()
         {
             base.Initialize();
+
+            var rectTransform = (RectTransform)transform;
+            rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y + 20);
 
             rowTemplate = Instantiate(TransferRowTemplate, TransferRowTemplate.transform.parent);
             rowTemplate.SetActive(false);
@@ -29,6 +36,27 @@ namespace Plugins
             go = new GameObject("ToToggleGroup");
             toToggleGroup = go.AddComponent<ToggleGroup>();
             toToggleGroup.allowSwitchOff = false;
+
+            var buttonRow = AddButtonGroupRow(new Dictionary<string, Action>()
+            {
+                { "Copy", () => {
+                    var bytes = MessagePackSerializer.Serialize(PseudoMaker.selectedCharacter.nowCoordinate.accessory.parts[fromSlotNr]);
+                    PseudoMaker.selectedCharacter.nowCoordinate.accessory.parts[toSlotNr] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(bytes);
+                    PseudoMaker.selectedCharacter.AssignCoordinate((ChaFileDefine.CoordinateType)PseudoMaker.selectedCharacter.fileStatus.coordinateType);
+                    PseudoMaker.selectedCharacter.Reload(noChangeClothes: false, noChangeHead: true, noChangeHair: true, noChangeBody: true);
+                    typeof(AccessoriesApi).GetMethod("OnChangeAcs", AccessTools.all).Invoke(null, new object[] { this, fromSlotNr, toSlotNr });
+                    EditTransferRow(transferComponents[toSlotNr], toSlotNr);
+                }}
+            });
+            buttonRow.transform.SetParent(transform, false);
+
+            //PseudoMaker.selectedCharacter.accessory
+
+            var rowTransform = buttonRow.transform as RectTransform;
+            rowTransform.offsetMin = new Vector2(1, rowTransform.offsetMin.y);
+            rowTransform.offsetMax = new Vector2(rectTransform.offsetMax.x, rowTransform.offsetMax.y - 10);
+            rowTransform.anchorMin = new Vector2(0, 0);
+            rowTransform.anchorMax = new Vector2(1, 0);
         }
 
         private void OnEnable()
@@ -62,6 +90,8 @@ namespace Plugins
             var transferRowComponent = transferRow.AddComponent<TransferComponent>();
             transferRowComponent.FromToggleGroup = fromToggleGroup;
             transferRowComponent.ToToggleGroup = toToggleGroup;
+            transferRowComponent.fromEnabledAction = value => fromSlotNr = value;
+            transferRowComponent.toEnabledAction = value => toSlotNr = value;
             EditTransferRow(transferRowComponent, slotNr );
 
             return transferRowComponent;
@@ -73,6 +103,7 @@ namespace Plugins
             if (PseudoMaker.selectedCharacter.infoAccessory[slotNr] != null)
                 transferRow.AccessoryName = PseudoMaker.selectedCharacter.infoAccessory[slotNr].Name;
             else transferRow.AccessoryName = $"Slot {slotNr + 1}";
+            transferRow.RefreshText();
         }
     }
 }
