@@ -22,6 +22,7 @@ namespace Plugins
         public GameObject ToggleOptionTemplate;
         public GameObject SplitterTemplate;
         public GameObject HeaderTemplate;
+        public GameObject TransferRowTemplate;
 
         protected void Awake()
         {
@@ -37,6 +38,7 @@ namespace Plugins
             ToggleOptionTemplate = scrollRect.content.Find("ToggleOptionTemplate").gameObject;
             SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
             HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
+            TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
 
             Initialize();
 
@@ -50,6 +52,7 @@ namespace Plugins
             Destroy(ToggleOptionTemplate);
             Destroy(SplitterTemplate);
             Destroy(HeaderTemplate);
+            Destroy(TransferRowTemplate);
         }
 
         protected virtual void Initialize() { }

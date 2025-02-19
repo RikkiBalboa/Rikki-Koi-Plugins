@@ -47,6 +47,13 @@ namespace Plugins
                     editorPanel.gameObject.SetActive(true);
                     var accessoryPanel = SubCategorySelectorPanel.AddComponent<AccessoryPanel>();
                     accessoryPanel.editorPanel = editorPanel as AccessoryEditorPanel;
+
+                    var panel2 = Instantiate(editorPanelTemplate);
+                    panel2.SetActive(false);
+                    panel2.name = "AccessoryTransferPanel";
+                    panel2.transform.SetParent(editorPanelTemplate.transform.parent, false);
+                    var transferPanel = panel2.AddComponent<AccessoryTransferPanel>();
+                    accessoryPanel.transferPanel = transferPanel;
                 }
                 else
                 {
