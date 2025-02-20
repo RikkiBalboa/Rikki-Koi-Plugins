@@ -1,5 +1,7 @@
-﻿using System;
+﻿using KKAPI.Maker;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static ChaCustom.CustomSelectKind;
 
@@ -18,17 +20,29 @@ namespace Plugins
         private List<GameObject> pushupBraGameObjects;
         private List<GameObject> pushupTopGameObjects;
 
+        private DropdownComponent fromDropDown;
+        private int fromSelected = 0;
+        private DropdownComponent toDropDown;
+        private int toSelected = 0;
+
         private void OnEnable()
         {
             if (clothingChangeAction != null) clothingChangeAction();
+
+            if (fromDropDown != null)
+            {
+                fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+                toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+            }
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            if (SubCategory != SubCategory.ClothingPushup) InitializeClothing();
-            else InitializePushup();
+            if (SubCategory == SubCategory.ClothingPushup) InitializePushup();
+            //else if (SubCategory == SubCategory.ClothingCopy) return;
+            else InitializeClothing();
         }
 
         private void InitializeClothing()
@@ -192,6 +206,33 @@ namespace Plugins
             }
             pushupBraGameObjects.ForEach(o => o.SetActive(false));
             pushupTopGameObjects.ForEach(o => o.SetActive(false));
+        }
+
+        private void InitializeCopy()
+        {
+            fromDropDown = AddDropdownRow(
+                "Clothing Source",
+                PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
+                () => fromSelected,
+                value => { 
+                    fromSelected = value;
+                }
+            );
+            toDropDown = AddDropdownRow(
+                "Clothing Destination",
+                PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
+                () => toSelected,
+                value => {
+                    toSelected = value;
+                }
+            );
+
+            //AddCopyRow(0, true,
+            //    () => PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(ChaListDefine.CategoryNo.co_top, PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].clothes.parts[0].id),
+            //    () => PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(ChaListDefine.CategoryNo.co_top, PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].clothes.parts[0].id)
+            //);
+            //AddCopyRow(1, true);
+            //AddCopyRow(2, true);
         }
 
         public void AddPatternRows(SubCategory subcategory, SelectKindType selectKindType, int colorNr)

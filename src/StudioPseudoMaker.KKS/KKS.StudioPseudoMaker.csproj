@@ -77,6 +77,10 @@
       <HintPath>..\..\lib\KKS_MaterialEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KKS_MoreOutfits">
+      <HintPath>..\..\lib\KKS_MoreOutfits.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KKS_Pushup">
       <HintPath>..\..\lib\KKS_Pushup.dll</HintPath>
       <Private>False</Private>

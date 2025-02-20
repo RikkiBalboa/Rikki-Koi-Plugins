@@ -39,10 +39,7 @@ namespace Plugins
         {
             text.text = Name;
 
-            var options = new List<Dropdown.OptionData>();
-            foreach (var option in DropdownOptions)
-                options.Add(new Dropdown.OptionData(option));
-            dropdown.options = options;
+            SetDropdownOptions(DropdownOptions);
         }
 
         private void OnEnable()
@@ -55,6 +52,16 @@ namespace Plugins
                     dropdown.captionText.text = dropdown.options[dropdown.value].text;
                 shouldNotUpdate = false;
             }
+        }
+
+        public void SetDropdownOptions(IEnumerable<string> options)
+        {
+            if (dropdown == null) return;
+            var _options = new List<Dropdown.OptionData>();
+            foreach (var option in options)
+                _options.Add(new Dropdown.OptionData(option));
+            dropdown.options = _options;
+            dropdown.RefreshShownValue();
         }
 
         // Shamelessly stolen from https://github.com/IllusionMods/KK_Plugins/blob/master/src/MaterialEditor.Base/UI/UI.DropdownFilter.cs

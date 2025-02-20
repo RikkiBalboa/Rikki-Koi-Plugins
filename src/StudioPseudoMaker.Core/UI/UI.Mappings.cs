@@ -232,12 +232,13 @@ namespace Plugins
                 case SubCategory.ClothingShoesOutdoors: return "Shoes (Outdoors";
 #elif KKS
                 case SubCategory.ClothingShoes: return "Shoes";
+#endif
+                //case SubCategory.ClothingCopy: return "Copy";
                 case SubCategory.HairBack: return "Back";
                 case SubCategory.HairFront: return "Front";
                 case SubCategory.HairSide: return "Side";
                 case SubCategory.HairExtensions: return "Extensions";
                 case SubCategory.HairMiscellaneous: return "Miscellaneous";
-#endif
                 default: return "Undefined";
             }
         }
@@ -609,6 +610,7 @@ namespace Plugins
 #elif KKS
         ClothingShoes,
 #endif
+        //ClothingCopy,
         HairBack,
         HairFront,
         HairSide,

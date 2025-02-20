@@ -23,6 +23,8 @@ namespace Plugins
         public GameObject SplitterTemplate;
         public GameObject HeaderTemplate;
         public GameObject TransferRowTemplate;
+        public GameObject AccessoryCopyRowTemplace;
+        public GameObject ClothingCopyRowTemplace;
 
         protected void Awake()
         {
@@ -39,6 +41,8 @@ namespace Plugins
             SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
             HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
             TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
+            AccessoryCopyRowTemplace = scrollRect.content.Find("AccessoryCopyRowTemplate").gameObject;
+            ClothingCopyRowTemplace = scrollRect.content.Find("ClothingCopyRowTemplate").gameObject;
 
             Initialize();
 
@@ -53,6 +57,8 @@ namespace Plugins
             Destroy(SplitterTemplate);
             Destroy(HeaderTemplate);
             Destroy(TransferRowTemplate);
+            Destroy(AccessoryCopyRowTemplace);
+            Destroy(ClothingCopyRowTemplace);
         }
 
         protected virtual void Initialize() { }
@@ -331,6 +337,16 @@ namespace Plugins
             dropdownComponent.SetValueAction = setValueAction;
 
             return dropdownComponent;
+        }
+
+        public CopyComponent AddCopyRow(int index, bool isClothing, Func<string> getFromName, Func<string> getToName)
+        {
+            var row = Instantiate(isClothing ? AccessoryCopyRowTemplace : ClothingCopyRowTemplace, AccessoryCopyRowTemplace.transform.parent);
+
+            var copyComponent = row.AddComponent<CopyComponent>();
+            copyComponent.GetFromName = getFromName;
+            copyComponent.GetToName = getToName;
+            return copyComponent;
         }
     }
 }

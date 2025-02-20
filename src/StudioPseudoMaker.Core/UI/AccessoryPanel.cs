@@ -26,7 +26,8 @@ namespace Plugins
         private void Awake()
         {
             rectTransform = (RectTransform)transform;
-            rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y + 66);
+            //rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y + 66);
+            rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y + 44);
 
             gameObject.name = "AccessorySelectorPanel";
             PanelScroll = gameObject.GetComponent<ScrollRect>();
@@ -39,8 +40,8 @@ namespace Plugins
                 editorPanel.gameObject.SetActive(false);
                 transferPanel.gameObject.SetActive(true);
             });
-            AddToggle(1, "Copy", value => { });
-            addSlotToggle = AddToggle(2, "+1", value => { if (value) addSlotToggle.isOn = false; }, true);
+            //AddToggle(1, "Copy", value => { });
+            addSlotToggle = AddToggle(1, "+1", value => { if (value) addSlotToggle.isOn = false; }, true);
         }
 
         private Toggle AddToggle(int position, string label, Action<bool> onValueChanged, bool isButton = false)
