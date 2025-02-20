@@ -40,12 +40,14 @@ namespace Plugins
             var buttonRow = AddButtonGroupRow(new Dictionary<string, Action>()
             {
                 { "Copy", () => {
+                    Compatibility.A12TransferAccessoryBefore(toSlotNr);
                     var bytes = MessagePackSerializer.Serialize(PseudoMaker.selectedCharacter.nowCoordinate.accessory.parts[fromSlotNr]);
                     PseudoMaker.selectedCharacter.nowCoordinate.accessory.parts[toSlotNr] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(bytes);
                     PseudoMaker.selectedCharacter.AssignCoordinate((ChaFileDefine.CoordinateType)PseudoMaker.selectedCharacter.fileStatus.coordinateType);
                     PseudoMaker.selectedCharacter.Reload(noChangeClothes: false, noChangeHead: true, noChangeHair: true, noChangeBody: true);
                     typeof(AccessoriesApi).GetMethod("OnChangeAcs", AccessTools.all).Invoke(null, new object[] { this, fromSlotNr, toSlotNr });
                     EditTransferRow(transferComponents[toSlotNr], toSlotNr);
+                    Compatibility.A12TransferAccessoryAfter();
                 }}
             });
             buttonRow.transform.SetParent(transform, false);

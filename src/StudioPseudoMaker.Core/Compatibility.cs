@@ -1,5 +1,4 @@
-﻿using AAAAAAAAAAAA;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Bootstrap;
 using ChaCustom;
 using System;
@@ -116,6 +115,43 @@ namespace Plugins
                     }
                     controller.customAccParents[coord][slotNr] = parentBone.Hash;
                 }
+            }
+        }
+
+        public static void A12TransferAccessoryBefore(int toSlotnNr)
+        {
+            if (!HasA12) return;
+
+            TransferAccessory();
+            void TransferAccessory()
+            {
+                var controller = PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>();
+
+                if (
+                    controller.customAccParents.TryGetValue(PseudoMaker.selectedCharacter.fileStatus.coordinateType, out var dicCoord)
+                    && AAAAAAAAAAAA.AAAAAAAAAAAA.TryGetStudioAccBone(controller, toSlotnNr, out var accBone)
+                )
+                {
+                    var toDelete = new List<int>();
+                    foreach (var hash in dicCoord)
+                        if (controller.dicHashBones.TryGetValue(hash.Value, out var bone) && bone.IsChildOf(accBone))
+                            toDelete.Add(hash.Key);
+                    foreach(var key in toDelete)
+                        dicCoord.Remove(key);
+                }
+            }
+        }
+
+        public static void A12TransferAccessoryAfter()
+        {
+            if (!HasA12) return;
+
+            TransferAccessory();
+            void TransferAccessory()
+            {
+                var controller = PseudoMaker.selectedCharacter.GetComponent<AAAAAAAAAAAA.CardDataController>();
+
+                controller.LoadData();
             }
         }
         #endregion
