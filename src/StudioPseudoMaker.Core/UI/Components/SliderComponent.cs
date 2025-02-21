@@ -48,8 +48,7 @@ namespace PseudoMaker.UI
             slider.minValue = MinValue;
             slider.maxValue = MaxValue;
 
-            if (OnLabelClick != null)
-                text.gameObject.AddComponent<Button>().onClick.AddListener(() => OnLabelClick());
+            PseudoMakerUI.AddTimelineButton(text.gameObject, OnLabelClick);
         }
 
         private void OnEnable()

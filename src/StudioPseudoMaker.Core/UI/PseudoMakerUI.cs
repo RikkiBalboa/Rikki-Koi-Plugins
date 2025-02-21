@@ -137,5 +137,13 @@ namespace PseudoMaker.UI
                 gameObject.SetActive(true);
             }
         }
+
+        public static void AddTimelineButton(GameObject go, Action onClick)
+        {
+            if (onClick == null) return;
+            var button = go.AddComponent<Button>();
+            button.onClick.AddListener(() => onClick());
+            button.m_Colors.highlightedColor = new Color(0.74f, 0.8f, 0.96f);
+        }
     }
 }
