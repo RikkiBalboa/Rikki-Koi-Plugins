@@ -18,6 +18,11 @@ namespace Plugins
             get {  return _selectedFloatType; }
             set { 
                 _selectedFloatType = value;
+
+                _selectedColorType = null;
+                _selectedBodyShape = null;
+                selectedFaceShape = null;
+
                 TimelineCompatibility.RefreshInterpolablesList();
             }
         }
@@ -29,6 +34,11 @@ namespace Plugins
             set
             {
                 _selectedColorType = value;
+
+                _selectedFloatType = null;
+                _selectedBodyShape = null;
+                selectedFaceShape = null;
+
                 TimelineCompatibility.RefreshInterpolablesList();
             }
         }
@@ -40,6 +50,11 @@ namespace Plugins
             set
             {
                 _selectedBodyShape = value;
+
+                _selectedFloatType = null;
+                _selectedColorType = null;
+                selectedFaceShape = null;
+
                 TimelineCompatibility.RefreshInterpolablesList();
             }
         }
@@ -51,6 +66,11 @@ namespace Plugins
             set
             {
                 selectedFaceShape = value;
+
+                _selectedFloatType = null;
+                _selectedColorType = null;
+                _selectedBodyShape = null;
+
                 TimelineCompatibility.RefreshInterpolablesList();
             }
         }
