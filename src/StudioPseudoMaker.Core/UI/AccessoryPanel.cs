@@ -85,6 +85,8 @@ namespace Plugins
 
                 var text = toggles[i].gameObject.GetComponentInChildren<Text>(true);
                 SetAccessoryName(i, text);
+                // Select the first accessory by default, instead of the transfer panel
+                if (i == 0) toggles[i].isOn = true;
                 processedAccessories++;
             }
 
