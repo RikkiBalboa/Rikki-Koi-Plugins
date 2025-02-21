@@ -24,6 +24,8 @@ namespace Plugins
         public Action<float> SetValueAction;
         public Action ResetValueAction;
 
+        private bool shouldNotUpdate = false;
+
         private void Awake()
         {
             text = GetComponentInChildren<Text>(true);
@@ -37,7 +39,7 @@ namespace Plugins
             IncreaseButton.onClick.AddListener(() => UpdateValue(GetCurrentValue() + IncrementValue * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f)));
 
             inputField = GetComponentInChildren<InputField>(true);
-            inputField.onEndEdit.AddListener(UpdateValue);
+            inputField.onEndEdit.AddListener(value => { if (!shouldNotUpdate) UpdateValue(value); });
 # if KKS
             inputField.m_Colors.selectedColor = inputField.colors.highlightedColor;
 #endif
@@ -56,7 +58,9 @@ namespace Plugins
             if (GetCurrentValue == null)
                 return;
 
+            shouldNotUpdate = true;
             UpdateValue(GetCurrentValue());
+            shouldNotUpdate = false;
         }
 
         public void UpdateValue(float value)

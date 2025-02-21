@@ -13,10 +13,12 @@ namespace Plugins
         public Toggle toggle;
         private Text label;
 
+        private bool shouldNotUpdate = false;
+
         private void Awake()
         {
             toggle = gameObject.GetComponentInChildren<Toggle>();
-            toggle.onValueChanged.AddListener(UpdateValue);
+            toggle.onValueChanged.AddListener(value => { if (!shouldNotUpdate) UpdateValue(value); });
 
             label = gameObject.GetComponentInChildren<Text>();
         }
@@ -31,12 +33,15 @@ namespace Plugins
             if (GetCurrentValue == null)
                 return;
 
+            shouldNotUpdate = true;
             UpdateValue(GetCurrentValue());
+            shouldNotUpdate = false;
         }
 
         public void UpdateValue(bool value)
         {
             toggle.isOn = value;
+
 
             if (value != GetCurrentValue())
                 SetValueAction(value);

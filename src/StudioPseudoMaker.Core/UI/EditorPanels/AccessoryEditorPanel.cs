@@ -118,11 +118,13 @@ namespace Plugins
                 AddColorRow("Color 4", 3).gameObject,
                 AddColorRow("Outline Color", (int)HairColor.OutlineColor).gameObject,
                 AddColorRow("Accessory Color", (int)HairColor.AccessoryColor).gameObject,
+#if KKS
                 AddColorRow("Gloss Color", (int)HairColor.GlossColor).gameObject,
+#endif
             };
 
             colorSplitter = AddSplitter();
-            #endregion
+#endregion
 
             #region Accessory Transforms
             guideObjectToggleGroup = gameObject.AddComponent<ToggleGroup>();
