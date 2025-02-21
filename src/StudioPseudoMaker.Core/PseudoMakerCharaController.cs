@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Illusion.Component.UI.MouseButtonCheck;
 using static KK_Plugins.Pushup;
 using static Plugins.PseudoMaker;
 
@@ -125,6 +124,18 @@ namespace Plugins
 
             if (data.data.TryGetValue(nameof(OriginalPushupValue), out var originalPushupValue) && originalPushupValue != null)
                 OriginalPushupValue = MessagePackSerializer.Deserialize<Dictionary<PushupStorageKey, FloatStorage>>((byte[])originalPushupValue);
+        }
+
+        internal void ResetSavedValues()
+        {
+            OriginalClothingColors.Clear();
+            OriginalAccessoryColors.Clear();
+            OriginalColors.Clear();
+            OriginalFloats.Clear();
+            OriginalAccessoryFloats.Clear();
+            OriginalBodyShapeValues.Clear();
+            OriginalFaceShapeValues.Clear();
+            OriginalPushupValue.Clear();
         }
 
         public static PseudoMakerCharaController GetController(ChaControl chaCtrl)

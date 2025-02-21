@@ -15,6 +15,7 @@ namespace Plugins
         public RectTransform MainCanvas;
         public RectTransform DragPanel;
         public RectTransform CloseButton;
+        public RectTransform ResetOriginalsButton;
         public RectTransform ResizeHandle;
 
         public PickerPanel PickerPanel;
@@ -36,6 +37,7 @@ namespace Plugins
             PickerPanel = MainWindow.transform.Find("CategoryPicker").gameObject.AddComponent<PickerPanel>();
             DragPanel = (RectTransform)MainCanvas.transform.Find("DragPanel").transform;
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
+            ResetOriginalsButton = (RectTransform)DragPanel.Find("ResetButton");
             ResizeHandle = (RectTransform)MainCanvas.transform.Find("ResizeHandle").transform;
             MovableWindow.MakeObjectDraggable(DragPanel, MainCanvas, false);
             ResizableWindow.MakeObjectResizable(
@@ -50,6 +52,8 @@ namespace Plugins
             );
 
             CloseButton.gameObject.GetComponent<Button>().onClick.AddListener(() => MainWindow.SetActive(false));
+            ResetOriginalsButton.gameObject.GetComponent<Button>().onClick.AddListener(() => PseudoMaker.selectedCharacterController.ResetSavedValues());
+
 
             InitializeTemplates();
             InitializeCategories();

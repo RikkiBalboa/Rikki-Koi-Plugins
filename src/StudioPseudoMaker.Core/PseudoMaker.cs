@@ -41,6 +41,7 @@ namespace Plugins
 
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<KeyboardShortcut> KeyAltReset { get; private set; }
+        //public static ConfigEntry<bool> ResetOriginalsOnReload { get; private set; }
         public static ConfigEntry<float> MainWindowWidth { get; private set; }
         public static ConfigEntry<float> MainWindowHeight { get; private set; }
         public static ConfigEntry<float> PickerWindowWidth { get; private set; }
@@ -58,6 +59,11 @@ namespace Plugins
             Logger = base.Logger;
             harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
+            //ResetOriginalsOnReload = Config.Bind(
+            //    "General", "Reset original values reloaad",
+            //    false,
+            //    new ConfigDescription("When using the change character function, should the original values stored when editing a value be cleared or not. You can always clear the values by pressing the \"Reset Originals\" button too")
+            //);
             KeyToggleGui = Config.Bind(
                 "Keyboard Shortcuts", "Open editor window",
                 new KeyboardShortcut(KeyCode.Q, KeyCode.RightControl),
