@@ -3,6 +3,7 @@ using HarmonyLib;
 using KK_Plugins;
 using PseudoMaker.UI;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace PseudoMaker
@@ -44,8 +45,22 @@ namespace PseudoMaker
         [HarmonyPatch(typeof(KKAPI.Maker.MakerAPI), nameof(KKAPI.Maker.MakerAPI.InsideAndLoaded))]
         private static bool MakerInsideAndLoadedPrefix(ref bool __result)
         {
-            var stackTrace = new System.Diagnostics.StackTrace().ToString();
-            if (stackTrace.Contains("HairAccessoryController"))
+            var stackframe = new StackFrame(2).GetMethod();
+            var methodName = stackframe.Name;
+            var typeName = stackframe.DeclaringType.Name;
+
+            //var stackTrace = new System.Diagnostics.StackTrace().ToString();
+            //if (stackTrace.Contains("HairAccessoryController"))
+            if(typeName == "HairAccessoryController"
+                && (
+                    methodName == "SetColorMatch"
+                    || methodName == "SetHairGloss"
+                    || methodName == "SetHairLength"
+                    || methodName == "SetAccessoryColor"
+                    || methodName == "SetGlossColor"
+                    || methodName == "SetOutlineColor"
+                )
+            )
             {
                 __result = true;
                 return false;
@@ -61,7 +76,7 @@ namespace PseudoMaker
             var stackTrace = new System.Diagnostics.StackTrace().ToString();
             if (stackTrace.Contains("HairAccessoryController"))
             {
-                __result = AccessoryEditorPanel.currentAccessoryNr;
+                __result = AccessoryEditorPanel.currentAccessoryNr < 0 ? 0 : AccessoryEditorPanel.currentAccessoryNr;
                 return false;
             }
             return true;
