@@ -420,11 +420,11 @@ namespace Plugins
                     ChaFileControl.custom.body.drawAddLine = Convert.ToBoolean(value);
                     ChaControl.VisibleAddBodyLine();
                     break;
-                case FloatType.Softness:
+                case FloatType.BustSoftness:
                     //ChaControl.ChangeBustSoftness(value);
                     SetPushupBaseValue(PushupValue.AdvancedSoftness, value);
                     break;
-                case FloatType.Weight:
+                case FloatType.BustWeight:
                     //ChaControl.ChangeBustGravity(value);
                     SetPushupBaseValue(PushupValue.AdvancedWeight, value);
                     break;
@@ -555,10 +555,10 @@ namespace Plugins
                     return ChaFileControl.custom.body.skinGlossPower;
                 case FloatType.DisplaySkinDetailLines:
                     return Convert.ToSingle(ChaFileControl.custom.body.drawAddLine);
-                case FloatType.Softness:
+                case FloatType.BustSoftness:
                     //return ChaControl.fileBody.bustSoftness;
                     return GetPushupBaseValue(PushupValue.AdvancedSoftness);
-                case FloatType.Weight:
+                case FloatType.BustWeight:
                     //return ChaControl.fileBody.bustWeight;
                     return GetPushupBaseValue(PushupValue.AdvancedWeight);
                 case FloatType.NippleGloss:

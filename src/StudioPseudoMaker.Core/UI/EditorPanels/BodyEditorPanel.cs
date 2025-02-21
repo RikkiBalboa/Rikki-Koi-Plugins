@@ -39,8 +39,8 @@ namespace Plugins
             }
             else if (SubCategory == SubCategory.BodyChest)
             {
-                AddSliderRow("Breast Weight", FloatType.Weight);
-                AddSliderRow("Breast Softness", FloatType.Softness);
+                AddSliderRow("Breast Weight", FloatType.BustWeight);
+                AddSliderRow("Breast Softness", FloatType.BustSoftness);
                 AddSplitter();
                 AddPickerRow(SelectKindType.Nip);
                 AddColorRow("Nipple Color", ColorType.NippleColor);
