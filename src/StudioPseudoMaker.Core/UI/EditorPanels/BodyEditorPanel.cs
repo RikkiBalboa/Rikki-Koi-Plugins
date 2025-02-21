@@ -16,7 +16,8 @@ namespace Plugins
                         () => PseudoMaker.selectedCharacterController.GetCurrentBodyValue(value.Key),
                         () => PseudoMaker.selectedCharacterController.GetOriginalBodyShapeValue(value.Key),
                         f => PseudoMaker.selectedCharacterController.UpdateBodyShapeValue(value.Key, f),
-                        () => PseudoMaker.selectedCharacterController.ResetBodyShapeValue(value.Key)
+                        () => PseudoMaker.selectedCharacterController.ResetBodyShapeValue(value.Key),
+                        onLabelClick: () => TimelineCompatibilityHelper.SelectedBodyShape = value.Key
                     );
 
             if (

@@ -17,6 +17,7 @@ namespace Plugins
         public Func<Color> GetOriginalValue;
         public Action<Color> SetValueAction;
         public Action ResetValueAction;
+        public Action OnLabelClick;
 
         private void Awake()
         {
@@ -40,6 +41,9 @@ namespace Plugins
         private void Start()
         {
             text.text = Name;
+
+            if (OnLabelClick != null)
+                text.gameObject.AddComponent<Button>().onClick.AddListener(() => OnLabelClick());
         }
 
         private void OnEnable()

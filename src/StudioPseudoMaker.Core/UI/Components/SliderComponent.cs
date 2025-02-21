@@ -18,12 +18,14 @@ namespace Plugins
         public Func<float> GetOriginalValue;
         public Action<float> SetValueAction;
         public Action ResetValueAction;
+        public Action OnLabelClick;
 
         private bool shouldNotUpdate = false;
 
         private void Awake()
         {
             text = GetComponentInChildren<Text>(true);
+
             var dragHandler = text.gameObject.AddComponent<OnDragHandler>();
             dragHandler.UpdateAction = value => inputField.onEndEdit.Invoke((slider.value + value).ToString());
 
@@ -45,6 +47,9 @@ namespace Plugins
             text.text = Name;
             slider.minValue = MinValue;
             slider.maxValue = MaxValue;
+
+            if (OnLabelClick != null)
+                text.gameObject.AddComponent<Button>().onClick.AddListener(() => OnLabelClick());
         }
 
         private void OnEnable()

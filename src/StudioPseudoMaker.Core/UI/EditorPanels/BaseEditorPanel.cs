@@ -140,7 +140,7 @@ namespace Plugins
             return inputFieldComponent;
         }
 
-        public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2)
+        public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, Action onLabelClick = null)
         {
             var slider = Instantiate(SliderTemplate, SliderTemplate.transform.parent);
             slider.name = $"Slider{name.Replace(" ", "")}";
@@ -153,7 +153,7 @@ namespace Plugins
             sliderComponent.GetOriginalValue = getOriginalValueAction;
             sliderComponent.SetValueAction = setValueAction;
             sliderComponent.ResetValueAction = resetValueAction;
-
+            sliderComponent.OnLabelClick = onLabelClick;
 
             return sliderComponent;
         }
@@ -165,11 +165,12 @@ namespace Plugins
                 () => PseudoMaker.selectedCharacterController.GetFloatValue(floatType),
                 () => PseudoMaker.selectedCharacterController.GetOriginalFloatValue(floatType),
                 value => PseudoMaker.selectedCharacterController.SetFloatTypeValue(value, floatType),
-                () => PseudoMaker.selectedCharacterController.ResetFloatTypeValue(floatType)
+                () => PseudoMaker.selectedCharacterController.ResetFloatTypeValue(floatType),
+                onLabelClick: () => TimelineCompatibilityHelper.SelectedFloatType = floatType
             );
         }
 
-        public ColorComponent AddColorRow(string name, Func<Color> getCurrentValueAction, Func<Color> getOriginalValueAction, Action<Color> setValueAction, Action resetValueAction)
+        public ColorComponent AddColorRow(string name, Func<Color> getCurrentValueAction, Func<Color> getOriginalValueAction, Action<Color> setValueAction, Action resetValueAction, Action onLabelClick = null)
         {
             var button = Instantiate(ColorTemplate, ColorTemplate.transform.parent);
             button.name = $"ColorPicker{name.Replace(" ", "")}";
@@ -180,6 +181,7 @@ namespace Plugins
             colorComponent.GetOriginalValue = getOriginalValueAction;
             colorComponent.SetValueAction = setValueAction;
             colorComponent.ResetValueAction = resetValueAction;
+            colorComponent.OnLabelClick = onLabelClick;
 
             return colorComponent;
         }
@@ -191,7 +193,8 @@ namespace Plugins
                 () => PseudoMaker.selectedCharacterController.GetColorPropertyValue(colorType),
                 () => PseudoMaker.selectedCharacterController.GetOriginalColorPropertyValue(colorType),
                 c => PseudoMaker.selectedCharacterController.UpdateColorProperty(c, colorType),
-                () => PseudoMaker.selectedCharacterController.ResetColorProperty(colorType)
+                () => PseudoMaker.selectedCharacterController.ResetColorProperty(colorType),
+                onLabelClick: () => TimelineCompatibilityHelper.SelectedColorType = colorType
             );
         }
 

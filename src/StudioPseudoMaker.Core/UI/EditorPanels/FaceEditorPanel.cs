@@ -22,7 +22,8 @@ namespace Plugins
                         () => PseudoMaker.selectedCharacterController.GetCurrentFaceValue(value.Key),
                         () => PseudoMaker.selectedCharacterController.GetOriginalFaceShapeValue(value.Key),
                         f => PseudoMaker.selectedCharacterController.UpdateFaceShapeValue(value.Key, f),
-                        () => PseudoMaker.selectedCharacterController.ResetFaceShapeValue(value.Key)
+                        () => PseudoMaker.selectedCharacterController.ResetFaceShapeValue(value.Key),
+                        onLabelClick: () => TimelineCompatibilityHelper.SelectedFaceShape = value.Key
                     );
 
             if (
