@@ -14,6 +14,7 @@ namespace PseudoMaker
 {
     internal static class TimelineCompatibilityHelper
     {
+        #region Getters/Setters
         private static FloatType? _selectedFloatType;
         public static FloatType? SelectedFloatType
         {
@@ -93,6 +94,24 @@ namespace PseudoMaker
                 TimelineCompatibility.RefreshInterpolablesList();
             }
         }
+
+        private static int? _selectedAccessorySlot;
+        public static int? SelectedAccessory
+        {
+            get { return _selectedAccessorySlot; }
+            set
+            {
+                _selectedAccessorySlot = value;
+
+                _selectedFloatType = null;
+                _selectedColorType = null;
+                _selectedBodyShape = null;
+                _selectedFaceShape = null;
+
+                TimelineCompatibility.RefreshInterpolablesList();
+            }
+        }
+        #endregion
 
         internal static void PopulateTimeline()
         {
@@ -360,6 +379,25 @@ namespace PseudoMaker
                         checkIntegrity: null,
                         getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Pattern {_i + 1} {patternValue}"
                     );
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                var _i = i;
+                TimelineCompatibility.AddInterpolableModelDynamic(
+                    owner: "Pseudo Maker",
+                    id: $"AccessoryColor{i}",
+                    name: $"Accessory Color {i + 1}",
+                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetAccessoryColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor)),
+                    interpolateAfter: null,
+                    getValue: (oci, parameter) => parameter.Controller.GetAccessoryColor(parameter.Type, _i),
+                    readValueFromXml: (parameter, node) => ReadColorXML(node),
+                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedAccessory),
+                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedAccessory != null,
+                    checkIntegrity: null,
+                    getFinalName: (currentName, oci, parameter) => $"Accessory Slot {parameter.Type} Color {_i + 1}"
+                );
             }
         }
 

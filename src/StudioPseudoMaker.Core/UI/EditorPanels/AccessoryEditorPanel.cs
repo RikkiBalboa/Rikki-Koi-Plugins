@@ -283,6 +283,7 @@ namespace PseudoMaker.UI
                 parentDropdown.gameObject.SetActive(false);
                 noShake.SetActive(false);
             }
+            TimelineCompatibilityHelper.SelectedAccessory = currentAccessoryNr;
         }
 
         private void OnDisable()
@@ -290,6 +291,7 @@ namespace PseudoMaker.UI
             //if (PseudoMakerUI.CurrentCategory != Category.Accessories)
             if (!isRefreshing)
                 AccessoryGuideObjectManager.DestroyGuideObject();
+            TimelineCompatibilityHelper.SelectedAccessory = null;
         }
 
         public void ChangeSelectedAccessory(int slotNr, bool exists)

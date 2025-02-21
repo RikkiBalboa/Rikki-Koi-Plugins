@@ -1191,6 +1191,7 @@ namespace PseudoMaker
         #region Accessories
         public void SetAccessoryColor(int slotNr, int colorNr, Color color)
         {
+            if (slotNr < 0 || slotNr >= Accessories.parts.Length) return;
             var accessoryColor = new AccessoryStorageKey(CurrentOutfitSlot, slotNr, colorNr);
             if (!OriginalAccessoryColors.Any(x => x.Key == accessoryColor))
                 OriginalAccessoryColors[accessoryColor] = new ColorStorage(GetAccessoryColor(slotNr, colorNr), color);
@@ -1222,6 +1223,7 @@ namespace PseudoMaker
         }
         public Color GetAccessoryColor(int slotNr, int colorNr)
         {
+            if (slotNr < 0 || slotNr >= Accessories.parts.Length) return Color.white;
             if (colorNr < 4)
                 return Accessories.parts[slotNr].color[colorNr];
             else if (colorNr == (int)HairColor.AccessoryColor)
@@ -1232,7 +1234,7 @@ namespace PseudoMaker
 #endif
             else if (colorNr == (int)HairColor.OutlineColor)
                 return selectedHairAccessoryController.GetOutlineColor(slotNr);
-            return Color.black;
+            return Color.white;
         }
 
         public void ResetAcessoryColor(int slotNr, int colorNr, bool getDefault = false)
