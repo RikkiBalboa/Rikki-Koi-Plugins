@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 using Text = TMPro.TextMeshProUGUI;
 #endif
 
-namespace Plugins
+namespace PseudoMaker
 {
     internal class CurrentStateColorSlider : BaseCurrentStateEditableGuiEntry<Color>
     {

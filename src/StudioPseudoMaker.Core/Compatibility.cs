@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Plugins
+namespace PseudoMaker
 {
     public static class Compatibility
     {

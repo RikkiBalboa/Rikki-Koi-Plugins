@@ -1,10 +1,11 @@
-﻿using System;
+﻿using PseudoMaker.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     public class BaseEditorPanel : MonoBehaviour
     {

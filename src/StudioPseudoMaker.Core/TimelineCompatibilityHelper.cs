@@ -1,6 +1,7 @@
 ﻿using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Utilities;
+using PseudoMaker.UI;
 using Studio;
 using System;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Text;
 using System.Xml;
 using UnityEngine;
 
-namespace Plugins
+namespace PseudoMaker
 {
     internal static class TimelineCompatibilityHelper
     {

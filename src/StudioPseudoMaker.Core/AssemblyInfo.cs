@@ -1,6 +1,6 @@
 ﻿using Plugins;
 using System.Reflection;
-using static Plugins.PseudoMaker;
+using static PseudoMaker.PseudoMaker;
 
 [assembly: AssemblyTitle(PluginNameInternal)]
 [assembly: AssemblyProduct(PluginNameInternal)]

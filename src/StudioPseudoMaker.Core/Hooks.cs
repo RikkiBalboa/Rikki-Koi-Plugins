@@ -1,9 +1,10 @@
 ﻿using ChaCustom;
 using HarmonyLib;
 using KK_Plugins;
+using PseudoMaker.UI;
 using System;
 
-namespace Plugins
+namespace PseudoMaker
 {
     internal class Hooks
     {

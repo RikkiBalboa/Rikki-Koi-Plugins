@@ -8,6 +8,7 @@ using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
+using PseudoMaker.UI;
 using Studio;
 using System.Linq;
 using UniRx;
@@ -15,7 +16,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Plugins
+namespace PseudoMaker
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [BepInIncompatibility("com.rikkibalboa.bepinex.studioSkinColorControl")]
@@ -24,12 +25,12 @@ namespace Plugins
     [BepInDependency(KK_Plugins.Pushup.GUID)]
     [BepInDependency(KKABMX.Core.KKABMX_Core.GUID)]
     [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
-    [BepInProcess(Constants.StudioProcessName)]
+    [BepInProcess(Plugins.Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
-        public const string PluginNameInternal = Constants.Prefix + "_StudioPseudoMaker";
+        public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
         public const string PluginVersion = "0.6";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;

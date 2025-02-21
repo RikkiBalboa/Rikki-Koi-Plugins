@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using static ChaCustom.CustomSelectKind;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     public class ClothingEditorPanel : BaseEditorPanel
     {

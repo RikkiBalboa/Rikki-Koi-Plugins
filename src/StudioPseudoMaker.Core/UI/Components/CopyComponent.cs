@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     public class CopyComponent : MonoBehaviour
     {

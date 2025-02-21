@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     internal class ResizableWindow : UIBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     internal class SelectListInfoHoverComponent : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

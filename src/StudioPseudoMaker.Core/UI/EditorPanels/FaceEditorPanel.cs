@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     public class FaceEditorPanel : BaseEditorPanel
     {

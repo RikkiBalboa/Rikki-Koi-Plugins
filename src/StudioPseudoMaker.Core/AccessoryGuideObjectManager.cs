@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace Plugins
+namespace PseudoMaker
 {
     public static class AccessoryGuideObjectManager
     {

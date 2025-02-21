@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static ChaCustom.CustomSelectKind;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     public class UIMappings
     {

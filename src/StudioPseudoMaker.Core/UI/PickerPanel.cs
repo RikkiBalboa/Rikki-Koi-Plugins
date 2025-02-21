@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     public class PickerPanel : MonoBehaviour
     {

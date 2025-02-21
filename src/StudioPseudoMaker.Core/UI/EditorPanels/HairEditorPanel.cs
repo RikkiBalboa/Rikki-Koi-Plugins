@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using static ChaCustom.CustomSelectKind;
 
-namespace Plugins
+namespace PseudoMaker.UI
 {
     public class HairEditorPanel : BaseEditorPanel
     {

@@ -6,14 +6,15 @@ using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using MessagePack;
+using PseudoMaker.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static KK_Plugins.Pushup;
-using static Plugins.PseudoMaker;
+using static PseudoMaker.PseudoMaker;
 
-namespace Plugins
+namespace PseudoMaker
 {
     internal class PseudoMakerCharaController : CharaCustomFunctionController
     {
