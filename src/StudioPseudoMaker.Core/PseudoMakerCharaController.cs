@@ -2381,6 +2381,27 @@ namespace PseudoMaker
 #endif
             return clothingKind;
         }
+
+        public static string GetClothingTypeNameByKind(int kind)
+        {
+            switch (kind)
+            {
+                case 0: return "Top";
+                case 1: return "Bottom";
+                case 2: return "Bra";
+                case 3: return "Underwear";
+                case 4: return "Gloves";
+                case 5: return "Pantyhose";
+                case 6: return "Legwear";
+#if KK
+                case 7: return "Shoes Inner";
+                case 8: return "Shoes Outer";
+#elif KKS
+                case 8: return "Shoes";
+#endif
+            }
+            return "Unknown";
+        }
         #endregion
 
         private new void OnDestroy()

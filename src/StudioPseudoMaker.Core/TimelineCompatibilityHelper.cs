@@ -1,4 +1,5 @@
-﻿using KKAPI.Chara;
+﻿using Illusion.Game;
+using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Utilities;
 using PseudoMaker.UI;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using UnityEngine;
+using static RootMotion.FinalIK.GrounderQuadruped;
 
 namespace PseudoMaker
 {
@@ -22,7 +24,7 @@ namespace PseudoMaker
 
                 _selectedColorType = null;
                 _selectedBodyShape = null;
-                selectedFaceShape = null;
+                _selectedFaceShape = null;
 
                 TimelineCompatibility.RefreshInterpolablesList();
             }
@@ -38,7 +40,7 @@ namespace PseudoMaker
 
                 _selectedFloatType = null;
                 _selectedBodyShape = null;
-                selectedFaceShape = null;
+                _selectedFaceShape = null;
 
                 TimelineCompatibility.RefreshInterpolablesList();
             }
@@ -54,23 +56,40 @@ namespace PseudoMaker
 
                 _selectedFloatType = null;
                 _selectedColorType = null;
-                selectedFaceShape = null;
+                _selectedFaceShape = null;
 
                 TimelineCompatibility.RefreshInterpolablesList();
             }
         }
 
-        private static int? selectedFaceShape;
+        private static int? _selectedFaceShape;
         public static int? SelectedFaceShape
         {
-            get { return selectedFaceShape; }
+            get { return _selectedFaceShape; }
             set
             {
-                selectedFaceShape = value;
+                _selectedFaceShape = value;
 
                 _selectedFloatType = null;
                 _selectedColorType = null;
                 _selectedBodyShape = null;
+
+                TimelineCompatibility.RefreshInterpolablesList();
+            }
+        }
+
+        private static int? _selectedClothingKind;
+        public static int? SelectedClothingKind
+        {
+            get { return _selectedClothingKind; }
+            set
+            {
+                _selectedClothingKind = value;
+
+                _selectedFloatType = null;
+                _selectedColorType = null;
+                _selectedBodyShape = null;
+                _selectedFaceShape = null;
 
                 TimelineCompatibility.RefreshInterpolablesList();
             }
@@ -291,6 +310,58 @@ namespace PseudoMaker
                 checkIntegrity: null,
                 getFinalName: (currentName, oci, parameter) => AddSpacesToSentence(parameter.Type)
             );
+
+            for (int i = 0; i < 3; i++)
+            {
+                var _i = i;
+                TimelineCompatibility.AddInterpolableModelDynamic(
+                    owner: "Pseudo Maker",
+                    id: $"ClothingColor{i}",
+                    name: $"Clothing Color {i + 1}",
+                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetClothingColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor), -1),
+                    interpolateAfter: null,
+                    getValue: (oci, parameter) => parameter.Controller.GetClothingColor(parameter.Type, _i, -1),
+                    readValueFromXml: (parameter, node) => ReadColorXML(node),
+                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
+                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
+                    checkIntegrity: null,
+                    getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Color {_i + 1}"
+                );
+                TimelineCompatibility.AddInterpolableModelDynamic(
+                    owner: "Pseudo Maker",
+                    id: $"ClothingPatternColor{i}",
+                    name: $"Clothing Pattern Color {i + 1}",
+                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetClothingColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor), -1, true),
+                    interpolateAfter: null,
+                    getValue: (oci, parameter) => parameter.Controller.GetClothingColor(parameter.Type, _i, -1, true),
+                    readValueFromXml: (parameter, node) => ReadColorXML(node),
+                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
+                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
+                    checkIntegrity: null,
+                    getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Color {_i + 1}"
+                );
+#if KK
+                foreach (var patternValue in Enum.GetValues(typeof(PatternValue)).Cast<PatternValue>().Skip(3))
+#else
+                foreach (var patternValue in Enum.GetValues(typeof(PatternValue)).Cast<PatternValue>())
+#endif
+                    TimelineCompatibility.AddInterpolableModelDynamic(
+                        owner: "Pseudo Maker",
+                        id: $"ClothingPattern{i}{patternValue}",
+                        name: $"Clothing Pattern {i + 1} {patternValue}",
+                        interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetPatternValue(parameter.Type, _i, patternValue, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
+                        interpolateAfter: null,
+                        getValue: (oci, parameter) => parameter.Controller.GetPatternValue(parameter.Type, _i, patternValue),
+                        readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                        writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                        getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
+                        isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
+                        checkIntegrity: null,
+                        getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Pattern {_i + 1} {patternValue}"
+                    );
+            }
         }
 
         private static void WriteColorXML(XmlTextWriter writer, Color value)
