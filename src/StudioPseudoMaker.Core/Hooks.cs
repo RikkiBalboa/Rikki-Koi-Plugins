@@ -3,6 +3,7 @@ using HarmonyLib;
 using KK_Plugins;
 using PseudoMaker.UI;
 using System;
+using System.Linq;
 
 namespace PseudoMaker
 {
@@ -13,6 +14,21 @@ namespace PseudoMaker
         private static void ChangeCoordinateTypePostfix(ChaControl __instance)
         {
             PseudoMaker.MainWindow?.RefreshValues();
+        }
+
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
+        [HarmonyWrapSafe]
+        private static void ChangeCoordinateTypePrefix(ChaControl __instance)
+        {
+            // Trim extra empty accessory slots
+            // https://github.com/jalil49/MoreAccessories/blob/0cd772cd5b6e03f61cc3611f0cc532048c09ff46/src/Core.MoreAccessories/Patches/SavePatch.cs#L97
+            var accessories = __instance.chaFile.coordinate[__instance.fileStatus.coordinateType].accessory;
+            if (accessories.parts.Length == 20) return;
+
+            var lastValidSlot = Array.FindLastIndex(accessories.parts, x => x.type != 120) + 1;
+            if (lastValidSlot < 20) lastValidSlot = 20;
+            if (lastValidSlot == accessories.parts.Length) return; //don't do below since nothing changed
+            accessories.parts = accessories.parts.Take(lastValidSlot).ToArray();
         }
 
         //[HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]

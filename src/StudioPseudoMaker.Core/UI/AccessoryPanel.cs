@@ -1,4 +1,5 @@
 ﻿using KKAPI.Utilities;
+using MoreAccessoriesKOI;
 using NodeCanvas.Tasks.Actions;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,14 @@ namespace PseudoMaker.UI
                 transferPanel.gameObject.SetActive(true);
             });
             //AddToggle(1, "Copy", value => { });
-            addSlotToggle = AddToggle(1, "+1", value => { if (value) addSlotToggle.isOn = false; }, true);
+            addSlotToggle = AddToggle(1, "+1", value => {
+                if (value)
+                {
+                    PseudoMaker.selectedCharacterController.AddAccessorySlot(1);
+                    addSlotToggle.isOn = false;
+                    RefreshAccessoryList();
+                }
+            }, true);
         }
 
         private Toggle AddToggle(int position, string label, Action<bool> onValueChanged, bool isButton = false)
@@ -66,6 +74,11 @@ namespace PseudoMaker.UI
         }
 
         private void OnEnable()
+        {
+            RefreshAccessoryList();
+        }
+
+        private void RefreshAccessoryList()
         {
             var accessories = PseudoMaker.selectedCharacter.infoAccessory;
             int processedAccessories = 0;

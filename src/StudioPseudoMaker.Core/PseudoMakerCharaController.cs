@@ -6,6 +6,7 @@ using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using MessagePack;
+using MoreAccessoriesKOI;
 using PseudoMaker.UI;
 using System;
 using System.Collections.Generic;
@@ -1440,6 +1441,21 @@ namespace PseudoMaker
             Accessories.parts[slotNr].noShake = value;
             SetAccessories.parts[slotNr].noShake = value;
             selectedCharacter.ChangeShakeAccessory(slotNr);
+        }
+
+        public void AddAccessorySlot(int num)
+        {
+            var newParts = new ChaFileAccessory.PartsInfo[num];
+            for (var i = 0; i < num; i++)
+            {
+                newParts[i] = new ChaFileAccessory.PartsInfo();
+            }
+
+            var nowParts = selectedCharacter.nowCoordinate.accessory.parts;
+            var accessory = selectedCharacter.chaFile.coordinate[selectedCharacter.chaFile.status.coordinateType].accessory;
+
+            accessory.parts = selectedCharacter.nowCoordinate.accessory.parts = nowParts.Concat(newParts).ToArray();
+            MoreAccessories.ArraySync(selectedCharacter);
         }
 
         #region HairAccessoryCustomizer

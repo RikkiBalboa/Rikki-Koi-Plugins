@@ -78,6 +78,10 @@
       <HintPath>..\..\lib\KK_MaterialEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KK_MoreAccessories">
+      <HintPath>..\..\lib\KK_MoreAccessories.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KK_MoreOutfits">
       <HintPath>..\..\lib\KK_MoreOutfits.dll</HintPath>
       <Private>False</Private>
