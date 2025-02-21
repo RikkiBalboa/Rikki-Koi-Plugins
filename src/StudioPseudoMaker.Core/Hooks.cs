@@ -15,12 +15,13 @@ namespace PseudoMaker
             PseudoMaker.MainWindow?.RefreshValues();
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
-        [HarmonyWrapSafe]
-        private static void ChangeCustomClothesPostFix(ChaControl __instance)
-        {
-            PseudoMaker.MainWindow?.RefreshValues();
-        }
+        //[HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
+        //[HarmonyWrapSafe]
+        //private static void ChangeCustomClothesPostFix(ChaControl __instance)
+        //{
+        //    PseudoMaker.Logger.LogInfo("ChangeCustomClothesPostFix");
+        //    PseudoMaker.MainWindow?.RefreshValues();
+        //}
 
         [HarmonyPrefix]
         [HarmonyPatch(MethodType.Getter)]
