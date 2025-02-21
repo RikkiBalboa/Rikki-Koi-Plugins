@@ -127,7 +127,6 @@ namespace Plugins
         {
             if (StudioAPI.InsideStudio)
             {
-                RegisterStudioControls();
                 SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
                 TimelineCompatibilityHelper.PopulateTimeline();
             }
@@ -146,45 +145,6 @@ namespace Plugins
             }
             if (KeyToggleGui.Value.IsDown()) 
                 OpenUI();
-        }
-
-        private void RegisterStudioControls()
-        {
-            var catBody = StudioAPI.GetOrCreateCurrentStateCategory("Body");
-            catBody.AddControl(new CurrentStateColorSlider("Main Skin", c => c.GetChaControl().fileBody.skinMainColor, c => UpdateTextureColor(c, ColorType.SkinMain)));
-            catBody.AddControl(new CurrentStateColorSlider("Sub Skin", c => c.GetChaControl().fileBody.skinSubColor, c => UpdateTextureColor(c, ColorType.SkinSub)));
-            catBody.AddControl(new CurrentStateColorSlider("Tan", c => c.GetChaControl().fileBody.sunburnColor, c => UpdateTextureColor(c, ColorType.SkinTan)));
-
-            var catBust = StudioAPI.GetOrCreateCurrentStateCategory("Bust");
-            catBust.AddControl(new CurrentStateCategorySlider("Softness", c => c.GetChaControl().fileBody.bustSoftness, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, FloatType.Softness));
-            catBust.AddControl(new CurrentStateCategorySlider("Weight", c => c.GetChaControl().fileBody.bustWeight, 0, 1)).Value.Subscribe(f => UpdateBustSoftness(f, FloatType.Weight));
-
-            var catHair = StudioAPI.GetOrCreateCurrentStateCategory("Hair");
-            catHair.AddControl(new CurrentStateColorSlider("Color 1", c => c.GetChaControl().fileHair.parts[0].baseColor, color => UpdateColorProperty(color, ColorType.HairBase)));
-            catHair.AddControl(new CurrentStateColorSlider("Color 2", c => c.GetChaControl().fileHair.parts[0].startColor, color => UpdateColorProperty(color, ColorType.HairStart)));
-            catHair.AddControl(new CurrentStateColorSlider("Color 3", c => c.GetChaControl().fileHair.parts[0].endColor, color => UpdateColorProperty(color, ColorType.HairEnd)));
-#if KKS
-            catHair.AddControl(new CurrentStateColorSlider("Gloss", c => c.GetChaControl().fileHair.parts[0].glossColor, color => UpdateColorProperty(color, ColorType.HairGloss)));
-#endif
-            catHair.AddControl(new CurrentStateColorSlider("Eyebrow", c => c.GetChaControl().fileFace.eyebrowColor, color => UpdateColorProperty(color, ColorType.Eyebrow)));
-        }
-
-        internal static void UpdateTextureColor(Color color, ColorType textureColor)
-        {
-            foreach (var cha in StudioAPI.GetSelectedCharacters())
-                PseudoMakerCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, textureColor);
-        }
-
-        internal static void UpdateBustSoftness(float value, FloatType bust)
-        {
-            foreach (var cha in StudioAPI.GetSelectedCharacters())
-                PseudoMakerCharaController.GetController(cha.GetChaControl())?.SetFloatTypeValue(value, bust);
-        }
-
-        internal static void UpdateColorProperty(Color color, ColorType hairColor)
-        {
-            foreach (var cha in StudioAPI.GetSelectedCharacters())
-                PseudoMakerCharaController.GetController(cha.GetChaControl())?.UpdateColorProperty(color, hairColor);
         }
 
         private static void SetUIScale()
