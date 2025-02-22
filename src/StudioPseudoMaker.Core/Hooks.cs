@@ -3,6 +3,7 @@ using HarmonyLib;
 using KK_Plugins;
 using PseudoMaker.UI;
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 
@@ -14,7 +15,12 @@ namespace PseudoMaker
         [HarmonyWrapSafe]
         private static void ChangeCoordinateTypePostfix(ChaControl __instance)
         {
-            PseudoMaker.MainWindow?.RefreshValues();
+            PseudoMaker.instance.StartCoroutine(Refresh());
+            IEnumerator Refresh()
+            {
+                yield return null;
+                PseudoMaker.MainWindow?.RefreshValues();
+            }
         }
 
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
@@ -49,8 +55,6 @@ namespace PseudoMaker
             var methodName = stackframe.Name;
             var typeName = stackframe.DeclaringType.Name;
 
-            //var stackTrace = new System.Diagnostics.StackTrace().ToString();
-            //if (stackTrace.Contains("HairAccessoryController"))
             if(typeName == "HairAccessoryController"
                 && (
                     methodName == "SetColorMatch"
