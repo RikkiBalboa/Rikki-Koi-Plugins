@@ -36,7 +36,7 @@ namespace PseudoMaker.UI
             {
                 AddPickerRow(SelectKindType.HeadType);
                 AddPickerRow(SelectKindType.FaceDetail);
-                AddSliderRow("Face Overlay Strength", FloatType.FaceOverlayStrenth);
+                AddSliderRow("Face Overlay Strength", FloatType.FaceOverlayStrength);
                 AddSplitter();
             }
             else if (SubCategory == SubCategory.FaceCheeks)
@@ -63,11 +63,11 @@ namespace PseudoMaker.UI
                 AddPickerRow(SelectKindType.EyeHLUp);
                 AddColorRow("Upper Highlight Color", ColorType.UpperHighlightColor);
                 AddPickerRow(SelectKindType.EyeHLDown);
-                AddColorRow("Lower Highlight Color", ColorType.LowerHightlightColor);
+                AddColorRow("Lower Highlight Color", ColorType.LowerHighlightColor);
                 AddSliderRow("Upper Highlight Vertical", FloatType.UpperHighlightVertical);
                 AddSliderRow("Upper Highlight Horizontal", FloatType.UpperHighlightHorizontal);
-                AddSliderRow("Lower Highlight Vertical", FloatType.LowerHightlightVertical);
-                AddSliderRow("Lower Highlight Horizontaal", FloatType.LowerHightlightHorizontal);
+                AddSliderRow("Lower Highlight Vertical", FloatType.LowerHighlightVertical);
+                AddSliderRow("Lower Highlight Horizontaal", FloatType.LowerHighlightHorizontal);
                 AddSplitter();
                 AddSliderRow("Iris Spacing", FloatType.IrisSpacing);
                 AddSliderRow("Iris Vertical Position", FloatType.IrisVerticalPosition);
@@ -94,7 +94,7 @@ namespace PseudoMaker.UI
                     AddColorRow("Eye Color 1", ColorType.EyeColor1).gameObject,
                     AddColorRow("Eye Color 2", ColorType.EyeColor2).gameObject,
                     AddPickerRow(SelectKindType.PupilGrade).gameObject,
-                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrenth).gameObject,
+                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrength).gameObject,
                     AddSliderRow("Eye Gradient Vertical", FloatType.EyeGradientVertical).gameObject,
                     AddSliderRow("Eye Gradient Size", FloatType.EyeGradientSize).gameObject,
                 };
@@ -104,7 +104,7 @@ namespace PseudoMaker.UI
                     AddColorRow("Eye Color 1", ColorType.EyeColor1Left).gameObject,
                     AddColorRow("Eye Color 2", ColorType.EyeColor2Left).gameObject,
                     AddPickerRow(SelectKindType.PupilGradeLeft).gameObject,
-                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrenthLeft).gameObject,
+                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrengthLeft).gameObject,
                     AddSliderRow("Eye Gradient Vertical", FloatType.EyeGradientVerticalLeft).gameObject,
                     AddSliderRow("Eye Gradient Size", FloatType.EyeGradientSizeLeft).gameObject,
                 };
@@ -114,7 +114,7 @@ namespace PseudoMaker.UI
                     AddColorRow("Eye Color 1", ColorType.EyeColor1Right).gameObject,
                     AddColorRow("Eye Color 2", ColorType.EyeColor2Right).gameObject,
                     AddPickerRow(SelectKindType.PupilGradeRight).gameObject,
-                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrenthRight).gameObject,
+                    AddSliderRow("Eye Gradient Strength", FloatType.EyeGradientStrengthRight).gameObject,
                     AddSliderRow("Eye Gradient Vertical", FloatType.EyeGradientVerticalRight).gameObject,
                     AddSliderRow("Eye Gradient Size", FloatType.EyeGradientSizeRight).gameObject,
                 };

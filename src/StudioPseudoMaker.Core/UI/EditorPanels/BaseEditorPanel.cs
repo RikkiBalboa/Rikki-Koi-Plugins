@@ -316,9 +316,9 @@ namespace PseudoMaker.UI
             ChaListDefine.CategoryNo cn = array[(int)selectKind];
 
             var pickerComponent = picker.AddComponent<PickerComponent>();
+            pickerComponent.GetId = () => $"{cn}_{selectKind}";
             pickerComponent.Name = name;
             pickerComponent.CategoryNo = cn;
-            pickerComponent.SelectKindType = selectKind;
             pickerComponent.GetCurrentValue = () => PseudoMaker.selectedCharacterController.GetSelected(selectKind);
             pickerComponent.SetCurrentValue = (value) =>
             {

@@ -306,6 +306,7 @@ namespace PseudoMaker.UI
             currentAccessoryNr = slotNr;
             currentAccessoryExists = exists;
             currentAccessoryType = (ChaListDefine.CategoryNo)PseudoMaker.selectedCharacterController.GetCurrentAccessoryType(slotNr);
+            accessoryPicker.GetId = () => $"{currentAccessoryType}_{currentAccessoryNr}";
             accessoryPicker.CategoryNo = currentAccessoryType;
             Compatibility.SelectedSlotNr = slotNr;
             transform1GuideObjectToggle.toggle.isOn = false;
@@ -386,6 +387,7 @@ namespace PseudoMaker.UI
             var pickerComponent = picker.AddComponent<PickerComponent>();
             pickerComponent.Name = "Type";
             pickerComponent.CategoryNo = categoryNr;
+            pickerComponent.GetId = () => $"{categoryNr}_{currentAccessoryNr}";
             pickerComponent.GetCurrentValue = () => PseudoMaker.selectedCharacterController.GetCurrentAccessoryId(currentAccessoryNr);
             pickerComponent.SetCurrentValue = (value) =>
             {

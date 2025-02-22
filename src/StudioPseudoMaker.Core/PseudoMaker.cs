@@ -31,7 +31,7 @@ namespace PseudoMaker
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "0.8";
+        public const string PluginVersion = "0.8.1";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
@@ -228,7 +228,7 @@ namespace PseudoMaker
         ScleraColor1,
         ScleraColor2,
         UpperHighlightColor,
-        LowerHightlightColor,
+        LowerHighlightColor,
         EyeColor1,
         EyeColor2,
         EyeColor1Left,
@@ -243,34 +243,34 @@ namespace PseudoMaker
 
     public enum FloatType
     {
-        SkinTypeStrenth,
+        SkinTypeStrength,
         SkinGloss,
         DisplaySkinDetailLines,
         BustSoftness,
         BustWeight,
         NippleGloss,
         NailGloss,
-        FaceOverlayStrenth,
+        FaceOverlayStrength,
         CheekGloss,
         UpperHighlightVertical,
         UpperHighlightHorizontal,
-        LowerHightlightVertical,
-        LowerHightlightHorizontal,
+        LowerHighlightVertical,
+        LowerHighlightHorizontal,
         IrisSpacing,
         IrisVerticalPosition,
         IrisWidth,
         IrisHeight,
-        EyeGradientStrenth,
+        EyeGradientStrength,
         EyeGradientVertical,
-        EyeGradientStrenthLeft,
+        EyeGradientStrengthLeft,
         EyeGradientVerticalLeft,
-        EyeGradientStrenthRight,
+        EyeGradientStrengthRight,
         EyeGradientVerticalRight,
         EyeGradientSize,
         EyeGradientSizeLeft,
         EyeGradientSizeRight,
         LipGloss,
-        HairFrontLenght,
+        HairFrontLength,
     }
 
     public enum PatternValue

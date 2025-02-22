@@ -25,7 +25,7 @@ namespace PseudoMaker.UI
             else if (SubCategory == SubCategory.HairFront)
             {
                 AddPickerRow(SelectKindType.HairFront);
-                AddSliderRow("Front Hair Length", FloatType.HairFrontLenght);
+                AddSliderRow("Front Hair Length", FloatType.HairFrontLength);
                 AddToggleRow(
                     "Don't Move",
                     value => PseudoMaker.selectedCharacterController.SetHairNoShake(1, value),

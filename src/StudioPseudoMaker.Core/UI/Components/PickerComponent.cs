@@ -15,7 +15,7 @@ namespace PseudoMaker.UI
 
         public string Name;
         public ChaListDefine.CategoryNo CategoryNo;
-        public SelectKindType SelectKindType;
+        public Func<string> GetId;
         public Func<int> GetCurrentValue;
         public Action<CustomSelectInfo> SetCurrentValue;
 
@@ -26,7 +26,7 @@ namespace PseudoMaker.UI
             pickerButton = transform.Find("PickerButton").gameObject.GetComponent<Button>();
             pickerButton.onClick.AddListener(() =>
             {
-                PickerPanel.SetCategory(Name, CategoryNo, SelectKindType, GetCurrentValue, (info) =>
+                PickerPanel.SetCategory(GetId(), Name, CategoryNo, GetCurrentValue, (info) =>
                 {
                     pickerText.text = info.name;
                     thumbnail.sprite = PickerPanel.GetThumbSprite(info);

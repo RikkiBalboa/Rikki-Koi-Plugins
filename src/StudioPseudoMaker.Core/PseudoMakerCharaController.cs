@@ -228,7 +228,7 @@ namespace PseudoMaker
                     ChaControl.fileFace.hlUpColor = color;
                     ChaControl.ChangeSettingEyeHiUpColor();
                     break;
-                case ColorType.LowerHightlightColor:
+                case ColorType.LowerHighlightColor:
                     ChaControl.fileFace.hlDownColor = color;
                     ChaControl.ChangeSettingEyeHiDownColor();
                     break;
@@ -347,7 +347,7 @@ namespace PseudoMaker
                     return ChaControl.fileFace.whiteSubColor;
                 case ColorType.UpperHighlightColor:
                     return ChaControl.fileFace.hlUpColor;
-                case ColorType.LowerHightlightColor:
+                case ColorType.LowerHighlightColor:
                     return ChaControl.fileFace.hlDownColor;
                 case ColorType.EyeColor1:
                 case ColorType.EyeColor1Left:
@@ -410,7 +410,7 @@ namespace PseudoMaker
 
             switch (floatType)
             {
-                case FloatType.SkinTypeStrenth:
+                case FloatType.SkinTypeStrength:
                     ChaFileControl.custom.body.detailPower = value;
                     ChaControl.ChangeSettingBodyDetailPower();
                     break;
@@ -438,7 +438,7 @@ namespace PseudoMaker
                     ChaFileControl.custom.body.nailGlossPower = value;
                     ChaControl.ChangeSettingNailGlossPower();
                     break;
-                case FloatType.FaceOverlayStrenth:
+                case FloatType.FaceOverlayStrength:
                     ChaFileControl.custom.face.detailPower = value;
                     ChaControl.ChangeSettingFaceDetailPower();
                     break;
@@ -456,12 +456,12 @@ namespace PseudoMaker
                     ChaControl.ChangeSettingEyeHLUpPosX();
                     break;
 #endif
-                case FloatType.LowerHightlightVertical:
+                case FloatType.LowerHighlightVertical:
                     ChaFileControl.custom.face.hlDownY = value;
                     ChaControl.ChangeSettingEyeHLDownPosY();
                     break;
 #if KKS
-                case FloatType.LowerHightlightHorizontal:
+                case FloatType.LowerHighlightHorizontal:
                     ChaFileControl.custom.face.hlDownX = value;
                     ChaControl.ChangeSettingEyeHLDownPosX();
                     break;
@@ -482,7 +482,7 @@ namespace PseudoMaker
                     ChaFileControl.custom.face.pupilHeight = value;
                     ChaControl.ChangeSettingEyeScaleHeight();
                     break;
-                case FloatType.EyeGradientStrenth:
+                case FloatType.EyeGradientStrength:
                     ChaFileControl.custom.face.pupil[0].gradBlend = value;
                     ChaFileControl.custom.face.pupil[1].gradBlend = value;
                     ChaControl.ChangeSettingEye(true, true, true);
@@ -492,7 +492,7 @@ namespace PseudoMaker
                     ChaFileControl.custom.face.pupil[1].gradOffsetY = value;
                     ChaControl.ChangeSettingEye(true, true, true);
                     break;
-                case FloatType.EyeGradientStrenthLeft:
+                case FloatType.EyeGradientStrengthLeft:
                     ChaFileControl.custom.face.pupil[0].gradBlend = value;
                     ChaControl.ChangeSettingEye(true, true, true);
                     break;
@@ -500,7 +500,7 @@ namespace PseudoMaker
                     ChaFileControl.custom.face.pupil[0].gradOffsetY = value;
                     ChaControl.ChangeSettingEye(true, true, true);
                     break;
-                case FloatType.EyeGradientStrenthRight:
+                case FloatType.EyeGradientStrengthRight:
                     ChaFileControl.custom.face.pupil[1].gradBlend = value;
                     ChaControl.ChangeSettingEye(true, true, true);
                     break;
@@ -527,7 +527,7 @@ namespace PseudoMaker
                     ChaFileControl.custom.hair.parts[1].length = value;
                     ChaControl.ChangeSettingHairFrontLength();
                     break;
-                case FloatType.HairFrontLenght:
+                case FloatType.HairFrontLength:
                     ChaFileControl.custom.hair.parts[1].length = value;
                     ChaControl.ChangeSettingHairFrontLength();
                     break;
@@ -551,7 +551,7 @@ namespace PseudoMaker
         {
             switch (floatType)
             {
-                case FloatType.SkinTypeStrenth:
+                case FloatType.SkinTypeStrength:
                     return ChaFileControl.custom.body.detailPower;
                 case FloatType.SkinGloss:
                     return ChaFileControl.custom.body.skinGlossPower;
@@ -567,7 +567,7 @@ namespace PseudoMaker
                     return ChaFileControl.custom.body.nipGlossPower;
                 case FloatType.NailGloss:
                     return ChaFileControl.custom.body.nailGlossPower;
-                case FloatType.FaceOverlayStrenth:
+                case FloatType.FaceOverlayStrength:
                     return ChaFileControl.custom.face.detailPower;
                 case FloatType.CheekGloss:
                     return ChaFileControl.custom.face.cheekGlossPower;
@@ -577,10 +577,10 @@ namespace PseudoMaker
                 case FloatType.UpperHighlightHorizontal:
                     return ChaFileControl.custom.face.hlUpX;
 #endif
-                case FloatType.LowerHightlightVertical:
+                case FloatType.LowerHighlightVertical:
                     return ChaFileControl.custom.face.hlDownY;
 #if KKS
-                case FloatType.LowerHightlightHorizontal:
+                case FloatType.LowerHighlightHorizontal:
                     return ChaFileControl.custom.face.hlDownX;
 #endif
                 case FloatType.IrisSpacing:
@@ -591,13 +591,13 @@ namespace PseudoMaker
                     return ChaFileControl.custom.face.pupilWidth;
                 case FloatType.IrisHeight:
                     return ChaFileControl.custom.face.pupilHeight;
-                case FloatType.EyeGradientStrenth:
-                case FloatType.EyeGradientStrenthLeft:
+                case FloatType.EyeGradientStrength:
+                case FloatType.EyeGradientStrengthLeft:
                     return ChaFileControl.custom.face.pupil[0].gradBlend;
                 case FloatType.EyeGradientVertical:
                 case FloatType.EyeGradientVerticalLeft:
                     return ChaFileControl.custom.face.pupil[0].gradOffsetY;
-                case FloatType.EyeGradientStrenthRight:
+                case FloatType.EyeGradientStrengthRight:
                     return ChaFileControl.custom.face.pupil[1].gradBlend;
                 case FloatType.EyeGradientVerticalRight:
                     return ChaFileControl.custom.face.pupil[1].gradOffsetY;
@@ -608,7 +608,7 @@ namespace PseudoMaker
                     return ChaFileControl.custom.face.pupil[1].gradScale;
                 case FloatType.LipGloss:
                     return ChaFileControl.custom.face.lipGlossPower;
-                case FloatType.HairFrontLenght:
+                case FloatType.HairFrontLength:
                     return ChaFileControl.custom.hair.parts[1].length;
                 default:
                     return 0f;
@@ -624,7 +624,7 @@ namespace PseudoMaker
             else
                 OriginalBodyShapeValues[index].Value = value;
 
-            if (index >= 4 && index <= 14)
+            if (index >= 4 && index <= 13)
                 SetPushupBaseValue((PushupValue)index, value);
             else
                 ChaControl.SetShapeBodyValue(index, value);

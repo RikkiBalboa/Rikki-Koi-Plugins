@@ -21,6 +21,7 @@ namespace PseudoMaker.UI
         public RectTransform ResizeHandle;
         public GameObject Content;
 
+        public static string Id;
         public static Text Title;
         public InputField NameField;
         public Button DecreaseSizeButton;
@@ -36,7 +37,6 @@ namespace PseudoMaker.UI
 
         private static string titleText;
         private static ChaListDefine.CategoryNo CategoryNo;
-        private static SelectKindType SelectKindType;
         private static Func<int> GetCurrentValue;
         private static Action<CustomSelectInfo> SetCurrentValue;
 
@@ -57,14 +57,15 @@ namespace PseudoMaker.UI
 
         private GameObject pickerEntryTemplate;
 
-        public static void SetCategory(string name, ChaListDefine.CategoryNo categoryNo, SelectKindType selectKindType, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
+        public static void SetCategory(string id, string name, ChaListDefine.CategoryNo categoryNo, Func<int> getCurrentValue, Action<CustomSelectInfo> setCurrentValue)
         {
-            if (CategoryNo == categoryNo && SelectKindType == selectKindType)
+            if (Id == id)
             {
                 instance.gameObject.SetActive(!instance.gameObject.activeSelf);
                 return;
             }
 
+            Id = id;
             titleText = name;
             if (Title != null)
                 Title.text = titleText;

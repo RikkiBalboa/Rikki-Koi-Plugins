@@ -29,7 +29,7 @@ namespace PseudoMaker.UI
             if (SubCategory == SubCategory.BodyGeneral)
             {
                 AddPickerRow(SelectKindType.BodyDetail);
-                AddSliderRow("Skin Type Strength", FloatType.SkinTypeStrenth);
+                AddSliderRow("Skin Type Strength", FloatType.SkinTypeStrength);
                 AddSplitter();
                 AddColorRow("Main Skin Color", ColorType.SkinMain);
                 AddColorRow("Sub Skin Color", ColorType.SkinSub);
