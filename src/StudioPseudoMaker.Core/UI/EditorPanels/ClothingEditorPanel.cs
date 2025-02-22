@@ -191,7 +191,7 @@ namespace PseudoMaker.UI
                         }},
                     }).gameObject,
 
-                    AddSliderRow("Firmness", useBra, PushupValue.Firmness).gameObject,
+                    AddSliderRow("Size", useBra, PushupValue.AdvancedSize).gameObject,
                     AddSliderRow("Vertical Position", useBra, PushupValue.AdvancedVerticalPosition).gameObject,
                     AddSliderRow("Vertical Angle", useBra, PushupValue.AdvancedVerticalAngle).gameObject,
                     AddSliderRow("Horizontal Position", useBra, PushupValue.AdvancedHorizontalPosition).gameObject,
