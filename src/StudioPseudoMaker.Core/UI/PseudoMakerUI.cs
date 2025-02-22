@@ -95,6 +95,9 @@ namespace PseudoMaker.UI
                 categoryPanel.Category = category;
                 CategoryPanels[category] = categoryPanel;
             }
+            // For some reason, in KK, this needs to be done. And crashes if set to false above ¯\_(ツ)_/¯
+            foreach (var toggle in toggles)
+                toggle.isOn = false;
             toggles[0].isOn = true;
 
             Destroy(categoryToggleTemplate);

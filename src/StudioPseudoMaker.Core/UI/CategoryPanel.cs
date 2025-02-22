@@ -81,6 +81,10 @@ namespace PseudoMaker.UI
             }
             if (toggles.Count > 0)
             {
+                // For some reason, in KK, this needs to be done. And crashes if set to false above ¯\_(ツ)_/¯
+                foreach (var toggle in toggles)
+                    toggle.isOn = false;
+
                 toggles[0].isOn = true;
                 Destroy(editorPanelTemplate);
                 if (Category != Category.Accessories)
