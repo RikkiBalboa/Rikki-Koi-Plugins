@@ -17,7 +17,11 @@ namespace PseudoMaker
 
         static Compatibility()
         {
+#if KKS
             C2AType = Type.GetType("KK_Plugins.ClothesToAccessoriesPlugin, KKS_ClothesToAccessories", throwOnError: false);
+#elif KK
+            C2AType = Type.GetType("KK_Plugins.ClothesToAccessoriesPlugin, KK_ClothesToAccessories", throwOnError: false);
+#endif
 
             var plugins = Chainloader.PluginInfos.Values.Select(x => x.Instance)
                 .Where(plugin => plugin != null)
