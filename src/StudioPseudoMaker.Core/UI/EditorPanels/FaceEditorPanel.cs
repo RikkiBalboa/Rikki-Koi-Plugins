@@ -142,11 +142,11 @@ namespace PseudoMaker.UI
             }
             else if (SubCategory == SubCategory.FaceMakeup)
             {
-                AddPickerRow(SelectKindType.Eyebrow);
+                AddPickerRow(SelectKindType.Eyeshadow);
                 AddColorRow("Eye Shadow Color", ColorType.EyeShadowColor);
                 AddSplitter();
                 AddPickerRow(SelectKindType.Cheek);
-                AddColorRow("Eye Shadow Color", ColorType.CheekColor);
+                AddColorRow("Cheek Color", ColorType.CheekColor);
                 AddSplitter();
                 AddPickerRow(SelectKindType.Lip);
                 AddColorRow("Lip Color", ColorType.LipColor);
