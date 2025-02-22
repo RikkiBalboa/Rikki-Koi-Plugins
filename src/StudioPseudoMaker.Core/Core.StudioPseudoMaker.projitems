@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>15089a5b-2887-47aa-b444-52f2e5987d37</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Core.StudioPseudoMaker</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AccessoryGuideObjectManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Compatibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PseudoMakerCharaController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CurrentStateColorSlider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PseudoMaker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibilityHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\AccessoryPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CategoryPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ButtonGroupComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ClothingOptionComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ColorComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\CopyComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\DropdownComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\InputFieldComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\MovableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\PickerComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\SelectListInfoHoverComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ToggleComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\TransferComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryEditorPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryTransferPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\BodyEditorPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\ClothingEditorPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\FaceEditorPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\HairEditorPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\OnDragHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\PickerPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\PseudoMakerUI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ResizableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\SliderComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\BaseEditorPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Mappings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\pseudo_maker_interface.unity3d">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\StudioIcon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
