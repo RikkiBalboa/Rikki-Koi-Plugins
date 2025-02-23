@@ -616,5 +616,6 @@ namespace PseudoMaker.UI
         HairExtensions,
         HairMiscellaneous,
         Accessories,
+        AccessoryTransfer,
     }
 }
