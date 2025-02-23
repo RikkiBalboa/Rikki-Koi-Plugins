@@ -25,7 +25,6 @@ namespace PseudoMaker.UI
             base.Initialize();
 
             var rectTransform = (RectTransform)transform;
-            rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y + 20);
 
             rowTemplate = Instantiate(TransferRowTemplate, TransferRowTemplate.transform.parent);
             rowTemplate.SetActive(false);
@@ -50,16 +49,7 @@ namespace PseudoMaker.UI
                     EditTransferRow(transferComponents[toSlotNr], toSlotNr);
                     Compatibility.A12TransferAccessoryAfter();
                 }}
-            });
-            buttonRow.transform.SetParent(transform, false);
-
-            //PseudoMaker.selectedCharacter.accessory
-
-            var rowTransform = buttonRow.transform as RectTransform;
-            rowTransform.offsetMin = new Vector2(1, rowTransform.offsetMin.y);
-            rowTransform.offsetMax = new Vector2(rectTransform.offsetMax.x, rowTransform.offsetMax.y - 10);
-            rowTransform.anchorMin = new Vector2(0, 0);
-            rowTransform.anchorMax = new Vector2(1, 0);
+            }, transform);
         }
 
         private void OnEnable()

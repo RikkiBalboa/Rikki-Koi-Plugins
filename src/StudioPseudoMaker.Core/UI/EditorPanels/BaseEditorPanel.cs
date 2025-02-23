@@ -1,4 +1,5 @@
-﻿using PseudoMaker.UI;
+﻿using ADV.Commands.Object;
+using PseudoMaker.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace PseudoMaker.UI
 
         protected void Awake()
         {
-            scrollRect = GetComponent<ScrollRect>();
+            scrollRect = GetComponentInChildren<ScrollRect>();
 
             SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
             InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
@@ -76,25 +77,25 @@ namespace PseudoMaker.UI
 
         protected virtual void Initialize() { }
 
-        public GameObject AddSplitter()
+        public GameObject AddSplitter(Transform parent = null)
         {
-            var splitter = Instantiate(SplitterTemplate, scrollRect.content);
+            var splitter = Instantiate(SplitterTemplate, parent == null ? scrollRect.content : parent);
             splitter.name = "Splitter";
             return splitter;
         }
 
-        public GameObject AddHeader(string name)
+        public GameObject AddHeader(string name, Transform parent = null)
         {
-            var header = Instantiate(HeaderTemplate, scrollRect.content);
+            var header = Instantiate(HeaderTemplate, parent == null ? scrollRect.content : parent);
             header.name = "Header";
 
             header.GetComponentInChildren<Text>().text = name;
             return header;
         }
 
-        public Toggle AddHeaderToggle(string name, Action<bool> onValueChanged)
+        public Toggle AddHeaderToggle(string name, Action<bool> onValueChanged, Transform parent = null)
         {
-            var header = Instantiate(HeaderTemplate, scrollRect.content);
+            var header = Instantiate(HeaderTemplate, parent == null ? scrollRect.content : parent);
             header.name = "Header";
 
             var text = header.GetComponentInChildren<Text>();
@@ -106,9 +107,9 @@ namespace PseudoMaker.UI
             return toggle;
         }
 
-        public ButtonGroupComponent AddButtonGroupRow(Dictionary<string, Action> buttonsMap)
+        public ButtonGroupComponent AddButtonGroupRow(Dictionary<string, Action> buttonsMap, Transform parent = null)
         {
-            var buttonGroup = Instantiate(ButtonGroupTemplate, scrollRect.content);
+            var buttonGroup = Instantiate(ButtonGroupTemplate, parent == null ? scrollRect.content : parent);
             buttonGroup.name = "ButtonsGroup";
 
             var buttonGroupComponent = buttonGroup.AddComponent<ButtonGroupComponent>();
@@ -117,14 +118,14 @@ namespace PseudoMaker.UI
             return buttonGroupComponent;
         }
 
-        public ButtonGroupComponent AddButtonRow(string name, Action onPressAction)
+        public ButtonGroupComponent AddButtonRow(string name, Action onPressAction, Transform parent = null)
         {
-            return AddButtonGroupRow(new Dictionary<string, Action>() { { name, onPressAction } });
+            return AddButtonGroupRow(new Dictionary<string, Action>() { { name, onPressAction } }, parent);
         }
 
-        public ToggleComponent AddToggleRow(string name, Action<bool> onValueChanged, Func<bool> GetCurrentValue)
+        public ToggleComponent AddToggleRow(string name, Action<bool> onValueChanged, Func<bool> GetCurrentValue, Transform parent = null)
         {
-            var toggleObject = Instantiate(ToggleOptionTemplate, scrollRect.content);
+            var toggleObject = Instantiate(ToggleOptionTemplate, parent == null ? scrollRect.content : parent);
             toggleObject.name = $"Toggle{name.Replace(" ", "")}";
 
             var toggle = toggleObject.AddComponent<ToggleComponent>();
@@ -135,9 +136,9 @@ namespace PseudoMaker.UI
             return toggle;
         }
 
-        public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1)
+        public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1, Transform parent = null)
         {
-            var inputField = Instantiate(InputTemplate, scrollRect.content);
+            var inputField = Instantiate(InputTemplate, parent == null ? scrollRect.content : parent);
             inputField.name = $"InputField{name.Replace(" ", "")}";
 
             var inputFieldComponent = inputField.AddComponent<InputFieldComponent>();
@@ -153,9 +154,9 @@ namespace PseudoMaker.UI
             return inputFieldComponent;
         }
 
-        public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, Action onLabelClick = null)
+        public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, Action onLabelClick = null, Transform parent = null)
         {
-            var slider = Instantiate(SliderTemplate, scrollRect.content);
+            var slider = Instantiate(SliderTemplate, parent == null ? scrollRect.content : parent);
             slider.name = $"Slider{name.Replace(" ", "")}";
 
             var sliderComponent = slider.AddComponent<SliderComponent>();
@@ -171,7 +172,7 @@ namespace PseudoMaker.UI
             return sliderComponent;
         }
 
-        public SliderComponent AddSliderRow(string name, FloatType floatType)
+        public SliderComponent AddSliderRow(string name, FloatType floatType, Transform parent = null)
         {
             return AddSliderRow(
                 name,
@@ -179,13 +180,14 @@ namespace PseudoMaker.UI
                 () => PseudoMaker.selectedCharacterController.GetOriginalFloatValue(floatType),
                 value => PseudoMaker.selectedCharacterController.SetFloatTypeValue(value, floatType),
                 () => PseudoMaker.selectedCharacterController.ResetFloatTypeValue(floatType),
-                onLabelClick: () => TimelineCompatibilityHelper.SelectedFloatType = floatType
+                onLabelClick: () => TimelineCompatibilityHelper.SelectedFloatType = floatType,
+                parent: parent
             );
         }
 
-        public ColorComponent AddColorRow(string name, Func<Color> getCurrentValueAction, Func<Color> getOriginalValueAction, Action<Color> setValueAction, Action resetValueAction, Action onLabelClick = null)
+        public ColorComponent AddColorRow(string name, Func<Color> getCurrentValueAction, Func<Color> getOriginalValueAction, Action<Color> setValueAction, Action resetValueAction, Action onLabelClick = null, Transform parent = null)
         {
-            var button = Instantiate(ColorTemplate, scrollRect.content);
+            var button = Instantiate(ColorTemplate, parent == null ? scrollRect.content : parent);
             button.name = $"ColorPicker{name.Replace(" ", "")}";
 
             var colorComponent = button.AddComponent<ColorComponent>();
@@ -199,7 +201,7 @@ namespace PseudoMaker.UI
             return colorComponent;
         }
 
-        public ColorComponent AddColorRow(string name, ColorType colorType)
+        public ColorComponent AddColorRow(string name, ColorType colorType, Transform parent = null)
         {
             return AddColorRow(
                 name,
@@ -207,15 +209,16 @@ namespace PseudoMaker.UI
                 () => PseudoMaker.selectedCharacterController.GetOriginalColorPropertyValue(colorType),
                 c => PseudoMaker.selectedCharacterController.UpdateColorProperty(c, colorType),
                 () => PseudoMaker.selectedCharacterController.ResetColorProperty(colorType),
-                onLabelClick: () => TimelineCompatibilityHelper.SelectedColorType = colorType
+                onLabelClick: () => TimelineCompatibilityHelper.SelectedColorType = colorType,
+                parent: parent
             );
         }
 
-        public PickerComponent AddPickerRow(SelectKindType selectKind, Action onChange = null)
+        public PickerComponent AddPickerRow(SelectKindType selectKind, Action onChange = null, Transform parent = null)
         {
             var name = UIMappings.GetSelectKindTypeName(selectKind);
 
-            var picker = Instantiate(PickerTemplate, scrollRect.content);
+            var picker = Instantiate(PickerTemplate, parent == null ? scrollRect.content : parent);
             picker.name = $"CategoryPicker{name.Replace(" ", "")}";
 
             ChaListDefine.CategoryNo[] array = new ChaListDefine.CategoryNo[104]
@@ -341,9 +344,9 @@ namespace PseudoMaker.UI
             return pickerComponent;
         }
 
-        public DropdownComponent AddDropdownRow(string name, List<string> options, Func<int> getCurrentValueAction, Action<int> setValueAction)
+        public DropdownComponent AddDropdownRow(string name, List<string> options, Func<int> getCurrentValueAction, Action<int> setValueAction, Transform parent = null)
         {
-            var dropdown = Instantiate(DropdownTemplate, scrollRect.content);
+            var dropdown = Instantiate(DropdownTemplate, parent == null ? scrollRect.content : parent);
             dropdown.name = $"Dropdown{name.Replace(" ", "")}";
 
             var dropdownComponent = dropdown.AddComponent<DropdownComponent>();
