@@ -20,7 +20,7 @@ namespace PseudoMaker.UI
         private void Awake()
         {
             SubCategorySelectorPanel = gameObject.transform.Find("SubCategorySelectorPanel").gameObject;
-            PanelScroll = SubCategorySelectorPanel.GetComponent<ScrollRect>();
+            PanelScroll = SubCategorySelectorPanel.GetComponentInChildren<ScrollRect>();
             PanelToggleGroup = SubCategorySelectorPanel.GetComponent<ToggleGroup>();
 
             InitializeSubCategories();
