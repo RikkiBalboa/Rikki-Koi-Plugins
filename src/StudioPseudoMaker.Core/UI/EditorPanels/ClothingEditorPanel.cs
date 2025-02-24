@@ -225,7 +225,7 @@ namespace PseudoMaker.UI
                 }
 
                 mainOverlayObjects.ForEach(o => o.SetActive(false));
-                multiOverlayObjects.ForEach(o => o.SetActive(false));
+                multiOverlayObjects?.ForEach(o => o.SetActive(false));
                 otherOverlayObjects.ForEach(o => o.SetActive(false));
             }
         }
