@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using static PseudoMaker.PseudoMaker;
 using static PseudoMaker.PseudoMakerCharaController;
 
@@ -23,6 +24,8 @@ namespace PseudoMaker.UI
         private GameObject clothingOptionObject;
         private List<GameObject> pushupBraGameObjects;
         private List<GameObject> pushupTopGameObjects;
+        private GameObject overlaySplitter;
+        private Toggle overlayHeader;
         private List<GameObject> overlayGameObjects;
 
         private DropdownComponent fromDropDown;
@@ -108,6 +111,10 @@ namespace PseudoMaker.UI
                 if (PseudoMaker.selectedCharacterController.GetClothingUsesOptPart(kind, 0) || PseudoMaker.selectedCharacterController.GetClothingUsesOptPart(kind, 1))
                     clothingOptionObject?.SetActive(true);
                 else clothingOptionObject?.SetActive(false);
+
+                overlaySplitter?.SetActive(current != 0);
+                overlayHeader?.gameObject.SetActive(current != 0);
+                overlayGameObjects?.ForEach(o => o.SetActive(current != 0 && overlayHeader.isOn));
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
@@ -143,9 +150,9 @@ namespace PseudoMaker.UI
             void BuildOverlayRows()
             {
 
-                AddSplitter();
+                overlaySplitter = AddSplitter();
 
-                AddHeaderToggle("Overlays ▶", value => overlayGameObjects.ForEach(o => o.SetActive(value)));
+                overlayHeader = AddHeaderToggle("Overlays ▶", value => overlayGameObjects.ForEach(o => o.SetActive(value)));
                 overlayGameObjects = new List<GameObject>();
 
                 var clothesId = Compatibility.OverlayGetClothesId(SubCategory);
