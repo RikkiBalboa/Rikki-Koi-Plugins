@@ -418,13 +418,13 @@ namespace PseudoMaker.UI
             };
             var patternGameObjects = new List<GameObject>()
             {
+#if KKS
                 AddSliderRow(SubCategory, colorNr, PatternValue.Horizontal).gameObject,
                 AddSliderRow(SubCategory, colorNr, PatternValue.Vertical).gameObject,
-#if KKS
                 AddSliderRow(SubCategory, colorNr, PatternValue.Rotation).gameObject,
+#endif
                 AddSliderRow(SubCategory, colorNr, PatternValue.Width).gameObject,
                 AddSliderRow(SubCategory, colorNr, PatternValue.Height).gameObject,
-#endif
                 AddColorRow(SubCategory, colorNr, true).gameObject,
             };
             colorGameObjects.AddRange(patternGameObjects);
