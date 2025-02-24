@@ -181,7 +181,7 @@ namespace PseudoMaker.UI
                 mainOverlayObjects = new List<GameObject>();
                 otherOverlayObjects = new List<GameObject>();
 
-                var clothesId = ClothesOverlays.GetClothesId(SubCategory, selectedCharacterController.IsMultiPartTop(PseudoMakerCharaController.SubCategoryToKind(SubCategory)));
+                var clothesId = ClothesOverlays.GetClothesId(SubCategory);
 
                 if (ClothesOverlays.HasResizeSupport())
                 {
