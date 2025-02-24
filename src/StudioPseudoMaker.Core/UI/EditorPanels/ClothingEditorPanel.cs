@@ -3,9 +3,11 @@ using KoiClothesOverlayX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 using static ChaCustom.CustomSelectKind;
+using static HandCtrl;
 using static PseudoMaker.PseudoMaker;
 using static PseudoMaker.PseudoMakerCharaController;
 
@@ -183,7 +185,18 @@ namespace PseudoMaker.UI
 
                 var clothesId = Compatibility.OverlayGetClothesId(SubCategory, selectedCharacterController.IsMultiPartTop(PseudoMakerCharaController.SubCategoryToKind(SubCategory)));
 
-                if (Compatibility.OverlayVersionHasResizeSupport()) { }
+                if (Compatibility.OverlayVersionHasResizeSupport())
+                {
+                    var options = new List<string> { "original", "512", "1024", "2048", "4096", "8192" };
+                    otherOverlayObjects.Add(
+                        AddDropdownRow(
+                            "Max Texture Size Override",
+                            options,
+                            () => options.FindIndex(x => x == Compatibility.OverlayGetSizeOverride(clothesId).ToString()),
+                            index => Compatibility.OverlaySetSizeOverride(clothesId, index == 0 ? 0 : (int)(Math.Pow(2f, index - 1) * 512))
+                        ).gameObject
+                    );
+                }
 
                 mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Overlay texture", true));
 

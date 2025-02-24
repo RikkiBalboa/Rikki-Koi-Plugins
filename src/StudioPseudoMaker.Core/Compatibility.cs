@@ -229,6 +229,32 @@ namespace PseudoMaker
             return OverlayGetClothesId(!isMultiPart, kind);
         }
 
+        public static int OverlayGetSizeOverride(string clothesId)
+        {
+            if (!HasClothesOverlayPlugin && OverlayVersionHasResizeSupport()) return 0;
+
+            return GetSize();
+            int GetSize()
+            {
+                return GetOverlayClothesController()?.GetTextureSizeOverride(clothesId) ?? 0;
+            }
+        }
+
+        public static void OverlaySetSizeOverride(string clothesId, int newSize)
+        {
+            if (!HasClothesOverlayPlugin && OverlayVersionHasResizeSupport()) return;
+
+            GetSize();
+            void GetSize()
+            {
+                var controller = GetOverlayClothesController();
+                var currentSize = controller.GetTextureSizeOverride(clothesId);
+                newSize = controller.SetTextureSizeOverride(clothesId, newSize);
+                if (newSize != currentSize)
+                    controller.RefreshTexture(KoiClothesOverlayController.MakeColormaskId(clothesId));
+            }
+        }
+
         public static void OverlayImportClothesOverlay(string clothesId)
         {
             if (!HasClothesOverlayPlugin) return;
