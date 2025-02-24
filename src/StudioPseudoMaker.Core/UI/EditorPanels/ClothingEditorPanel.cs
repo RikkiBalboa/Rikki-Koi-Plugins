@@ -1,12 +1,11 @@
-﻿using KKAPI.Maker;
-using KKAPI.Utilities;
+﻿using Illusion.Extensions;
 using KoiClothesOverlayX;
-using KoiSkinOverlayX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static ChaCustom.CustomSelectKind;
 using static PseudoMaker.PseudoMaker;
 using static PseudoMaker.PseudoMakerCharaController;
 
@@ -14,6 +13,8 @@ namespace PseudoMaker.UI
 {
     public class ClothingEditorPanel : BaseEditorPanel
     {
+        private SelectKindType selectKindType = SelectKindType.CosTop;
+
         private Action clothingChangeAction;
         private Action<int> patternChangeAction;
 
@@ -26,7 +27,9 @@ namespace PseudoMaker.UI
         private List<GameObject> pushupTopGameObjects;
         private GameObject overlaySplitter;
         private Toggle overlayHeader;
-        private List<GameObject> overlayGameObjects;
+        private List<GameObject> otherOverlayObjects;
+        private List<GameObject> mainOverlayObjects;
+        private List<GameObject> multiOverlayObjects;
 
         private DropdownComponent fromDropDown;
         private int fromSelected = 0;
@@ -65,7 +68,6 @@ namespace PseudoMaker.UI
             clothingColorGameobjects = new Dictionary<int, List<GameObject>>();
             clothingPatternGameobjects = new Dictionary<int, List<GameObject>>();
 
-            SelectKindType selectKindType = SelectKindType.CosTop;
             if (SubCategory == SubCategory.ClothingTop) selectKindType = SelectKindType.CosTop;
             else if (SubCategory == SubCategory.ClothingBottom) selectKindType = SelectKindType.CosBot;
             else if (SubCategory == SubCategory.ClothingBra) selectKindType = SelectKindType.CosBra;
@@ -114,7 +116,17 @@ namespace PseudoMaker.UI
 
                 overlaySplitter?.SetActive(current != 0);
                 overlayHeader?.gameObject.SetActive(current != 0);
-                overlayGameObjects?.ForEach(o => o.SetActive(current != 0 && overlayHeader.isOn));
+                otherOverlayObjects?.ForEach(o => o.SetActive(current != 0 && overlayHeader.isOn));
+                if (SubCategory == SubCategory.ClothingTop && (current == 1 || current == 2))
+                {
+                    mainOverlayObjects?.ForEach(o => o.SetActive(false));
+                    multiOverlayObjects?.ForEach(o => o.SetActive(true && overlayHeader.isOn));
+                }
+                else
+                {
+                    mainOverlayObjects?.ForEach(o => o.SetActive(true && overlayHeader.isOn));
+                    multiOverlayObjects?.ForEach(o => o.SetActive(false));
+                }
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
@@ -152,35 +164,68 @@ namespace PseudoMaker.UI
 
                 overlaySplitter = AddSplitter();
 
-                overlayHeader = AddHeaderToggle("Overlays ▶", value => overlayGameObjects.ForEach(o => o.SetActive(value)));
-                overlayGameObjects = new List<GameObject>();
+                overlayHeader = AddHeaderToggle("Overlays ▶", value => {
+                    var current = PseudoMaker.selectedCharacterController.GetSelected(selectKindType);
+                    if (SubCategory == SubCategory.ClothingTop && (current == 1 || current == 2))
+                    {
+                        multiOverlayObjects?.ForEach(o => o.SetActive(value));
+                        mainOverlayObjects?.ForEach(o => o.SetActive(false));
+                    }
+                    else
+                    {
+                        multiOverlayObjects?.ForEach(o => o.SetActive(false));
+                        mainOverlayObjects?.ForEach(o => o.SetActive(value));
+                    }
+                    otherOverlayObjects.ForEach(o => o.SetActive(value));
+                });
+                mainOverlayObjects = new List<GameObject>();
+                otherOverlayObjects = new List<GameObject>();
 
-                var clothesId = Compatibility.OverlayGetClothesId(SubCategory);
+                var clothesId = Compatibility.OverlayGetClothesId(SubCategory, selectedCharacterController.IsMultiPartTop(PseudoMakerCharaController.SubCategoryToKind(SubCategory)));
 
                 if (Compatibility.OverlayVersionHasResizeSupport()) { }
 
-                AddOverlayRow(clothesId, "Overlay texture", true);
+                mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Overlay texture", true));
+
                 if (Compatibility.OverlayVersionHasColorMaskSupport())
-                    AddOverlayRow(clothesId, "Color mask", true, KoiClothesOverlayController.MakeColormaskId(clothesId));
+                    mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Color mask", true, KoiClothesOverlayController.MakeColormaskId(clothesId)));
 
                 if (SubCategory == SubCategory.ClothingTop)
                 {
-                    AddOverlayRow(MaskKind.BodyMask.ToString(), "Body alpha mask", true);
-                    AddOverlayRow(MaskKind.InnerMask.ToString(), "Inner clothes alpha mask", true);
-                    AddOverlayRow(MaskKind.BraMask.ToString(), "Bra alpha mask", true);
+                    multiOverlayObjects = new List<GameObject>();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        var subClothesId = Compatibility.OverlayGetClothesId(i, true);
+                        multiOverlayObjects.AddRange(AddOverlayRow(subClothesId, $"Overlay textures (Piece {i + 1})", true));
+
+                        if (Compatibility.OverlayVersionHasColorMaskSupport())
+                            multiOverlayObjects.AddRange(AddOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
+                    }
                 }
 
-                overlayGameObjects.ForEach(o => o.SetActive(false));
+
+                if (SubCategory == SubCategory.ClothingTop)
+                {
+                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.BodyMask.ToString(), "Body alpha mask", true));
+                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.InnerMask.ToString(), "Inner clothes alpha mask", true));
+                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.BraMask.ToString(), "Bra alpha mask", true));
+                }
+
+                mainOverlayObjects.ForEach(o => o.SetActive(false));
+                multiOverlayObjects.ForEach(o => o.SetActive(false));
+                otherOverlayObjects.ForEach(o => o.SetActive(false));
             }
         }
 
-        private void AddOverlayRow(string clothesId, string title, bool addSeperator = false, string colormaskId = null)
+        private List<GameObject> AddOverlayRow(string clothesId, string title, bool addSeperator = false, string colormaskId = null)
         {
-            if (!Compatibility.HasClothesOverlayPlugin) return;
+            if (!Compatibility.HasClothesOverlayPlugin) return new List<GameObject>();
 
-            BuildOverlayRows();
-            void BuildOverlayRows()
+            return BuildOverlayRows();
+            List<GameObject> BuildOverlayRows()
             {
+                var objectList = new List<GameObject>();
+
                 var isMask = KoiClothesOverlayController.IsMaskKind(clothesId);
                 var texType = isMask ? "override texture" : "overlay texture";
                 var isColorMask = colormaskId != null;
@@ -188,22 +233,22 @@ namespace PseudoMaker.UI
 
                 clothesId = !isColorMask ? clothesId : colormaskId;
 
-                if (addSeperator) overlayGameObjects.Add(AddSplitter());
+                if (addSeperator) objectList.Add(AddSplitter());
 
-                overlayGameObjects.Add(AddHeader(title));
+                objectList.Add(AddHeader(title));
 
-                overlayGameObjects.Add(
+                objectList.Add(
                     AddButtonRow(
                         "Dump Original Texture",
                         () => Compatibility.OverlayDumpOriginalTexture(clothesId)
                     ).gameObject
                 );
-                overlayGameObjects.Add(
+                objectList.Add(
                     AddImageRow(() => Compatibility.OverlayGetOverlayTex(clothesId)?._texture).gameObject
                 );
 
                 if (!isMask && !isColorMask)
-                    overlayGameObjects.Add(
+                    objectList.Add(
                         AddToggleRow(
                             "Hide base texture",
                             value => Compatibility.OverlaySetTextureOverride(clothesId, value),
@@ -211,26 +256,28 @@ namespace PseudoMaker.UI
                         ).gameObject
                     );
 
-                overlayGameObjects.Add(
+                objectList.Add(
                     AddButtonRow(
                         "Load new " + texType,
                         () => Compatibility.OverlayImportClothesOverlay(clothesId)
                     ).gameObject
                 );
 
-                overlayGameObjects.Add(
+                objectList.Add(
                     AddButtonRow(
                         "Clear " + texType,
                         () => Compatibility.OverlaySetTexAndUpdate(null, clothesId)
                     ).gameObject
                 );
 
-                overlayGameObjects.Add(
+                objectList.Add(
                     AddButtonRow(
                         "Export " + texType,
                         () => Compatibility.OverlayExportOverlay(clothesId)
                     ).gameObject
                 );
+
+                return objectList;
             }
         }
 

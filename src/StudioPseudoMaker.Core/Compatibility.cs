@@ -217,12 +217,16 @@ namespace PseudoMaker
             }
         }
 
-        public static string OverlayGetClothesId(SubCategory subCategory)
+        public static string OverlayGetClothesId(SubCategory subCategory, bool isMultiPart = false)
         {
             return OverlayGetClothesId(
-                !PseudoMaker.selectedCharacterController.IsMultiPartTop(PseudoMakerCharaController.SubCategoryToKind(subCategory)),
+                !isMultiPart,
                 PseudoMakerCharaController.SubCategoryToKind(subCategory)
             );
+        }
+        public static string OverlayGetClothesId(int kind, bool isMultiPart = false)
+        {
+            return OverlayGetClothesId(!isMultiPart, kind);
         }
 
         public static void OverlayImportClothesOverlay(string clothesId)
