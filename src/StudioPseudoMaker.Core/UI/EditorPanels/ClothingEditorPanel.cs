@@ -1,15 +1,12 @@
-﻿using Illusion.Extensions;
-using KoiClothesOverlayX;
+﻿using KoiClothesOverlayX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
-using static ChaCustom.CustomSelectKind;
-using static HandCtrl;
 using static PseudoMaker.PseudoMaker;
 using static PseudoMaker.PseudoMakerCharaController;
+using static PseudoMaker.Compatibility;
 
 namespace PseudoMaker.UI
 {
@@ -183,24 +180,24 @@ namespace PseudoMaker.UI
                 mainOverlayObjects = new List<GameObject>();
                 otherOverlayObjects = new List<GameObject>();
 
-                var clothesId = Compatibility.OverlayGetClothesId(SubCategory, selectedCharacterController.IsMultiPartTop(PseudoMakerCharaController.SubCategoryToKind(SubCategory)));
+                var clothesId = ClothesOverlays.GetClothesId(SubCategory, selectedCharacterController.IsMultiPartTop(PseudoMakerCharaController.SubCategoryToKind(SubCategory)));
 
-                if (Compatibility.OverlayVersionHasResizeSupport())
+                if (ClothesOverlays.HasResizeSupport())
                 {
                     var options = new List<string> { "original", "512", "1024", "2048", "4096", "8192" };
                     otherOverlayObjects.Add(
                         AddDropdownRow(
                             "Max Texture Size Override",
                             options,
-                            () => options.FindIndex(x => x == Compatibility.OverlayGetSizeOverride(clothesId).ToString()),
-                            index => Compatibility.OverlaySetSizeOverride(clothesId, index == 0 ? 0 : (int)(Math.Pow(2f, index - 1) * 512))
+                            () => options.FindIndex(x => x == ClothesOverlays.GetSizeOverride(clothesId).ToString()),
+                            index => ClothesOverlays.SetSizeOverride(clothesId, index == 0 ? 0 : (int)(Math.Pow(2f, index - 1) * 512))
                         ).gameObject
                     );
                 }
 
                 mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Overlay texture", true));
 
-                if (Compatibility.OverlayVersionHasColorMaskSupport())
+                if (ClothesOverlays.HasColorMaskSupport())
                     mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Color mask", true, KoiClothesOverlayController.MakeColormaskId(clothesId)));
 
                 if (SubCategory == SubCategory.ClothingTop)
@@ -208,10 +205,10 @@ namespace PseudoMaker.UI
                     multiOverlayObjects = new List<GameObject>();
                     for (int i = 0; i < 3; i++)
                     {
-                        var subClothesId = Compatibility.OverlayGetClothesId(i, true);
+                        var subClothesId = ClothesOverlays.GetClothesId(i, true);
                         multiOverlayObjects.AddRange(AddOverlayRow(subClothesId, $"Overlay textures (Piece {i + 1})", true));
 
-                        if (Compatibility.OverlayVersionHasColorMaskSupport())
+                        if (ClothesOverlays.HasColorMaskSupport())
                             multiOverlayObjects.AddRange(AddOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
                     }
                 }
@@ -253,40 +250,40 @@ namespace PseudoMaker.UI
                 objectList.Add(
                     AddButtonRow(
                         "Dump Original Texture",
-                        () => Compatibility.OverlayDumpOriginalTexture(clothesId)
+                        () => ClothesOverlays.DumpOriginalTexture(clothesId)
                     ).gameObject
                 );
                 objectList.Add(
-                    AddImageRow(() => Compatibility.OverlayGetOverlayTex(clothesId)?._texture).gameObject
+                    AddImageRow(() => ClothesOverlays.OverlayGetOverlayTex(clothesId)?._texture).gameObject
                 );
 
                 if (!isMask && !isColorMask)
                     objectList.Add(
                         AddToggleRow(
                             "Hide base texture",
-                            value => Compatibility.OverlaySetTextureOverride(clothesId, value),
-                            () => Compatibility.OverlayGetOverlayTex(clothesId)?.Override ?? false
+                            value => ClothesOverlays.SetTextureOverride(clothesId, value),
+                            () => ClothesOverlays.OverlayGetOverlayTex(clothesId)?.Override ?? false
                         ).gameObject
                     );
 
                 objectList.Add(
                     AddButtonRow(
                         "Load new " + texType,
-                        () => Compatibility.OverlayImportClothesOverlay(clothesId)
+                        () => ClothesOverlays.ImportClothesOverlay(clothesId)
                     ).gameObject
                 );
 
                 objectList.Add(
                     AddButtonRow(
                         "Clear " + texType,
-                        () => Compatibility.OverlaySetTexAndUpdate(null, clothesId)
+                        () => ClothesOverlays.SetTexAndUpdate(null, clothesId)
                     ).gameObject
                 );
 
                 objectList.Add(
                     AddButtonRow(
                         "Export " + texType,
-                        () => Compatibility.OverlayExportOverlay(clothesId)
+                        () => ClothesOverlays.ExportOverlay(clothesId)
                     ).gameObject
                 );
 
