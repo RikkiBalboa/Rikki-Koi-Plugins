@@ -174,7 +174,6 @@ namespace PseudoMaker.UI
             BuildOverlayRows();
             void BuildOverlayRows()
             {
-
                 var isMask = KoiClothesOverlayController.IsMaskKind(clothesId);
                 var texType = isMask ? "override texture" : "overlay texture";
                 var isColorMask = colormaskId != null;
@@ -193,8 +192,17 @@ namespace PseudoMaker.UI
                     ).gameObject
                 );
                 overlayGameObjects.Add(
-                    AddImageRow(() => Compatibility.OverlayGetOverlayTex(clothesId)).gameObject
+                    AddImageRow(() => Compatibility.OverlayGetOverlayTex(clothesId)?._texture).gameObject
                 );
+
+                if (!isMask && !isColorMask)
+                    overlayGameObjects.Add(
+                        AddToggleRow(
+                            "Hide base texture",
+                            value => Compatibility.OverlaySetTextureOverride(clothesId, value),
+                            () => Compatibility.OverlayGetOverlayTex(clothesId)?.Override ?? false
+                        ).gameObject
+                    );
 
                 overlayGameObjects.Add(
                     AddButtonRow(

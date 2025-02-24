@@ -310,14 +310,25 @@ namespace PseudoMaker
             }
         }
 
-        public static Texture OverlayGetOverlayTex(string clothesId)
+        public static void OverlaySetTextureOverride(string clothesId, bool value)
+        {
+            var controller = GetOverlayClothesController();
+            var texData = controller?.GetOverlayTex(clothesId, true);
+            if (texData != null)
+            {
+                texData.Override = value;
+                controller.RefreshTexture(clothesId);
+            }
+        }
+
+        public static ClothesTexData OverlayGetOverlayTex(string clothesId)
         {
             if (!HasClothesOverlayPlugin) return null;
 
             return GetOverlay();
-            Texture GetOverlay()
+            ClothesTexData GetOverlay()
             {
-                return GetOverlayClothesController()?.GetOverlayTex(clothesId, false)?._texture;
+                return GetOverlayClothesController()?.GetOverlayTex(clothesId, false);
             }
         }
         #region Overlays
