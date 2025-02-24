@@ -1,10 +1,12 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
 using ChaCustom;
+using KKAPI.Utilities;
 using KoiClothesOverlayX;
 using KoiSkinOverlayX;
 using PseudoMaker.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -223,14 +225,49 @@ namespace PseudoMaker
             );
         }
 
-        public static void OverlayOnFileAccept(string[] strings, string type)
+        public static void OverlayImportClothesOverlay(string clothesId)
         {
             if (!HasClothesOverlayPlugin) return;
 
-            OnFileAccept();
-            void OnFileAccept()
+            OpenFile();
+            void OpenFile()
             {
-                PseudoMaker.instance.GetComponent<KoiClothesOverlayGui>().OnFileAccept(strings, type);
+                OpenFileDialog.Show(
+                    strings => OnFileAccept(strings),
+                    "Open overlay image",
+                    KoiSkinOverlayGui.GetDefaultLoadDir(),
+                    KoiSkinOverlayGui.FileFilter,
+                    KoiSkinOverlayGui.FileExt
+                );
+            }
+
+            void OnFileAccept(string[] strings)
+            {
+                if (strings == null || strings.Length == 0) return;
+
+                var texPath = strings[0];
+                if (string.IsNullOrEmpty(texPath)) return;
+
+                // Game crashes if the texture creation is not done on the main thread
+                // No amount of try catching will save it from that crash
+                ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+            }
+
+            void ReadTex(string texturePath)
+            {
+                try
+                {
+                    var bytes = File.ReadAllBytes(texturePath);
+                    var isMask = KoiClothesOverlayController.IsMaskKind(clothesId);
+
+                    // Always save to the card in lossless format
+                    var textureFormat = isMask ? TextureFormat.RG16 : TextureFormat.ARGB32;
+                    var tex = Util.TextureFromBytes(bytes, textureFormat);
+                    if (tex != null)
+                        OverlaySetTexAndUpdate(tex, clothesId);
+
+                }
+                catch (Exception ex) { }
             }
         }
 

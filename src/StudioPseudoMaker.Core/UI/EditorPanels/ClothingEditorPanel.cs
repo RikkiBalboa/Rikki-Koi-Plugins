@@ -184,7 +184,7 @@ namespace PseudoMaker.UI
 
                 if (addSeperator) overlayGameObjects.Add(AddSplitter());
 
-                overlayGameObjects.Add(AddHeader(title + " - " + clothesId));
+                overlayGameObjects.Add(AddHeader(title));
 
                 overlayGameObjects.Add(
                     AddButtonRow(
@@ -199,13 +199,7 @@ namespace PseudoMaker.UI
                 overlayGameObjects.Add(
                     AddButtonRow(
                         "Load new " + texType,
-                        () => OpenFileDialog.Show(
-                            strings => Compatibility.OverlayOnFileAccept(strings, clothesId),
-                            "Open overlay image",
-                            KoiSkinOverlayGui.GetDefaultLoadDir(),
-                            KoiSkinOverlayGui.FileFilter,
-                            KoiSkinOverlayGui.FileExt
-                        )
+                        () => Compatibility.OverlayImportClothesOverlay(clothesId)
                     ).gameObject
                 );
 
