@@ -244,7 +244,7 @@ namespace PseudoMaker
                 }
             }
 
-            public static void ImportClothesOverlay(string clothesId)
+            public static void ImportClothesOverlay(string clothesId, Action onDone = null)
             {
                 if (!HasClothesOverlayPlugin) return;
 
@@ -284,13 +284,14 @@ namespace PseudoMaker
                         var tex = Util.TextureFromBytes(bytes, textureFormat);
                         if (tex != null)
                             SetTexAndUpdate(tex, clothesId);
+                        onDone?.Invoke();
 
                     }
                     catch (Exception ex) { }
                 }
             }
 
-            public static void SetTexAndUpdate(Texture2D tex, string texType)
+            public static void SetTexAndUpdate(Texture2D tex, string texType, Action onDone = null)
             {
                 if (!HasClothesOverlayPlugin) return;
 
@@ -301,6 +302,7 @@ namespace PseudoMaker
                     var t = ctrl.GetOverlayTex(texType, true);
                     t.Texture = tex;
                     ctrl.RefreshTexture(texType);
+                    onDone?.Invoke();
                 }
             }
 

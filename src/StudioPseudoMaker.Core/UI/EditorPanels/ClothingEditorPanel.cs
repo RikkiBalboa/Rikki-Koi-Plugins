@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using static PseudoMaker.PseudoMaker;
 using static PseudoMaker.PseudoMakerCharaController;
 using static PseudoMaker.Compatibility;
+using System.Collections;
 
 namespace PseudoMaker.UI
 {
@@ -269,14 +270,14 @@ namespace PseudoMaker.UI
                 objectList.Add(
                     AddButtonRow(
                         "Load new " + texType,
-                        () => ClothesOverlays.ImportClothesOverlay(clothesId)
+                        () => ClothesOverlays.ImportClothesOverlay(clothesId, RefreshPanel)
                     ).gameObject
                 );
 
                 objectList.Add(
                     AddButtonRow(
                         "Clear " + texType,
-                        () => ClothesOverlays.SetTexAndUpdate(null, clothesId)
+                        () => ClothesOverlays.SetTexAndUpdate(null, clothesId, RefreshPanel)
                     ).gameObject
                 );
 
@@ -491,6 +492,7 @@ namespace PseudoMaker.UI
 
         private void RefreshPanel()
         {
+            PseudoMaker.Logger.LogInfo("refresh");
             gameObject.SetActive(false);
             gameObject.SetActive(true);
         }
