@@ -27,6 +27,7 @@ namespace PseudoMaker.UI
         protected GameObject TransferRowTemplate;
         protected GameObject AccessoryCopyRowTemplace;
         protected GameObject ClothingCopyRowTemplace;
+        protected GameObject ImageRowTemplate;
 
         protected void Awake()
         {
@@ -45,6 +46,7 @@ namespace PseudoMaker.UI
             TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
             AccessoryCopyRowTemplace = scrollRect.content.Find("AccessoryCopyRowTemplate").gameObject;
             ClothingCopyRowTemplace = scrollRect.content.Find("ClothingCopyRowTemplate").gameObject;
+            ImageRowTemplate = scrollRect.content.Find("ImageRowTemplate").gameObject;
 
             Initialize();
 
@@ -61,6 +63,7 @@ namespace PseudoMaker.UI
             Destroy(TransferRowTemplate);
             Destroy(AccessoryCopyRowTemplace);
             Destroy(ClothingCopyRowTemplace);
+            Destroy(ImageRowTemplate);
         }
 
         public static T CreatePanel<T>(SubCategory subCategory) where T : BaseEditorPanel
@@ -356,6 +359,16 @@ namespace PseudoMaker.UI
             dropdownComponent.SetValueAction = setValueAction;
 
             return dropdownComponent;
+        }
+
+        public ImageComponent AddImageRow(Func<Texture> getCurrentValueAction, Transform parent = null)
+        {
+            var image = Instantiate(ImageRowTemplate, parent == null ? scrollRect.content : parent);
+
+            var imageComponent = image.AddComponent<ImageComponent>();
+            imageComponent.GetCurrentValue = getCurrentValueAction;
+
+            return imageComponent;
         }
 
         public CopyComponent AddCopyRow(int index, bool isClothing, Func<string> getFromName, Func<string> getToName)

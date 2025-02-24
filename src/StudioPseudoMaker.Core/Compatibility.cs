@@ -1,8 +1,12 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
 using ChaCustom;
+using KoiClothesOverlayX;
+using KoiSkinOverlayX;
+using PseudoMaker.UI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -14,6 +18,8 @@ namespace PseudoMaker
         public static int SelectedSlotNr;
 
         public static bool HasA12 { get; private set; }
+        public static bool HasClothesOverlayPlugin { get; private set; }
+        public static Version OverlayPluginVersion { get; private set; }
 
         static Compatibility()
         {
@@ -31,6 +37,10 @@ namespace PseudoMaker
                 switch (plugin.Info.Metadata.GUID)
                 {
                     case "starstorm.aaaaaaaaaaaa": HasA12 = true; break;
+                    case "KCOX": 
+                        HasClothesOverlayPlugin = true;
+                        OverlayPluginVersion = plugin.Info.Metadata.Version;
+                        break;
                 }
         }
 
@@ -167,6 +177,113 @@ namespace PseudoMaker
         {
             return C2AType != null;
         }
+        #endregion
+        public static bool OverlayVersionHasColorMaskSupport()
+        {
+            return OverlayPluginVersion >= new Version("6.2");
+        }
+        public static bool OverlayVersionHasResizeSupport()
+        {
+            return OverlayPluginVersion >= new Version("6.2");
+        }
+
+        public static void OverlayDumpOriginalTexture(string clothesId)
+        {
+            if (!HasClothesOverlayPlugin) return;
+
+            DumpTexture();
+            void DumpTexture()
+            {
+                var controller = GetOverlayClothesController();
+                controller.DumpBaseTexture(clothesId, b => KoiSkinOverlayGui.WriteAndOpenPng(b, clothesId + "_Original"));
+            }
+        }
+
+        public static KoiClothesOverlayController GetOverlayClothesController()
+        {
+            return PseudoMaker.selectedCharacter.gameObject.GetComponent<KoiClothesOverlayController>();
+        }
+
+        public static string OverlayGetClothesId(bool main, int kind)
+        {
+            if (!HasClothesOverlayPlugin) return "";
+
+            return GetClothedId();
+            string GetClothedId()
+            {
+                return KoiClothesOverlayController.GetClothesIdFromKind(main, kind);
+            }
+        }
+
+        public static string OverlayGetClothesId(SubCategory subCategory)
+        {
+            return OverlayGetClothesId(
+                !PseudoMaker.selectedCharacterController.IsMultiPartTop(PseudoMakerCharaController.SubCategoryToKind(subCategory)),
+                PseudoMakerCharaController.SubCategoryToKind(subCategory)
+            );
+        }
+
+        public static void OverlayOnFileAccept(string[] strings, string type)
+        {
+            if (!HasClothesOverlayPlugin) return;
+
+            OnFileAccept();
+            void OnFileAccept()
+            {
+                PseudoMaker.instance.GetComponent<KoiClothesOverlayGui>().OnFileAccept(strings, type);
+            }
+        }
+
+        public static void OverlaySetTexAndUpdate(Texture2D tex, string texType)
+        {
+            if (!HasClothesOverlayPlugin) return;
+
+            SetTex();
+            void SetTex()
+            {
+                var ctrl = GetOverlayClothesController();
+                var t = ctrl.GetOverlayTex(texType, true);
+                t.Texture = tex;
+                ctrl.RefreshTexture(texType);
+            }
+        }
+
+        public static void OverlayExportOverlay(string clothesId)
+        {
+            if (!HasClothesOverlayPlugin) return;
+
+            Export();
+            void Export()
+            {
+                try
+                {
+                    var tex = GetOverlayClothesController().GetOverlayTex(clothesId, false)?.TextureBytes;
+                    if (tex == null)
+                    {
+                        PseudoMaker.Logger.LogMessage("Nothing to export");
+                        return;
+                    }
+
+                    KoiSkinOverlayGui.WriteAndOpenPng(tex, clothesId);
+                }
+                catch (Exception ex)
+                {
+                    PseudoMaker.Logger.LogMessage("Failed to export texture - " + ex.Message);
+                }
+            }
+        }
+
+        public static Texture OverlayGetOverlayTex(string clothesId)
+        {
+            if (!HasClothesOverlayPlugin) return null;
+
+            return GetOverlay();
+            Texture GetOverlay()
+            {
+                return GetOverlayClothesController()?.GetOverlayTex(clothesId, false)?._texture;
+            }
+        }
+        #region Overlays
         #endregion
     }
 }

@@ -1,9 +1,13 @@
 ﻿using KKAPI.Maker;
+using KKAPI.Utilities;
+using KoiClothesOverlayX;
+using KoiSkinOverlayX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static ChaCustom.CustomSelectKind;
+using static PseudoMaker.PseudoMaker;
+using static PseudoMaker.PseudoMakerCharaController;
 
 namespace PseudoMaker.UI
 {
@@ -19,6 +23,7 @@ namespace PseudoMaker.UI
         private GameObject clothingOptionObject;
         private List<GameObject> pushupBraGameObjects;
         private List<GameObject> pushupTopGameObjects;
+        private List<GameObject> overlayGameObjects;
 
         private DropdownComponent fromDropDown;
         private int fromSelected = 0;
@@ -126,6 +131,98 @@ namespace PseudoMaker.UI
 
             for (int i = 0; i < 3; i++)
                 AddPatternRows(SubCategory, selectKindType, i);
+
+            AddOverlayRows();
+        }
+
+        private void AddOverlayRows()
+        {
+            if (!Compatibility.HasClothesOverlayPlugin) return;
+
+            BuildOverlayRows();
+            void BuildOverlayRows()
+            {
+
+                AddSplitter();
+
+                AddHeaderToggle("Overlays ▶", value => overlayGameObjects.ForEach(o => o.SetActive(value)));
+                overlayGameObjects = new List<GameObject>();
+
+                var clothesId = Compatibility.OverlayGetClothesId(SubCategory);
+
+                if (Compatibility.OverlayVersionHasResizeSupport()) { }
+
+                AddOverlayRow(clothesId, "Overlay texture", true);
+                if (Compatibility.OverlayVersionHasColorMaskSupport())
+                    AddOverlayRow(clothesId, "Color mask", true, KoiClothesOverlayController.MakeColormaskId(clothesId));
+
+                if (SubCategory == SubCategory.ClothingTop)
+                {
+                    AddOverlayRow(MaskKind.BodyMask.ToString(), "Body alpha mask", true);
+                    AddOverlayRow(MaskKind.InnerMask.ToString(), "Inner clothes alpha mask", true);
+                    AddOverlayRow(MaskKind.BraMask.ToString(), "Bra alpha mask", true);
+                }
+
+                overlayGameObjects.ForEach(o => o.SetActive(false));
+            }
+        }
+
+        private void AddOverlayRow(string clothesId, string title, bool addSeperator = false, string colormaskId = null)
+        {
+            if (!Compatibility.HasClothesOverlayPlugin) return;
+
+            BuildOverlayRows();
+            void BuildOverlayRows()
+            {
+
+                var isMask = KoiClothesOverlayController.IsMaskKind(clothesId);
+                var texType = isMask ? "override texture" : "overlay texture";
+                var isColorMask = colormaskId != null;
+                texType = isColorMask ? "override texture" : texType;
+
+                clothesId = !isColorMask ? clothesId : colormaskId;
+
+                if (addSeperator) overlayGameObjects.Add(AddSplitter());
+
+                overlayGameObjects.Add(AddHeader(title + " - " + clothesId));
+
+                overlayGameObjects.Add(
+                    AddButtonRow(
+                        "Dump Original Texture",
+                        () => Compatibility.OverlayDumpOriginalTexture(clothesId)
+                    ).gameObject
+                );
+                overlayGameObjects.Add(
+                    AddImageRow(() => Compatibility.OverlayGetOverlayTex(clothesId)).gameObject
+                );
+
+                overlayGameObjects.Add(
+                    AddButtonRow(
+                        "Load new " + texType,
+                        () => OpenFileDialog.Show(
+                            strings => Compatibility.OverlayOnFileAccept(strings, clothesId),
+                            "Open overlay image",
+                            KoiSkinOverlayGui.GetDefaultLoadDir(),
+                            KoiSkinOverlayGui.FileFilter,
+                            KoiSkinOverlayGui.FileExt
+                        )
+                    ).gameObject
+                );
+
+                overlayGameObjects.Add(
+                    AddButtonRow(
+                        "Clear " + texType,
+                        () => Compatibility.OverlaySetTexAndUpdate(null, clothesId)
+                    ).gameObject
+                );
+
+                overlayGameObjects.Add(
+                    AddButtonRow(
+                        "Export " + texType,
+                        () => Compatibility.OverlayExportOverlay(clothesId)
+                    ).gameObject
+                );
+            }
         }
 
         private void InitializePushup()
