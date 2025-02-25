@@ -1,4 +1,5 @@
 ﻿using ADV.Commands.Object;
+using KoiSkinOverlayX;
 using PseudoMaker.UI;
 using System;
 using System.Collections.Generic;
@@ -379,6 +380,35 @@ namespace PseudoMaker.UI
             copyComponent.GetFromName = getFromName;
             copyComponent.GetToName = getToName;
             return copyComponent;
+        }
+
+        public void AddSkinOverlayRow(TexType texType, string title, bool addSeperator = false, Action onDone = null)
+        {
+            if (addSeperator) AddSplitter();
+
+            AddHeader(title);
+
+            AddImageRow(
+                () => Compatibility.SkinOverlays.GetTex(texType)
+            );
+
+            AddButtonRow(
+                "Load New Texture",
+                () => Compatibility.SkinOverlays.ImportOverlay(texType, onDone)
+            );
+
+            AddButtonRow(
+                "Clear Texture",
+                () => {
+                    Compatibility.SkinOverlays.SetTexAndUpdate(null, texType);
+                    onDone?.Invoke();
+                }
+            );
+
+            AddButtonRow(
+                "Export Current Texture",
+                () => Compatibility.SkinOverlays.ExportOverlay(texType)
+            );
         }
     }
 }

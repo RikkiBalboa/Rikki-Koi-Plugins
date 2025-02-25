@@ -208,6 +208,7 @@ namespace PseudoMaker.UI
                 case SubCategory.BodyLegs: return "Legs";
                 case SubCategory.BodyPubicHair: return "Pubic Hair";
                 case SubCategory.BodySuntan:return "Suntan";
+                case SubCategory.BodySkinOverlays: return "Skin Overlays";
                 case SubCategory.FaceGeneral: return "General";
                 case SubCategory.FaceEars: return "Ears";
                 case SubCategory.FaceJaw: return "Jaw";
@@ -585,6 +586,7 @@ namespace PseudoMaker.UI
         BodyLegs,
         BodyPubicHair,
         BodySuntan,
+        BodySkinOverlays,
         FaceGeneral,
         FaceEars,
         FaceJaw,
