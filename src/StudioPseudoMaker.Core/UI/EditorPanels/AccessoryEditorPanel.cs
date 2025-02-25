@@ -77,7 +77,7 @@ namespace PseudoMaker.UI
                     if (parentDropdown.dropdown.options.Count > 0)
                     {
                         if (parent == "A12")
-                            parentDropdown.dropdown.options.First(x => x.text.StartsWith("A12")).text = $"A12: {Compatibility.A12GetBoneName(currentAccessoryNr)}";
+                            parentDropdown.dropdown.options.First(x => x.text.StartsWith("A12")).text = $"A12: {Compatibility.A12.GetBoneName(currentAccessoryNr)}";
                         else if (!UIMappings.AccessoryParents.Keys.Contains(parent))
                             parentDropdown.dropdown.options.First(x => x.text.StartsWith("Other")).text = $"Other: {parent}";
                     }
@@ -92,7 +92,7 @@ namespace PseudoMaker.UI
             );
 
             a12UpdateButton = AddButtonRow("Update A12 Parent", () => {
-                Compatibility.A12RegisterParent(currentAccessoryNr);
+                Compatibility.A12.RegisterParent(currentAccessoryNr);
                 RefreshPanel();
             }).gameObject;
 

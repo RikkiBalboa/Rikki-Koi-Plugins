@@ -1,14 +1,20 @@
-﻿using KKAPI.Maker;
+﻿using KoiClothesOverlayX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static ChaCustom.CustomSelectKind;
+using UnityEngine.UI;
+using static PseudoMaker.PseudoMaker;
+using static PseudoMaker.PseudoMakerCharaController;
+using static PseudoMaker.Compatibility;
+using System.Collections;
 
 namespace PseudoMaker.UI
 {
     public class ClothingEditorPanel : BaseEditorPanel
     {
+        private SelectKindType selectKindType = SelectKindType.CosTop;
+
         private Action clothingChangeAction;
         private Action<int> patternChangeAction;
 
@@ -19,6 +25,11 @@ namespace PseudoMaker.UI
         private GameObject clothingOptionObject;
         private List<GameObject> pushupBraGameObjects;
         private List<GameObject> pushupTopGameObjects;
+        private GameObject overlaySplitter;
+        private Toggle overlayHeader;
+        private List<GameObject> otherOverlayObjects;
+        private List<GameObject> mainOverlayObjects;
+        private List<GameObject> multiOverlayObjects;
 
         private DropdownComponent fromDropDown;
         private int fromSelected = 0;
@@ -57,7 +68,6 @@ namespace PseudoMaker.UI
             clothingColorGameobjects = new Dictionary<int, List<GameObject>>();
             clothingPatternGameobjects = new Dictionary<int, List<GameObject>>();
 
-            SelectKindType selectKindType = SelectKindType.CosTop;
             if (SubCategory == SubCategory.ClothingTop) selectKindType = SelectKindType.CosTop;
             else if (SubCategory == SubCategory.ClothingBottom) selectKindType = SelectKindType.CosBot;
             else if (SubCategory == SubCategory.ClothingBra) selectKindType = SelectKindType.CosBra;
@@ -103,6 +113,20 @@ namespace PseudoMaker.UI
                 if (PseudoMaker.selectedCharacterController.GetClothingUsesOptPart(kind, 0) || PseudoMaker.selectedCharacterController.GetClothingUsesOptPart(kind, 1))
                     clothingOptionObject?.SetActive(true);
                 else clothingOptionObject?.SetActive(false);
+
+                overlaySplitter?.SetActive(current != 0);
+                overlayHeader?.gameObject.SetActive(current != 0);
+                otherOverlayObjects?.ForEach(o => o.SetActive(current != 0 && overlayHeader.isOn));
+                if (SubCategory == SubCategory.ClothingTop && (current == 1 || current == 2))
+                {
+                    mainOverlayObjects?.ForEach(o => o.SetActive(false));
+                    multiOverlayObjects?.ForEach(o => o.SetActive(true && overlayHeader.isOn));
+                }
+                else
+                {
+                    mainOverlayObjects?.ForEach(o => o.SetActive(true && overlayHeader.isOn));
+                    multiOverlayObjects?.ForEach(o => o.SetActive(false));
+                }
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
@@ -126,6 +150,146 @@ namespace PseudoMaker.UI
 
             for (int i = 0; i < 3; i++)
                 AddPatternRows(SubCategory, selectKindType, i);
+
+            AddOverlayRows();
+        }
+
+        private void AddOverlayRows()
+        {
+            if (!Compatibility.HasClothesOverlayPlugin) return;
+
+            BuildOverlayRows();
+            void BuildOverlayRows()
+            {
+
+                overlaySplitter = AddSplitter();
+
+                overlayHeader = AddHeaderToggle("Overlays ▶", value => {
+                    var current = PseudoMaker.selectedCharacterController.GetSelected(selectKindType);
+                    if (SubCategory == SubCategory.ClothingTop && (current == 1 || current == 2))
+                    {
+                        multiOverlayObjects?.ForEach(o => o.SetActive(value));
+                        mainOverlayObjects?.ForEach(o => o.SetActive(false));
+                    }
+                    else
+                    {
+                        multiOverlayObjects?.ForEach(o => o.SetActive(false));
+                        mainOverlayObjects?.ForEach(o => o.SetActive(value));
+                    }
+                    otherOverlayObjects.ForEach(o => o.SetActive(value));
+                });
+                mainOverlayObjects = new List<GameObject>();
+                otherOverlayObjects = new List<GameObject>();
+
+                var clothesId = ClothesOverlays.GetClothesId(SubCategory);
+
+                if (ClothesOverlays.HasResizeSupport())
+                {
+                    var options = new List<string> { "original", "512", "1024", "2048", "4096", "8192" };
+                    otherOverlayObjects.Add(
+                        AddDropdownRow(
+                            "Max Texture Size Override",
+                            options,
+                            () => options.FindIndex(x => x == ClothesOverlays.GetSizeOverride(clothesId).ToString()),
+                            index => ClothesOverlays.SetSizeOverride(clothesId, index == 0 ? 0 : (int)(Math.Pow(2f, index - 1) * 512))
+                        ).gameObject
+                    );
+                }
+
+                mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Overlay texture", true));
+
+                if (ClothesOverlays.HasColorMaskSupport())
+                    mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Color mask", true, KoiClothesOverlayController.MakeColormaskId(clothesId)));
+
+                if (SubCategory == SubCategory.ClothingTop)
+                {
+                    multiOverlayObjects = new List<GameObject>();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        var subClothesId = ClothesOverlays.GetClothesId(i, true);
+                        multiOverlayObjects.AddRange(AddOverlayRow(subClothesId, $"Overlay textures (Piece {i + 1})", true));
+
+                        if (ClothesOverlays.HasColorMaskSupport())
+                            multiOverlayObjects.AddRange(AddOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
+                    }
+                }
+
+
+                if (SubCategory == SubCategory.ClothingTop)
+                {
+                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.BodyMask.ToString(), "Body alpha mask", true));
+                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.InnerMask.ToString(), "Inner clothes alpha mask", true));
+                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.BraMask.ToString(), "Bra alpha mask", true));
+                }
+
+                mainOverlayObjects.ForEach(o => o.SetActive(false));
+                multiOverlayObjects?.ForEach(o => o.SetActive(false));
+                otherOverlayObjects.ForEach(o => o.SetActive(false));
+            }
+        }
+
+        private List<GameObject> AddOverlayRow(string clothesId, string title, bool addSeperator = false, string colormaskId = null)
+        {
+            if (!Compatibility.HasClothesOverlayPlugin) return new List<GameObject>();
+
+            return BuildOverlayRows();
+            List<GameObject> BuildOverlayRows()
+            {
+                var objectList = new List<GameObject>();
+
+                var isMask = KoiClothesOverlayController.IsMaskKind(clothesId);
+                var texType = isMask ? "override texture" : "overlay texture";
+                var isColorMask = colormaskId != null;
+                texType = isColorMask ? "override texture" : texType;
+
+                clothesId = !isColorMask ? clothesId : colormaskId;
+
+                if (addSeperator) objectList.Add(AddSplitter());
+
+                objectList.Add(AddHeader(title));
+
+                objectList.Add(
+                    AddButtonRow(
+                        "Dump Original Texture",
+                        () => ClothesOverlays.DumpOriginalTexture(clothesId)
+                    ).gameObject
+                );
+                objectList.Add(
+                    AddImageRow(() => ClothesOverlays.OverlayGetOverlayTex(clothesId)?._texture).gameObject
+                );
+
+                if (!isMask && !isColorMask)
+                    objectList.Add(
+                        AddToggleRow(
+                            "Hide base texture",
+                            value => ClothesOverlays.SetTextureOverride(clothesId, value),
+                            () => ClothesOverlays.OverlayGetOverlayTex(clothesId)?.Override ?? false
+                        ).gameObject
+                    );
+
+                objectList.Add(
+                    AddButtonRow(
+                        "Load new " + texType,
+                        () => ClothesOverlays.ImportClothesOverlay(clothesId, RefreshPanel)
+                    ).gameObject
+                );
+
+                objectList.Add(
+                    AddButtonRow(
+                        "Clear " + texType,
+                        () => ClothesOverlays.SetTexAndUpdate(null, clothesId, RefreshPanel)
+                    ).gameObject
+                );
+
+                objectList.Add(
+                    AddButtonRow(
+                        "Export " + texType,
+                        () => ClothesOverlays.ExportOverlay(clothesId)
+                    ).gameObject
+                );
+
+                return objectList;
+            }
         }
 
         private void InitializePushup()
@@ -252,13 +416,13 @@ namespace PseudoMaker.UI
             };
             var patternGameObjects = new List<GameObject>()
             {
+#if KKS
                 AddSliderRow(SubCategory, colorNr, PatternValue.Horizontal).gameObject,
                 AddSliderRow(SubCategory, colorNr, PatternValue.Vertical).gameObject,
-#if KKS
                 AddSliderRow(SubCategory, colorNr, PatternValue.Rotation).gameObject,
+#endif
                 AddSliderRow(SubCategory, colorNr, PatternValue.Width).gameObject,
                 AddSliderRow(SubCategory, colorNr, PatternValue.Height).gameObject,
-#endif
                 AddColorRow(SubCategory, colorNr, true).gameObject,
             };
             colorGameObjects.AddRange(patternGameObjects);
@@ -328,6 +492,7 @@ namespace PseudoMaker.UI
 
         private void RefreshPanel()
         {
+            PseudoMaker.Logger.LogInfo("refresh");
             gameObject.SetActive(false);
             gameObject.SetActive(true);
         }

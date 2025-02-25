@@ -48,8 +48,7 @@ namespace PseudoMaker.UI
             {
                 shouldNotUpdate = true;
                 dropdown.value = GetCurrentValue();
-                if (dropdown.value > 0)
-                    dropdown.captionText.text = dropdown.options[dropdown.value].text;
+                dropdown.RefreshShownValue();
                 shouldNotUpdate = false;
             }
         }
@@ -61,6 +60,7 @@ namespace PseudoMaker.UI
             foreach (var option in options)
                 _options.Add(new Dropdown.OptionData(option));
             dropdown.options = _options;
+            dropdown.value = GetCurrentValue();
             dropdown.RefreshShownValue();
         }
 

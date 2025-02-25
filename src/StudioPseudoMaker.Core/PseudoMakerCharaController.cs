@@ -1410,12 +1410,12 @@ namespace PseudoMaker
         {
             selectedCharacter.ChangeAccessoryParent(slotNr, parentKey);
             SetAccessories.parts[slotNr] = Accessories.parts[slotNr];
-            Compatibility.A12ChangeAccessoryParent(slotNr);
+            Compatibility.A12.ChangeAccessoryParent(slotNr);
         }
 
         public bool CheckAccessoryHasA12Parent(int slotNr)
         {
-            var customAccParents = Compatibility.GetA12A12CustomAccParents();
+            var customAccParents = Compatibility.A12.GetCustomAccParents();
 
             if (customAccParents != null && customAccParents.ContainsKey(CurrentOutfitSlot))
                 return customAccParents[CurrentOutfitSlot].ContainsKey(slotNr);

@@ -25,13 +25,16 @@ namespace PseudoMaker
     [BepInDependency(KK_Plugins.Pushup.GUID)]
     [BepInDependency(KKABMX.Core.KKABMX_Core.GUID)]
     [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
+    [BepInDependency("starstorm.aaaaaaaaaaaa", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("KCOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.0.1";
+        public const string PluginVersion = "1.1.0.1";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
@@ -192,7 +195,7 @@ namespace PseudoMaker
             if (StudioAPI.GetSelectedCharacters().Count() > 0)
             {
                 SetUIScale();
-                MainWindow.gameObject.SetActive(true);
+                MainWindow.gameObject.SetActive(!MainWindow.gameObject.activeSelf);
             }
         }
 

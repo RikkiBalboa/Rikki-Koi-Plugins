@@ -86,6 +86,10 @@
       <HintPath>..\..\lib\KK_MoreOutfits.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KK_OverlayMods">
+      <HintPath>..\..\lib\KK_OverlayMods.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KK_Pushup">
       <HintPath>..\..\lib\KK_Pushup.dll</HintPath>
       <Private>False</Private>

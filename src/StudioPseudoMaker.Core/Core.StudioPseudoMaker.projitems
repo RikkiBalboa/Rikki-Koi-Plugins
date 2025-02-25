@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ColorComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\CopyComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\DropdownComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ImageComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\InputFieldComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\MovableWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\PickerComponent.cs" />

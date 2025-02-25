@@ -487,7 +487,7 @@ namespace PseudoMaker.UI
 
         internal static void AddOtherPluginMappings()
         {
-            if (Compatibility.CheckC2AInstalled())
+            if (Compatibility.HasC2A)
                 AccessoryTypes.InsertRange(AccessoryTypes.Count - 1, new ChaListDefine.CategoryNo[]
                 {
                     ChaListDefine.CategoryNo.bo_hair_b,
