@@ -382,9 +382,9 @@ namespace PseudoMaker.UI
             return copyComponent;
         }
 
-        public void AddSkinOverlayRow(TexType texType, string title, bool addSeperator = false, Action onDone = null)
+        public void AddSkinOverlayRow(TexType texType, string title, Action onDone = null)
         {
-            if (addSeperator) AddSplitter();
+            AddSplitter();
 
             AddHeader(title);
 

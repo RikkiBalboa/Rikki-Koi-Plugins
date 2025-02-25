@@ -481,6 +481,27 @@ namespace PseudoMaker
                     catch (Exception ex) { }
                 }
             }
+
+            public static bool IsPerCoord()
+            {
+                if (!HasSkinOverlayPlugin) return false;
+
+                return PerCoord();
+                bool PerCoord()
+                {
+                    return GetController().OverlayStorage.IsPerCoord();
+                }
+            }
+            public static void SetPerCoord(bool value)
+            {
+                if (!HasSkinOverlayPlugin) return;
+
+                PerCoord();
+                void PerCoord()
+                {
+                    if (!value) GetController().OverlayStorage.CopyToOtherCoords();
+                }
+            }
         }
     }
 }
