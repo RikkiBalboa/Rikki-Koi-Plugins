@@ -195,7 +195,7 @@ namespace PseudoMaker
             if (StudioAPI.GetSelectedCharacters().Count() > 0)
             {
                 SetUIScale();
-                MainWindow.gameObject.SetActive(true);
+                MainWindow.gameObject.SetActive(!MainWindow.gameObject.activeSelf);
             }
         }
 
