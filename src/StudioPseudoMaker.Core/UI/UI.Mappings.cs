@@ -216,6 +216,7 @@ namespace PseudoMaker.UI
                 case SubCategory.FaceEyebrows: return "Eyebrows";
                 case SubCategory.FaceEyes: return "Eyes";
                 case SubCategory.FaceIris: return "Iris";
+                case SubCategory.FaceEyeOverlays: return "Eye Overlays";
                 case SubCategory.FaceNose: return "Nose";
                 case SubCategory.FaceMouth: return "Mouth";
                 case SubCategory.FaceMakeup: return "Makeup";
@@ -594,6 +595,7 @@ namespace PseudoMaker.UI
         FaceEyebrows,
         FaceEyes,
         FaceIris,
+        FaceEyeOverlays,
         FaceNose,
         FaceMouth,
         FaceMakeup,

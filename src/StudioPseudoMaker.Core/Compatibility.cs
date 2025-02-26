@@ -390,6 +390,7 @@ namespace PseudoMaker
                 {
                     var controller = GetController();
                     var overlay = controller.SetOverlayTex(tex, texType);
+                    if (IsPerCoord()) controller.OverlayStorage.CopyToOtherCoords();
                 }
             }
 
