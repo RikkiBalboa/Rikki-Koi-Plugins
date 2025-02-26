@@ -46,6 +46,9 @@ namespace PseudoMaker.UI
                 }
                 else
                 {
+                    if (Category == Category.Body && subCategory == SubCategory.BodySkinOverlays && !Compatibility.HasSkinOverlayPlugin) continue;
+                    if (Category == Category.Body && subCategory == SubCategory.FaceEyeOverlays && !Compatibility.HasSkinOverlayPlugin) continue;
+
                     var go = Instantiate(toggleTemplate);
                     go.transform.SetParent(PanelScroll.content, false);
 

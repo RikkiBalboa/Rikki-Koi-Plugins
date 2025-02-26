@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using ActionGame.Chara.Mover;
+using BepInEx;
 using BepInEx.Bootstrap;
 using ChaCustom;
 using KKAPI.Utilities;
@@ -10,16 +11,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using static HandCtrl;
 
 namespace PseudoMaker
 {
     public static class Compatibility
     {
+        private static FileSystemWatcher textureChangeWatcher;
+
         public static CvsAccessory CvsAccessory;
         public static int SelectedSlotNr;
 
         public static bool HasA12 { get; private set; }
         public static bool HasClothesOverlayPlugin { get; private set; }
+        public static bool HasSkinOverlayPlugin { get; private set; }
         public static Version OverlayPluginVersion { get; private set; }
         public static bool HasC2A { get; private set; }
 
@@ -36,6 +41,10 @@ namespace PseudoMaker
                     case "ClothesToAccessories": HasC2A = true; break;
                     case "KCOX": 
                         HasClothesOverlayPlugin = true;
+                        OverlayPluginVersion = plugin.Info.Metadata.Version;
+                        break;
+                    case "KSOX":
+                        HasSkinOverlayPlugin = true;
                         OverlayPluginVersion = plugin.Info.Metadata.Version;
                         break;
                 }
@@ -175,7 +184,7 @@ namespace PseudoMaker
             }
             public static bool HasResizeSupport()
             {
-                return OverlayPluginVersion >= new Version("6.2");
+                return OverlayPluginVersion >= new Version("6.3");
             }
 
             public static void DumpOriginalTexture(string clothesId)
@@ -190,7 +199,7 @@ namespace PseudoMaker
                 }
             }
 
-            public static KoiClothesOverlayController GetController()
+            private static KoiClothesOverlayController GetController()
             {
                 return PseudoMaker.selectedCharacter.gameObject.GetComponent<KoiClothesOverlayController>();
             }
@@ -270,6 +279,21 @@ namespace PseudoMaker
                     // Game crashes if the texture creation is not done on the main thread
                     // No amount of try catching will save it from that crash
                     ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+
+                    textureChangeWatcher?.Dispose();
+                    var directory = Path.GetDirectoryName(texPath);
+                    if (directory != null)
+                    {
+                        textureChangeWatcher = new FileSystemWatcher(directory, Path.GetFileName(texPath));
+                        textureChangeWatcher.Changed += (sender, args) =>
+                        {
+                            if (File.Exists(texPath))
+                                ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+                        };
+                        textureChangeWatcher.Deleted += (sender, args) => textureChangeWatcher?.Dispose();
+                        textureChangeWatcher.Error += (sender, args) => textureChangeWatcher?.Dispose();
+                        textureChangeWatcher.EnableRaisingEvents = true;
+                    }
                 }
 
                 void ReadTex(string texturePath)
@@ -303,6 +327,7 @@ namespace PseudoMaker
                     t.Texture = tex;
                     ctrl.RefreshTexture(texType);
                     onDone?.Invoke();
+                    if (tex == null) textureChangeWatcher?.Dispose();
                 }
             }
 
@@ -342,7 +367,7 @@ namespace PseudoMaker
                 }
             }
 
-            public static ClothesTexData OverlayGetOverlayTex(string clothesId)
+            public static ClothesTexData GetOverlayTex(string clothesId)
             {
                 if (!HasClothesOverlayPlugin) return null;
 
@@ -350,6 +375,166 @@ namespace PseudoMaker
                 ClothesTexData GetOverlay()
                 {
                     return GetController()?.GetOverlayTex(clothesId, false);
+                }
+            }
+        }
+
+        public static class SkinOverlays
+        {
+            private static KoiSkinOverlayController GetController()
+            {
+                return PseudoMaker.selectedCharacter.gameObject.GetComponent<KoiSkinOverlayController>();
+            }
+
+            public static Texture2D GetTex(TexType texType)
+            {
+                if (!HasSkinOverlayPlugin) return null;
+
+                return GetTex();
+                Texture2D GetTex()
+                {
+                    var ctrl = GetController();
+                    var overlayTexture = ctrl.OverlayStorage.GetTexture(texType);
+                    return overlayTexture;
+                }
+            }
+
+            public static void SetTexAndUpdate(byte[] tex, TexType texType)
+            {
+                if (!HasSkinOverlayPlugin) return;
+
+                SetTex();
+                void SetTex()
+                {
+                    var controller = GetController();
+                    var overlay = controller.SetOverlayTex(tex, texType);
+                    if (IsPerCoord()) controller.OverlayStorage.CopyToOtherCoords();
+                    if (tex == null) textureChangeWatcher?.Dispose();
+                }
+            }
+
+            public static void ExportOverlay(TexType texType)
+            {
+                if (!HasSkinOverlayPlugin) return;
+
+                Export();
+                void Export()
+                {
+                    try
+                    {
+                        var tex = GetTex(texType);
+                        if (tex == null) return;
+                        // Fix being unable to save some texture formats with EncodeToPNG
+                        var texCopy = tex.ToTexture2D();
+                        var bytes = texCopy.EncodeToPNG();
+
+                        if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+                        var filename = GetUniqueTexDumpFilename(texType.ToString());
+                        File.WriteAllBytes(filename, bytes);
+                        Util.OpenFileInExplorer(filename);
+
+
+                        PseudoMaker.Destroy(texCopy);
+                    }
+                    catch (Exception ex)
+                    {
+                        PseudoMaker.Logger.LogMessage("Failed to export texture - " + ex.Message);
+                    }
+                }
+            }
+
+            private static string GetUniqueTexDumpFilename(string dumpType)
+            {
+                if (!HasSkinOverlayPlugin) return "Unknown";
+
+                return GetName();
+                string GetName()
+                {
+                    var path = KoiSkinOverlayMgr.OverlayDirectory;
+                    Directory.CreateDirectory(path);
+                    var file = Path.Combine(path, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{dumpType}.png");
+                    // Normalize just in case for open in explorer call later
+                    file = Path.GetFullPath(file);
+                    return file;
+                }
+            }
+
+            public static void ImportOverlay(TexType texType, Action onDone = null)
+            {
+                if (!HasSkinOverlayPlugin) return;
+
+                OpenFile();
+                void OpenFile()
+                {
+                    OpenFileDialog.Show(
+                        strings => OnFileAccept(strings),
+                        "Open overlay image",
+                        KoiSkinOverlayGui.GetDefaultLoadDir(),
+                        KoiSkinOverlayGui.FileFilter,
+                        KoiSkinOverlayGui.FileExt
+                    );
+                }
+
+                void OnFileAccept(string[] strings)
+                {
+                    if (strings == null || strings.Length == 0) return;
+
+                    var texPath = strings[0];
+                    if (string.IsNullOrEmpty(texPath)) return;
+
+                    // Game crashes if the texture creation is not done on the main thread
+                    // No amount of try catching will save it from that crash
+                    ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+
+                    textureChangeWatcher?.Dispose();
+                    var directory = Path.GetDirectoryName(texPath);
+                    if (directory != null)
+                    {
+                        textureChangeWatcher = new FileSystemWatcher(directory, Path.GetFileName(texPath));
+                        textureChangeWatcher.Changed += (sender, args) =>
+                        {
+                            if (File.Exists(texPath))
+                                ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+                        };
+                        textureChangeWatcher.Deleted += (sender, args) => textureChangeWatcher?.Dispose();
+                        textureChangeWatcher.Error += (sender, args) => textureChangeWatcher?.Dispose();
+                        textureChangeWatcher.EnableRaisingEvents = true;
+                    }
+                }
+
+                void ReadTex(string texturePath)
+                {
+                    try
+                    {
+                        var bytes = File.ReadAllBytes(texturePath);
+                        var tex = Util.TextureFromBytes(bytes, TextureFormat.ARGB32);
+                        if (tex != null)
+                            SetTexAndUpdate(tex.EncodeToPNG(), texType);
+                        onDone?.Invoke();
+
+                    }
+                    catch (Exception ex) { }
+                }
+            }
+
+            public static bool IsPerCoord()
+            {
+                if (!HasSkinOverlayPlugin) return false;
+
+                return PerCoord();
+                bool PerCoord()
+                {
+                    return GetController().OverlayStorage.IsPerCoord();
+                }
+            }
+            public static void SetPerCoord(bool value)
+            {
+                if (!HasSkinOverlayPlugin) return;
+
+                PerCoord();
+                void PerCoord()
+                {
+                    if (!value) GetController().OverlayStorage.CopyToOtherCoords();
                 }
             }
         }

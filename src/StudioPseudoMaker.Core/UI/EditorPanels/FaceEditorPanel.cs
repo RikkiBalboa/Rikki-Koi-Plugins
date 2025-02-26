@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KoiSkinOverlayX;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -78,7 +79,8 @@ namespace PseudoMaker.UI
                 AddDropdownRow(
                     "Eye To Edit",
                     new List<string> { "Both Eyes", "Left Eye", "Right Eye" },
-                    () => eyesToEdit, idx => { 
+                    () => eyesToEdit,
+                    idx => { 
                         eyesToEdit = idx;
                         foreach (var kvp in lists)
                         {
@@ -151,6 +153,36 @@ namespace PseudoMaker.UI
                 AddPickerRow(SelectKindType.Lip);
                 AddColorRow("Lip Color", ColorType.LipColor);
                 AddSplitter();
+            }
+            else if (SubCategory == SubCategory.FaceEyeOverlays)
+            {
+                if (!Compatibility.HasSkinOverlayPlugin) return;
+
+                AddRows();
+                void AddRows()
+                {
+                    AddToggleRow(
+                        "Use Different Overlays Per Outfit",
+                        value => Compatibility.SkinOverlays.SetPerCoord(value),
+                        () => Compatibility.SkinOverlays.IsPerCoord()
+                    );
+
+                    AddDropdownRow(
+                        "Eyes To Edit",
+                        new List<string> { "Both", "Left", "Right" },
+                        () => eyesToEdit,
+                        idx =>
+                        {
+                            eyesToEdit = idx;
+                            RefreshPanel();
+                        }
+                    );
+
+                    AddSkinOverlayRow(TexType.EyeOver, "Iris Overlay Texture", onDone: RefreshPanel, getEyeToEdit: () => eyesToEdit);
+                    AddSkinOverlayRow(TexType.EyeUnder, "Iris Underlay Texture", onDone: RefreshPanel, getEyeToEdit: () => eyesToEdit);
+                    AddSkinOverlayRow(TexType.EyelineUnder, "Eyelashes Override Texture", onDone: RefreshPanel);
+                    AddSkinOverlayRow(TexType.EyebrowUnder, "Eyebrows Override Texture", onDone: RefreshPanel);
+                }
             }
         }
 

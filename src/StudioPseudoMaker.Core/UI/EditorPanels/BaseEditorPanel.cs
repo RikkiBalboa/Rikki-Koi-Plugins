@@ -1,4 +1,5 @@
 ﻿using ADV.Commands.Object;
+using KoiSkinOverlayX;
 using PseudoMaker.UI;
 using System;
 using System.Collections.Generic;
@@ -379,6 +380,51 @@ namespace PseudoMaker.UI
             copyComponent.GetFromName = getFromName;
             copyComponent.GetToName = getToName;
             return copyComponent;
+        }
+
+        public void AddSkinOverlayRow(TexType texType, string title, Action onDone = null, Func<int> getEyeToEdit = null)
+        {
+            AddSplitter();
+
+            AddHeader(title);
+
+            AddImageRow(
+                () => Compatibility.SkinOverlays.GetTex(GetTexType(true))
+            );
+
+            AddButtonRow(
+                "Load New Texture",
+                () => Compatibility.SkinOverlays.ImportOverlay(GetTexType(false), onDone)
+            );
+
+            AddButtonRow(
+                "Clear Texture",
+                () => {
+                    Compatibility.SkinOverlays.SetTexAndUpdate(null, GetTexType(false));
+                    onDone?.Invoke();
+                }
+            );
+
+            AddButtonRow(
+                "Export Current Texture",
+                () => Compatibility.SkinOverlays.ExportOverlay(GetTexType(true))
+            );
+
+
+            TexType GetTexType(bool cantBeBoth)
+            {
+                if (getEyeToEdit != null)
+                {
+                    var eyeToEdit = getEyeToEdit();
+                    if (eyeToEdit == 0)
+                        return cantBeBoth ? texType + 2 : texType; // left or both
+                    if (eyeToEdit == 1)
+                        return texType + 2; // left
+                    if (eyeToEdit == 2)
+                        return texType + 4; // right
+                }
+                return texType;
+            }
         }
     }
 }

@@ -28,13 +28,14 @@ namespace PseudoMaker
     [BepInDependency("starstorm.aaaaaaaaaaaa", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KCOX", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("KSOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.1.0.1";
+        public const string PluginVersion = "1.1.0.2";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 

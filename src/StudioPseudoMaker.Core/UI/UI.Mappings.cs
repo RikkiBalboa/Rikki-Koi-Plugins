@@ -208,6 +208,7 @@ namespace PseudoMaker.UI
                 case SubCategory.BodyLegs: return "Legs";
                 case SubCategory.BodyPubicHair: return "Pubic Hair";
                 case SubCategory.BodySuntan:return "Suntan";
+                case SubCategory.BodySkinOverlays: return "Skin Overlays";
                 case SubCategory.FaceGeneral: return "General";
                 case SubCategory.FaceEars: return "Ears";
                 case SubCategory.FaceJaw: return "Jaw";
@@ -215,6 +216,7 @@ namespace PseudoMaker.UI
                 case SubCategory.FaceEyebrows: return "Eyebrows";
                 case SubCategory.FaceEyes: return "Eyes";
                 case SubCategory.FaceIris: return "Iris";
+                case SubCategory.FaceEyeOverlays: return "Eye Overlays";
                 case SubCategory.FaceNose: return "Nose";
                 case SubCategory.FaceMouth: return "Mouth";
                 case SubCategory.FaceMakeup: return "Makeup";
@@ -585,6 +587,7 @@ namespace PseudoMaker.UI
         BodyLegs,
         BodyPubicHair,
         BodySuntan,
+        BodySkinOverlays,
         FaceGeneral,
         FaceEars,
         FaceJaw,
@@ -592,6 +595,7 @@ namespace PseudoMaker.UI
         FaceEyebrows,
         FaceEyes,
         FaceIris,
+        FaceEyeOverlays,
         FaceNose,
         FaceMouth,
         FaceMakeup,

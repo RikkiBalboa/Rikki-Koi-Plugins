@@ -196,10 +196,10 @@ namespace PseudoMaker.UI
                     );
                 }
 
-                mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Overlay texture", true));
+                mainOverlayObjects.AddRange(AddClothingOverlayRow(clothesId, "Overlay texture", true));
 
                 if (ClothesOverlays.HasColorMaskSupport())
-                    mainOverlayObjects.AddRange(AddOverlayRow(clothesId, "Color mask", true, KoiClothesOverlayController.MakeColormaskId(clothesId)));
+                    mainOverlayObjects.AddRange(AddClothingOverlayRow(clothesId, "Color mask", true, KoiClothesOverlayController.MakeColormaskId(clothesId)));
 
                 if (SubCategory == SubCategory.ClothingTop)
                 {
@@ -207,19 +207,19 @@ namespace PseudoMaker.UI
                     for (int i = 0; i < 3; i++)
                     {
                         var subClothesId = ClothesOverlays.GetClothesId(i, true);
-                        multiOverlayObjects.AddRange(AddOverlayRow(subClothesId, $"Overlay textures (Piece {i + 1})", true));
+                        multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Overlay textures (Piece {i + 1})", true));
 
                         if (ClothesOverlays.HasColorMaskSupport())
-                            multiOverlayObjects.AddRange(AddOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
+                            multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
                     }
                 }
 
 
                 if (SubCategory == SubCategory.ClothingTop)
                 {
-                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.BodyMask.ToString(), "Body alpha mask", true));
-                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.InnerMask.ToString(), "Inner clothes alpha mask", true));
-                    otherOverlayObjects.AddRange(AddOverlayRow(MaskKind.BraMask.ToString(), "Bra alpha mask", true));
+                    otherOverlayObjects.AddRange(AddClothingOverlayRow(MaskKind.BodyMask.ToString(), "Body alpha mask", true));
+                    otherOverlayObjects.AddRange(AddClothingOverlayRow(MaskKind.InnerMask.ToString(), "Inner clothes alpha mask", true));
+                    otherOverlayObjects.AddRange(AddClothingOverlayRow(MaskKind.BraMask.ToString(), "Bra alpha mask", true));
                 }
 
                 mainOverlayObjects.ForEach(o => o.SetActive(false));
@@ -228,7 +228,7 @@ namespace PseudoMaker.UI
             }
         }
 
-        private List<GameObject> AddOverlayRow(string clothesId, string title, bool addSeperator = false, string colormaskId = null)
+        public List<GameObject> AddClothingOverlayRow(string clothesId, string title, bool addSeperator = false, string colormaskId = null)
         {
             if (!Compatibility.HasClothesOverlayPlugin) return new List<GameObject>();
 
@@ -255,7 +255,7 @@ namespace PseudoMaker.UI
                     ).gameObject
                 );
                 objectList.Add(
-                    AddImageRow(() => ClothesOverlays.OverlayGetOverlayTex(clothesId)?._texture).gameObject
+                    AddImageRow(() => ClothesOverlays.GetOverlayTex(clothesId)?._texture).gameObject
                 );
 
                 if (!isMask && !isColorMask)
@@ -263,7 +263,7 @@ namespace PseudoMaker.UI
                         AddToggleRow(
                             "Hide base texture",
                             value => ClothesOverlays.SetTextureOverride(clothesId, value),
-                            () => ClothesOverlays.OverlayGetOverlayTex(clothesId)?.Override ?? false
+                            () => ClothesOverlays.GetOverlayTex(clothesId)?.Override ?? false
                         ).gameObject
                     );
 

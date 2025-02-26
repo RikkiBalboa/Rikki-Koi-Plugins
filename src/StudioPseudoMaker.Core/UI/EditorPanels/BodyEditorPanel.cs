@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using KoiSkinOverlayX;
+using System.Linq;
 using static ChaCustom.CustomSelectKind;
 
 namespace PseudoMaker.UI
@@ -57,6 +58,30 @@ namespace PseudoMaker.UI
                 AddPickerRow(SelectKindType.Sunburn);
                 AddColorRow("Suntan Color", ColorType.SkinTan);
             }
+            else if (SubCategory == SubCategory.BodySkinOverlays) {
+                if (!Compatibility.HasSkinOverlayPlugin) return;
+
+                AddRows();
+                void AddRows()
+                {
+                    AddToggleRow(
+                        "Use Different Overlays Per Outfit",
+                        value => Compatibility.SkinOverlays.SetPerCoord(value),
+                        ()  => Compatibility.SkinOverlays.IsPerCoord()
+                    );
+
+                    AddSkinOverlayRow(TexType.FaceOver, "Face Overlay Texture", onDone: RefreshPanel);
+                    AddSkinOverlayRow(TexType.BodyOver, "Body Overlay Texture", onDone: RefreshPanel);
+                    AddSkinOverlayRow(TexType.FaceUnder, "Face Underlay Texture", onDone: RefreshPanel);
+                    AddSkinOverlayRow(TexType.BodyUnder, "Body Underlay Texture", onDone: RefreshPanel);
+                }
+            }
+        }
+
+        private void RefreshPanel()
+        {
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
         }
     }
 }
