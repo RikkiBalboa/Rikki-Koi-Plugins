@@ -17,6 +17,8 @@ namespace PseudoMaker
 {
     public static class Compatibility
     {
+        private static FileSystemWatcher textureChangeWatcher;
+
         public static CvsAccessory CvsAccessory;
         public static int SelectedSlotNr;
 
@@ -277,6 +279,21 @@ namespace PseudoMaker
                     // Game crashes if the texture creation is not done on the main thread
                     // No amount of try catching will save it from that crash
                     ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+
+                    textureChangeWatcher?.Dispose();
+                    var directory = Path.GetDirectoryName(texPath);
+                    if (directory != null)
+                    {
+                        textureChangeWatcher = new FileSystemWatcher(directory, Path.GetFileName(texPath));
+                        textureChangeWatcher.Changed += (sender, args) =>
+                        {
+                            if (File.Exists(texPath))
+                                ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+                        };
+                        textureChangeWatcher.Deleted += (sender, args) => textureChangeWatcher?.Dispose();
+                        textureChangeWatcher.Error += (sender, args) => textureChangeWatcher?.Dispose();
+                        textureChangeWatcher.EnableRaisingEvents = true;
+                    }
                 }
 
                 void ReadTex(string texturePath)
@@ -310,6 +327,7 @@ namespace PseudoMaker
                     t.Texture = tex;
                     ctrl.RefreshTexture(texType);
                     onDone?.Invoke();
+                    if (tex == null) textureChangeWatcher?.Dispose();
                 }
             }
 
@@ -391,6 +409,7 @@ namespace PseudoMaker
                     var controller = GetController();
                     var overlay = controller.SetOverlayTex(tex, texType);
                     if (IsPerCoord()) controller.OverlayStorage.CopyToOtherCoords();
+                    if (tex == null) textureChangeWatcher?.Dispose();
                 }
             }
 
@@ -466,6 +485,21 @@ namespace PseudoMaker
                     // Game crashes if the texture creation is not done on the main thread
                     // No amount of try catching will save it from that crash
                     ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+
+                    textureChangeWatcher?.Dispose();
+                    var directory = Path.GetDirectoryName(texPath);
+                    if (directory != null)
+                    {
+                        textureChangeWatcher = new FileSystemWatcher(directory, Path.GetFileName(texPath));
+                        textureChangeWatcher.Changed += (sender, args) =>
+                        {
+                            if (File.Exists(texPath))
+                                ThreadingHelper.Instance.StartSyncInvoke(() => ReadTex(texPath));
+                        };
+                        textureChangeWatcher.Deleted += (sender, args) => textureChangeWatcher?.Dispose();
+                        textureChangeWatcher.Error += (sender, args) => textureChangeWatcher?.Dispose();
+                        textureChangeWatcher.EnableRaisingEvents = true;
+                    }
                 }
 
                 void ReadTex(string texturePath)
