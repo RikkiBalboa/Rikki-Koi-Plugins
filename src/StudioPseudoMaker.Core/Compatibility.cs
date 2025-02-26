@@ -182,7 +182,7 @@ namespace PseudoMaker
             }
             public static bool HasResizeSupport()
             {
-                return OverlayPluginVersion >= new Version("6.2");
+                return OverlayPluginVersion >= new Version("6.3");
             }
 
             public static void DumpOriginalTexture(string clothesId)
