@@ -2564,10 +2564,10 @@ namespace PseudoMaker
     {
         [Key("OutfitSlot")]
         public int OutfitSlot { get; set; }
-        [Key("ColorNr")]
-        public int ColorNr { get; set; }
         [Key("SlotNr")]
         public int SlotNr { get; set; }
+        [Key("ColorNr")]
+        public int ColorNr { get; set; }
         [Key("CorrectNr")]
         public int CorrectNr { get; set; }
         [Key("AccessoryTransform")]
@@ -2575,14 +2575,14 @@ namespace PseudoMaker
         [Key("TransformVector")]
         public TransformVector TransformVector { get; set; }
 
-        public AccessoryStorageKey(int outfitSlot, int slotNr, int colorNr, int correctNr = 0, AccessoryTransform accessoryTransform = AccessoryTransform.None, TransformVector vector = TransformVector.None)
+        public AccessoryStorageKey(int outfitSlot, int slotNr, int colorNr, int correctNr = 0, AccessoryTransform accessoryTransform = AccessoryTransform.None, TransformVector transformVector = TransformVector.None)
         {
             OutfitSlot = outfitSlot;
             ColorNr = colorNr;
             SlotNr = slotNr;
             CorrectNr = correctNr;
             AccessoryTransform = accessoryTransform;
-            TransformVector = vector;
+            TransformVector = transformVector;
         }
 
         public static bool operator ==(AccessoryStorageKey c1, AccessoryStorageKey c2)
