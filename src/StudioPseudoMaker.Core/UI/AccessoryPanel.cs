@@ -18,6 +18,7 @@ namespace PseudoMaker.UI
         private Toggle addSlotToggle;
 
         private static List<Toggle> toggles = new List<Toggle>();
+        private bool initialized = false;
 
 
         private void Awake()
@@ -87,7 +88,11 @@ namespace PseudoMaker.UI
                 var text = toggles[i].gameObject.GetComponentInChildren<Text>(true);
                 SetAccessoryName(i, text);
                 // Select the first accessory by default, instead of the transfer panel
-                if (i == 0) toggles[i].isOn = true;
+                if (i == 0 && !initialized)
+                {
+                    toggles[i].isOn = true;
+                    initialized = true;
+                }
                 processedAccessories++;
             }
 
