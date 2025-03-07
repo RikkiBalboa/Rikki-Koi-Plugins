@@ -28,6 +28,7 @@ namespace PseudoMaker
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KCOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KSOX", BepInDependency.DependencyFlags.SoftDependency)]
+    // Only needed to add the timeline compatibility if it doesn't exist.
     [BepInDependency("com.rikkibalboa.bepinex.studioSkinColorControl", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
@@ -35,7 +36,7 @@ namespace PseudoMaker
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.1.4";
+        public const string PluginVersion = "1.1.4.1";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
