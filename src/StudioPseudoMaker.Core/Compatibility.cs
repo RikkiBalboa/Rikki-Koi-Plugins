@@ -25,6 +25,7 @@ namespace PseudoMaker
         public static bool HasA12 { get; private set; }
         public static bool HasClothesOverlayPlugin { get; private set; }
         public static bool HasSkinOverlayPlugin { get; private set; }
+        public static bool HasStudioSkinColor {  get; private set; }
         public static Version OverlayPluginVersion { get; private set; }
         public static bool HasC2A { get; private set; }
 
@@ -39,6 +40,7 @@ namespace PseudoMaker
                 {
                     case "starstorm.aaaaaaaaaaaa": HasA12 = true; break;
                     case "ClothesToAccessories": HasC2A = true; break;
+                    case "com.rikkibalboa.bepinex.studioSkinColorControl": HasStudioSkinColor = true; break;
                     case "KCOX": 
                         HasClothesOverlayPlugin = true;
                         OverlayPluginVersion = plugin.Info.Metadata.Version;

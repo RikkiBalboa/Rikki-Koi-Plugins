@@ -117,7 +117,152 @@ namespace PseudoMaker
         {
             if (!TimelineCompatibility.IsTimelineAvailable()) return;
 
-            #region Legacy StudioSkinColor
+            AddStudioSkinColorTimeline();
+
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                owner: "Pseudo Maker",
+                id: "BodyShapeValue",
+                name: "Body Shape Value",
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.UpdateBodyShapeValue(parameter.Type, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
+                interpolateAfter: null,
+                getValue: (oci, parameter) => parameter.Controller.GetCurrentBodyValue(parameter.Type),
+                readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedBodyShape),
+                isCompatibleWithTarget: oci => oci is OCIChar && SelectedBodyShape != null,
+                readParameterFromXml: SimpleParameter<int>.ReadXml,
+                writeParameterToXml: (oci, writer, parameter) => parameter.WriteToXml(writer),
+                checkIntegrity: null,
+                getFinalName: (currentName, oci, parameter) => UIMappings.ShapeBodyValueMap.First(x => x.Value.ContainsKey(parameter.Type)).Value[parameter.Type]
+            );
+
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                owner: "Pseudo Maker",
+                id: "FaceShapeValue",
+                name: "Face Shape Value",
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.UpdateFaceShapeValue(parameter.Type, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
+                interpolateAfter: null,
+                getValue: (oci, parameter) => parameter.Controller.GetCurrentFaceValue(parameter.Type),
+                readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedFaceShape),
+                isCompatibleWithTarget: oci => oci is OCIChar && SelectedFaceShape != null,
+                readParameterFromXml: SimpleParameter<int>.ReadXml,
+                writeParameterToXml: (oci, writer, parameter) => parameter.WriteToXml(writer),
+                checkIntegrity: null,
+                getFinalName: (currentName, oci, parameter) => UIMappings.ShapeFaceValueMap.First(x => x.Value.ContainsKey(parameter.Type)).Value[parameter.Type]
+            );
+
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                owner: "Pseudo Maker",
+                id: "FloatValue",
+                name: "Float Value",
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetFloatTypeValue(Mathf.LerpUnclamped(leftValue, rightValue, factor), parameter.Type),
+                interpolateAfter: null,
+                getValue: (oci, parameter) => parameter.Controller.GetFloatValue(parameter.Type),
+                readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                getParameter: oci => new SimpleParameter<FloatType>(oci, (FloatType)SelectedFloatType),
+                isCompatibleWithTarget: oci => oci is OCIChar && SelectedFloatType != null,
+                readParameterFromXml: SimpleParameter<FloatType>.ReadXml,
+                writeParameterToXml: (oci, writer, parameter) => parameter.WriteToXml(writer),
+                checkIntegrity: null,
+                getFinalName: (currentName, oci, parameter) => AddSpacesToSentence(parameter.Type)
+            );
+
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                owner: "Pseudo Maker",
+                id: "ColorValue",
+                name: "Color Value",
+                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.UpdateColorProperty(Color.LerpUnclamped(leftValue, rightValue, factor), parameter.Type),
+                interpolateAfter: null,
+                getValue: (oci, parameter) => parameter.Controller.GetColorPropertyValue(parameter.Type),
+                readValueFromXml: (parameter, node) => ReadColorXML(node),
+                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                getParameter: oci => new SimpleParameter<ColorType>(oci, (ColorType)SelectedColorType),
+                isCompatibleWithTarget: oci => oci is OCIChar && SelectedColorType != null,
+                readParameterFromXml: SimpleParameter<ColorType>.ReadXml,
+                writeParameterToXml: (oci, writer, parameter) => parameter.WriteToXml(writer),
+                checkIntegrity: null,
+                getFinalName: (currentName, oci, parameter) => AddSpacesToSentence(parameter.Type)
+            );
+
+            for (int i = 0; i < 3; i++)
+            {
+                var _i = i;
+                TimelineCompatibility.AddInterpolableModelDynamic(
+                    owner: "Pseudo Maker",
+                    id: $"ClothingColor{i}",
+                    name: $"Clothing Color {i + 1}",
+                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetClothingColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor), -1),
+                    interpolateAfter: null,
+                    getValue: (oci, parameter) => parameter.Controller.GetClothingColor(parameter.Type, _i, -1),
+                    readValueFromXml: (parameter, node) => ReadColorXML(node),
+                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
+                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
+                    checkIntegrity: null,
+                    getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Color {_i + 1}"
+                );
+                TimelineCompatibility.AddInterpolableModelDynamic(
+                    owner: "Pseudo Maker",
+                    id: $"ClothingPatternColor{i}",
+                    name: $"Clothing Pattern Color {i + 1}",
+                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetClothingColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor), -1, true),
+                    interpolateAfter: null,
+                    getValue: (oci, parameter) => parameter.Controller.GetClothingColor(parameter.Type, _i, -1, true),
+                    readValueFromXml: (parameter, node) => ReadColorXML(node),
+                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
+                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
+                    checkIntegrity: null,
+                    getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Color {_i + 1}"
+                );
+#if KK
+                foreach (var patternValue in Enum.GetValues(typeof(PatternValue)).Cast<PatternValue>().Skip(3))
+#else
+                foreach (var patternValue in Enum.GetValues(typeof(PatternValue)).Cast<PatternValue>())
+#endif
+                    TimelineCompatibility.AddInterpolableModelDynamic(
+                        owner: "Pseudo Maker",
+                        id: $"ClothingPattern{i}{patternValue}",
+                        name: $"Clothing Pattern {i + 1} {patternValue}",
+                        interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetPatternValue(parameter.Type, _i, patternValue, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
+                        interpolateAfter: null,
+                        getValue: (oci, parameter) => parameter.Controller.GetPatternValue(parameter.Type, _i, patternValue),
+                        readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                        writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                        getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
+                        isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
+                        checkIntegrity: null,
+                        getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Pattern {_i + 1} {patternValue}"
+                    );
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                var _i = i;
+                TimelineCompatibility.AddInterpolableModelDynamic(
+                    owner: "Pseudo Maker",
+                    id: $"AccessoryColor{i}",
+                    name: $"Accessory Color {i + 1}",
+                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetAccessoryColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor)),
+                    interpolateAfter: null,
+                    getValue: (oci, parameter) => parameter.Controller.GetAccessoryColor(parameter.Type, _i),
+                    readValueFromXml: (parameter, node) => ReadColorXML(node),
+                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
+                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedAccessory),
+                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedAccessory != null,
+                    checkIntegrity: null,
+                    getFinalName: (currentName, oci, parameter) => $"Accessory Slot {parameter.Type} Color {_i + 1}"
+                );
+            }
+        }
+
+        private static void AddStudioSkinColorTimeline()
+        {
+            if (Compatibility.HasStudioSkinColor) return;
+
             TimelineCompatibility.AddInterpolableModelDynamic(
                 owner: "StudioSkinColor",
                 id: "mainSkin",
@@ -259,146 +404,6 @@ namespace PseudoMaker
                 isCompatibleWithTarget: oci => oci is OCIChar,
                 checkIntegrity: null
             );
-            #endregion
-
-            TimelineCompatibility.AddInterpolableModelDynamic(
-                owner: "Pseudo Maker",
-                id: "BodyShapeValue",
-                name: "Body Shape Value",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.UpdateBodyShapeValue(parameter.Type, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
-                interpolateAfter: null,
-                getValue: (oci, parameter) => parameter.Controller.GetCurrentBodyValue(parameter.Type),
-                readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
-                writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
-                getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedBodyShape),
-                isCompatibleWithTarget: oci => oci is OCIChar && SelectedBodyShape != null,
-                readParameterFromXml: SimpleParameter<int>.ReadXml,
-                writeParameterToXml: (oci, writer, parameter) => parameter.WriteToXml(writer),
-                checkIntegrity: null,
-                getFinalName: (currentName, oci, parameter) => UIMappings.ShapeBodyValueMap.First(x => x.Value.ContainsKey(parameter.Type)).Value[parameter.Type]
-            );
-
-            TimelineCompatibility.AddInterpolableModelDynamic(
-                owner: "Pseudo Maker",
-                id: "FaceShapeValue",
-                name: "Face Shape Value",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.UpdateFaceShapeValue(parameter.Type, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
-                interpolateAfter: null,
-                getValue: (oci, parameter) => parameter.Controller.GetCurrentFaceValue(parameter.Type),
-                readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
-                writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
-                getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedFaceShape),
-                isCompatibleWithTarget: oci => oci is OCIChar && SelectedFaceShape != null,
-                readParameterFromXml: SimpleParameter<int>.ReadXml,
-                writeParameterToXml: (oci, writer, parameter) => parameter.WriteToXml(writer),
-                checkIntegrity: null,
-                getFinalName: (currentName, oci, parameter) => UIMappings.ShapeFaceValueMap.First(x => x.Value.ContainsKey(parameter.Type)).Value[parameter.Type]
-            );
-
-            TimelineCompatibility.AddInterpolableModelDynamic(
-                owner: "Pseudo Maker",
-                id: "FloatValue",
-                name: "Float Value",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetFloatTypeValue(Mathf.LerpUnclamped(leftValue, rightValue, factor), parameter.Type),
-                interpolateAfter: null,
-                getValue: (oci, parameter) => parameter.Controller.GetFloatValue(parameter.Type),
-                readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
-                writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
-                getParameter: oci => new SimpleParameter<FloatType>(oci, (FloatType)SelectedFloatType),
-                isCompatibleWithTarget: oci => oci is OCIChar && SelectedFloatType != null,
-                readParameterFromXml: SimpleParameter<FloatType>.ReadXml,
-                writeParameterToXml: (oci, writer, parameter) => parameter.WriteToXml(writer),
-                checkIntegrity: null,
-                getFinalName: (currentName, oci, parameter) => AddSpacesToSentence(parameter.Type)
-            );
-
-            TimelineCompatibility.AddInterpolableModelDynamic(
-                owner: "Pseudo Maker",
-                id: "ColorValue",
-                name: "Color Value",
-                interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.UpdateColorProperty(Color.LerpUnclamped(leftValue, rightValue, factor), parameter.Type),
-                interpolateAfter: null,
-                getValue: (oci, parameter) => parameter.Controller.GetColorPropertyValue(parameter.Type),
-                readValueFromXml: (parameter, node) => ReadColorXML(node),
-                writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
-                getParameter: oci => new SimpleParameter<ColorType>(oci, (ColorType)SelectedColorType),
-                isCompatibleWithTarget: oci => oci is OCIChar && SelectedColorType != null,
-                readParameterFromXml: SimpleParameter<ColorType>.ReadXml,
-                writeParameterToXml: (oci, writer, parameter) => parameter.WriteToXml(writer),
-                checkIntegrity: null,
-                getFinalName: (currentName, oci, parameter) => AddSpacesToSentence(parameter.Type)
-            );
-
-            for (int i = 0; i < 3; i++)
-            {
-                var _i = i;
-                TimelineCompatibility.AddInterpolableModelDynamic(
-                    owner: "Pseudo Maker",
-                    id: $"ClothingColor{i}",
-                    name: $"Clothing Color {i + 1}",
-                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetClothingColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor), -1),
-                    interpolateAfter: null,
-                    getValue: (oci, parameter) => parameter.Controller.GetClothingColor(parameter.Type, _i, -1),
-                    readValueFromXml: (parameter, node) => ReadColorXML(node),
-                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
-                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
-                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
-                    checkIntegrity: null,
-                    getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Color {_i + 1}"
-                );
-                TimelineCompatibility.AddInterpolableModelDynamic(
-                    owner: "Pseudo Maker",
-                    id: $"ClothingPatternColor{i}",
-                    name: $"Clothing Pattern Color {i + 1}",
-                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetClothingColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor), -1, true),
-                    interpolateAfter: null,
-                    getValue: (oci, parameter) => parameter.Controller.GetClothingColor(parameter.Type, _i, -1, true),
-                    readValueFromXml: (parameter, node) => ReadColorXML(node),
-                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
-                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
-                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
-                    checkIntegrity: null,
-                    getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Color {_i + 1}"
-                );
-#if KK
-                foreach (var patternValue in Enum.GetValues(typeof(PatternValue)).Cast<PatternValue>().Skip(3))
-#else
-                foreach (var patternValue in Enum.GetValues(typeof(PatternValue)).Cast<PatternValue>())
-#endif
-                    TimelineCompatibility.AddInterpolableModelDynamic(
-                        owner: "Pseudo Maker",
-                        id: $"ClothingPattern{i}{patternValue}",
-                        name: $"Clothing Pattern {i + 1} {patternValue}",
-                        interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetPatternValue(parameter.Type, _i, patternValue, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
-                        interpolateAfter: null,
-                        getValue: (oci, parameter) => parameter.Controller.GetPatternValue(parameter.Type, _i, patternValue),
-                        readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
-                        writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
-                        getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedClothingKind),
-                        isCompatibleWithTarget: oci => oci is OCIChar && SelectedClothingKind != null,
-                        checkIntegrity: null,
-                        getFinalName: (currentName, oci, parameter) => $"{PseudoMakerCharaController.GetClothingTypeNameByKind(parameter.Type)} Pattern {_i + 1} {patternValue}"
-                    );
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                var _i = i;
-                TimelineCompatibility.AddInterpolableModelDynamic(
-                    owner: "Pseudo Maker",
-                    id: $"AccessoryColor{i}",
-                    name: $"Accessory Color {i + 1}",
-                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.Controller.SetAccessoryColor(parameter.Type, _i, Color.LerpUnclamped(leftValue, rightValue, factor)),
-                    interpolateAfter: null,
-                    getValue: (oci, parameter) => parameter.Controller.GetAccessoryColor(parameter.Type, _i),
-                    readValueFromXml: (parameter, node) => ReadColorXML(node),
-                    writeValueToXml: (parameter, writer, value) => WriteColorXML(writer, value),
-                    getParameter: oci => new SimpleParameter<int>(oci, (int)SelectedAccessory),
-                    isCompatibleWithTarget: oci => oci is OCIChar && SelectedAccessory != null,
-                    checkIntegrity: null,
-                    getFinalName: (currentName, oci, parameter) => $"Accessory Slot {parameter.Type} Color {_i + 1}"
-                );
-            }
         }
 
         private static void WriteColorXML(XmlTextWriter writer, Color value)
