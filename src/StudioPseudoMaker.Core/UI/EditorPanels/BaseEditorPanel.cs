@@ -32,39 +32,47 @@ namespace PseudoMaker.UI
 
         protected void Awake()
         {
-            scrollRect = GetComponentInChildren<ScrollRect>();
+            try
+            {
+                scrollRect = GetComponentInChildren<ScrollRect>();
 
-            SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
-            InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
-            ButtonGroupTemplate = scrollRect.content.Find("ButtonGroupTemplate").gameObject;
-            ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
-            PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
-            DropdownTemplate= scrollRect.content.Find("DropdownTemplate").gameObject;
-            ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
-            ToggleOptionTemplate = scrollRect.content.Find("ToggleOptionTemplate").gameObject;
-            SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
-            HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
-            TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
-            AccessoryCopyRowTemplace = scrollRect.content.Find("AccessoryCopyRowTemplate").gameObject;
-            ClothingCopyRowTemplace = scrollRect.content.Find("ClothingCopyRowTemplate").gameObject;
-            ImageRowTemplate = scrollRect.content.Find("ImageRowTemplate").gameObject;
+                SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
+                InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
+                ButtonGroupTemplate = scrollRect.content.Find("ButtonGroupTemplate").gameObject;
+                ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
+                PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
+                DropdownTemplate = scrollRect.content.Find("DropdownTemplate").gameObject;
+                ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
+                ToggleOptionTemplate = scrollRect.content.Find("ToggleOptionTemplate").gameObject;
+                SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
+                HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
+                TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
+                AccessoryCopyRowTemplace = scrollRect.content.Find("AccessoryCopyRowTemplate").gameObject;
+                ClothingCopyRowTemplace = scrollRect.content.Find("ClothingCopyRowTemplate").gameObject;
+                ImageRowTemplate = scrollRect.content.Find("ImageRowTemplate").gameObject;
 
-            Initialize();
+                Initialize();
 
-            Destroy(SliderTemplate);
-            Destroy(InputTemplate);
-            Destroy(ButtonGroupTemplate);
-            Destroy(ColorTemplate);
-            Destroy(PickerTemplate);
-            Destroy(DropdownTemplate);
-            Destroy(ClothingOptionTemplate);
-            Destroy(ToggleOptionTemplate);
-            Destroy(SplitterTemplate);
-            Destroy(HeaderTemplate);
-            Destroy(TransferRowTemplate);
-            Destroy(AccessoryCopyRowTemplace);
-            Destroy(ClothingCopyRowTemplace);
-            Destroy(ImageRowTemplate);
+                Destroy(SliderTemplate);
+                Destroy(InputTemplate);
+                Destroy(ButtonGroupTemplate);
+                Destroy(ColorTemplate);
+                Destroy(PickerTemplate);
+                Destroy(DropdownTemplate);
+                Destroy(ClothingOptionTemplate);
+                Destroy(ToggleOptionTemplate);
+                Destroy(SplitterTemplate);
+                Destroy(HeaderTemplate);
+                Destroy(TransferRowTemplate);
+                Destroy(AccessoryCopyRowTemplace);
+                Destroy(ClothingCopyRowTemplace);
+                Destroy(ImageRowTemplate);
+            }
+            catch (Exception e)
+            {
+                PseudoMaker.Logger.LogMessage("An error occured during the initialization of the Pseudo Maker UI. This shouldn't happen and is a bug. Check the logs for more details");
+                PseudoMaker.Logger.LogError(e);
+            }
         }
 
         public static T CreatePanel<T>(SubCategory subCategory) where T : BaseEditorPanel
