@@ -161,7 +161,6 @@ namespace PseudoMaker.UI
             BuildOverlayRows();
             void BuildOverlayRows()
             {
-
                 overlaySplitter = AddSplitter();
 
                 overlayHeader = AddHeaderToggle("Overlays ▶", value => {
@@ -184,22 +183,12 @@ namespace PseudoMaker.UI
                 var clothesId = ClothesOverlays.GetClothesId(SubCategory);
 
                 if (ClothesOverlays.HasResizeSupport())
-                {
-                    var options = new List<string> { "original", "512", "1024", "2048", "4096", "8192" };
-                    otherOverlayObjects.Add(
-                        AddDropdownRow(
-                            "Max Texture Size Override",
-                            options,
-                            () => options.FindIndex(x => x == ClothesOverlays.GetSizeOverride(clothesId).ToString()),
-                            index => ClothesOverlays.SetSizeOverride(clothesId, index == 0 ? 0 : (int)(Math.Pow(2f, index - 1) * 512))
-                        ).gameObject
-                    );
-                }
+                    AddResizeDropdown();
 
                 mainOverlayObjects.AddRange(AddClothingOverlayRow(clothesId, "Overlay texture", true));
 
                 if (ClothesOverlays.HasColorMaskSupport())
-                    mainOverlayObjects.AddRange(AddClothingOverlayRow(clothesId, "Color mask", true, KoiClothesOverlayController.MakeColormaskId(clothesId)));
+                    AddColorMaskRow("Color mask", clothesId);
 
                 if (SubCategory == SubCategory.ClothingTop)
                 {
@@ -210,7 +199,8 @@ namespace PseudoMaker.UI
                         multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Overlay textures (Piece {i + 1})", true));
 
                         if (ClothesOverlays.HasColorMaskSupport())
-                            multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
+                            AddColorMaskRow($"Color mask (Piece {i + 1})", subClothesId);
+                            //multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
                     }
                 }
 
@@ -225,6 +215,24 @@ namespace PseudoMaker.UI
                 mainOverlayObjects.ForEach(o => o.SetActive(false));
                 multiOverlayObjects?.ForEach(o => o.SetActive(false));
                 otherOverlayObjects.ForEach(o => o.SetActive(false));
+
+                void AddResizeDropdown()
+                {
+                    var options = new List<string> { "original", "512", "1024", "2048", "4096", "8192" };
+                    otherOverlayObjects.Add(
+                        AddDropdownRow(
+                            "Max Texture Size Override",
+                            options,
+                            () => options.FindIndex(x => x == ClothesOverlays.GetSizeOverride(clothesId).ToString()),
+                            index => ClothesOverlays.SetSizeOverride(clothesId, index == 0 ? 0 : (int)(Math.Pow(2f, index - 1) * 512))
+                        ).gameObject
+                    );
+                }
+
+                void AddColorMaskRow(string name,string _clothesId)
+                {
+                    mainOverlayObjects.AddRange(AddClothingOverlayRow(_clothesId, name, true, KoiClothesOverlayController.MakeColormaskId(_clothesId)));
+                }
             }
         }
 

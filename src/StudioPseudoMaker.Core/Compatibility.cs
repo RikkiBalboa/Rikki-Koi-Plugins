@@ -206,13 +206,36 @@ namespace PseudoMaker
 
             public static string GetClothesId(bool main, int kind)
             {
-                if (!HasClothesOverlayPlugin) return "";
-
-                return GetClothedId();
-                string GetClothedId()
-                {
-                    return KoiClothesOverlayController.GetClothesIdFromKind(main, kind);
-                }
+                if (main)
+                    switch (kind)
+                    {
+                        case 0: return "ct_clothesTop";
+                        case 1: return "ct_clothesBot";
+#if KK || KKS || EC
+                        case 2: return "ct_bra";
+                        case 3: return "ct_shorts";
+#else
+                    case 2: return "ct_inner_t";
+                    case 3: return "ct_inner_b";
+#endif
+                        case 4: return "ct_gloves";
+                        case 5: return "ct_panst";
+                        case 6: return "ct_socks";
+#if KK || KKS
+                        case 7: return "ct_shoes_inner";
+                        case 8: return "ct_shoes_outer";
+#else
+                    case 7: return "ct_shoes";
+#endif
+                    }
+                else
+                    switch (kind)
+                    {
+                        case 0: return "ct_top_parts_A";
+                        case 1: return "ct_top_parts_B";
+                        case 2: return "ct_top_parts_C";
+                    }
+                return null;
             }
 
             public static string GetClothesId(SubCategory subCategory, bool isMultiPart = false)
