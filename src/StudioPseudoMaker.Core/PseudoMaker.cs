@@ -28,6 +28,7 @@ namespace PseudoMaker
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KCOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KSOX", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.rikkibalboa.bepinex.studioSkinColorControl", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
     {
