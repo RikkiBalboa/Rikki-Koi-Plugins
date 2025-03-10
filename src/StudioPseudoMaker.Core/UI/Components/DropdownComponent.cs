@@ -55,6 +55,7 @@ namespace PseudoMaker.UI
 
         public void SetDropdownOptions(IEnumerable<string> options)
         {
+            shouldNotUpdate = true;
             if (dropdown == null) return;
             var _options = new List<Dropdown.OptionData>();
             foreach (var option in options)
@@ -62,6 +63,7 @@ namespace PseudoMaker.UI
             dropdown.options = _options;
             dropdown.value = GetCurrentValue();
             dropdown.RefreshShownValue();
+            shouldNotUpdate = false;
         }
 
         // Shamelessly stolen from https://github.com/IllusionMods/KK_Plugins/blob/master/src/MaterialEditor.Base/UI/UI.DropdownFilter.cs
