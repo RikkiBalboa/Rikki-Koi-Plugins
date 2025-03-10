@@ -520,7 +520,7 @@ namespace PseudoMaker.UI
         {
             switch (category)
             {
-                case ChaListDefine.CategoryNo.mt_underhair: return "Uknown";
+                case ChaListDefine.CategoryNo.mt_underhair: return "Unknown";
                 case ChaListDefine.CategoryNo.ao_none: return "None";
                 case ChaListDefine.CategoryNo.ao_hair: return "Hair";
                 case ChaListDefine.CategoryNo.ao_head: return "Head";
