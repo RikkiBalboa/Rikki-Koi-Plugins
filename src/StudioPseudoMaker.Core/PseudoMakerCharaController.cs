@@ -1,7 +1,6 @@
 ﻿using ChaCustom;
 using ExtensibleSaveFormat;
 using HarmonyLib;
-using KK_Plugins.MaterialEditor;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -908,16 +907,33 @@ namespace PseudoMaker
 
         public bool GetHideOpt(int kind, int option)
         {
+            if (kind == 2)
+                return Clothes.hideBraOpt[option];
+            else if (kind == 3)
+                return Clothes.hideShortsOpt[option];
             return selectedCharacter.nowCoordinate.clothes.parts[kind].hideOpt[option];
         }
 
         public void SetHideOpt(int kind, int option, bool value)
         {
-            if (Clothes.parts[kind].hideOpt[option] != value)
-            {
-                Clothes.parts[kind].hideOpt[option] = value;
-                SetClothes.parts[kind].hideOpt[option] = value;
-            }
+            if (kind == 2)
+                if (Clothes.hideBraOpt[option] != value)
+                {
+                    Clothes.hideBraOpt[option] = value;
+                    SetClothes.hideBraOpt[option] = value;
+                }
+            if (kind == 3)
+                if (Clothes.hideShortsOpt[option] != value)
+                {
+                    Clothes.hideShortsOpt[option] = value;
+                    SetClothes.hideShortsOpt[option] = value;
+                }
+            else
+                if (Clothes.parts[kind].hideOpt[option] != value)
+                {
+                    Clothes.parts[kind].hideOpt[option] = value;
+                    SetClothes.parts[kind].hideOpt[option] = value;
+                }
         }
 
         public int GetClothingUsesOptParts (ChaClothesComponent component)
