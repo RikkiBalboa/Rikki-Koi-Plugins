@@ -38,6 +38,11 @@ namespace PseudoMaker.UI
                 AddSplitter();
                 AddColorRow("Nail Color", ColorType.NailColor);
                 AddSliderRow("Nail Gloss", FloatType.NailGloss);
+
+                AddSplitter();
+                AddButtonRow("Material Editor (body)", () => Compatibility.MaterialEditor.SetItemType("body"));
+                AddButtonRow("Material Editor (face)", () => Compatibility.MaterialEditor.SetItemType("face"));
+                AddButtonRow("Material Editor (all)", () => Compatibility.MaterialEditor.SetItemType(""));
             }
             else if (SubCategory == SubCategory.BodyChest)
             {

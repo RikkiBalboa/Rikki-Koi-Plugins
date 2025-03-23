@@ -33,6 +33,8 @@ namespace PseudoMaker.UI
         private GameObject noShake;
 
         private GameObject a12UpdateButton;
+        private GameObject MaterialEditorSplitter;
+        private GameObject MaterialEditorButton;
 
         private bool isRefreshing = false;
         private bool[] showingGuideObject = { false, false };
@@ -185,6 +187,12 @@ namespace PseudoMaker.UI
             transform2GuideObjectToggle = AddToggleRow(1);
             #endregion
 
+            MaterialEditorSplitter = AddSplitter();
+            MaterialEditorButton = AddButtonRow(
+                "Material Editor",
+                () => Compatibility.MaterialEditor.SetItemType(options => options.FindIndex(o => o.text.StartsWith($"Accessory {currentAccessoryNr + 1:00} ")))
+            ).gameObject;
+
             #region HairAccessoryCustomizer
             hairAccessorySplitter = AddSplitter();
 
@@ -264,6 +272,8 @@ namespace PseudoMaker.UI
                 hairLengthSlider.SetActive(isHair && hasLength);
 
                 a12UpdateButton.SetActive(PseudoMaker.selectedCharacterController.GetCurrentAccessoryParent(currentAccessoryNr) == "A12");
+                MaterialEditorSplitter.SetActive(true);
+                MaterialEditorButton.SetActive(true);
             }
             else
             {
@@ -282,6 +292,8 @@ namespace PseudoMaker.UI
                 a12UpdateButton.SetActive(false);
                 parentDropdown.gameObject.SetActive(false);
                 noShake.SetActive(false);
+                MaterialEditorSplitter.SetActive(false);
+                MaterialEditorButton.SetActive(false);
             }
             TimelineCompatibilityHelper.SelectedAccessory = currentAccessoryNr;
         }

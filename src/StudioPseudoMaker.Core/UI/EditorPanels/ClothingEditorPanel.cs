@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static PseudoMaker.PseudoMaker;
 using static PseudoMaker.PseudoMakerCharaController;
 using static PseudoMaker.Compatibility;
-using System.Collections;
 
 namespace PseudoMaker.UI
 {
@@ -25,6 +23,8 @@ namespace PseudoMaker.UI
         private GameObject clothingOptionObject;
         private List<GameObject> pushupBraGameObjects;
         private List<GameObject> pushupTopGameObjects;
+        private GameObject MaterialEditorSplitter;
+        private GameObject MaterialEditorButton;
         private GameObject overlaySplitter;
         private Toggle overlayHeader;
         private List<GameObject> otherOverlayObjects;
@@ -114,6 +114,8 @@ namespace PseudoMaker.UI
                     clothingOptionObject?.SetActive(true);
                 else clothingOptionObject?.SetActive(false);
 
+                MaterialEditorSplitter.SetActive(current != 0);
+                MaterialEditorButton.SetActive(current != 0);
                 overlaySplitter?.SetActive(current != 0);
                 overlayHeader?.gameObject.SetActive(current != 0);
                 otherOverlayObjects?.ForEach(o => o.SetActive(current != 0 && overlayHeader.isOn));
@@ -150,6 +152,12 @@ namespace PseudoMaker.UI
 
             for (int i = 0; i < 3; i++)
                 AddPatternRows(SubCategory, selectKindType, i);
+
+            MaterialEditorSplitter = AddSplitter();
+            MaterialEditorButton = AddButtonRow(
+                "Material Editor",
+                () => MaterialEditor.SetItemType(options => options.FindIndex(o => o.text == $"Clothes {MaterialEditor.ClothesIndexToString(SubCategoryToKind(SubCategory))}"))
+            ).gameObject;
 
             AddOverlayRows();
         }

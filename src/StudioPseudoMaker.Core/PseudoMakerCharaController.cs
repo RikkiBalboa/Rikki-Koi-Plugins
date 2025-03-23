@@ -716,12 +716,7 @@ namespace PseudoMaker
         public void SetClothingColor(int kind, int colorNr, Color color, int slotNr = -1, bool isPattern = false)
         {
             InitBaseCustomTextureClothesIfNotExists(kind);
-            var MEController = MaterialEditorPlugin.GetCharaController(ChaControl);
-            if (MEController != null)
-            {
-                MEController.CustomClothesOverride = true;
-                MEController.RefreshClothesMainTex();
-            }
+            Compatibility.MaterialEditor.RefreshClothesMaintex();
 
             var clothingColors = new ClothingStorageKey(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern);
             if (!OriginalClothingColors.Any(x => x.Key.Compare(CurrentOutfitSlot, kind, colorNr, slotNr, isPattern)))

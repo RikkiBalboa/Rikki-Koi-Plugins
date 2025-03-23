@@ -1,7 +1,7 @@
-﻿using ActionGame.Chara.Mover;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Bootstrap;
 using ChaCustom;
+using KK_Plugins.MaterialEditor;
 using KKAPI.Utilities;
 using KoiClothesOverlayX;
 using KoiSkinOverlayX;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using static HandCtrl;
+using UnityEngine.UI;
 
 namespace PseudoMaker
 {
@@ -560,6 +560,40 @@ namespace PseudoMaker
                 void PerCoord()
                 {
                     if (!value) GetController().OverlayStorage.CopyToOtherCoords();
+                }
+            }
+        }
+
+        public static class MaterialEditor
+        {
+            public static void SetItemType(Func<List<Dropdown.OptionData>, int> findOption)
+            {
+                MEStudio.Instance.PopulateItemTypeDropdown(PseudoMaker.selectedCharacter);
+                var option = findOption(MEStudio.ItemTypeDropDown.options);
+                MEStudio.ItemTypeDropDown.value = option;
+                MEStudio.Instance.ChangeItemType(option, PseudoMaker.selectedCharacter);
+            }
+
+            public static void SetItemType(string filter)
+            {
+                MEStudio.Instance.PopulateItemTypeDropdown(PseudoMaker.selectedCharacter);
+                MEStudio.ItemTypeDropDown.value = 0;
+                MEStudio.Instance.ChangeItemType(0, PseudoMaker.selectedCharacter);
+                MEStudio.Instance.PopulateList(PseudoMaker.selectedCharacter.gameObject, new ObjectData(0, MaterialEditorCharaController.ObjectType.Character), filter);
+            }
+
+            public static string ClothesIndexToString(int kind)
+            {
+                return MEStudio.Instance.ClothesIndexToString(kind);
+            }
+
+            public static void RefreshClothesMaintex()
+            {
+                var MEController = MaterialEditorPlugin.GetCharaController(PseudoMaker.selectedCharacter);
+                if (MEController != null)
+                {
+                    MEController.CustomClothesOverride = true;
+                    MEController.RefreshClothesMainTex();
                 }
             }
         }

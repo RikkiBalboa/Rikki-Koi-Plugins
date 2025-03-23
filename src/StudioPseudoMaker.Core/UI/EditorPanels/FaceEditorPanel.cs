@@ -38,7 +38,11 @@ namespace PseudoMaker.UI
                 AddPickerRow(SelectKindType.HeadType);
                 AddPickerRow(SelectKindType.FaceDetail);
                 AddSliderRow("Face Overlay Strength", FloatType.FaceOverlayStrength);
+
                 AddSplitter();
+                AddButtonRow("Material Editor (body)", () => Compatibility.MaterialEditor.SetItemType("body"));
+                AddButtonRow("Material Editor (face)", () => Compatibility.MaterialEditor.SetItemType("face"));
+                AddButtonRow("Material Editor (all)", () => Compatibility.MaterialEditor.SetItemType(""));
             }
             else if (SubCategory == SubCategory.FaceCheeks)
             {
@@ -48,12 +52,18 @@ namespace PseudoMaker.UI
             {
                 AddPickerRow(SelectKindType.Eyebrow);
                 AddColorRow("Eyebrow Color", ColorType.EyebrowColor);
+
+                AddSplitter();
+                AddButtonRow("Material Editor", () => Compatibility.MaterialEditor.SetItemType("mayuge"));
             }
             else if (SubCategory == SubCategory.FaceEyes)
             {
                 AddPickerRow(SelectKindType.EyelineUp);
                 AddPickerRow(SelectKindType.EyelineDown);
                 AddColorRow("Eyeliner Color", ColorType.EyelineColor);
+
+                AddSplitter();
+                AddButtonRow("Material Editor", () => Compatibility.MaterialEditor.SetItemType("eyeline,hitomi,sirome"));
             }
             else if (SubCategory == SubCategory.FaceIris)
             {
@@ -134,6 +144,9 @@ namespace PseudoMaker.UI
             else if (SubCategory == SubCategory.FaceNose)
             {
                 AddPickerRow(SelectKindType.Nose);
+
+                AddSplitter();
+                AddButtonRow("Material Editor", () => Compatibility.MaterialEditor.SetItemType("nose"));
             }
             else if (SubCategory == SubCategory.FaceMouth)
             {
@@ -141,6 +154,9 @@ namespace PseudoMaker.UI
                 AddColorRow("Lip Line Color", ColorType.LipLineColor);
                 AddSplitter();
                 AddSliderRow("Lip Gloss", FloatType.LipGloss);
+
+                AddSplitter();
+                AddButtonRow("Material Editor", () => Compatibility.MaterialEditor.SetItemType("tang,tooth,canine"));
             }
             else if (SubCategory == SubCategory.FaceMakeup)
             {
