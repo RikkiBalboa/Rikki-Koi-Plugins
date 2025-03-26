@@ -11,10 +11,12 @@ using KKAPI.Utilities;
 using PseudoMaker.UI;
 using Studio;
 using System.Linq;
+using KK_Plugins;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using ConfigurationManagerAttributes = KKAPI.Utilities.ConfigurationManagerAttributes;
 
 namespace PseudoMaker
 {
@@ -23,6 +25,7 @@ namespace PseudoMaker
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(KK_Plugins.Pushup.GUID)]
     [BepInDependency(KKABMX.Core.KKABMX_Core.GUID)]
+    [BepInDependency(ClothingUnlocker.GUID)]
     [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
     [BepInDependency("starstorm.aaaaaaaaaaaa", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]

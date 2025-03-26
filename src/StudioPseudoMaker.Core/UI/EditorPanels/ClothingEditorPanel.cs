@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KK_Plugins;
 using UnityEngine;
 using UnityEngine.UI;
 using static PseudoMaker.PseudoMakerCharaController;
@@ -59,6 +60,7 @@ namespace PseudoMaker.UI
             base.Initialize();
 
             if (SubCategory == SubCategory.ClothingPushup) InitializePushup();
+            if (SubCategory == SubCategory.ClothingSettings) InitializeSettings();
             //else if (SubCategory == SubCategory.ClothingCopy) return;
             else InitializeClothing();
         }
@@ -307,6 +309,32 @@ namespace PseudoMaker.UI
                 return objectList;
             }
         }
+        
+        private void InitializeSettings()
+        {
+            AddToggleRow(
+                "Clothing Unlock",
+                value =>
+                {
+                    ClothingUnlockerController unlockCtrl = PseudoMaker.selectedCharacter.GetComponent<ClothingUnlockerController>();
+                    if (unlockCtrl)
+                    {
+                        // change clothing unlock
+                        unlockCtrl.SetClothingUnlocked(!unlockCtrl.GetClothingUnlocked());
+                        PseudoMaker.selectedCharacter.ChangeClothes(true);
+                    }
+                },
+                () =>
+                {
+                    ClothingUnlockerController unlockCtrl = PseudoMaker.selectedCharacter.GetComponent<ClothingUnlockerController>();
+                    if (unlockCtrl)
+                    {
+                        return unlockCtrl.GetClothingUnlocked();
+                    }
+                    return false;
+                }
+            );
+        }
 
         private void InitializePushup()
         {
@@ -384,7 +412,7 @@ namespace PseudoMaker.UI
                     AddSliderRow("Nipple Width", useBra, PushupValue.AdvancedNippleWidth).gameObject,
                     AddSliderRow("Nipple Depth", useBra, PushupValue.AdvancedNippleDepth).gameObject,
                 };
-                if (useBra) 
+                if (useBra)
                 {
                     AddSplitter();
                     pushupBraGameObjects = list;
