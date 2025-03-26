@@ -183,9 +183,9 @@ namespace PseudoMaker
             transform.anchoredPosition = original.anchoredPosition + new Vector2(-48f * 3 + 4, 44f);
 
             Texture2D texture2D = new Texture2D(32, 32);
-            texture2D.LoadImage(ResourceUtils.GetEmbeddedResource("StudioIcon.png"));
+            texture2D.LoadImage(ResourceUtils.GetEmbeddedResource("PseudoMakerButtonSmol.png"));
             Image icon = PseudoMakerStudioButton.targetGraphic as Image;
-            icon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 32, 32), new Vector2(40, 40));
+            icon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 160, 160), new Vector2(40, 40));
             icon.color = Color.white;
 
             PseudoMakerStudioButton.onClick = new Button.ButtonClickedEvent();
