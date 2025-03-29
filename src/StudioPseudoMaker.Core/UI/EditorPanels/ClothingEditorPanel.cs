@@ -314,25 +314,8 @@ namespace PseudoMaker.UI
         {
             AddToggleRow(
                 "Clothing Unlock",
-                value =>
-                {
-                    ClothingUnlockerController unlockCtrl = PseudoMaker.selectedCharacter.GetComponent<ClothingUnlockerController>();
-                    if (unlockCtrl)
-                    {
-                        // change clothing unlock
-                        unlockCtrl.SetClothingUnlocked(!unlockCtrl.GetClothingUnlocked());
-                        PseudoMaker.selectedCharacter.ChangeClothes(true);
-                    }
-                },
-                () =>
-                {
-                    ClothingUnlockerController unlockCtrl = PseudoMaker.selectedCharacter.GetComponent<ClothingUnlockerController>();
-                    if (unlockCtrl)
-                    {
-                        return unlockCtrl.GetClothingUnlocked();
-                    }
-                    return false;
-                }
+                ClothingUnlock.ChangeClothingUnlockState,
+                ClothingUnlock.GetClothingUnlockState
             );
         }
 
