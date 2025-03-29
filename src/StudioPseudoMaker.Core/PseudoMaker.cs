@@ -6,12 +6,9 @@ using KK_Plugins.MaterialEditor;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Studio;
-using KKAPI.Studio.UI;
 using KKAPI.Utilities;
 using PseudoMaker.UI;
-using Studio;
 using System.Linq;
-using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -23,6 +20,7 @@ namespace PseudoMaker
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(KK_Plugins.Pushup.GUID)]
     [BepInDependency(KKABMX.Core.KKABMX_Core.GUID)]
+    [BepInDependency(KK_Plugins.ClothingUnlocker.GUID)]
     [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
     [BepInDependency("starstorm.aaaaaaaaaaaa", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
@@ -183,9 +181,9 @@ namespace PseudoMaker
             transform.anchoredPosition = original.anchoredPosition + new Vector2(-48f * 3 + 4, 44f);
 
             Texture2D texture2D = new Texture2D(32, 32);
-            texture2D.LoadImage(ResourceUtils.GetEmbeddedResource("StudioIcon.png"));
+            texture2D.LoadImage(ResourceUtils.GetEmbeddedResource("PseudoMakerButtonSmol.png"));
             Image icon = PseudoMakerStudioButton.targetGraphic as Image;
-            icon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 32, 32), new Vector2(40, 40));
+            icon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 160, 160), new Vector2(40, 40));
             icon.color = Color.white;
 
             PseudoMakerStudioButton.onClick = new Button.ButtonClickedEvent();

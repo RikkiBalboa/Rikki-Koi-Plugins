@@ -65,6 +65,10 @@
       <HintPath>..\..\packages\IllusionModdingAPI.KKSAPI.1.38.0\lib\net46\KKSAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KKS_ClothingUnlocker">
+      <HintPath>..\..\lib\KKS_ClothingUnlocker.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KKS_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.19.5.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>

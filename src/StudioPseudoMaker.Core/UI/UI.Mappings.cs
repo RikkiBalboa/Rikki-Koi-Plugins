@@ -235,6 +235,7 @@ namespace PseudoMaker.UI
                 case SubCategory.ClothingShoes: return "Shoes";
 #endif
                 //case SubCategory.ClothingCopy: return "Copy";
+                case SubCategory.ClothingSettings: return "Settings";
                 case SubCategory.HairBack: return "Back";
                 case SubCategory.HairFront: return "Front";
                 case SubCategory.HairSide: return "Side";
@@ -614,6 +615,7 @@ namespace PseudoMaker.UI
         ClothingShoes,
 #endif
         //ClothingCopy,
+        ClothingSettings,
         HairBack,
         HairFront,
         HairSide,
