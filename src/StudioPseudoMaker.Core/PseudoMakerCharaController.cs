@@ -10,6 +10,8 @@ using PseudoMaker.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KKAPI.Studio;
+using Studio;
 using UnityEngine;
 using static KK_Plugins.Pushup;
 using static PseudoMaker.PseudoMaker;
@@ -1551,6 +1553,15 @@ namespace PseudoMaker
             SetSelectKind(type, info.index);
         }
 
+        private void SkirtFkFix()
+        {
+            OCIChar ociChar = PseudoMaker.selectedCharacter.GetOCIChar();
+            if (ociChar != null)
+            {
+                ociChar.skirtDynamic = AddObjectFemale.GetSkirtDynamic(ociChar.charInfo.objClothes);
+                ociChar.ActiveFK(OIBoneInfo.BoneGroup.Skirt, ociChar.oiCharInfo.activeFK[6], ociChar.oiCharInfo.activeFK[6]);
+            }
+        }
         public void SetSelectKind(SelectKindType type, int id)
         {
             void UpdateClothesPattern(int kind, int pattern)
@@ -1759,36 +1770,43 @@ namespace PseudoMaker
                     Clothes.parts[0].id = id;
                     SetClothes.parts[0].id = id;
                     selectedCharacter.ChangeClothesTop(id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    SkirtFkFix();
                     break;
                 case SelectKindType.CosSailor01:
                     Clothes.subPartsId[0] = id;
                     SetClothes.subPartsId[0] = id;
                     selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    SkirtFkFix();
                     break;
                 case SelectKindType.CosSailor02:
                     Clothes.subPartsId[1] = id;
                     SetClothes.subPartsId[1] = id;
                     selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    SkirtFkFix();
                     break;
                 case SelectKindType.CosSailor03:
                     Clothes.subPartsId[2] = id;
                     SetClothes.subPartsId[2] = id;
                     selectedCharacter.ChangeClothesTop(1, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    SkirtFkFix();
                     break;
                 case SelectKindType.CosJacket01:
                     Clothes.subPartsId[0] = id;
                     SetClothes.subPartsId[0] = id;
                     selectedCharacter.ChangeClothesTop(2, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    SkirtFkFix();
                     break;
                 case SelectKindType.CosJacket02:
                     Clothes.subPartsId[1] = id;
                     SetClothes.subPartsId[1] = id;
                     selectedCharacter.ChangeClothesTop(2, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    SkirtFkFix();
                     break;
                 case SelectKindType.CosJacket03:
                     Clothes.subPartsId[2] = id;
                     SetClothes.subPartsId[2] = id;
                     selectedCharacter.ChangeClothesTop(2, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    SkirtFkFix();
                     break;
                 case SelectKindType.CosTopPtn01:
                     UpdateClothesPattern(0, 0);
@@ -1809,6 +1827,7 @@ namespace PseudoMaker
                     Clothes.parts[1].id = id;
                     SetClothes.parts[1].id = id;
                     selectedCharacter.ChangeClothesBot(id, true);
+                    SkirtFkFix();
                     break;
                 case SelectKindType.CosBotPtn01:
                     UpdateClothesPattern(1, 0);

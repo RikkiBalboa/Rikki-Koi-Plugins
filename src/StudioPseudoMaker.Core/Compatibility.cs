@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using KK_Plugins;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -595,6 +596,24 @@ namespace PseudoMaker
                     MEController.CustomClothesOverride = true;
                     MEController.RefreshClothesMainTex();
                 }
+            }
+        }
+
+        public static class ClothingUnlock
+        {
+            public static bool GetClothingUnlockState()
+            {
+                ClothingUnlockerController unlockCtrl = PseudoMaker.selectedCharacter.GetComponent<ClothingUnlockerController>();
+                return unlockCtrl && unlockCtrl.GetClothingUnlocked();
+            }
+
+            public static void ChangeClothingUnlockState(bool value)
+            {
+                ClothingUnlockerController unlockCtrl = PseudoMaker.selectedCharacter.GetComponent<ClothingUnlockerController>();
+                if (!unlockCtrl) return;
+                // change clothing unlock
+                unlockCtrl.SetClothingUnlocked(value);
+                PseudoMaker.selectedCharacter.ChangeClothes(true);
             }
         }
     }

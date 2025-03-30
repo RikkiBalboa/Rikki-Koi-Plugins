@@ -362,7 +362,8 @@ namespace PseudoMaker.UI
             Sprite thumb = null;
             if (thumbTex)
             {
-                thumb = Sprite.Create(thumbTex, new Rect(0f, 0f, thumbTex.width, thumbTex.height), new Vector2(0.5f, 0.5f));
+                thumb = Sprite.Create(thumbTex, new Rect(0f, 0f, thumbTex.width, thumbTex.height),
+                    new Vector2(0.5f, 0.5f), 16f, 0, SpriteMeshType.FullRect);
             }
 
             return thumb;
