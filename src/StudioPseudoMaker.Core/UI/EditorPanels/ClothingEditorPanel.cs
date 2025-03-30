@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using KK_Plugins;
 using UnityEngine;
 using UnityEngine.UI;
 using static PseudoMaker.PseudoMakerCharaController;
@@ -312,11 +311,16 @@ namespace PseudoMaker.UI
         
         private void InitializeSettings()
         {
+            AddHeader("Clothing Unlock");
             AddToggleRow(
                 "Clothing Unlock",
                 ClothingUnlock.ChangeClothingUnlockState,
                 ClothingUnlock.GetClothingUnlockState
             );
+            AddSplitter();
+            AddHeader("More Outfits");
+            AddButtonGroupRow(new Dictionary<string, Action> {{"Add Outfit", MoreOutfits.AddOufitSlot}, {"Remove Last Outfit", MoreOutfits.RemoveOutfitSlot}});
+            // TODO: Text input for renaming 
         }
 
         private void InitializePushup()

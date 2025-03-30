@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using KK_Plugins;
+using KKAPI.Studio;
+using Studio;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -614,6 +616,27 @@ namespace PseudoMaker
                 // change clothing unlock
                 unlockCtrl.SetClothingUnlocked(value);
                 PseudoMaker.selectedCharacter.ChangeClothes(true);
+            }
+        }
+
+        public static class MoreOutfits
+        {
+            private static MPCharCtrl MpCharCtrl => UnityEngine.Object.FindObjectOfType<MPCharCtrl>();
+
+            public static void AddOufitSlot()
+            {
+                KK_Plugins.MoreOutfits.Plugin.AddCoordinateSlot(PseudoMaker.selectedCharacter);
+                MpCharCtrl?.UpdateInfo();
+                PseudoMaker.Logger.LogMessage("Outfit added successfully!");
+            }
+
+            public static void RemoveOutfitSlot()
+            {
+                int outfitCount = PseudoMaker.selectedCharacter.GetOCIChar().charInfo.chaFile.coordinate.Length;
+                MpCharCtrl?.stateInfo.OnClickCosType(outfitCount - 2);
+                KK_Plugins.MoreOutfits.Plugin.RemoveCoordinateSlot(PseudoMaker.selectedCharacter);
+                MpCharCtrl?.UpdateInfo();
+                PseudoMaker.Logger.LogMessage("Outfit removed successfully!");
             }
         }
     }
