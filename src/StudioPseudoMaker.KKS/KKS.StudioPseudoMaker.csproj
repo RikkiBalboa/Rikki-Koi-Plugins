@@ -61,17 +61,15 @@
       <HintPath>..\..\lib\KKSABMX.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KKSAPI, Version=1.38.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.KKSAPI.1.38.0\lib\net46\KKSAPI.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="KKSAPI, Version=1.42.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.KKSAPI.1.42.2\lib\net46\KKSAPI.dll</HintPath>
     </Reference>
     <Reference Include="KKS_ClothingUnlocker">
       <HintPath>..\..\lib\KKS_ClothingUnlocker.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.19.5.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.20.1.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
     </Reference>
     <Reference Include="KKS_HairAccessoryCustomizer">
       <HintPath>..\..\lib\KKS_HairAccessoryCustomizer.dll</HintPath>
@@ -98,8 +96,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sideloader.KoikatsuSunshine.20.0.0\lib\net46\KKS_Sideloader.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\packages\Sideloader.KoikatsuSunshine.20.1.0\lib\net46\KKS_Sideloader.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.Serialization, Version=2.1.13.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\lib\net46\Sirenix.Serialization.dll</HintPath>
@@ -187,6 +184,7 @@
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.18.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
