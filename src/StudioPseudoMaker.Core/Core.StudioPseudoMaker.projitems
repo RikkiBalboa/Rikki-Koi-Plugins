@@ -55,7 +55,4 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\PseudoMakerButtonSmol.png" />
-  </ItemGroup>
 </Project>
