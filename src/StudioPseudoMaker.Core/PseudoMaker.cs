@@ -8,6 +8,7 @@ using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Utilities;
 using PseudoMaker.UI;
+using Studio;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,7 +35,7 @@ namespace PseudoMaker
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.1.5.2";
+        public const string PluginVersion = "1.1.6.0";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
@@ -181,9 +182,9 @@ namespace PseudoMaker
             transform.anchoredPosition = original.anchoredPosition + new Vector2(-48f * 3 + 4, 44f);
 
             Texture2D texture2D = new Texture2D(32, 32);
-            texture2D.LoadImage(ResourceUtils.GetEmbeddedResource("PseudoMakerButtonSmol.png"));
+            texture2D.LoadImage(ResourceUtils.GetEmbeddedResource("StudioIcon.png"));
             Image icon = PseudoMakerStudioButton.targetGraphic as Image;
-            icon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 160, 160), new Vector2(40, 40));
+            icon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 256, 256), new Vector2(40, 40));
             icon.color = Color.white;
 
             PseudoMakerStudioButton.onClick = new Button.ButtonClickedEvent();
