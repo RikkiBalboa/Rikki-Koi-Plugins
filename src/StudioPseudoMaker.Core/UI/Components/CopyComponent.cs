@@ -19,14 +19,21 @@ namespace PseudoMaker.UI
 
         public Func<string> GetFromName;
         public Func<string> GetToName;
+        public int index = -1;
+        public bool Toggled {get => toggle.isOn; set => toggle.isOn = value; }
 
         private void Awake()
         {
             toggle = GetComponentInChildren<Toggle>(true);
             label = toggle.GetComponentInChildren<Text>(true);
 
-            fromText = transform.Find("Layout/FromText").GetComponent<Text>();
-            toText = transform.Find("Layout/ToText").GetComponent<Text>();
+
+            Transform fromTextObject = transform.Find("Layout/FromText");
+            if (!fromTextObject) fromTextObject = transform.Find("Layout/Text");
+            fromText = fromTextObject.GetComponent<Text>();
+            Transform toTextObject = transform.Find("Layout/ToText");
+            if (!toTextObject) toTextObject = transform.Find("Layout/Text (1)");
+            toText = toTextObject.GetComponent<Text>();
         }
 
         private void Start()
@@ -36,6 +43,13 @@ namespace PseudoMaker.UI
 
         private void OnEnable()
         {
+            if (GetFromName != null) fromText.text = GetFromName();
+            if (GetToName != null) toText.text = GetToName();
+        }
+
+        public void Refresh()
+        {
+            label.text = LabelName;
             fromText.text = GetFromName();
             toText.text = GetToName();
         }

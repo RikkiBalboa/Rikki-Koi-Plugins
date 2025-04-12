@@ -26,8 +26,8 @@ namespace PseudoMaker.UI
         protected GameObject SplitterTemplate;
         protected GameObject HeaderTemplate;
         protected GameObject TransferRowTemplate;
-        protected GameObject AccessoryCopyRowTemplace;
-        protected GameObject ClothingCopyRowTemplace;
+        protected GameObject AccessoryCopyRowTemplate;
+        protected GameObject ClothingCopyRowTemplate;
         protected GameObject ImageRowTemplate;
 
         protected void Awake()
@@ -47,8 +47,8 @@ namespace PseudoMaker.UI
                 SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
                 HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
                 TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
-                AccessoryCopyRowTemplace = scrollRect.content.Find("AccessoryCopyRowTemplate").gameObject;
-                ClothingCopyRowTemplace = scrollRect.content.Find("ClothingCopyRowTemplate").gameObject;
+                AccessoryCopyRowTemplate = scrollRect.content.Find("AccessoryCopyRowTemplate").gameObject;
+                ClothingCopyRowTemplate = scrollRect.content.Find("ClothingCopyRowTemplate").gameObject;
                 ImageRowTemplate = scrollRect.content.Find("ImageRowTemplate").gameObject;
 
                 Initialize();
@@ -64,8 +64,8 @@ namespace PseudoMaker.UI
                 Destroy(SplitterTemplate);
                 Destroy(HeaderTemplate);
                 Destroy(TransferRowTemplate);
-                Destroy(AccessoryCopyRowTemplace);
-                Destroy(ClothingCopyRowTemplace);
+                Destroy(AccessoryCopyRowTemplate);
+                Destroy(ClothingCopyRowTemplate);
                 Destroy(ImageRowTemplate);
             }
             catch (Exception e)
@@ -382,11 +382,12 @@ namespace PseudoMaker.UI
 
         public CopyComponent AddCopyRow(int index, bool isClothing, Func<string> getFromName, Func<string> getToName)
         {
-            var row = Instantiate(isClothing ? AccessoryCopyRowTemplace : ClothingCopyRowTemplace, AccessoryCopyRowTemplace.transform.parent);
+            var row = Instantiate(isClothing ? AccessoryCopyRowTemplate : ClothingCopyRowTemplate, AccessoryCopyRowTemplate.transform.parent);
 
             var copyComponent = row.AddComponent<CopyComponent>();
             copyComponent.GetFromName = getFromName;
             copyComponent.GetToName = getToName;
+            copyComponent.index = index;
             return copyComponent;
         }
 

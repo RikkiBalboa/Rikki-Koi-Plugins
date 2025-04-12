@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -10,6 +11,7 @@ using KKAPI.Utilities;
 using PseudoMaker.UI;
 using Studio;
 using System.Linq;
+using ChaCustom;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -199,6 +201,15 @@ namespace PseudoMaker
                 MainWindow.gameObject.SetActive(!MainWindow.gameObject.activeSelf);
             }
         }
+
+        private void OnGUI()
+        {
+            if (GUI.Button(new Rect(200, 200, 50, 50), "fox fox fox"))
+            {
+                DevelopmentUtil.TestKKAPIReflection(Logger);
+            }
+        }
+
 
 #if DEBUG
         private void OnDestroy()

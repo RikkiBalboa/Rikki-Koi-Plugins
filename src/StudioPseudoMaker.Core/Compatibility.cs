@@ -405,6 +405,33 @@ namespace PseudoMaker
                     return GetController()?.GetOverlayTex(clothesId, false);
                 }
             }
+
+            public static void CLothingCopiedEvent(int sourceOutfit, int targetOutfit, List<int> slots)
+            {
+                var controller = PseudoMaker.selectedCharacter.GetComponent<KoiClothesOverlayController>();
+                if (!controller) return;
+
+                var copySlots = KoiClothesOverlayMgr.MainClothesNames.Where((x, i) => slots.Contains(i)).ToList();
+
+                if (slots.Contains(0))
+                {
+                    copySlots.AddRange(Enum.GetNames(typeof(MaskKind)));
+                    copySlots.AddRange(KoiClothesOverlayMgr.SubClothesNames);
+                }
+                
+                Dictionary<string, ClothesTexData> sourceDic = controller.GetOverlayTextures((ChaFileDefine.CoordinateType)sourceOutfit);
+                Dictionary<string, ClothesTexData> destinationDic = controller.GetOverlayTextures((ChaFileDefine.CoordinateType)targetOutfit);
+
+                foreach (string copySlot in copySlots)
+                {
+                    destinationDic.Remove(copySlot);
+                    if (sourceDic.TryGetValue(copySlot, out ClothesTexData val))
+                        destinationDic[copySlot] = val;
+                }
+
+                if (targetOutfit == (int)controller.CurrentCoordinate.Value)
+                    controller.RefreshAllTextures();
+            }
         }
 
         public static class SkinOverlays
@@ -598,6 +625,12 @@ namespace PseudoMaker
                     MEController.CustomClothesOverride = true;
                     MEController.RefreshClothesMainTex();
                 }
+            }
+
+            public static void ClothingCopiedEvent(int sourceOutfit, int targetOutfit, List<int> slots)
+            {
+                MaterialEditorCharaController MEController = MaterialEditorPlugin.GetCharaController(PseudoMaker.selectedCharacter);
+                MEController.ClothingCopiedEvent(sourceOutfit, targetOutfit, slots);
             }
         }
 
