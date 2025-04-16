@@ -68,10 +68,17 @@ namespace PseudoMaker.UI
 
         private void OnEnable()
         {
-            fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
-            toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+            
             _copyComponents.Values.ToList().ForEach(c => c.Refresh());
         }
+
+        public void RefreshDropdowns()
+        {
+            if (!fromDropDown || !toDropDown) return;
+            fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+            toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+        }
+        
 
         private void CopyMethod()
         {

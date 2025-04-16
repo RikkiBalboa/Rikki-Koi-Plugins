@@ -661,6 +661,8 @@ namespace PseudoMaker
                 KK_Plugins.MoreOutfits.Plugin.AddCoordinateSlot(PseudoMaker.selectedCharacter);
                 MpCharCtrl?.UpdateInfo();
                 PseudoMaker.Logger.LogMessage("Outfit added successfully!");
+                ((ClothingEditorPanel)PseudoMakerUI.Instance.CategoryPanels[Category.Clothing].SubCategoryPanels[SubCategory.ClothingCopy]).RefreshDropdowns();
+                ((AccessoryCopyPanel)PseudoMakerUI.Instance.CategoryPanels[Category.Accessories].SubCategoryPanels[SubCategory.AccessoryCopy]).RefreshDropdowns();
             }
 
             public static void RemoveOutfitSlot()
@@ -670,6 +672,8 @@ namespace PseudoMaker
                 KK_Plugins.MoreOutfits.Plugin.RemoveCoordinateSlot(PseudoMaker.selectedCharacter);
                 MpCharCtrl?.UpdateInfo();
                 PseudoMaker.Logger.LogMessage("Outfit removed successfully!");
+                ((ClothingEditorPanel)PseudoMakerUI.Instance.CategoryPanels[Category.Clothing].SubCategoryPanels[SubCategory.ClothingCopy]).RefreshDropdowns();
+                ((AccessoryCopyPanel)PseudoMakerUI.Instance.CategoryPanels[Category.Accessories].SubCategoryPanels[SubCategory.AccessoryCopy]).RefreshDropdowns();
             }
         }
     }

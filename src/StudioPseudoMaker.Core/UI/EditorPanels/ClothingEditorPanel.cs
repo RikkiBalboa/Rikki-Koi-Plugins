@@ -41,13 +41,16 @@ namespace PseudoMaker.UI
         {
             if (clothingChangeAction != null) clothingChangeAction();
 
-            if (fromDropDown != null)
-            {
-                fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
-                toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
-            }
+            RefreshDropdowns();
 
             TimelineCompatibilityHelper.SelectedClothingKind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
+        }
+
+        public void RefreshDropdowns()
+        {
+            if (!fromDropDown || !toDropDown) return;
+            fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+            toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
         }
 
         private void OnDisable()
