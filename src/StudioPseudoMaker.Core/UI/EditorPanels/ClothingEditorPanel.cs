@@ -145,6 +145,8 @@ namespace PseudoMaker.UI
                     mainOverlayObjects?.ForEach(o => o.SetActive(true && overlayHeader.isOn));
                     multiOverlayObjects?.ForEach(o => o.SetActive(false));
                 }
+
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
