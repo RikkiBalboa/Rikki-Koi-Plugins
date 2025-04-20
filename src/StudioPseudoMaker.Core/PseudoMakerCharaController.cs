@@ -919,23 +919,29 @@ namespace PseudoMaker
         public void SetHideOpt(int kind, int option, bool value)
         {
             if (kind == 2)
+            {
                 if (Clothes.hideBraOpt[option] != value)
                 {
                     Clothes.hideBraOpt[option] = value;
                     SetClothes.hideBraOpt[option] = value;
                 }
-            if (kind == 3)
+            }
+            else if (kind == 3)
+            {
                 if (Clothes.hideShortsOpt[option] != value)
                 {
                     Clothes.hideShortsOpt[option] = value;
                     SetClothes.hideShortsOpt[option] = value;
                 }
+            }
             else
+            {
                 if (Clothes.parts[kind].hideOpt[option] != value)
                 {
                     Clothes.parts[kind].hideOpt[option] = value;
                     SetClothes.parts[kind].hideOpt[option] = value;
                 }
+        }
         }
 
         public int GetClothingUsesOptParts (ChaClothesComponent component)
