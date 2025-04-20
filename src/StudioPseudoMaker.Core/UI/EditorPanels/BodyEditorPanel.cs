@@ -46,6 +46,7 @@ namespace PseudoMaker.UI
             }
             else if (SubCategory == SubCategory.BodyChest)
             {
+                AddSliderRow("Areola Size", FloatType.AreolaSize);
                 AddSliderRow("Breast Weight", FloatType.BustWeight);
                 AddSliderRow("Breast Softness", FloatType.BustSoftness);
                 AddSplitter();

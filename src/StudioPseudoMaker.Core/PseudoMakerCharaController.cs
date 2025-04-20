@@ -435,6 +435,10 @@ namespace PseudoMaker
                     ChaFileControl.custom.body.nipGlossPower = value;
                     ChaControl.ChangeSettingNipGlossPower();
                     break;
+                case FloatType.AreolaSize:
+                    ChaFileControl.custom.body.areolaSize = value;
+                    ChaControl.ChangeSettingAreolaSize();
+                    break;
                 case FloatType.NailGloss:
                     ChaFileControl.custom.body.nailGlossPower = value;
                     ChaControl.ChangeSettingNailGlossPower();
@@ -566,6 +570,8 @@ namespace PseudoMaker
                     return GetPushupBaseValue(PushupValue.AdvancedWeight);
                 case FloatType.NippleGloss:
                     return ChaFileControl.custom.body.nipGlossPower;
+                case FloatType.AreolaSize:
+                    return ChaFileControl.custom.body.areolaSize;
                 case FloatType.NailGloss:
                     return ChaFileControl.custom.body.nailGlossPower;
                 case FloatType.FaceOverlayStrength:
@@ -941,7 +947,7 @@ namespace PseudoMaker
                     Clothes.parts[kind].hideOpt[option] = value;
                     SetClothes.parts[kind].hideOpt[option] = value;
                 }
-        }
+            }
         }
 
         public int GetClothingUsesOptParts (ChaClothesComponent component)
