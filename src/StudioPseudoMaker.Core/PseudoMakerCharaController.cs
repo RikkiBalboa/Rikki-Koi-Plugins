@@ -1014,7 +1014,7 @@ namespace PseudoMaker
                 case PushupValue.AdvancedRoundness:
                     return selectedPushupController.BaseData.Roundness;
                 case PushupValue.AdvancedAreolaDepth:
-                    return selectedPushupController.BaseData.Depth;
+                    return selectedPushupController.BaseData.AreolaDepth;
                 case PushupValue.AdvancedNippleWidth:
                     return selectedPushupController.BaseData.NippleWidth;
                 case PushupValue.AdvancedNippleDepth:
@@ -1054,7 +1054,7 @@ namespace PseudoMaker
                     selectedPushupController.BaseData.Roundness = value;
                     break;
                 case PushupValue.AdvancedAreolaDepth:
-                    selectedPushupController.BaseData.Depth = value;
+                    selectedPushupController.BaseData.AreolaDepth = value;
                     break;
                 case PushupValue.AdvancedNippleWidth:
                     selectedPushupController.BaseData.NippleWidth = value;
