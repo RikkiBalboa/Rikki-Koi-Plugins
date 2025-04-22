@@ -433,7 +433,7 @@ namespace PseudoMaker.UI
         {
 
             fromDropDown = AddDropdownRow(
-                "Clothing Copy Source",
+                "Source Outfit",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => fromSelected,
                 value => { 
@@ -442,7 +442,7 @@ namespace PseudoMaker.UI
                 }
             );
             toDropDown = AddDropdownRow(
-                "Clothing Copy Destination",
+                "Target Outfit",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => toSelected,
                 value => {
