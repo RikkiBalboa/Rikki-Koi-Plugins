@@ -660,10 +660,6 @@ namespace PseudoMaker
                 KK_Plugins.MoreOutfits.Plugin.AddCoordinateSlot(PseudoMaker.selectedCharacter);
                 Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
                 PseudoMaker.Logger.LogMessage("Outfit added successfully!");
-                if (PseudoMakerUI.Instance.CategoryPanels.TryGetValue(Category.Clothing, out CategoryPanel clothingPanel) && clothingPanel.SubCategoryPanels.TryGetValue(SubCategory.ClothingCopy, out BaseEditorPanel clothingCopyPanel))
-                    ((ClothingEditorPanel)clothingCopyPanel)?.RefreshDropdowns();
-                if (PseudoMakerUI.Instance.CategoryPanels.TryGetValue(Category.Accessories, out CategoryPanel accessoryPanel) && accessoryPanel.SubCategoryPanels.TryGetValue(SubCategory.AccessoryCopy, out BaseEditorPanel accessoryCopyPanel))
-                    ((AccessoryCopyPanel)accessoryCopyPanel).RefreshDropdowns();
             }
 
             public static void RemoveOutfitSlot()
@@ -673,10 +669,6 @@ namespace PseudoMaker
                 KK_Plugins.MoreOutfits.Plugin.RemoveCoordinateSlot(PseudoMaker.selectedCharacter);
                 Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
                 PseudoMaker.Logger.LogMessage("Outfit removed successfully!");
-                if (PseudoMakerUI.Instance.CategoryPanels.TryGetValue(Category.Clothing, out CategoryPanel clothingPanel) && clothingPanel.SubCategoryPanels.TryGetValue(SubCategory.ClothingCopy, out BaseEditorPanel clothingCopyPanel))
-                    ((ClothingEditorPanel)clothingCopyPanel)?.RefreshDropdowns();
-                if (PseudoMakerUI.Instance.CategoryPanels.TryGetValue(Category.Accessories, out CategoryPanel accessoryPanel) && accessoryPanel.SubCategoryPanels.TryGetValue(SubCategory.AccessoryCopy, out BaseEditorPanel accessoryCopyPanel))
-                    ((AccessoryCopyPanel)accessoryCopyPanel).RefreshDropdowns();
             }
         }
     }

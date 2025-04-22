@@ -39,7 +39,7 @@ namespace PseudoMaker.UI
 
         private void OnEnable()
         {
-            if (clothingChangeAction != null) clothingChangeAction();
+            clothingChangeAction?.Invoke();
 
             RefreshDropdowns();
 
@@ -156,15 +156,15 @@ namespace PseudoMaker.UI
             {
                 clothingSailorGameObjects = new List<GameObject>()
                 {
-                    AddPickerRow(SelectKindType.CosSailor01).gameObject,
-                    AddPickerRow(SelectKindType.CosSailor02).gameObject,
-                    AddPickerRow(SelectKindType.CosSailor03).gameObject,
+                    AddPickerRow(SelectKindType.CosSailor01, clothingChangeAction).gameObject,
+                    AddPickerRow(SelectKindType.CosSailor02, clothingChangeAction).gameObject,
+                    AddPickerRow(SelectKindType.CosSailor03, clothingChangeAction).gameObject,
                 };
                 clothingJacketGameObjects = new List<GameObject>()
                 {
-                    AddPickerRow(SelectKindType.CosJacket01).gameObject,
-                    AddPickerRow(SelectKindType.CosJacket02).gameObject,
-                    AddPickerRow(SelectKindType.CosJacket03).gameObject,
+                    AddPickerRow(SelectKindType.CosJacket01, clothingChangeAction).gameObject,
+                    AddPickerRow(SelectKindType.CosJacket02, clothingChangeAction).gameObject,
+                    AddPickerRow(SelectKindType.CosJacket03, clothingChangeAction).gameObject,
                 };
             }
 
@@ -433,7 +433,7 @@ namespace PseudoMaker.UI
         {
 
             fromDropDown = AddDropdownRow(
-                "Clothing Source",
+                "Clothing Copy Source",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => fromSelected,
                 value => { 
@@ -442,7 +442,7 @@ namespace PseudoMaker.UI
                 }
             );
             toDropDown = AddDropdownRow(
-                "Clothing Destination",
+                "Clothing Copy Destination",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => toSelected,
                 value => {

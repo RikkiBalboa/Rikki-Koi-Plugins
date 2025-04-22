@@ -41,9 +41,15 @@ namespace PseudoMaker.UI
                 if (Category == Category.Accessories)
                 {
                     var accessoryPanel = SubCategorySelectorPanel.AddComponent<AccessoryPanel>();
-                    accessoryPanel.editorPanel = BaseEditorPanel.CreatePanel<AccessoryEditorPanel>(subCategory);
-                    accessoryPanel.transferPanel = BaseEditorPanel.CreatePanel<AccessoryTransferPanel>(SubCategory.AccessoryTransfer);
-                    accessoryPanel.copyPanel = BaseEditorPanel.CreatePanel<AccessoryCopyPanel>(SubCategory.AccessoryCopy);
+                    AccessoryEditorPanel accessoryPanelEditorPanel = BaseEditorPanel.CreatePanel<AccessoryEditorPanel>(subCategory);
+                    accessoryPanel.editorPanel = accessoryPanelEditorPanel;
+                    SubCategoryPanels.Add(subCategory, accessoryPanelEditorPanel);
+                    AccessoryCopyPanel accessoryPanelCopyPanel = BaseEditorPanel.CreatePanel<AccessoryCopyPanel>(SubCategory.AccessoryCopy);
+                    accessoryPanel.copyPanel = accessoryPanelCopyPanel;
+                    SubCategoryPanels.Add(SubCategory.AccessoryCopy, accessoryPanelCopyPanel);
+                    AccessoryTransferPanel accessoryPanelTransferPanel = BaseEditorPanel.CreatePanel<AccessoryTransferPanel>(SubCategory.AccessoryTransfer);
+                    accessoryPanel.transferPanel = accessoryPanelTransferPanel;
+                    SubCategoryPanels.Add(SubCategory.AccessoryTransfer, accessoryPanelTransferPanel);
                 }
                 else
                 {

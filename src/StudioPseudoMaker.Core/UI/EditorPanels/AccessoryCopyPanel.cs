@@ -24,7 +24,7 @@ namespace PseudoMaker.UI
             base.Initialize();
             
             fromDropDown = AddDropdownRow(
-                "Clothing Source",
+                "Accessory Copy Source",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => fromSelected,
                 value => { 
@@ -33,7 +33,7 @@ namespace PseudoMaker.UI
                 }
             );
             toDropDown = AddDropdownRow(
-                "Clothing Destination",
+                "Accessory Copy Destination",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => toSelected,
                 value => {
@@ -68,15 +68,17 @@ namespace PseudoMaker.UI
 
         private void OnEnable()
         {
-            
             _copyComponents.Values.ToList().ForEach(c => c.Refresh());
+            RefreshDropdowns();
         }
 
         public void RefreshDropdowns()
         {
             if (!fromDropDown || !toDropDown) return;
-            fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
-            toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+            List<string> options = PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) =>
+                KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList();
+            fromDropDown.SetDropdownOptions(options);
+            toDropDown.SetDropdownOptions(options);
         }
         
 

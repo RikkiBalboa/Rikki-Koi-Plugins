@@ -41,10 +41,10 @@ namespace PseudoMaker
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
-        internal static ChaControl selectedCharacter;
-        internal static PseudoMakerCharaController selectedCharacterController;
-        internal static KK_Plugins.HairAccessoryCustomizer.HairAccessoryController selectedHairAccessoryController;
-        internal static KK_Plugins.Pushup.PushupController selectedPushupController;
+        internal static ChaControl selectedCharacter => PseudoMakerSceneController.Instance.SelectedCharacter;
+        internal static PseudoMakerCharaController selectedCharacterController => PseudoMakerCharaController.GetController(selectedCharacter);
+        internal static KK_Plugins.HairAccessoryCustomizer.HairAccessoryController selectedHairAccessoryController => PseudoMakerSceneController.Instance.SelectedHairAccessoryController;
+        internal static KK_Plugins.Pushup.PushupController selectedPushupController => PseudoMakerSceneController.Instance.SelectedPushupController;
 
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<KeyboardShortcut> KeyAltReset { get; private set; }
@@ -115,6 +115,7 @@ namespace PseudoMaker
                 )
             );
             CharacterApi.RegisterExtraBehaviour<PseudoMakerCharaController>(PluginGUID);
+            KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour<PseudoMakerSceneController>(PluginGUID);
 
             UIMappings.AddOtherPluginMappings();
 
@@ -141,15 +142,6 @@ namespace PseudoMaker
 
         private void Update()
         {
-            var newChar = StudioAPI.GetSelectedCharacters().FirstOrDefault()?.GetChaControl();
-            if (newChar != selectedCharacter && newChar != null)
-            {
-                selectedCharacter = newChar;
-                selectedCharacterController = PseudoMakerCharaController.GetController(selectedCharacter);
-                selectedHairAccessoryController = selectedCharacter.gameObject.GetComponent<KK_Plugins.HairAccessoryCustomizer.HairAccessoryController>();
-                selectedPushupController = selectedCharacter.gameObject.GetComponent<KK_Plugins.Pushup.PushupController>();
-                MainWindow.RefreshValues();
-            }
             if (KeyToggleGui.Value.IsDown()) 
                 OpenUI();
         }
@@ -201,15 +193,6 @@ namespace PseudoMaker
                 MainWindow.gameObject.SetActive(!MainWindow.gameObject.activeSelf);
             }
         }
-
-        private void OnGUI()
-        {
-            if (GUI.Button(new Rect(200, 200, 50, 50), "fox fox fox"))
-            {
-                DevelopmentUtil.TestKKAPIReflection(Logger);
-            }
-        }
-
 
 #if DEBUG
         private void OnDestroy()

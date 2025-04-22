@@ -130,6 +130,9 @@
     <Compile Include="..\StudioPseudoMaker.Core\DevUtil.cs">
       <Link>StudioPseudoMaker.Core\DevUtil.cs</Link>
     </Compile>
+    <Compile Include="..\StudioPseudoMaker.Core\PseudoMakerSceneController.cs">
+      <Link>StudioPseudoMaker.Core\PseudoMakerSceneController.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="..\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
