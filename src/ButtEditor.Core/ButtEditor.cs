@@ -13,9 +13,9 @@ namespace ButtEditor
     public partial class ButtEditor : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.buttEditor";
-        public const string PluginName = "ButtEditor";
+        public const string PluginName = "Butt Editor";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_ButtEditor";
-        public const string PluginVersion = "0.1";
+        public const string PluginVersion = "1.0";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
