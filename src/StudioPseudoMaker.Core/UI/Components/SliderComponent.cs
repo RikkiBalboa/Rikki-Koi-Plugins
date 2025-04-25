@@ -19,6 +19,7 @@ namespace PseudoMaker.UI
         public Action<float> SetValueAction;
         public Action ResetValueAction;
         public Action OnLabelClick;
+        internal string displayTemplate = "0.00";
 
         private bool shouldNotUpdate = false;
 
@@ -63,7 +64,7 @@ namespace PseudoMaker.UI
 
         public void UpdateValue(float value)
         {
-            var stringValue = value.ToString("0.00");
+            var stringValue = value.ToString(displayTemplate);
             if (slider.value != value) slider.value = value;
             if (inputField.text != stringValue) inputField.text = stringValue;
 

@@ -536,6 +536,12 @@ namespace PseudoMaker
                     ChaFileControl.custom.hair.parts[1].length = value;
                     ChaControl.ChangeSettingHairFrontLength();
                     break;
+                case FloatType.ButtEditorStiffness:
+                case FloatType.ButtEditorElasticity:
+                case FloatType.ButtEditorDampening:
+                case FloatType.ButtEditorWeight:
+                    Compatibility.ButtEditorPlugin.SetButtValue(floatType, value);
+                    break;
             }
         }
 
@@ -617,6 +623,11 @@ namespace PseudoMaker
                     return ChaFileControl.custom.face.lipGlossPower;
                 case FloatType.HairFrontLength:
                     return ChaFileControl.custom.hair.parts[1].length;
+                case FloatType.ButtEditorStiffness:
+                case FloatType.ButtEditorElasticity:
+                case FloatType.ButtEditorDampening:
+                case FloatType.ButtEditorWeight:
+                    return Compatibility.ButtEditorPlugin.GetButtValue(floatType);
                 default:
                     return 0f;
             }

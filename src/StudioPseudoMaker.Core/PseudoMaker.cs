@@ -27,6 +27,7 @@ namespace PseudoMaker
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KCOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KSOX", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.rikkibalboa.bepinex.buttEditor", BepInDependency.DependencyFlags.SoftDependency)]
     // Only needed to add the timeline compatibility if it doesn't exist.
     [BepInDependency("com.rikkibalboa.bepinex.studioSkinColorControl", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
@@ -35,7 +36,7 @@ namespace PseudoMaker
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.1.7.0";
+        public const string PluginVersion = "1.2.0.0";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
@@ -276,6 +277,10 @@ namespace PseudoMaker
         LipGloss,
         HairFrontLength,
         AreolaSize,
+        ButtEditorStiffness,
+        ButtEditorElasticity,
+        ButtEditorDampening,
+        ButtEditorWeight,
     }
 
     public enum PatternValue

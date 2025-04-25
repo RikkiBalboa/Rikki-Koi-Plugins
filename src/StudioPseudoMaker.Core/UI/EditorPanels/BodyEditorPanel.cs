@@ -1,6 +1,6 @@
 ﻿using KoiSkinOverlayX;
+using System;
 using System.Linq;
-using static ChaCustom.CustomSelectKind;
 
 namespace PseudoMaker.UI
 {
@@ -53,6 +53,20 @@ namespace PseudoMaker.UI
                 AddPickerRow(SelectKindType.Nip);
                 AddColorRow("Nipple Color", ColorType.NippleColor);
                 AddSliderRow("Nipple Gloss", FloatType.NippleGloss);
+            }
+            else if (SubCategory == SubCategory.BodyLower)
+            {
+                if (Compatibility.HasButtEditorPlugin)
+                    AddButtEditorRows();
+
+                void AddButtEditorRows()
+                {
+                    foreach (var type in Enum.GetValues(typeof(ButtEditor.SliderType)).Cast<ButtEditor.SliderType>())
+                    {
+                        var slider = AddSliderRow($"Butt {type}", (FloatType)Compatibility.ButtEditorPlugin.SliderTypeTofloatType(type), minValue: 0f, maxValue: 0.3f);
+                        slider.displayTemplate = "0.000";
+                    }
+                }
             }
             else if (SubCategory == SubCategory.BodyPubicHair)
             {

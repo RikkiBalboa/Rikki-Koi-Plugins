@@ -184,7 +184,7 @@ namespace PseudoMaker.UI
             return sliderComponent;
         }
 
-        public SliderComponent AddSliderRow(string name, FloatType floatType, Transform parent = null)
+        public SliderComponent AddSliderRow(string name, FloatType floatType, Transform parent = null, float minValue = -1f, float maxValue = 2f)
         {
             return AddSliderRow(
                 name,
@@ -193,7 +193,9 @@ namespace PseudoMaker.UI
                 value => PseudoMaker.selectedCharacterController.SetFloatTypeValue(value, floatType),
                 () => PseudoMaker.selectedCharacterController.ResetFloatTypeValue(floatType),
                 onLabelClick: () => TimelineCompatibilityHelper.SelectedFloatType = floatType,
-                parent: parent
+                parent: parent,
+                minValue: minValue,
+                maxValue: maxValue
             );
         }
 
