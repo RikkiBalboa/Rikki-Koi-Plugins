@@ -1,16 +1,20 @@
 ﻿using ExtensibleSaveFormat;
 using KKAPI;
 using KKAPI.Chara;
+using KKAPI.Maker;
 using MessagePack;
 using Shared;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static Illusion.Utils;
 
 namespace ButtEditor
 {
-    internal class ButtEditorCharaController : CharaCustomFunctionController
+    public class ButtEditorCharaController : CharaCustomFunctionController
     {
-        public static Dictionary<SliderType, float> defaultValues = new Dictionary<SliderType, float>()
+        public static readonly Dictionary<SliderType, float> defaultValues = new Dictionary<SliderType, float>()
         {
             {SliderType.Stiffness, 0.04f},
             {SliderType.Elasticity, 0.2f},
@@ -18,7 +22,7 @@ namespace ButtEditor
             {SliderType.Weight, 0f},
         };
 
-        public static Dictionary<SliderType, float> SavedValues = new Dictionary<SliderType, float>();
+        public Dictionary<SliderType, float> SavedValues = new Dictionary<SliderType, float>();
 
         protected override void OnReload(GameMode currentGameMode, bool maintainState)
         {
@@ -27,15 +31,20 @@ namespace ButtEditor
             SavedValues.Clear();
             var data = GetExtendedData();
 
-            if (data == null)
-                return;
+            if (data != null)
+                if (data.data.TryGetValue(nameof(SavedValues), out var savedValues))
+                {
+                    var values = MessagePackSerializer.Deserialize<Dictionary<SliderType, float>>((byte[])savedValues);
+                    foreach (var value in values)
+                    {
+                        SetButtValue(value.Key, value.Value);
+                    }
+                }
 
-            if (data.data.TryGetValue(nameof(SavedValues), out var savedValues))
-            {
-                var values = MessagePackSerializer.Deserialize<Dictionary<SliderType, float>>((byte[])savedValues);
-                foreach (var value in values)
-                    SetButtValue(value.Key, value.Value);
-            }
+            if (MakerAPI.InsideAndLoaded)
+                foreach (var type in Enum.GetValues(typeof(SliderType)).Cast<SliderType>())
+                    if (ButtEditor.MakerControls.TryGetValue(type, out var control))
+                        control.SetValue(SavedValues.GetValueOrDefault(type, defaultValues[type]) * 10);
         }
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)
@@ -48,6 +57,7 @@ namespace ButtEditor
             {
                 var data = new PluginData();
                 data.data.Add(nameof(SavedValues), MessagePackSerializer.Serialize(SavedValues));
+                SetExtendedData(data);
             }
         }
 

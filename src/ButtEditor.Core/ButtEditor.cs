@@ -20,7 +20,8 @@ namespace ButtEditor
         private static Harmony harmony;
 
         private ButtEditorCharaController buttEditorCharaController => MakerAPI.GetCharacterControl().gameObject.GetComponent<ButtEditorCharaController>();
-        
+        internal static Dictionary<SliderType, MakerSlider> MakerControls = new Dictionary<SliderType, MakerSlider>();
+
         private void Awake()
         {
             Logger = base.Logger;
@@ -47,6 +48,7 @@ namespace ButtEditor
             var control = e.AddControl(new MakerSlider(category, $"Butt {type}", 0f, 3f, ButtEditorCharaController.defaultValues[type] * 10, this));
             control.ValueChanged.Subscribe(Observer.Create<float>(value => buttEditorCharaController.SetButtValue(type, value / 10)));
             control.Visible.OnNext(true);
+            MakerControls[type] = control;
             return control;
         }
     }
