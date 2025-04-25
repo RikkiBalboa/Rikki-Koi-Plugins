@@ -9,6 +9,7 @@
     <Import_RootNamespace>Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared.ColorPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared.Constants.cs" />
   </ItemGroup>
