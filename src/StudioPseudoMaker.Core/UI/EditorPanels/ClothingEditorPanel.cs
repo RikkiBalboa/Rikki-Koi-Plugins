@@ -539,6 +539,7 @@ namespace PseudoMaker.UI
                 }
                 PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
                 PseudoMaker.selectedCharacter.Reload(false, true, true, true);
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
                 
                 // section to call postfixes/events of the vanilla method
                 MaterialEditor.ClothingCopiedEvent(fromSelected, toSelected, (from kvp in _copyComponents where kvp.Value.Toggled select kvp.Key).ToList());

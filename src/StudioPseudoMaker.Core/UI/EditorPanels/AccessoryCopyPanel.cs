@@ -94,6 +94,7 @@ namespace PseudoMaker.UI
             }
             PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
             PseudoMaker.selectedCharacter.Reload(false, true, true, true);
+            Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
             
             // trigger KKAPI event
             
@@ -106,6 +107,7 @@ namespace PseudoMaker.UI
                 (ChaFileDefine.CoordinateType)toSelected
             );
             eventValue?.GetType().GetMethod("Invoke")?.Invoke(eventValue, new object[] { this, args });
+            // TODO: A12 compat
         }
     }
 }

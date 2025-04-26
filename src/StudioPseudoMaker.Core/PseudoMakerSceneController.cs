@@ -40,6 +40,7 @@ namespace PseudoMaker
                 .FirstOrDefault();
             if (ociChar == null) return;
             SelectedCharacter = ociChar.GetChaControl();
+            if (!SelectedCharacter) return;
             SelectedHairAccessoryController = SelectedCharacter.gameObject.GetComponent<HairAccessoryCustomizer.HairAccessoryController>();
             SelectedPushupController = SelectedCharacter.gameObject.GetComponent<Pushup.PushupController>();
             
@@ -53,7 +54,7 @@ namespace PseudoMaker
 
         protected override void OnObjectDeleted(ObjectCtrlInfo objectCtrlInfo)
         {
-            if (objectCtrlInfo is OCIChar ociChar && ociChar.GetChaControl() == SelectedCharacter)
+            if (SelectedCharacter && objectCtrlInfo is OCIChar ociChar && ociChar.GetChaControl() == SelectedCharacter)
             {
                 PseudoMaker.MainWindow.gameObject.SetActive(false);
             }
