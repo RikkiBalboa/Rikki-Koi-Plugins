@@ -17,6 +17,7 @@ namespace PseudoMaker.UI
 
         protected GameObject SliderTemplate;
         protected GameObject InputTemplate;
+        protected GameObject TextInputTemplate;
         protected GameObject ButtonGroupTemplate;
         protected GameObject ColorTemplate;
         protected GameObject PickerTemplate;
@@ -26,8 +27,7 @@ namespace PseudoMaker.UI
         protected GameObject SplitterTemplate;
         protected GameObject HeaderTemplate;
         protected GameObject TransferRowTemplate;
-        protected GameObject AccessoryCopyRowTemplate;
-        protected GameObject ClothingCopyRowTemplate;
+        protected GameObject CopyRowTemplate;
         protected GameObject ImageRowTemplate;
 
         protected void Awake()
@@ -38,6 +38,7 @@ namespace PseudoMaker.UI
 
                 SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
                 InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
+                TextInputTemplate = scrollRect.content.Find("TextInputFieldTemplate").gameObject;
                 ButtonGroupTemplate = scrollRect.content.Find("ButtonGroupTemplate").gameObject;
                 ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
                 PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
@@ -47,14 +48,14 @@ namespace PseudoMaker.UI
                 SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
                 HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
                 TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
-                AccessoryCopyRowTemplate = scrollRect.content.Find("AccessoryCopyRowTemplate").gameObject;
-                ClothingCopyRowTemplate = scrollRect.content.Find("ClothingCopyRowTemplate").gameObject;
+                CopyRowTemplate = scrollRect.content.Find("CopyRowTemplate").gameObject;
                 ImageRowTemplate = scrollRect.content.Find("ImageRowTemplate").gameObject;
 
                 Initialize();
 
                 Destroy(SliderTemplate);
                 Destroy(InputTemplate);
+                Destroy(TextInputTemplate);
                 Destroy(ButtonGroupTemplate);
                 Destroy(ColorTemplate);
                 Destroy(PickerTemplate);
@@ -64,8 +65,7 @@ namespace PseudoMaker.UI
                 Destroy(SplitterTemplate);
                 Destroy(HeaderTemplate);
                 Destroy(TransferRowTemplate);
-                Destroy(AccessoryCopyRowTemplate);
-                Destroy(ClothingCopyRowTemplate);
+                Destroy(CopyRowTemplate);
                 Destroy(ImageRowTemplate);
             }
             catch (Exception e)
@@ -166,6 +166,20 @@ namespace PseudoMaker.UI
             return inputFieldComponent;
         }
 
+        public TextInputFieldComponent AddTextInputRow(string name, Func<string> getCurrentValueAction, Action<string> setValueAction, string placeholder = "Type here...", Transform parent = null)
+        {
+            var inputField = Instantiate(TextInputTemplate, parent == null ? scrollRect.content : parent);
+            inputField.name = $"TextInputField{name.Replace(" ", "")}";
+
+            var inputFieldComponent = inputField.AddComponent<TextInputFieldComponent>();
+            inputFieldComponent.Name = name;
+            inputFieldComponent.GetCurrentValue = getCurrentValueAction;
+            inputFieldComponent.SetValueAction = setValueAction;
+            inputFieldComponent.Placeholder = placeholder;
+
+            return inputFieldComponent;
+        }
+
         public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, Action onLabelClick = null, Transform parent = null)
         {
             var slider = Instantiate(SliderTemplate, parent == null ? scrollRect.content : parent);
@@ -184,7 +198,7 @@ namespace PseudoMaker.UI
             return sliderComponent;
         }
 
-        public SliderComponent AddSliderRow(string name, FloatType floatType, Transform parent = null)
+        public SliderComponent AddSliderRow(string name, FloatType floatType, Transform parent = null, float minValue = -1f, float maxValue = 2f)
         {
             return AddSliderRow(
                 name,
@@ -193,7 +207,9 @@ namespace PseudoMaker.UI
                 value => PseudoMaker.selectedCharacterController.SetFloatTypeValue(value, floatType),
                 () => PseudoMaker.selectedCharacterController.ResetFloatTypeValue(floatType),
                 onLabelClick: () => TimelineCompatibilityHelper.SelectedFloatType = floatType,
-                parent: parent
+                parent: parent,
+                minValue: minValue,
+                maxValue: maxValue
             );
         }
 
@@ -380,14 +396,14 @@ namespace PseudoMaker.UI
             return imageComponent;
         }
 
-        public CopyComponent AddCopyRow(int index, bool isClothing, Func<string> getFromName, Func<string> getToName)
+        public CopyComponent AddCopyRow(string title, Func<string> getFromName, Func<string> getToName)
         {
-            var row = Instantiate(isClothing ? AccessoryCopyRowTemplate : ClothingCopyRowTemplate, AccessoryCopyRowTemplate.transform.parent);
+            var row = Instantiate(CopyRowTemplate, CopyRowTemplate.transform.parent);
 
             var copyComponent = row.AddComponent<CopyComponent>();
+            copyComponent.LabelName = title;
             copyComponent.GetFromName = getFromName;
             copyComponent.GetToName = getToName;
-            copyComponent.index = index;
             return copyComponent;
         }
 

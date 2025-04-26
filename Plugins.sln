@@ -70,6 +70,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioVoiceControl", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioVoiceControl", "src\StudioVoiceControl.KK\KK.StudioVoiceControl.csproj", "{67EB6BBB-D986-4784-9149-DF5CC4F83F36}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ButtEditor", "ButtEditor", "{5802E771-0C58-4984-938D-17DE3E473974}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ButtEditor.Core", "src\ButtEditor.Core\ButtEditor.Core.shproj", "{AD6A6B95-0E79-4F71-B509-765FF55FB046}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtEditor.KKS", "src\ButtEditor.KKS\ButtEditor.KKS.csproj", "{2126D895-E8F5-4ADC-B34F-48534B7C2DC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtEditor.KK", "src\ButtEditor.KK\ButtEditor.KK.csproj", "{996FCB01-1589-4D4C-B123-BA04CFA18547}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +148,14 @@ Global
 		{67EB6BBB-D986-4784-9149-DF5CC4F83F36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67EB6BBB-D986-4784-9149-DF5CC4F83F36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67EB6BBB-D986-4784-9149-DF5CC4F83F36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2126D895-E8F5-4ADC-B34F-48534B7C2DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2126D895-E8F5-4ADC-B34F-48534B7C2DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2126D895-E8F5-4ADC-B34F-48534B7C2DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2126D895-E8F5-4ADC-B34F-48534B7C2DC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{996FCB01-1589-4D4C-B123-BA04CFA18547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{996FCB01-1589-4D4C-B123-BA04CFA18547}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{996FCB01-1589-4D4C-B123-BA04CFA18547}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{996FCB01-1589-4D4C-B123-BA04CFA18547}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -168,6 +184,9 @@ Global
 		{5C4142C8-54F4-471A-98E9-0F44E0C5F37F} = {1F398214-22AF-401E-A502-019B8E15D955}
 		{1E399EAF-E2B1-4C3B-A609-F7CC1A9AAEC5} = {1F398214-22AF-401E-A502-019B8E15D955}
 		{67EB6BBB-D986-4784-9149-DF5CC4F83F36} = {1F398214-22AF-401E-A502-019B8E15D955}
+		{AD6A6B95-0E79-4F71-B509-765FF55FB046} = {5802E771-0C58-4984-938D-17DE3E473974}
+		{2126D895-E8F5-4ADC-B34F-48534B7C2DC6} = {5802E771-0C58-4984-938D-17DE3E473974}
+		{996FCB01-1589-4D4C-B123-BA04CFA18547} = {5802E771-0C58-4984-938D-17DE3E473974}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -178,6 +197,8 @@ Global
 		src\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems*{15089a5b-2887-47aa-b444-52f2e5987d37}*SharedItemsImports = 13
 		src\Shared\Shared.projitems*{1e399eaf-e2b1-4c3b-a609-f7cc1a9aaec5}*SharedItemsImports = 4
 		src\StudioVoiceControl.Core\Core.StudioVoiceControl\Core.StudioVoiceControl.projitems*{1e399eaf-e2b1-4c3b-a609-f7cc1a9aaec5}*SharedItemsImports = 4
+		src\ButtEditor.Core\ButtEditor.Core.projitems*{2126d895-e8f5-4adc-b34f-48534b7c2dc6}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{2126d895-e8f5-4adc-b34f-48534b7c2dc6}*SharedItemsImports = 4
 		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{28d5df02-59bc-4572-b345-a19e81b57dbb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{494e4e72-dc3a-4691-93b9-3245a6825b0a}*SharedItemsImports = 4
@@ -199,6 +220,9 @@ Global
 		src\Shared\Shared.projitems*{85da0cd3-5f18-4bba-9427-a68db6ac958e}*SharedItemsImports = 4
 		src\ShadowColorSwapper.Core\ShadowColorSwapper.Core.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
+		src\ButtEditor.Core\ButtEditor.Core.projitems*{996fcb01-1589-4d4c-b123-ba04cfa18547}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{996fcb01-1589-4d4c-b123-ba04cfa18547}*SharedItemsImports = 4
+		src\ButtEditor.Core\ButtEditor.Core.projitems*{ad6a6b95-0e79-4f71-b509-765ff55fb046}*SharedItemsImports = 13
 		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{b3df7e28-b2c1-41c7-8844-ec6b194bca08}*SharedItemsImports = 13
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{b98974d5-d331-4e2e-9498-a54dd706c4f2}*SharedItemsImports = 13

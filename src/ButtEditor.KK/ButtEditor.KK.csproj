@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E2151100-2A2D-497F-A4EA-0D938FE630E0}</ProjectGuid>
+    <ProjectGuid>{996FCB01-1589-4D4C-B123-BA04CFA18547}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Plugins</RootNamespace>
-    <AssemblyName>KK_StudioPseudoMaker</AssemblyName>
+    <RootNamespace>ButtEditor.KK</RootNamespace>
+    <AssemblyName>KK_ButtEditor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -24,7 +24,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -34,15 +33,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\lib\net35\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AAAAAAAAAAAA.Koikatu">
-      <HintPath>..\..\lib\AAAAAAAAAAAA.Koikatu.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -59,45 +53,11 @@
     </Reference>
     <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ExtensibleSaveFormat.Koikatu.20.1.0\lib\net35\ExtensibleSaveFormat.dll</HintPath>
-    </Reference>
-    <Reference Include="KKABMX">
-      <HintPath>..\..\lib\KKABMX.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKAPI, Version=1.42.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionModdingAPI.KKAPI.1.42.2\lib\net35\KKAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="KK_ClothingUnlocker">
-      <HintPath>..\..\lib\KK_ClothingUnlocker.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="KK_HairAccessoryCustomizer">
-      <HintPath>..\..\lib\KK_HairAccessoryCustomizer.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KK_MaterialEditor, Version=3.1.22.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\KK_MaterialEditor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KK_MoreAccessories">
-      <HintPath>..\..\lib\KK_MoreAccessories.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KK_MoreOutfits">
-      <HintPath>..\..\lib\KK_MoreOutfits.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KK_OverlayMods">
-      <HintPath>..\..\lib\KK_OverlayMods.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KK_Pushup">
-      <HintPath>..\..\lib\KK_Pushup.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sideloader.Koikatu.20.1.0\lib\net35\Sideloader.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -121,28 +81,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
     <Analyzer Include="..\..\packages\KoikatuCompatibilityAnalyzer.1.1.0\analyzers\dotnet\cs\KoikatuCompatibilityAnalyzer.dll" />
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.18.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\StudioPseudoMaker.Core\DevUtil.cs">
-      <Link>StudioPseudoMaker.Core\DevUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\StudioPseudoMaker.Core\PseudoMakerSceneController.cs">
-      <Link>StudioPseudoMaker.Core\PseudoMakerSceneController.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ButtEditor.KK\ButtEditor.KK.csproj">
-      <Project>{996fcb01-1589-4d4c-b123-ba04cfa18547}</Project>
-      <Name>ButtEditor.KK</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="..\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+  <Import Project="..\ButtEditor.Core\ButtEditor.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

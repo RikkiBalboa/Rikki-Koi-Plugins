@@ -15,6 +15,8 @@ using KKAPI.Studio;
 using Studio;
 using UnityEngine;
 using UnityEngine.UI;
+using ButtEditor;
+using Shared;
 
 namespace PseudoMaker
 {
@@ -30,6 +32,7 @@ namespace PseudoMaker
         public static bool HasSkinOverlayPlugin { get; private set; }
         public static bool HasStudioSkinColor {  get; private set; }
         public static Version OverlayPluginVersion { get; private set; }
+        public static bool HasButtEditorPlugin { get; private set; }
         public static bool HasC2A { get; private set; }
 
         static Compatibility()
@@ -52,6 +55,7 @@ namespace PseudoMaker
                         HasSkinOverlayPlugin = true;
                         OverlayPluginVersion = plugin.Info.Metadata.Version;
                         break;
+                    case "com.rikkibalboa.bepinex.buttEditor": HasButtEditorPlugin = true; break;
                 }
         }
 
@@ -649,6 +653,72 @@ namespace PseudoMaker
                 // change clothing unlock
                 unlockCtrl.SetClothingUnlocked(value);
                 PseudoMaker.selectedCharacter.ChangeClothes(true);
+            }
+        }
+
+        public static class ButtEditorPlugin
+        {
+            public static void SetButtValue(SliderType type, float value)
+            {
+                if (!HasButtEditorPlugin) return;
+
+                SetValue();
+                void SetValue() {
+                    PseudoMaker.selectedCharacter.GetComponent<ButtEditorCharaController>()?.SetButtValue(type, value);
+                }
+            }
+            public static void SetButtValue(FloatType type, float value)
+            {
+                if (!HasButtEditorPlugin) return;
+
+                SetValue();
+                void SetValue()
+                {
+                    SliderType? _type = FloatTypeToSliderType(type);
+
+                    if (_type != null)
+                        PseudoMaker.selectedCharacter.GetComponent<ButtEditorCharaController>()?.SetButtValue((SliderType)_type, value);
+                }
+            }
+
+            public static float GetButtValue(FloatType type)
+            {
+                if (!HasButtEditorPlugin) return 0f;
+
+                return GetValue();
+                float GetValue()
+                {
+                    var controller = PseudoMaker.selectedCharacter.GetComponent<ButtEditorCharaController>();
+                    var _type = FloatTypeToSliderType(type);
+
+                    if (_type != null)
+                        return controller.SavedValues.GetValueOrDefault((SliderType)_type, ButtEditorCharaController.defaultValues[(SliderType)_type]);
+                    return 0f;
+                }
+            }
+
+            public static FloatType? SliderTypeTofloatType(SliderType type)
+            {
+                switch (type)
+                {
+                    case SliderType.Stiffness: return FloatType.ButtEditorStiffness;
+                    case SliderType.Elasticity: return FloatType.ButtEditorElasticity;
+                    case SliderType.Dampening: return FloatType.ButtEditorDampening;
+                    case SliderType.Weight: return FloatType.ButtEditorWeight;
+                    default: return null;
+                }
+            }
+
+            public static SliderType? FloatTypeToSliderType(FloatType type)
+            {
+                switch (type)
+                {
+                    case FloatType.ButtEditorStiffness: return SliderType.Stiffness;
+                    case FloatType.ButtEditorElasticity: return SliderType.Elasticity;
+                    case FloatType.ButtEditorDampening: return SliderType.Dampening;
+                    case FloatType.ButtEditorWeight: return SliderType.Weight;
+                    default: return null;
+                }
             }
         }
 

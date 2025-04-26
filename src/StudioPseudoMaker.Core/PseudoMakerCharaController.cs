@@ -435,6 +435,10 @@ namespace PseudoMaker
                     ChaFileControl.custom.body.nipGlossPower = value;
                     ChaControl.ChangeSettingNipGlossPower();
                     break;
+                case FloatType.AreolaSize:
+                    ChaFileControl.custom.body.areolaSize = value;
+                    ChaControl.ChangeSettingAreolaSize();
+                    break;
                 case FloatType.NailGloss:
                     ChaFileControl.custom.body.nailGlossPower = value;
                     ChaControl.ChangeSettingNailGlossPower();
@@ -532,6 +536,12 @@ namespace PseudoMaker
                     ChaFileControl.custom.hair.parts[1].length = value;
                     ChaControl.ChangeSettingHairFrontLength();
                     break;
+                case FloatType.ButtEditorStiffness:
+                case FloatType.ButtEditorElasticity:
+                case FloatType.ButtEditorDampening:
+                case FloatType.ButtEditorWeight:
+                    Compatibility.ButtEditorPlugin.SetButtValue(floatType, value);
+                    break;
             }
         }
 
@@ -566,6 +576,8 @@ namespace PseudoMaker
                     return GetPushupBaseValue(PushupValue.AdvancedWeight);
                 case FloatType.NippleGloss:
                     return ChaFileControl.custom.body.nipGlossPower;
+                case FloatType.AreolaSize:
+                    return ChaFileControl.custom.body.areolaSize;
                 case FloatType.NailGloss:
                     return ChaFileControl.custom.body.nailGlossPower;
                 case FloatType.FaceOverlayStrength:
@@ -611,6 +623,11 @@ namespace PseudoMaker
                     return ChaFileControl.custom.face.lipGlossPower;
                 case FloatType.HairFrontLength:
                     return ChaFileControl.custom.hair.parts[1].length;
+                case FloatType.ButtEditorStiffness:
+                case FloatType.ButtEditorElasticity:
+                case FloatType.ButtEditorDampening:
+                case FloatType.ButtEditorWeight:
+                    return Compatibility.ButtEditorPlugin.GetButtValue(floatType);
                 default:
                     return 0f;
             }
@@ -919,23 +936,29 @@ namespace PseudoMaker
         public void SetHideOpt(int kind, int option, bool value)
         {
             if (kind == 2)
+            {
                 if (Clothes.hideBraOpt[option] != value)
                 {
                     Clothes.hideBraOpt[option] = value;
                     SetClothes.hideBraOpt[option] = value;
                 }
-            if (kind == 3)
+            }
+            else if (kind == 3)
+            {
                 if (Clothes.hideShortsOpt[option] != value)
                 {
                     Clothes.hideShortsOpt[option] = value;
                     SetClothes.hideShortsOpt[option] = value;
                 }
+            }
             else
+            {
                 if (Clothes.parts[kind].hideOpt[option] != value)
                 {
                     Clothes.parts[kind].hideOpt[option] = value;
                     SetClothes.parts[kind].hideOpt[option] = value;
                 }
+            }
         }
 
         public int GetClothingUsesOptParts (ChaClothesComponent component)
@@ -1008,7 +1031,7 @@ namespace PseudoMaker
                 case PushupValue.AdvancedRoundness:
                     return selectedPushupController.BaseData.Roundness;
                 case PushupValue.AdvancedAreolaDepth:
-                    return selectedPushupController.BaseData.Depth;
+                    return selectedPushupController.BaseData.AreolaDepth;
                 case PushupValue.AdvancedNippleWidth:
                     return selectedPushupController.BaseData.NippleWidth;
                 case PushupValue.AdvancedNippleDepth:
@@ -1048,7 +1071,7 @@ namespace PseudoMaker
                     selectedPushupController.BaseData.Roundness = value;
                     break;
                 case PushupValue.AdvancedAreolaDepth:
-                    selectedPushupController.BaseData.Depth = value;
+                    selectedPushupController.BaseData.AreolaDepth = value;
                     break;
                 case PushupValue.AdvancedNippleWidth:
                     selectedPushupController.BaseData.NippleWidth = value;

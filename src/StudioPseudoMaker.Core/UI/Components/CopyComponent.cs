@@ -30,10 +30,10 @@ namespace PseudoMaker.UI
 
             Transform fromTextObject = transform.Find("Layout/FromText");
             if (!fromTextObject) fromTextObject = transform.Find("Layout/Text");
-            fromText = fromTextObject.GetComponent<Text>();
+            fromText = fromTextObject.GetComponentInChildren<Text>();
             Transform toTextObject = transform.Find("Layout/ToText");
             if (!toTextObject) toTextObject = transform.Find("Layout/Text (1)");
-            toText = toTextObject.GetComponent<Text>();
+            toText = toTextObject.GetComponentInChildren<Text>();
         }
 
         private void Start()
