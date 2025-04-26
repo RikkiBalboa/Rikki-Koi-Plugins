@@ -44,6 +44,7 @@ namespace PseudoMaker.UI
             RefreshDropdowns();
 
             TimelineCompatibilityHelper.SelectedClothingKind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
+            _coordianteNameText = MoreOutfits.GetCurrentOutfitName();
         }
 
         public void RefreshDropdowns()
@@ -325,7 +326,9 @@ namespace PseudoMaker.UI
                 return objectList;
             }
         }
-        
+
+
+        private string _coordianteNameText;
         private void InitializeSettings()
         {
             AddHeader("Clothing Unlock");
@@ -337,7 +340,8 @@ namespace PseudoMaker.UI
             AddSplitter();
             AddHeader("More Outfits");
             AddButtonGroupRow(new Dictionary<string, Action> {{"Add Outfit", MoreOutfits.AddOufitSlot}, {"Remove Last Outfit", MoreOutfits.RemoveOutfitSlot}});
-            // TODO: Text input for renaming 
+            AddTextInputRow("Name:", () => _coordianteNameText, s => _coordianteNameText = s, MoreOutfits.GetCurrentOutfitName());
+            AddButtonRow("Rename current outfit", () => MoreOutfits.SetCurrentOutfitName(_coordianteNameText));
         }
 
         private void InitializePushup()

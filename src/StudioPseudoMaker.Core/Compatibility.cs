@@ -740,6 +740,19 @@ namespace PseudoMaker
                 Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
                 PseudoMaker.Logger.LogMessage("Outfit removed successfully!");
             }
+
+            public static string GetCurrentOutfitName()
+            {
+                return KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter,
+                    PseudoMaker.selectedCharacter.fileStatus.coordinateType);
+            }
+
+            public static void SetCurrentOutfitName(string outfitName)
+            {
+                KK_Plugins.MoreOutfits.Plugin.SetCoordinateName(PseudoMaker.selectedCharacter, PseudoMaker.selectedCharacter.fileStatus.coordinateType, outfitName);
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.Logger.LogMessage("Outfit renamed successfully!");
+            }
         }
     }
 }
