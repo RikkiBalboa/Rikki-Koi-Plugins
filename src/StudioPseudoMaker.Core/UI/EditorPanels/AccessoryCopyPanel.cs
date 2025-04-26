@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using ChaCustom;
 using KKAPI.Maker;
 using MessagePack;
-using UnityEngine.UI;
 
 namespace PseudoMaker.UI
 {
@@ -45,7 +43,7 @@ namespace PseudoMaker.UI
             for (var i = 0; i < PseudoMaker.selectedCharacter.infoAccessory.Length; i++)
             {
                 int slotNum = i;
-                _copyComponents.Add(slotNum, AddCopyRow(slotNum, false, () =>
+                _copyComponents.Add(slotNum, AddCopyRow($"Slot {slotNum+1}", () =>
                 {
                     ChaFileAccessory fromAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].accessory;
                     ListInfoBase listInfoFrom = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo((ChaListDefine.CategoryNo)fromAccessory.parts[slotNum].type, fromAccessory.parts[slotNum].id);
