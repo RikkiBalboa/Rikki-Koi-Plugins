@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 using KKAPI.Maker;
 using MessagePack;
+using UnityEngine;
 
 namespace PseudoMaker.UI
 {
@@ -17,9 +18,16 @@ namespace PseudoMaker.UI
         
         private Dictionary<int, CopyComponent> _copyComponents = new Dictionary<int, CopyComponent>();
         
+        private GameObject copyRowTemplate;
+
+        private bool _initialized;
+        
         protected override void Initialize()
         {
             base.Initialize();
+
+            copyRowTemplate = Instantiate(CopyRowTemplate, CopyRowTemplate.transform.parent);
+            copyRowTemplate.SetActive(false);
             
             fromDropDown = AddDropdownRow(
                 "Source Outfit",
@@ -28,8 +36,10 @@ namespace PseudoMaker.UI
                 value => { 
                     fromSelected = value;
                     _copyComponents.Values.ToList().ForEach(c => c.Refresh());
-                }
+                },
+                transform
             );
+            fromDropDown.transform.SetAsFirstSibling();
             toDropDown = AddDropdownRow(
                 "Target Outfit",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
@@ -37,37 +47,60 @@ namespace PseudoMaker.UI
                 value => {
                     toSelected = value;
                     _copyComponents.Values.ToList().ForEach(c => c.Refresh());
-                }
+                },
+                transform
             );
+            toDropDown.transform.SetSiblingIndex(1);
             
-            for (var i = 0; i < PseudoMaker.selectedCharacter.infoAccessory.Length; i++)
-            {
-                int slotNum = i;
-                _copyComponents.Add(slotNum, AddCopyRow($"Slot {slotNum+1}", () =>
-                {
-                    ChaFileAccessory fromAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].accessory;
-                    ListInfoBase listInfoFrom = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo((ChaListDefine.CategoryNo)fromAccessory.parts[slotNum].type, fromAccessory.parts[slotNum].id);
-                    return listInfoFrom != null ? listInfoFrom.Name : "";
-                }, () =>
-                {
-                    ChaFileAccessory toAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[toSelected].accessory;
-                    ListInfoBase listInfoTo = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo((ChaListDefine.CategoryNo)toAccessory.parts[slotNum].type, toAccessory.parts[slotNum].id);
-                    return listInfoTo != null ? listInfoTo.Name : "";
-                }));
-                
-            }
+            
             AddButtonGroupRow(new Dictionary<string, Action>()
             {
                 { "Toggle  All", () => _copyComponents.Values.ToList().ForEach(c => c.Toggled = true) },
                 { "Toggle  None", () => _copyComponents.Values.ToList().ForEach(c => c.Toggled = false) },
                 { "Copy", CopyMethod}
-            });
+            }, transform);
+            
+            _initialized = true;
         }
 
         private void OnEnable()
         {
-            _copyComponents.Values.ToList().ForEach(c => c.Refresh());
+            RefreshRows();
             RefreshDropdowns();
+        }
+
+        internal void RefreshRows()
+        {
+            if (!_initialized || !isActiveAndEnabled) return;
+            if (PseudoMaker.selectedCharacter.infoAccessory.Length != _copyComponents.Count)
+            {
+                Dictionary<int, bool> toggleStates = new Dictionary<int, bool>();
+                foreach (KeyValuePair<int,CopyComponent> kvp in _copyComponents)
+                {
+                    toggleStates.Add(kvp.Key, kvp.Value.Toggled);
+                    Destroy(kvp.Value.gameObject);
+                }
+                _copyComponents.Clear();
+                
+                for (var i = 0; i < PseudoMaker.selectedCharacter.infoAccessory.Length; i++)
+                {
+                    int slotNum = i;
+                    _copyComponents.Add(slotNum, AddCopyRow($"Slot {slotNum+1}", () =>
+                    {
+                        ChaFileAccessory fromAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].accessory;
+                        if (slotNum >= fromAccessory.parts.Length) return "None";
+                        ListInfoBase listInfoFrom = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo((ChaListDefine.CategoryNo)fromAccessory.parts[slotNum].type, fromAccessory.parts[slotNum].id);
+                        return listInfoFrom != null ? listInfoFrom.Name : "None";
+                    }, () =>
+                    {
+                        ChaFileAccessory toAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[toSelected].accessory;
+                        if (slotNum >= toAccessory.parts.Length) return "None";
+                        ListInfoBase listInfoTo = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo((ChaListDefine.CategoryNo)toAccessory.parts[slotNum].type, toAccessory.parts[slotNum].id);
+                        return listInfoTo != null ? listInfoTo.Name : "None";
+                    }, toggleStates.TryGetValue(i, out bool toggled) && toggled, copyRowTemplate));
+                }
+            }
+            _copyComponents.Values.ToList().ForEach(c => c.Refresh());
         }
 
         public void RefreshDropdowns()
@@ -89,6 +122,10 @@ namespace PseudoMaker.UI
             {
                 if (_copyComponents[i].Toggled)
                 {
+                    if (toAccessory.parts.Length <= i)
+                    {
+                        PseudoMaker.selectedCharacterController.AddAccessorySlot((i+1) - toAccessory.parts.Length, toSelected);
+                    }
                     byte[] array = MessagePackSerializer.Serialize(fromAccessory.parts[i]);
                     toAccessory.parts[i] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(array);
                     copiedSlots.Add(i);

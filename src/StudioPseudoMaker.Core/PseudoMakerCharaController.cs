@@ -1479,7 +1479,7 @@ namespace PseudoMaker
             selectedCharacter.ChangeShakeAccessory(slotNr);
         }
 
-        public void AddAccessorySlot(int num)
+        public void AddAccessorySlot(int num, int? coordinateIndex = null)
         {
             var newParts = new ChaFileAccessory.PartsInfo[num];
             for (var i = 0; i < num; i++)
@@ -1487,10 +1487,12 @@ namespace PseudoMaker
                 newParts[i] = new ChaFileAccessory.PartsInfo();
             }
 
-            var nowParts = selectedCharacter.nowCoordinate.accessory.parts;
-            var accessory = selectedCharacter.chaFile.coordinate[selectedCharacter.chaFile.status.coordinateType].accessory;
+            ChaFileAccessory accessoryFile = selectedCharacter.chaFile.coordinate[coordinateIndex ?? selectedCharacter.fileStatus.coordinateType].accessory;
+            ChaFileAccessory.PartsInfo[] nowParts = accessoryFile.parts;
 
-            accessory.parts = selectedCharacter.nowCoordinate.accessory.parts = nowParts.Concat(newParts).ToArray();
+            accessoryFile.parts = nowParts.Concat(newParts).ToArray();
+            if (!coordinateIndex.HasValue || coordinateIndex.Value == selectedCharacter.fileStatus.coordinateType)
+                selectedCharacter.nowCoordinate.accessory.parts = accessoryFile.parts;
             MoreAccessories.ArraySync(selectedCharacter);
         }
 

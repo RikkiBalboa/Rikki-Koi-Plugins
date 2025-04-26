@@ -26,14 +26,14 @@ namespace PseudoMaker.UI
         {
             toggle = GetComponentInChildren<Toggle>(true);
             label = toggle.GetComponentInChildren<Text>(true);
-
-
+            
             Transform fromTextObject = transform.Find("Layout/FromText");
             if (!fromTextObject) fromTextObject = transform.Find("Layout/Text");
             fromText = fromTextObject.GetComponentInChildren<Text>();
             Transform toTextObject = transform.Find("Layout/ToText");
             if (!toTextObject) toTextObject = transform.Find("Layout/Text (1)");
             toText = toTextObject.GetComponentInChildren<Text>();
+            toggle.enabled = true;
         }
 
         private void Start()
