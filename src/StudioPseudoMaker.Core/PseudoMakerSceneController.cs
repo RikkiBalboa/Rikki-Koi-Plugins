@@ -44,12 +44,14 @@ namespace PseudoMaker
             SelectedHairAccessoryController = SelectedCharacter.gameObject.GetComponent<HairAccessoryCustomizer.HairAccessoryController>();
             SelectedPushupController = SelectedCharacter.gameObject.GetComponent<Pushup.PushupController>();
             
+            if (!PseudoMakerUI.Instance) return;
+            
             if (PseudoMakerUI.Instance.CategoryPanels.TryGetValue(Category.Clothing, out CategoryPanel clothingPanel) && clothingPanel.SubCategoryPanels.TryGetValue(SubCategory.ClothingCopy, out BaseEditorPanel clothingCopyPanel))
                 ((ClothingEditorPanel)clothingCopyPanel)?.RefreshDropdowns();
             if (PseudoMakerUI.Instance.CategoryPanels.TryGetValue(Category.Accessories, out CategoryPanel accessoryPanel) && accessoryPanel.SubCategoryPanels.TryGetValue(SubCategory.AccessoryCopy, out BaseEditorPanel accessoryCopyPanel))
                 ((AccessoryCopyPanel)accessoryCopyPanel).RefreshDropdowns();
             
-            PseudoMaker.MainWindow.RefreshValues();
+            PseudoMaker.MainWindow?.RefreshValues();
         }
 
         protected override void OnObjectDeleted(ObjectCtrlInfo objectCtrlInfo)
