@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ButtEditor;
 using Shared;
+using a12 = AAAAAAAAAAAA.AAAAAAAAAAAA;
 
 namespace PseudoMaker
 {
@@ -159,7 +160,7 @@ namespace PseudoMaker
 
                     if (
                         controller.customAccParents.TryGetValue(PseudoMaker.selectedCharacter.fileStatus.coordinateType, out var dicCoord)
-                        && AAAAAAAAAAAA.AAAAAAAAAAAA.TryGetStudioAccBone(controller, toSlotnNr, out var accBone)
+                        && a12.TryGetStudioAccBone(controller, toSlotnNr, out var accBone)
                     )
                     {
                         var toDelete = new List<int>();
@@ -183,6 +184,11 @@ namespace PseudoMaker
 
                     controller.LoadData();
                 }
+            }
+
+            public static void CopyAccessoryAfter(int fromSelected, int toSelected, List<int> slots)
+            {
+                throw new NotImplementedException();
             }
         }
 

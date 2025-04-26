@@ -84,12 +84,14 @@ namespace PseudoMaker.UI
         {
             ChaFileAccessory toAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[toSelected].accessory;
             ChaFileAccessory fromAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].accessory;
+            var copiedSlots = new List<int>();
             for (int i = 0; i < PseudoMaker.selectedCharacter.infoAccessory.Length; i++)
             {
                 if (_copyComponents[i].Toggled)
                 {
                     byte[] array = MessagePackSerializer.Serialize(fromAccessory.parts[i]);
                     toAccessory.parts[i] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(array);
+                    copiedSlots.Add(i);
                 }
             }
             PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
@@ -107,7 +109,9 @@ namespace PseudoMaker.UI
                 (ChaFileDefine.CoordinateType)toSelected
             );
             eventValue?.GetType().GetMethod("Invoke")?.Invoke(eventValue, new object[] { this, args });
-            // TODO: A12 compat
+            
+            // TODO: someone rework A12
+            // Compatibility.A12.CopyAccessoryAfter(fromSelected, toSelected, copiedSlots);
         }
     }
 }
