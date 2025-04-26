@@ -25,8 +25,8 @@ namespace PseudoMaker.UI
             toggle = GetComponentInChildren<Toggle>(true);
             label = toggle.GetComponentInChildren<Text>(true);
 
-            fromText = transform.Find("Layout/FromText").GetComponent<Text>();
-            toText = transform.Find("Layout/ToText").GetComponent<Text>();
+            fromText = transform.Find("Layout/FromText").GetComponentInChildren<Text>();
+            toText = transform.Find("Layout/ToText").GetComponentInChildren<Text>();
         }
 
         private void Start()
