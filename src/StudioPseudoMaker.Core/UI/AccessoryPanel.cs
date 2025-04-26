@@ -39,15 +39,15 @@ namespace PseudoMaker.UI
                     RefreshAccessoryList();
                 }
             }, true);
-            AddToggle("Transfer", value => {
-                editorPanel.gameObject.SetActive(false);
-                transferPanel.gameObject.SetActive(true);
-                copyPanel.gameObject.SetActive(false);
-            });
             AddToggle("Copy", value => {
                 editorPanel.gameObject.SetActive(false);
                 transferPanel.gameObject.SetActive(false);
                 copyPanel.gameObject.SetActive(true);
+            });
+            AddToggle("Transfer", value => {
+                editorPanel.gameObject.SetActive(false);
+                transferPanel.gameObject.SetActive(true);
+                copyPanel.gameObject.SetActive(false);
             });
         }
 
