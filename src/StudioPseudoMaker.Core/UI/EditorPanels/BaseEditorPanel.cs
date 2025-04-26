@@ -17,6 +17,7 @@ namespace PseudoMaker.UI
 
         protected GameObject SliderTemplate;
         protected GameObject InputTemplate;
+        protected GameObject TextInputTemplate;
         protected GameObject ButtonGroupTemplate;
         protected GameObject ColorTemplate;
         protected GameObject PickerTemplate;
@@ -38,6 +39,7 @@ namespace PseudoMaker.UI
 
                 SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
                 InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
+                TextInputTemplate = scrollRect.content.Find("TextInputFieldTemplate").gameObject;
                 ButtonGroupTemplate = scrollRect.content.Find("ButtonGroupTemplate").gameObject;
                 ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
                 PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
@@ -55,6 +57,7 @@ namespace PseudoMaker.UI
 
                 Destroy(SliderTemplate);
                 Destroy(InputTemplate);
+                Destroy(TextInputTemplate);
                 Destroy(ButtonGroupTemplate);
                 Destroy(ColorTemplate);
                 Destroy(PickerTemplate);
@@ -162,6 +165,20 @@ namespace PseudoMaker.UI
             inputFieldComponent.GetOriginalValue = getOriginalValueAction;
             inputFieldComponent.SetValueAction = setValueAction;
             inputFieldComponent.ResetValueAction = resetValueAction;
+
+            return inputFieldComponent;
+        }
+
+        public TextInputFieldComponent AddTextInputRow(string name, Func<string> getCurrentValueAction, Action<string> setValueAction, string placeholder = "Type here...", Transform parent = null)
+        {
+            var inputField = Instantiate(TextInputTemplate, parent == null ? scrollRect.content : parent);
+            inputField.name = $"TextInputField{name.Replace(" ", "")}";
+
+            var inputFieldComponent = inputField.AddComponent<TextInputFieldComponent>();
+            inputFieldComponent.Name = name;
+            inputFieldComponent.GetCurrentValue = getCurrentValueAction;
+            inputFieldComponent.SetValueAction = setValueAction;
+            inputFieldComponent.Placeholder = placeholder;
 
             return inputFieldComponent;
         }
