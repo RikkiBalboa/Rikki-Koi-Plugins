@@ -12,28 +12,29 @@ namespace PseudoMaker.UI
     {
         private int fromSelected;
         private int toSelected;
-        
+
         private DropdownComponent fromDropDown;
         private DropdownComponent toDropDown;
-        
+
         private Dictionary<int, CopyComponent> _copyComponents = new Dictionary<int, CopyComponent>();
-        
+        private int _maxAccessoryCount = 20;
+
         private GameObject copyRowTemplate;
 
         private bool _initialized;
-        
+
         protected override void Initialize()
         {
             base.Initialize();
 
             copyRowTemplate = Instantiate(CopyRowTemplate, CopyRowTemplate.transform.parent);
             copyRowTemplate.SetActive(false);
-            
+
             fromDropDown = AddDropdownRow(
                 "Source Outfit",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => fromSelected,
-                value => { 
+                value => {
                     fromSelected = value;
                     _copyComponents.Values.ToList().ForEach(c => c.Refresh());
                 },
@@ -51,15 +52,15 @@ namespace PseudoMaker.UI
                 transform
             );
             toDropDown.transform.SetSiblingIndex(1);
-            
-            
+
+
             AddButtonGroupRow(new Dictionary<string, Action>()
             {
                 { "Toggle  All", () => _copyComponents.Values.ToList().ForEach(c => c.Toggled = true) },
                 { "Toggle  None", () => _copyComponents.Values.ToList().ForEach(c => c.Toggled = false) },
                 { "Copy", CopyMethod}
             }, transform);
-            
+
             _initialized = true;
         }
 
@@ -71,21 +72,23 @@ namespace PseudoMaker.UI
 
         internal void RefreshRows()
         {
+            _maxAccessoryCount = PseudoMaker.selectedCharacter.chaFile.coordinate.Max(x => x.accessory.parts.Length);
+
             if (!_initialized || !isActiveAndEnabled) return;
-            if (PseudoMaker.selectedCharacter.infoAccessory.Length != _copyComponents.Count)
+            if (_maxAccessoryCount != _copyComponents.Count)
             {
                 Dictionary<int, bool> toggleStates = new Dictionary<int, bool>();
-                foreach (KeyValuePair<int,CopyComponent> kvp in _copyComponents)
+                foreach (KeyValuePair<int, CopyComponent> kvp in _copyComponents)
                 {
                     toggleStates.Add(kvp.Key, kvp.Value.Toggled);
                     Destroy(kvp.Value.gameObject);
                 }
                 _copyComponents.Clear();
-                
-                for (var i = 0; i < PseudoMaker.selectedCharacter.infoAccessory.Length; i++)
+
+                for (var i = 0; i < _maxAccessoryCount; i++)
                 {
                     int slotNum = i;
-                    _copyComponents.Add(slotNum, AddCopyRow($"Slot {slotNum+1}", () =>
+                    _copyComponents.Add(slotNum, AddCopyRow($"Slot {slotNum + 1}", () =>
                     {
                         ChaFileAccessory fromAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].accessory;
                         if (slotNum >= fromAccessory.parts.Length) return "None";
@@ -111,20 +114,20 @@ namespace PseudoMaker.UI
             fromDropDown.SetDropdownOptions(options);
             toDropDown.SetDropdownOptions(options);
         }
-        
+
 
         private void CopyMethod()
         {
             ChaFileAccessory toAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[toSelected].accessory;
             ChaFileAccessory fromAccessory = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].accessory;
             var copiedSlots = new List<int>();
-            for (int i = 0; i < PseudoMaker.selectedCharacter.infoAccessory.Length; i++)
+            for (int i = 0; i < _maxAccessoryCount; i++)
             {
                 if (_copyComponents[i].Toggled)
                 {
                     if (toAccessory.parts.Length <= i)
                     {
-                        PseudoMaker.selectedCharacterController.AddAccessorySlot((i+1) - toAccessory.parts.Length, toSelected);
+                        PseudoMaker.selectedCharacterController.AddAccessorySlot((i + 1) - toAccessory.parts.Length, toSelected);
                     }
                     byte[] array = MessagePackSerializer.Serialize(fromAccessory.parts[i]);
                     toAccessory.parts[i] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(array);
@@ -134,9 +137,8 @@ namespace PseudoMaker.UI
             PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
             PseudoMaker.selectedCharacter.Reload(false, true, true, true);
             Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
-            
+
             // trigger KKAPI event
-            
             FieldInfo eventInfo = typeof(AccessoriesApi).GetField(nameof(AccessoriesApi.AccessoriesCopied), BindingFlags.NonPublic | BindingFlags.Static);
             if (eventInfo == null) return;
             object eventValue = eventInfo.GetValue(null);
@@ -146,7 +148,7 @@ namespace PseudoMaker.UI
                 (ChaFileDefine.CoordinateType)toSelected
             );
             eventValue?.GetType().GetMethod("Invoke")?.Invoke(eventValue, new object[] { this, args });
-            
+
             // TODO: someone rework A12
             // Compatibility.A12.CopyAccessoryAfter(fromSelected, toSelected, copiedSlots);
         }
