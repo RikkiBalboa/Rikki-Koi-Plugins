@@ -471,7 +471,7 @@ namespace PseudoMaker.UI
             for (var i = 0; i < cateNo.Length; i++)
             {
                 int cNum = i;
-                _copyComponents.Add(cNum,AddCopyRow(UI.UIMappings.GetAccessoryTypeName(cateNo[cNum]), () =>
+                _copyComponents.Add(cNum,AddCopyRow(UIMappings.GetClothingTypeName(cateNo[cNum]), () =>
                 {
                     ChaFileClothes fromClothes = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].clothes;
                     ListInfoBase listInfoFrom = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[cNum], fromClothes.parts[cNum].id) ?? PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[cNum], DefClothesID()[cNum]);

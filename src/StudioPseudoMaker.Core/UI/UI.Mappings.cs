@@ -555,6 +555,28 @@ namespace PseudoMaker.UI
             }
         }
 
+        public static string GetClothingTypeName(ChaListDefine.CategoryNo category)
+        {
+            switch (category)
+            {
+                case ChaListDefine.CategoryNo.co_top: return "Top";
+                case ChaListDefine.CategoryNo.co_bot: return "Bottom";
+                case ChaListDefine.CategoryNo.co_bra: return "Bra";
+                case ChaListDefine.CategoryNo.co_shorts: return "Panties";
+                case ChaListDefine.CategoryNo.co_gloves: return "Gloves";
+                case ChaListDefine.CategoryNo.co_panst: return "Pantyhose";
+                case ChaListDefine.CategoryNo.co_socks: return "Socks";
+                case ChaListDefine.CategoryNo.co_shoes: return "Shoes";
+                case ChaListDefine.CategoryNo.cpo_sailor_a: return "Sailor A";
+                case ChaListDefine.CategoryNo.cpo_sailor_b: return "Sailor B";
+                case ChaListDefine.CategoryNo.cpo_sailor_c: return "Sailor C";
+                case ChaListDefine.CategoryNo.cpo_jacket_a: return "Jacket A";
+                case ChaListDefine.CategoryNo.cpo_jacket_b: return "Jacket B";
+                case ChaListDefine.CategoryNo.cpo_jacket_c: return "Jacket C";
+                default: return "Unknown";
+            }
+        }
+
         public static int GetAccessoryTypeIndex(int categoryNr)
         {
             var index = AccessoryTypes.ToList().IndexOf((ChaListDefine.CategoryNo)categoryNr);
