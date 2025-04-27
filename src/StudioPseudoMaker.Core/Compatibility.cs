@@ -11,10 +11,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using KK_Plugins;
+using KKAPI.Studio;
+using Studio;
 using UnityEngine;
 using UnityEngine.UI;
 using ButtEditor;
 using Shared;
+using a12 = AAAAAAAAAAAA.AAAAAAAAAAAA;
 
 namespace PseudoMaker
 {
@@ -157,7 +160,7 @@ namespace PseudoMaker
 
                     if (
                         controller.customAccParents.TryGetValue(PseudoMaker.selectedCharacter.fileStatus.coordinateType, out var dicCoord)
-                        && AAAAAAAAAAAA.AAAAAAAAAAAA.TryGetStudioAccBone(controller, toSlotnNr, out var accBone)
+                        && a12.TryGetStudioAccBone(controller, toSlotnNr, out var accBone)
                     )
                     {
                         var toDelete = new List<int>();
@@ -181,6 +184,11 @@ namespace PseudoMaker
 
                     controller.LoadData();
                 }
+            }
+
+            public static void CopyAccessoryAfter(int fromSelected, int toSelected, List<int> slots)
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -407,6 +415,33 @@ namespace PseudoMaker
                     return GetController()?.GetOverlayTex(clothesId, false);
                 }
             }
+
+            public static void CLothingCopiedEvent(int sourceOutfit, int targetOutfit, List<int> slots)
+            {
+                var controller = PseudoMaker.selectedCharacter.GetComponent<KoiClothesOverlayController>();
+                if (!controller) return;
+
+                var copySlots = KoiClothesOverlayMgr.MainClothesNames.Where((x, i) => slots.Contains(i)).ToList();
+
+                if (slots.Contains(0))
+                {
+                    copySlots.AddRange(Enum.GetNames(typeof(MaskKind)));
+                    copySlots.AddRange(KoiClothesOverlayMgr.SubClothesNames);
+                }
+                
+                Dictionary<string, ClothesTexData> sourceDic = controller.GetOverlayTextures((ChaFileDefine.CoordinateType)sourceOutfit);
+                Dictionary<string, ClothesTexData> destinationDic = controller.GetOverlayTextures((ChaFileDefine.CoordinateType)targetOutfit);
+
+                foreach (string copySlot in copySlots)
+                {
+                    destinationDic.Remove(copySlot);
+                    if (sourceDic.TryGetValue(copySlot, out ClothesTexData val))
+                        destinationDic[copySlot] = val;
+                }
+
+                if (targetOutfit == (int)controller.CurrentCoordinate.Value)
+                    controller.RefreshAllTextures();
+            }
         }
 
         public static class SkinOverlays
@@ -601,6 +636,12 @@ namespace PseudoMaker
                     MEController.RefreshClothesMainTex();
                 }
             }
+
+            public static void ClothingCopiedEvent(int sourceOutfit, int targetOutfit, List<int> slots)
+            {
+                MaterialEditorCharaController MEController = MaterialEditorPlugin.GetCharaController(PseudoMaker.selectedCharacter);
+                MEController.ClothingCopiedEvent(sourceOutfit, targetOutfit, slots);
+            }
         }
 
         public static class ClothingUnlock
@@ -684,6 +725,39 @@ namespace PseudoMaker
                     case FloatType.ButtEditorWeight: return SliderType.Weight;
                     default: return null;
                 }
+            }
+        }
+
+        public static class MoreOutfits
+        {
+
+            public static void AddOufitSlot()
+            {
+                KK_Plugins.MoreOutfits.Plugin.AddCoordinateSlot(PseudoMaker.selectedCharacter);
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.Logger.LogMessage("Outfit added successfully!");
+            }
+
+            public static void RemoveOutfitSlot()
+            {
+                int outfitCount = PseudoMaker.selectedCharacter.GetOCIChar().charInfo.chaFile.coordinate.Length;
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.stateInfo.OnClickCosType(outfitCount - 2);
+                KK_Plugins.MoreOutfits.Plugin.RemoveCoordinateSlot(PseudoMaker.selectedCharacter);
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.Logger.LogMessage("Outfit removed successfully!");
+            }
+
+            public static string GetCurrentOutfitName()
+            {
+                return KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter,
+                    PseudoMaker.selectedCharacter.fileStatus.coordinateType);
+            }
+
+            public static void SetCurrentOutfitName(string outfitName)
+            {
+                KK_Plugins.MoreOutfits.Plugin.SetCoordinateName(PseudoMaker.selectedCharacter, PseudoMaker.selectedCharacter.fileStatus.coordinateType, outfitName);
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.Logger.LogMessage("Outfit renamed successfully!");
             }
         }
     }

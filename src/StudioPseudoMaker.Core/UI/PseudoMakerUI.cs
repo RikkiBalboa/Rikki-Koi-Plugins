@@ -29,6 +29,8 @@ namespace PseudoMaker.UI
 
         public void Awake()
         {
+            Instance = this;
+            
             MainCanvas = (RectTransform)MainWindow.transform.Find("MainCanvas").transform;
             MainCanvas.anchoredPosition = new Vector2(70, 65);
             MainCanvas.offsetMax = new Vector2(70 + PseudoMaker.MainWindowWidth.Value, 65 + PseudoMaker.MainWindowHeight.Value);

@@ -115,5 +115,13 @@ namespace PseudoMaker
             __result = Compatibility.SelectedSlotNr;
             return false;
         }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.LoadSceneCoroutine))]
+        private static bool LoadScenePrefix()
+        {
+            PseudoMakerSceneController.Instance.ClearProperties();
+            return true;
+        }
     }
 }

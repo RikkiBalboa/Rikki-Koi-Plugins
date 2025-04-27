@@ -396,14 +396,17 @@ namespace PseudoMaker.UI
             return imageComponent;
         }
 
-        public CopyComponent AddCopyRow(string title, Func<string> getFromName, Func<string> getToName)
+        public CopyComponent AddCopyRow(string title, Func<string> getFromName, Func<string> getToName, bool initiallyToggled = false, GameObject template = null)
         {
-            var row = Instantiate(CopyRowTemplate, CopyRowTemplate.transform.parent);
-
+            if (CopyRowTemplate) template = CopyRowTemplate;
+            else if (!template) return null;
+            var row = Instantiate(template, template.transform.parent);
             var copyComponent = row.AddComponent<CopyComponent>();
             copyComponent.LabelName = title;
             copyComponent.GetFromName = getFromName;
             copyComponent.GetToName = getToName;
+            row.SetActive(true);
+            copyComponent.Toggled = initiallyToggled;
             return copyComponent;
         }
 

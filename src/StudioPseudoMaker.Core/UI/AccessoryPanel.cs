@@ -10,6 +10,7 @@ namespace PseudoMaker.UI
     {
         public AccessoryEditorPanel editorPanel;
         public AccessoryTransferPanel transferPanel;
+        public AccessoryCopyPanel copyPanel;
 
         public GameObject ToggleTemplate;
 
@@ -36,11 +37,19 @@ namespace PseudoMaker.UI
                     PseudoMaker.selectedCharacterController.AddAccessorySlot(1);
                     addSlotToggle.isOn = false;
                     RefreshAccessoryList();
+                    PseudoMakerUI.Instance.RefreshValues();
+                    Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
                 }
             }, true);
+            AddToggle("Copy", value => {
+                editorPanel.gameObject.SetActive(false);
+                transferPanel.gameObject.SetActive(false);
+                copyPanel.gameObject.SetActive(true);
+            });
             AddToggle("Transfer", value => {
                 editorPanel.gameObject.SetActive(false);
                 transferPanel.gameObject.SetActive(true);
+                copyPanel.gameObject.SetActive(false);
             });
         }
 
@@ -82,6 +91,7 @@ namespace PseudoMaker.UI
                 {
                     editorPanel.gameObject.SetActive(true);
                     transferPanel.gameObject.SetActive(false);
+                    copyPanel.gameObject.SetActive(false);
                     editorPanel?.ChangeSelectedAccessory(_i, accessory != null);
                 });
 
@@ -117,6 +127,7 @@ namespace PseudoMaker.UI
                 {
                     editorPanel.gameObject.SetActive(true);
                     transferPanel.gameObject.SetActive(false);
+                    copyPanel.gameObject.SetActive(false);
                     editorPanel?.ChangeSelectedAccessory(_i, accessory != null);
                 });
                 toggle.group = PanelToggleGroup;

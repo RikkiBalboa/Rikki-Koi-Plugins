@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -55,12 +56,11 @@ namespace PseudoMaker.UI
 
         public void SetDropdownOptions(IEnumerable<string> options)
         {
+            if (!dropdown) return;
+            DropdownOptions = options.ToList();
+            if (dropdown.value >= DropdownOptions.Count) dropdown.value = DropdownOptions.Count - 1;
             shouldNotUpdate = true;
-            if (dropdown == null) return;
-            var _options = new List<Dropdown.OptionData>();
-            foreach (var option in options)
-                _options.Add(new Dropdown.OptionData(option));
-            dropdown.options = _options;
+            dropdown.options = DropdownOptions.Select(option => new Dropdown.OptionData(option)).ToList();
             dropdown.value = GetCurrentValue();
             dropdown.RefreshShownValue();
             shouldNotUpdate = false;

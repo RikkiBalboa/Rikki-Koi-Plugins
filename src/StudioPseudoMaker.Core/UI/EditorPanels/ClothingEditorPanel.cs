@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using KK_Plugins;
+using MessagePack;
 using UnityEngine;
 using UnityEngine.UI;
 using static PseudoMaker.PseudoMakerCharaController;
@@ -39,15 +39,19 @@ namespace PseudoMaker.UI
 
         private void OnEnable()
         {
-            if (clothingChangeAction != null) clothingChangeAction();
+            clothingChangeAction?.Invoke();
 
-            if (fromDropDown != null)
-            {
-                fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
-                toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
-            }
+            RefreshDropdowns();
 
             TimelineCompatibilityHelper.SelectedClothingKind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
+            _coordianteNameText = MoreOutfits.GetCurrentOutfitName();
+        }
+
+        public void RefreshDropdowns()
+        {
+            if (!fromDropDown || !toDropDown) return;
+            fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+            toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
         }
 
         private void OnDisable()
@@ -59,10 +63,21 @@ namespace PseudoMaker.UI
         {
             base.Initialize();
 
-            if (SubCategory == SubCategory.ClothingPushup) InitializePushup();
-            if (SubCategory == SubCategory.ClothingSettings) InitializeSettings();
-            //else if (SubCategory == SubCategory.ClothingCopy) return;
-            else InitializeClothing();
+            switch (SubCategory)
+            {
+                case SubCategory.ClothingPushup:
+                    InitializePushup();
+                    break;
+                case SubCategory.ClothingSettings:
+                    InitializeSettings();
+                    break;
+                case SubCategory.ClothingCopy:
+                    InitializeCopy();
+                    break;
+                default:
+                    InitializeClothing();
+                    break;
+            }
         }
 
         private void InitializeClothing()
@@ -131,6 +146,8 @@ namespace PseudoMaker.UI
                     mainOverlayObjects?.ForEach(o => o.SetActive(true && overlayHeader.isOn));
                     multiOverlayObjects?.ForEach(o => o.SetActive(false));
                 }
+
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
@@ -140,15 +157,15 @@ namespace PseudoMaker.UI
             {
                 clothingSailorGameObjects = new List<GameObject>()
                 {
-                    AddPickerRow(SelectKindType.CosSailor01).gameObject,
-                    AddPickerRow(SelectKindType.CosSailor02).gameObject,
-                    AddPickerRow(SelectKindType.CosSailor03).gameObject,
+                    AddPickerRow(SelectKindType.CosSailor01, clothingChangeAction).gameObject,
+                    AddPickerRow(SelectKindType.CosSailor02, clothingChangeAction).gameObject,
+                    AddPickerRow(SelectKindType.CosSailor03, clothingChangeAction).gameObject,
                 };
                 clothingJacketGameObjects = new List<GameObject>()
                 {
-                    AddPickerRow(SelectKindType.CosJacket01).gameObject,
-                    AddPickerRow(SelectKindType.CosJacket02).gameObject,
-                    AddPickerRow(SelectKindType.CosJacket03).gameObject,
+                    AddPickerRow(SelectKindType.CosJacket01, clothingChangeAction).gameObject,
+                    AddPickerRow(SelectKindType.CosJacket02, clothingChangeAction).gameObject,
+                    AddPickerRow(SelectKindType.CosJacket03, clothingChangeAction).gameObject,
                 };
             }
 
@@ -309,14 +326,22 @@ namespace PseudoMaker.UI
                 return objectList;
             }
         }
-        
+
+
+        private string _coordianteNameText;
         private void InitializeSettings()
         {
+            AddHeader("Clothing Unlock");
             AddToggleRow(
                 "Clothing Unlock",
                 ClothingUnlock.ChangeClothingUnlockState,
                 ClothingUnlock.GetClothingUnlockState
             );
+            AddSplitter();
+            AddHeader("More Outfits");
+            AddButtonGroupRow(new Dictionary<string, Action> {{"Add Outfit", MoreOutfits.AddOufitSlot}, {"Remove Last Outfit", MoreOutfits.RemoveOutfitSlot}});
+            AddTextInputRow("Name:", () => _coordianteNameText, s => _coordianteNameText = s, MoreOutfits.GetCurrentOutfitName());
+            AddButtonRow("Rename current outfit", () => MoreOutfits.SetCurrentOutfitName(_coordianteNameText));
         }
 
         private void InitializePushup()
@@ -406,31 +431,134 @@ namespace PseudoMaker.UI
             pushupTopGameObjects.ForEach(o => o.SetActive(false));
         }
 
+        private Dictionary<int, CopyComponent> _copyComponents = new Dictionary<int, CopyComponent>();
+        
         private void InitializeCopy()
         {
+
             fromDropDown = AddDropdownRow(
-                "Clothing Source",
+                "Source Outfit",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => fromSelected,
                 value => { 
                     fromSelected = value;
+                    _copyComponents.Values.ToList().ForEach(c => c.Refresh());
                 }
             );
             toDropDown = AddDropdownRow(
-                "Clothing Destination",
+                "Target Outfit",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => toSelected,
                 value => {
                     toSelected = value;
+                    _copyComponents.Values.ToList().ForEach(c => c.Refresh());
                 }
             );
 
-            //AddCopyRow(0, true,
-            //    () => PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(ChaListDefine.CategoryNo.co_top, PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].clothes.parts[0].id),
-            //    () => PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(ChaListDefine.CategoryNo.co_top, PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].clothes.parts[0].id)
-            //);
-            //AddCopyRow(1, true);
-            //AddCopyRow(2, true);
+            ChaListDefine.CategoryNo[] cateNo = new[]
+            {
+                ChaListDefine.CategoryNo.co_top,
+                ChaListDefine.CategoryNo.co_bot,
+                ChaListDefine.CategoryNo.co_bra,
+                ChaListDefine.CategoryNo.co_shorts,
+                ChaListDefine.CategoryNo.co_gloves,
+                ChaListDefine.CategoryNo.co_panst,
+                ChaListDefine.CategoryNo.co_socks,
+                ChaListDefine.CategoryNo.co_shoes,
+                ChaListDefine.CategoryNo.co_shoes
+            };
+            
+            for (var i = 0; i < cateNo.Length; i++)
+            {
+                int cNum = i;
+                _copyComponents.Add(cNum,AddCopyRow(UI.UIMappings.GetAccessoryTypeName(cateNo[cNum]), () =>
+                {
+                    ChaFileClothes fromClothes = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].clothes;
+                    ListInfoBase listInfoFrom = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[cNum], fromClothes.parts[cNum].id) ?? PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[cNum], DefClothesID()[cNum]);
+                    return listInfoFrom.Name;
+                }, () =>
+                {
+                    ChaFileClothes toClothes = PseudoMaker.selectedCharacter.chaFile.coordinate[toSelected].clothes;
+                    ListInfoBase listInfoTo = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[cNum], toClothes.parts[cNum].id) ?? PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[cNum], DefClothesID()[cNum]);
+                    return listInfoTo.Name;
+                }));
+            }
+
+            AddButtonGroupRow(new Dictionary<string, Action>()
+            {
+                { "Toggle  All", () => _copyComponents.Values.ToList().ForEach(c => c.Toggled = true) },
+                { "Toggle  None", () => _copyComponents.Values.ToList().ForEach(c => c.Toggled = false) },
+                { "Copy", CopyMethod}
+            });
+            return;
+
+            void CopyMethod()
+            {
+                ChaFileClothes toClothes = PseudoMaker.selectedCharacter.chaFile.coordinate[toSelected].clothes;
+                ChaFileClothes fromClothes = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].clothes;
+                ListInfoBase listInfoTo = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[0], toClothes.parts[0].id) ??
+                                        PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[0], DefClothesID()[0]);
+                ListInfoBase listInfoFrom = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[0], fromClothes.parts[0].id) ??
+                                         PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[0], DefClothesID()[0]);
+                for (var i = 0; i < cateNo.Length; i++)
+                {
+                    if (!_copyComponents[i].Toggled) continue;
+                    
+                    byte[] bytes = MessagePackSerializer.Serialize<ChaFileClothes.PartsInfo>(fromClothes.parts[i]);
+                    toClothes.parts[i] = MessagePackSerializer.Deserialize<ChaFileClothes.PartsInfo>(bytes);
+                    if (i == 0)
+                    {
+                        if ((1 == listInfoFrom.Kind && 1 == listInfoTo.Kind) || (2 == listInfoFrom.Kind && 2 == listInfoTo.Kind))
+                        {
+                            for (int j = 0; j < toClothes.subPartsId.Length; j++)
+                            {
+                                toClothes.subPartsId[j] = fromClothes.subPartsId[j];
+                            }
+                        }
+                        else if (1 == listInfoFrom.Kind || 2 == listInfoFrom.Kind)
+                        {
+                            for (int k = 0; k < toClothes.subPartsId.Length; k++)
+                            {
+                                toClothes.subPartsId[k] = fromClothes.subPartsId[k];
+                            }
+                        }
+                        else
+                        {
+                            for (int l = 0; l < toClothes.subPartsId.Length; l++)
+                            {
+                                toClothes.subPartsId[l] = 0;
+                            }
+                        }
+                    }
+                    else if (2 == i)
+                    {
+                        toClothes.hideBraOpt[0] = fromClothes.hideBraOpt[0];
+                        toClothes.hideBraOpt[1] = fromClothes.hideBraOpt[1];
+                    }
+                    else if (3 == i)
+                    {
+                        toClothes.hideShortsOpt[0] = fromClothes.hideShortsOpt[0];
+                        toClothes.hideShortsOpt[1] = fromClothes.hideShortsOpt[1];
+                    }
+                }
+                PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
+                PseudoMaker.selectedCharacter.Reload(false, true, true, true);
+                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+                
+                // section to call postfixes/events of the vanilla method
+                MaterialEditor.ClothingCopiedEvent(fromSelected, toSelected, (from kvp in _copyComponents where kvp.Value.Toggled select kvp.Key).ToList());
+                ClothesOverlays.CLothingCopiedEvent(fromSelected, toSelected, (from kvp in _copyComponents where kvp.Value.Toggled select kvp.Key).ToList());
+            }
+
+            int[] DefClothesID()
+            {
+                var defClothesID = new int[9];
+#if KKS
+                defClothesID[2] = PseudoMaker.selectedCharacter.sex == 0 ? ChaFileDefine.DefClothesMBraID : ChaFileDefine.DefClothesFBraID;
+                defClothesID[3] = PseudoMaker.selectedCharacter.sex == 0 ? ChaFileDefine.DefClothesMShortsID : ChaFileDefine.DefClothesFShortsID;
+#endif
+                return defClothesID;
+            }
         }
 
         public void AddPatternRows(SubCategory subcategory, SelectKindType selectKindType, int colorNr)

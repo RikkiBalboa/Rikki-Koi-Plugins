@@ -234,7 +234,7 @@ namespace PseudoMaker.UI
 #elif KKS
                 case SubCategory.ClothingShoes: return "Shoes";
 #endif
-                //case SubCategory.ClothingCopy: return "Copy";
+                case SubCategory.ClothingCopy: return "Copy";
                 case SubCategory.ClothingSettings: return "Settings";
                 case SubCategory.HairBack: return "Back";
                 case SubCategory.HairFront: return "Front";
@@ -614,7 +614,7 @@ namespace PseudoMaker.UI
 #elif KKS
         ClothingShoes,
 #endif
-        //ClothingCopy,
+        ClothingCopy,
         ClothingSettings,
         HairBack,
         HairFront,
@@ -623,5 +623,6 @@ namespace PseudoMaker.UI
         HairMiscellaneous,
         Accessories,
         AccessoryTransfer,
+        AccessoryCopy
     }
 }

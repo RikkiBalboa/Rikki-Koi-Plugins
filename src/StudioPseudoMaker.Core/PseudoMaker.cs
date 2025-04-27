@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -10,6 +11,7 @@ using KKAPI.Utilities;
 using PseudoMaker.UI;
 using Studio;
 using System.Linq;
+using ChaCustom;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -40,10 +42,10 @@ namespace PseudoMaker
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
-        internal static ChaControl selectedCharacter;
-        internal static PseudoMakerCharaController selectedCharacterController;
-        internal static KK_Plugins.HairAccessoryCustomizer.HairAccessoryController selectedHairAccessoryController;
-        internal static KK_Plugins.Pushup.PushupController selectedPushupController;
+        internal static ChaControl selectedCharacter => PseudoMakerSceneController.Instance.SelectedCharacter;
+        internal static PseudoMakerCharaController selectedCharacterController => PseudoMakerCharaController.GetController(selectedCharacter);
+        internal static KK_Plugins.HairAccessoryCustomizer.HairAccessoryController selectedHairAccessoryController => PseudoMakerSceneController.Instance.SelectedHairAccessoryController;
+        internal static KK_Plugins.Pushup.PushupController selectedPushupController => PseudoMakerSceneController.Instance.SelectedPushupController;
 
         public static ConfigEntry<KeyboardShortcut> KeyToggleGui { get; private set; }
         public static ConfigEntry<KeyboardShortcut> KeyAltReset { get; private set; }
@@ -114,6 +116,7 @@ namespace PseudoMaker
                 )
             );
             CharacterApi.RegisterExtraBehaviour<PseudoMakerCharaController>(PluginGUID);
+            KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour<PseudoMakerSceneController>(PluginGUID);
 
             UIMappings.AddOtherPluginMappings();
 
@@ -140,15 +143,6 @@ namespace PseudoMaker
 
         private void Update()
         {
-            var newChar = StudioAPI.GetSelectedCharacters().FirstOrDefault()?.GetChaControl();
-            if (newChar != selectedCharacter && newChar != null)
-            {
-                selectedCharacter = newChar;
-                selectedCharacterController = PseudoMakerCharaController.GetController(selectedCharacter);
-                selectedHairAccessoryController = selectedCharacter.gameObject.GetComponent<KK_Plugins.HairAccessoryCustomizer.HairAccessoryController>();
-                selectedPushupController = selectedCharacter.gameObject.GetComponent<KK_Plugins.Pushup.PushupController>();
-                MainWindow.RefreshValues();
-            }
             if (KeyToggleGui.Value.IsDown()) 
                 OpenUI();
         }
