@@ -26,6 +26,19 @@ namespace PseudoMaker
 
         protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {
+            if (operation == SceneOperationKind.Clear) ClearProperties();
+        }
+
+        internal void ClearProperties()
+        {
+            if (SelectedCharacter || PseudoMaker.MainWindow.gameObject.activeInHierarchy) 
+            {
+                PseudoMaker.MainWindow.gameObject.SetActive(false);
+            }
+                
+            SelectedCharacter = null;
+            SelectedHairAccessoryController = null;
+            SelectedPushupController = null;
         }
 
         protected override void OnSceneSave()
@@ -61,5 +74,7 @@ namespace PseudoMaker
                 PseudoMaker.MainWindow.gameObject.SetActive(false);
             }
         }
+        
+        
     }
 }
