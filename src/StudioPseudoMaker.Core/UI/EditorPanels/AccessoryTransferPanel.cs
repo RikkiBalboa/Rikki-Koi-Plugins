@@ -24,8 +24,6 @@ namespace PseudoMaker.UI
         {
             base.Initialize();
 
-            var rectTransform = (RectTransform)transform;
-
             rowTemplate = Instantiate(TransferRowTemplate, TransferRowTemplate.transform.parent);
             rowTemplate.SetActive(false);
 

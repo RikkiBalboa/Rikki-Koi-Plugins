@@ -53,20 +53,20 @@ namespace PseudoMaker.UI
 
                 Initialize();
 
-                Destroy(SliderTemplate);
-                Destroy(InputTemplate);
-                Destroy(TextInputTemplate);
-                Destroy(ButtonGroupTemplate);
-                Destroy(ColorTemplate);
-                Destroy(PickerTemplate);
-                Destroy(DropdownTemplate);
-                Destroy(ClothingOptionTemplate);
-                Destroy(ToggleOptionTemplate);
-                Destroy(SplitterTemplate);
-                Destroy(HeaderTemplate);
-                Destroy(TransferRowTemplate);
-                Destroy(CopyRowTemplate);
-                Destroy(ImageRowTemplate);
+                DestroyImmediate(SliderTemplate);
+                DestroyImmediate(InputTemplate);
+                DestroyImmediate(TextInputTemplate);
+                DestroyImmediate(ButtonGroupTemplate);
+                DestroyImmediate(ColorTemplate);
+                DestroyImmediate(PickerTemplate);
+                DestroyImmediate(DropdownTemplate);
+                DestroyImmediate(ClothingOptionTemplate);
+                DestroyImmediate(ToggleOptionTemplate);
+                DestroyImmediate(SplitterTemplate);
+                DestroyImmediate(HeaderTemplate);
+                DestroyImmediate(TransferRowTemplate);
+                DestroyImmediate(CopyRowTemplate);
+                DestroyImmediate(ImageRowTemplate);
             }
             catch (Exception e)
             {
@@ -401,6 +401,7 @@ namespace PseudoMaker.UI
             if (CopyRowTemplate) template = CopyRowTemplate;
             else if (!template) return null;
             var row = Instantiate(template, template.transform.parent);
+            row.name = $"CopyRow{title.Replace(" ", "")}";
             var copyComponent = row.AddComponent<CopyComponent>();
             copyComponent.LabelName = title;
             copyComponent.GetFromName = getFromName;
