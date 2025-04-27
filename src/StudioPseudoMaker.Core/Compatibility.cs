@@ -56,7 +56,7 @@ namespace PseudoMaker
                         HasSkinOverlayPlugin = true;
                         OverlayPluginVersion = plugin.Info.Metadata.Version;
                         break;
-                    case "com.rikkibalboa.bepinex.buttPhsysicsEditor": HasButtPhysicsEditorPlugin = true; break;
+                    case "com.rikkibalboa.bepinex.buttEditor": HasButtPhysicsEditorPlugin = true; break;
                 }
         }
 

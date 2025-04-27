@@ -72,11 +72,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioVoiceControl", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ButtPhysicsEditor", "ButtPhysicsEditor", "{5802E771-0C58-4984-938D-17DE3E473974}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ButtPhysicsEditor.Core", "src\ButtPhysicsEditor.Core\ButtPhysicsEditor.Core.shproj", "{AD6A6B95-0E79-4F71-B509-765FF55FB046}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtPhysicsEditor.KKS", "src\ButtPhysicsEditor.KKS\ButtPhysicsEditor.KKS.csproj", "{2126D895-E8F5-4ADC-B34F-48534B7C2DC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtPhysicsEditor.KK", "src\ButtPhysicsEditor.KK\ButtPhysicsEditor.KK.csproj", "{996FCB01-1589-4D4C-B123-BA04CFA18547}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ButtPhysicsEditor.Core", "src\ButtPhysicsEditor.Core\ButtPhysicsEditor.Core.shproj", "{AD6A6B95-0E79-4F71-B509-765FF55FB046}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -184,9 +184,9 @@ Global
 		{5C4142C8-54F4-471A-98E9-0F44E0C5F37F} = {1F398214-22AF-401E-A502-019B8E15D955}
 		{1E399EAF-E2B1-4C3B-A609-F7CC1A9AAEC5} = {1F398214-22AF-401E-A502-019B8E15D955}
 		{67EB6BBB-D986-4784-9149-DF5CC4F83F36} = {1F398214-22AF-401E-A502-019B8E15D955}
-		{AD6A6B95-0E79-4F71-B509-765FF55FB046} = {5802E771-0C58-4984-938D-17DE3E473974}
 		{2126D895-E8F5-4ADC-B34F-48534B7C2DC6} = {5802E771-0C58-4984-938D-17DE3E473974}
 		{996FCB01-1589-4D4C-B123-BA04CFA18547} = {5802E771-0C58-4984-938D-17DE3E473974}
+		{AD6A6B95-0E79-4F71-B509-765FF55FB046} = {5802E771-0C58-4984-938D-17DE3E473974}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -222,6 +222,7 @@ Global
 		src\Shared\Shared.projitems*{9588e76a-723e-47be-8250-25e1e206634d}*SharedItemsImports = 4
 		src\ButtPhysicsEditor.Core\ButtPhysicsEditor.Core.projitems*{996fcb01-1589-4d4c-b123-ba04cfa18547}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{996fcb01-1589-4d4c-b123-ba04cfa18547}*SharedItemsImports = 4
+		src\ButtPhysicsEditor.Core\ButtPhysicsEditor.Core.projitems*{ad6a6b95-0e79-4f71-b509-765ff55fb046}*SharedItemsImports = 13
 		src\ProjectorUtils.Core\ProjectorUtils.Core.projitems*{b3df7e28-b2c1-41c7-8844-ec6b194bca08}*SharedItemsImports = 13
 		src\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems*{b46dbb11-bbb6-4152-b5b4-aea6b69f2ad7}*SharedItemsImports = 13
 		src\KKPRimController.Core\KKPRimController.Core.projitems*{b98974d5-d331-4e2e-9498-a54dd706c4f2}*SharedItemsImports = 13
