@@ -15,7 +15,7 @@ using KKAPI.Studio;
 using Studio;
 using UnityEngine;
 using UnityEngine.UI;
-using ButtEditor;
+using ButtPhysicsEditor;
 using Shared;
 using a12 = AAAAAAAAAAAA.AAAAAAAAAAAA;
 
@@ -33,7 +33,7 @@ namespace PseudoMaker
         public static bool HasSkinOverlayPlugin { get; private set; }
         public static bool HasStudioSkinColor {  get; private set; }
         public static Version OverlayPluginVersion { get; private set; }
-        public static bool HasButtEditorPlugin { get; private set; }
+        public static bool HasButtPhysicsEditorPlugin { get; private set; }
         public static bool HasC2A { get; private set; }
 
         static Compatibility()
@@ -56,7 +56,7 @@ namespace PseudoMaker
                         HasSkinOverlayPlugin = true;
                         OverlayPluginVersion = plugin.Info.Metadata.Version;
                         break;
-                    case "com.rikkibalboa.bepinex.buttEditor": HasButtEditorPlugin = true; break;
+                    case "com.rikkibalboa.bepinex.buttPhsysicsEditor": HasButtPhysicsEditorPlugin = true; break;
                 }
         }
 
@@ -662,20 +662,20 @@ namespace PseudoMaker
             }
         }
 
-        public static class ButtEditorPlugin
+        public static class ButtPhysicsEditorPlugin
         {
             public static void SetButtValue(SliderType type, float value)
             {
-                if (!HasButtEditorPlugin) return;
+                if (!HasButtPhysicsEditorPlugin) return;
 
                 SetValue();
                 void SetValue() {
-                    PseudoMaker.selectedCharacter.GetComponent<ButtEditorCharaController>()?.SetButtValue(type, value);
+                    PseudoMaker.selectedCharacter.GetComponent<ButtPhysicsEditorCharaController>()?.SetButtValue(type, value);
                 }
             }
             public static void SetButtValue(FloatType type, float value)
             {
-                if (!HasButtEditorPlugin) return;
+                if (!HasButtPhysicsEditorPlugin) return;
 
                 SetValue();
                 void SetValue()
@@ -683,22 +683,22 @@ namespace PseudoMaker
                     SliderType? _type = FloatTypeToSliderType(type);
 
                     if (_type != null)
-                        PseudoMaker.selectedCharacter.GetComponent<ButtEditorCharaController>()?.SetButtValue((SliderType)_type, value);
+                        PseudoMaker.selectedCharacter.GetComponent<ButtPhysicsEditorCharaController>()?.SetButtValue((SliderType)_type, value);
                 }
             }
 
             public static float GetButtValue(FloatType type)
             {
-                if (!HasButtEditorPlugin) return 0f;
+                if (!HasButtPhysicsEditorPlugin) return 0f;
 
                 return GetValue();
                 float GetValue()
                 {
-                    var controller = PseudoMaker.selectedCharacter.GetComponent<ButtEditorCharaController>();
+                    var controller = PseudoMaker.selectedCharacter.GetComponent<ButtPhysicsEditorCharaController>();
                     var _type = FloatTypeToSliderType(type);
 
                     if (_type != null)
-                        return controller.SavedValues.GetValueOrDefault((SliderType)_type, ButtEditorCharaController.defaultValues[(SliderType)_type]);
+                        return controller.SavedValues.GetValueOrDefault((SliderType)_type, ButtPhysicsEditorCharaController.defaultValues[(SliderType)_type]);
                     return 0f;
                 }
             }

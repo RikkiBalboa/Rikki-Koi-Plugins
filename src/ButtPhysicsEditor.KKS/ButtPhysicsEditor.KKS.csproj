@@ -7,8 +7,8 @@
     <ProjectGuid>{2126D895-E8F5-4ADC-B34F-48534B7C2DC6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ButtEditor.KKS</RootNamespace>
-    <AssemblyName>KKS_ButtEditor</AssemblyName>
+    <RootNamespace>ButtPhysicsEditor.KKS</RootNamespace>
+    <AssemblyName>KKS_ButtPhsysicsEditor</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -130,7 +130,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <Import Project="..\ButtEditor.Core\ButtEditor.Core.projitems" Label="Shared" />
+  <Import Project="..\ButtPhysicsEditor.Core\ButtPhysicsEditor.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

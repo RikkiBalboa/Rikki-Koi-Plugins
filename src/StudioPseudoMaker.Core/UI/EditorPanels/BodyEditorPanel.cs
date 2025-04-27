@@ -56,14 +56,14 @@ namespace PseudoMaker.UI
             }
             else if (SubCategory == SubCategory.BodyLower)
             {
-                if (Compatibility.HasButtEditorPlugin)
+                if (Compatibility.HasButtPhysicsEditorPlugin)
                     AddButtEditorRows();
 
                 void AddButtEditorRows()
                 {
-                    foreach (var type in Enum.GetValues(typeof(ButtEditor.SliderType)).Cast<ButtEditor.SliderType>())
+                    foreach (var type in Enum.GetValues(typeof(ButtPhysicsEditor.SliderType)).Cast<ButtPhysicsEditor.SliderType>())
                     {
-                        var slider = AddSliderRow($"Butt {type}", (FloatType)Compatibility.ButtEditorPlugin.SliderTypeTofloatType(type), minValue: 0f, maxValue: 0.3f);
+                        var slider = AddSliderRow($"Butt {type}", (FloatType)Compatibility.ButtPhysicsEditorPlugin.SliderTypeTofloatType(type), minValue: 0f, maxValue: 0.3f);
                         slider.displayTemplate = "0.000";
                     }
                 }

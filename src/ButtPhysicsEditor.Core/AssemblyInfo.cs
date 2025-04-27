@@ -1,6 +1,6 @@
 ﻿using Plugins;
 using System.Reflection;
-using static ButtEditor.ButtEditor;
+using static ButtPhysicsEditor.ButtPhysicsEditor;
 
 [assembly: AssemblyTitle(PluginNameInternal)]
 [assembly: AssemblyProduct(PluginNameInternal)]

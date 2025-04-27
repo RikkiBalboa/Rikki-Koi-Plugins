@@ -540,7 +540,7 @@ namespace PseudoMaker
                 case FloatType.ButtEditorElasticity:
                 case FloatType.ButtEditorDampening:
                 case FloatType.ButtEditorWeight:
-                    Compatibility.ButtEditorPlugin.SetButtValue(floatType, value);
+                    Compatibility.ButtPhysicsEditorPlugin.SetButtValue(floatType, value);
                     break;
             }
         }
@@ -627,7 +627,7 @@ namespace PseudoMaker
                 case FloatType.ButtEditorElasticity:
                 case FloatType.ButtEditorDampening:
                 case FloatType.ButtEditorWeight:
-                    return Compatibility.ButtEditorPlugin.GetButtValue(floatType);
+                    return Compatibility.ButtPhysicsEditorPlugin.GetButtValue(floatType);
                 default:
                     return 0f;
             }

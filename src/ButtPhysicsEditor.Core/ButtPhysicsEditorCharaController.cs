@@ -10,9 +10,9 @@ using System.Linq;
 using UnityEngine;
 using static Illusion.Utils;
 
-namespace ButtEditor
+namespace ButtPhysicsEditor
 {
-    public class ButtEditorCharaController : CharaCustomFunctionController
+    public class ButtPhysicsEditorCharaController : CharaCustomFunctionController
     {
         public static readonly Dictionary<SliderType, float> defaultValues = new Dictionary<SliderType, float>()
         {
@@ -43,7 +43,7 @@ namespace ButtEditor
 
             if (MakerAPI.InsideAndLoaded)
                 foreach (var type in Enum.GetValues(typeof(SliderType)).Cast<SliderType>())
-                    if (ButtEditor.MakerControls.TryGetValue(type, out var control))
+                    if (ButtPhysicsEditor.MakerControls.TryGetValue(type, out var control))
                         control.SetValue(SavedValues.GetValueOrDefault(type, defaultValues[type]) * 10);
         }
 

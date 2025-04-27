@@ -7,19 +7,19 @@ using KKAPI.Maker.UI;
 using System.Collections.Generic;
 using UniRx;
 
-namespace ButtEditor
+namespace ButtPhysicsEditor
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    public partial class ButtEditor : BaseUnityPlugin
+    public partial class ButtPhysicsEditor : BaseUnityPlugin
     {
-        public const string PluginGUID = "com.rikkibalboa.bepinex.buttEditor";
-        public const string PluginName = "Butt Editor";
-        public const string PluginNameInternal = Plugins.Constants.Prefix + "_ButtEditor";
+        public const string PluginGUID = "com.rikkibalboa.bepinex.buttPhsysicsEditor";
+        public const string PluginName = "Butt Phsysics Editor";
+        public const string PluginNameInternal = Plugins.Constants.Prefix + "_ButtPhsysicsEditor";
         public const string PluginVersion = "1.0";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
-        private ButtEditorCharaController buttEditorCharaController => MakerAPI.GetCharacterControl().gameObject.GetComponent<ButtEditorCharaController>();
+        private ButtPhysicsEditorCharaController buttEditorCharaController => MakerAPI.GetCharacterControl().gameObject.GetComponent<ButtPhysicsEditorCharaController>();
         internal static Dictionary<SliderType, MakerSlider> MakerControls = new Dictionary<SliderType, MakerSlider>();
 
         private void Awake()
@@ -30,7 +30,7 @@ namespace ButtEditor
 
         private void Start()
         {
-            CharacterApi.RegisterExtraBehaviour<ButtEditorCharaController>(PluginGUID);
+            CharacterApi.RegisterExtraBehaviour<ButtPhysicsEditorCharaController>(PluginGUID);
             MakerAPI.MakerBaseLoaded += OnEarlyMakerFinishedLoading;
         }
 
@@ -45,7 +45,7 @@ namespace ButtEditor
 
         private MakerSlider AddSlider(RegisterCustomControlsEvent e, MakerCategory category, SliderType type)
         {
-            var control = e.AddControl(new MakerSlider(category, $"Butt {type}", 0f, 3f, ButtEditorCharaController.defaultValues[type] * 10, this));
+            var control = e.AddControl(new MakerSlider(category, $"Butt {type}", 0f, 3f, ButtPhysicsEditorCharaController.defaultValues[type] * 10, this));
             control.ValueChanged.Subscribe(Observer.Create<float>(value => buttEditorCharaController.SetButtValue(type, value / 10)));
             control.Visible.OnNext(true);
             MakerControls[type] = control;

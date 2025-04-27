@@ -190,10 +190,9 @@
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.18.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ButtEditor.KKS\ButtEditor.KKS.csproj">
+    <ProjectReference Include="..\ButtPhysicsEditor.KKS\ButtPhysicsEditor.KKS.csproj">
       <Project>{2126d895-e8f5-4adc-b34f-48534b7c2dc6}</Project>
-      <Name>ButtEditor.KKS</Name>
-      <Private>False</Private>
+      <Name>ButtPhysicsEditor.KKS</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems" Label="Shared" />
