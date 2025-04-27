@@ -127,21 +127,12 @@
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.18.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\StudioPseudoMaker.Core\DevUtil.cs">
-      <Link>StudioPseudoMaker.Core\DevUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\StudioPseudoMaker.Core\PseudoMakerSceneController.cs">
-      <Link>StudioPseudoMaker.Core\PseudoMakerSceneController.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\ButtEditor.KK\ButtEditor.KK.csproj">
       <Project>{996fcb01-1589-4d4c-b123-ba04cfa18547}</Project>
       <Name>ButtEditor.KK</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" />
@@ -159,4 +150,5 @@
   <Import Project="..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.4\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.4\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.4\build\IllusionLibs.Koikatu.UnityEngine.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.4\build\IllusionLibs.Koikatu.UnityEngine.targets')" />
   <Import Project="..\..\packages\IllusionLibs.Koikatu.UnityEngine.UI.5.6.2.4\build\IllusionLibs.Koikatu.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.UnityEngine.UI.5.6.2.4\build\IllusionLibs.Koikatu.UnityEngine.UI.targets')" />
+  <Import Project="..\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems" Label="Shared" />
 </Project>
