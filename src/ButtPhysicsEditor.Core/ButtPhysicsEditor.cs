@@ -13,9 +13,9 @@ namespace ButtPhysicsEditor
     public partial class ButtPhysicsEditor : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.buttEditor";
-        public const string PluginName = "Butt Phsysics Editor";
-        public const string PluginNameInternal = Plugins.Constants.Prefix + "_ButtPhsysicsEditor";
-        public const string PluginVersion = "1.0";
+        public const string PluginName = "Butt Physics Editor";
+        public const string PluginNameInternal = Plugins.Constants.Prefix + "_ButtPhysicsEditor";
+        public const string PluginVersion = "1.1";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 

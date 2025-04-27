@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ButtPhysicsEditor.KKS</RootNamespace>
-    <AssemblyName>KKS_ButtPhsysicsEditor</AssemblyName>
+    <AssemblyName>KKS_ButtPhysicsEditor</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
