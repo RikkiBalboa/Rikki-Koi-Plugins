@@ -324,7 +324,7 @@ namespace PseudoMaker.UI
             transform1GuideObjectToggle.toggle.isOn = false;
             transform2GuideObjectToggle.toggle.isOn = false;
             RefreshPanel();
-            Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+            PseudoMaker.RefreshCharacterstatusPanel();
         }
 
         public void ChangeSelectedAccessory(int slotNr, ChaListDefine.CategoryNo categoryNr)

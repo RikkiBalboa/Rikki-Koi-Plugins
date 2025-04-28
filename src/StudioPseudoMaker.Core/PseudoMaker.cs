@@ -163,6 +163,11 @@ namespace PseudoMaker
             AddStudioButton();
         }
 
+        public static void RefreshCharacterstatusPanel()
+        {
+            Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+        }
+
         private static void AddStudioButton()
         {
             RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Route").GetComponent<RectTransform>();

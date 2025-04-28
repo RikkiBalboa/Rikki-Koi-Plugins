@@ -734,7 +734,7 @@ namespace PseudoMaker
             public static void AddOufitSlot()
             {
                 KK_Plugins.MoreOutfits.Plugin.AddCoordinateSlot(PseudoMaker.selectedCharacter);
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
                 PseudoMaker.Logger.LogMessage("Outfit added successfully!");
             }
 
@@ -743,7 +743,7 @@ namespace PseudoMaker
                 int outfitCount = PseudoMaker.selectedCharacter.GetOCIChar().charInfo.chaFile.coordinate.Length;
                 Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.stateInfo.OnClickCosType(outfitCount - 2);
                 KK_Plugins.MoreOutfits.Plugin.RemoveCoordinateSlot(PseudoMaker.selectedCharacter);
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
                 PseudoMaker.Logger.LogMessage("Outfit removed successfully!");
             }
 
@@ -756,7 +756,7 @@ namespace PseudoMaker
             public static void SetCurrentOutfitName(string outfitName)
             {
                 KK_Plugins.MoreOutfits.Plugin.SetCoordinateName(PseudoMaker.selectedCharacter, PseudoMaker.selectedCharacter.fileStatus.coordinateType, outfitName);
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
                 PseudoMaker.Logger.LogMessage("Outfit renamed successfully!");
             }
         }

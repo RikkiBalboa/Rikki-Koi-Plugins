@@ -1440,6 +1440,7 @@ namespace PseudoMaker
             selectedCharacter.ChangeAccessory(slotNr, type, id, parentKey);
             typeof(AccessoriesApi).GetMethod("OnAccessoryKindChanged", AccessTools.all).Invoke(null, new object[] { this, slotNr });
             SetAccessories.parts[slotNr] = Accessories.parts[slotNr];
+            PseudoMaker.RefreshCharacterstatusPanel();
         }
 
         public void SetAccessoryParent(int slotNr, string parentKey)
@@ -1494,6 +1495,7 @@ namespace PseudoMaker
             if (!coordinateIndex.HasValue || coordinateIndex.Value == selectedCharacter.fileStatus.coordinateType)
                 selectedCharacter.nowCoordinate.accessory.parts = accessoryFile.parts;
             MoreAccessories.ArraySync(selectedCharacter);
+            PseudoMaker.RefreshCharacterstatusPanel();
         }
 
         #region HairAccessoryCustomizer
@@ -1625,6 +1627,7 @@ namespace PseudoMaker
                     selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: true, updateTex04: false);
                 if (pattern == 3)
                     selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: true);
+                PseudoMaker.RefreshCharacterstatusPanel();
             }
 
             void ChangeEmblem(int kind)

@@ -147,7 +147,7 @@ namespace PseudoMaker.UI
                     multiOverlayObjects?.ForEach(o => o.SetActive(false));
                 }
 
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
@@ -543,7 +543,7 @@ namespace PseudoMaker.UI
                 }
                 PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
                 PseudoMaker.selectedCharacter.Reload(false, true, true, true);
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
                 
                 // section to call postfixes/events of the vanilla method
                 MaterialEditor.ClothingCopiedEvent(fromSelected, toSelected, (from kvp in _copyComponents where kvp.Value.Toggled select kvp.Key).ToList());

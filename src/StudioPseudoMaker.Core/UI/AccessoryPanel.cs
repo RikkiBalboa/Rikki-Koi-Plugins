@@ -38,7 +38,7 @@ namespace PseudoMaker.UI
                     addSlotToggle.isOn = false;
                     RefreshAccessoryList();
                     PseudoMakerUI.Instance.RefreshValues();
-                    Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+                    PseudoMaker.RefreshCharacterstatusPanel();
                 }
             }, true);
             AddToggle("Copy", value => {
