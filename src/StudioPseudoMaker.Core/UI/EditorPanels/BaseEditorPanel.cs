@@ -24,6 +24,7 @@ namespace PseudoMaker.UI
         protected GameObject DropdownTemplate;
         protected GameObject ClothingOptionTemplate;
         protected GameObject ToggleOptionTemplate;
+        protected GameObject ToggleGroupTemplate;
         protected GameObject SplitterTemplate;
         protected GameObject HeaderTemplate;
         protected GameObject TransferRowTemplate;
@@ -45,6 +46,7 @@ namespace PseudoMaker.UI
                 DropdownTemplate = scrollRect.content.Find("DropdownTemplate").gameObject;
                 ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
                 ToggleOptionTemplate = scrollRect.content.Find("ToggleOptionTemplate").gameObject;
+                ToggleGroupTemplate = scrollRect.content.Find("ToggleGroupTemplate").gameObject;
                 SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
                 HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
                 TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
@@ -62,6 +64,7 @@ namespace PseudoMaker.UI
                 DestroyImmediate(DropdownTemplate);
                 DestroyImmediate(ClothingOptionTemplate);
                 DestroyImmediate(ToggleOptionTemplate);
+                DestroyImmediate(ToggleGroupTemplate);
                 DestroyImmediate(SplitterTemplate);
                 DestroyImmediate(HeaderTemplate);
                 DestroyImmediate(TransferRowTemplate);
@@ -146,6 +149,21 @@ namespace PseudoMaker.UI
             toggle.GetCurrentValue = GetCurrentValue;
 
             return toggle;
+        }
+
+        public ToggleGroupComponent AddToggleGroupRow(string label, IEnumerable<string> options, Action<int> onValueChanged, Func<int> GetCurrentValue, Func<int> getCurrentAvailableOptions = null, Transform parent = null)
+        {
+            var toggleObject = Instantiate(ToggleGroupTemplate, parent == null ? scrollRect.content : parent);
+            toggleObject.name = $"ToggleGroup";
+
+            var toggleGroup = toggleObject.AddComponent<ToggleGroupComponent>();
+            toggleGroup.Title = label;
+            toggleGroup.Options = options;
+            toggleGroup.SetValueAction = onValueChanged;
+            toggleGroup.GetCurrentValue = GetCurrentValue;
+            toggleGroup.GetCurrentAvailableOptions = getCurrentAvailableOptions;
+
+            return toggleGroup;
         }
 
         public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1, Transform parent = null)

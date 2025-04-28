@@ -1793,11 +1793,10 @@ namespace PseudoMaker
                     selectedCharacter.ChangeHairOption(true);
                     break;
                 case SelectKindType.CosTop:
-                    //clothes.parts[clothesType].sleevesType = 0;
-                    //setClothes.parts[clothesType].sleevesType = 0;
                     Clothes.parts[0].id = id;
                     SetClothes.parts[0].id = id;
                     selectedCharacter.ChangeClothesTop(id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    ClampSleeveType(0);
                     SkirtFkFix();
                     break;
                 case SelectKindType.CosSailor01:
@@ -2267,6 +2266,33 @@ namespace PseudoMaker
                 default:
                     return 0;
             }
+        }
+
+        public void SetSleeveType(int clothesType, int sleeveType)
+        {
+            Clothes.parts[clothesType].sleevesType = sleeveType;
+            SetClothes.parts[clothesType].sleevesType = sleeveType;
+            ClampSleeveType(clothesType);
+            selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+        }
+
+        public int GetSleeveType(int clothesType)
+        {
+            return Clothes.parts[clothesType].sleevesType;
+        }
+
+        public void ClampSleeveType(int clothesType)
+        {
+            if (GetSleeveType(clothesType) >= GetSleeveTypeCount(clothesType) && GetSleeveTypeCount(clothesType) != 0)
+                SetSleeveType(clothesType, 0);
+        }
+
+        public int GetSleeveTypeCount(int clothesType)
+        {
+            var clothesComponent = selectedCharacter.GetCustomClothesComponent(clothesType);
+            return Convert.ToInt32(clothesComponent?.objSleeves01?.Any())
+                + Convert.ToInt32(clothesComponent?.objSleeves02?.Any())
+                + Convert.ToInt32(clothesComponent?.objSleeves03?.Any());
         }
 
         public static int SelectKindToIntKind(SelectKindType type)

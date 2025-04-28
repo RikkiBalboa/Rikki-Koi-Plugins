@@ -22,6 +22,7 @@ namespace PseudoMaker.UI
         private List<GameObject> clothingSailorGameObjects;
         private List<GameObject> clothingJacketGameObjects;
         private GameObject clothingOptionObject;
+        private GameObject sleeveTypeObject;
         private List<GameObject> pushupBraGameObjects;
         private List<GameObject> pushupTopGameObjects;
         private GameObject MaterialEditorSplitter;
@@ -45,6 +46,9 @@ namespace PseudoMaker.UI
 
             TimelineCompatibilityHelper.SelectedClothingKind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
             _coordianteNameText = MoreOutfits.GetCurrentOutfitName();
+
+            sleeveTypeObject?.SetActive(false);
+            sleeveTypeObject?.SetActive(PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType)) > 0);
         }
 
         public void RefreshDropdowns()
@@ -131,6 +135,9 @@ namespace PseudoMaker.UI
                     clothingOptionObject?.SetActive(true);
                 else clothingOptionObject?.SetActive(false);
 
+                sleeveTypeObject?.SetActive(false);
+                sleeveTypeObject?.SetActive(PseudoMaker.selectedCharacterController.GetSleeveTypeCount(kind) > 0);
+
                 MaterialEditorSplitter.SetActive(current != 0);
                 MaterialEditorButton.SetActive(current != 0);
                 overlaySplitter?.SetActive(current != 0);
@@ -151,6 +158,16 @@ namespace PseudoMaker.UI
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
+
+            if (SubCategory == SubCategory.ClothingTop)
+                sleeveTypeObject = AddToggleGroupRow(
+                    "Sleeve Type",
+                    new string[] { "Type A", "Type B", "Type C" },
+                    value => PseudoMaker.selectedCharacterController.SetSleeveType(SelectKindToIntKind(selectKindType), value),
+                    () => PseudoMaker.selectedCharacterController.GetSleeveType(SelectKindToIntKind(selectKindType)),
+                    () => PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType))
+                ).gameObject;
+
             clothingOptionObject = AddClothingOption(SubCategory).gameObject;
 
             if (SubCategory == SubCategory.ClothingTop)
@@ -647,7 +664,6 @@ namespace PseudoMaker.UI
 
         private void RefreshPanel()
         {
-            PseudoMaker.Logger.LogInfo("refresh");
             gameObject.SetActive(false);
             gameObject.SetActive(true);
         }

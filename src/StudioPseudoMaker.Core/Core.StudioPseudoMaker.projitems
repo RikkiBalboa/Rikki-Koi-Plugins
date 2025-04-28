@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\SelectListInfoHoverComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\TextInputFieldComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ToggleComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ToggleGroupComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\TransferComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryCopyPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryEditorPanel.cs" />
