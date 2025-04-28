@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static PseudoMaker.PseudoMakerCharaController;
 using static PseudoMaker.Compatibility;
+using KKAPI;
 
 namespace PseudoMaker.UI
 {
@@ -613,10 +614,15 @@ namespace PseudoMaker.UI
 
         public ClothingOptionComponent AddClothingOption(SubCategory subCategory)
         {
+            var kind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
+#if KK
+            if (KoikatuAPI.IsDarkness() && kind != 2 && kind != 3)
+                return null;
+#endif
+
             var clothingOption = Instantiate(ClothingOptionTemplate, ClothingOptionTemplate.transform.parent);
             clothingOption.name = "ClothingOptions";
 
-            var kind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
 
             var clothingOptionComponent = clothingOption.AddComponent<ClothingOptionComponent>();
             clothingOptionComponent.GetCurrentValue = option => !PseudoMaker.selectedCharacterController.GetHideOpt(kind, option);

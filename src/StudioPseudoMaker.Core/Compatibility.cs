@@ -349,7 +349,7 @@ namespace PseudoMaker
                         onDone?.Invoke();
 
                     }
-                    catch (Exception ex) { }
+                    catch (Exception) { }
                 }
             }
 
@@ -578,7 +578,7 @@ namespace PseudoMaker
                         onDone?.Invoke();
 
                     }
-                    catch (Exception ex) { }
+                    catch (Exception) { }
                 }
             }
 
