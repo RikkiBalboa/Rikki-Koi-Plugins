@@ -142,7 +142,9 @@ namespace PseudoMaker.UI
                     AddButtonGroupRow(new Dictionary<string, Action>
                     {
                         { "Open BlendShapes", Compatibility.PregnancyPlus.OpenBlendshapes },
+#if KKS
                         { "Open Individual Offsets", Compatibility.PregnancyPlus.OpenOffsets },
+#endif
                     });
                     AddButtonRow("Belly Mesh Smoothing", Compatibility.PregnancyPlus.SmoothBelly);
                     AddToggleRow(

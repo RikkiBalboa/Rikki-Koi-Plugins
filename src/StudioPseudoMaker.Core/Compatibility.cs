@@ -1001,6 +1001,7 @@ namespace PseudoMaker
                 }
             }
 
+#if KKS
             public static void OpenOffsets()
             {
                 if (HasPregnancyPlus)
@@ -1011,6 +1012,7 @@ namespace PseudoMaker
                     GetController().OnOpenClothOffsetSelected();
                 }
             }
+#endif
 
             public static void SmoothBelly()
             {

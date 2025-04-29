@@ -96,7 +96,6 @@
     </Reference>
     <Reference Include="KK_PregnancyPlus">
       <HintPath>..\..\lib\KK_PregnancyPlus.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="KK_Pushup">
       <HintPath>..\..\lib\KK_Pushup.dll</HintPath>
