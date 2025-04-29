@@ -462,11 +462,10 @@ namespace PseudoMaker.UI
             RefreshPanel();
         }
 
-        public void RefreshPanel()
+        protected override void RefreshPanel()
         {
             isRefreshing = true;
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            base.RefreshPanel();
             isRefreshing = false;
         }
     }

@@ -168,11 +168,5 @@ namespace PseudoMaker.UI
                 maxValue: Compatibility.PregnancyPlus.GetSliderRange(type)[1]
             );
         }
-
-        private void RefreshPanel()
-        {
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
-        }
     }
 }

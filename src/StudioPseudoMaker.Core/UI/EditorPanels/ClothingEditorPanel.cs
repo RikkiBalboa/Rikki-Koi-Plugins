@@ -46,9 +46,6 @@ namespace PseudoMaker.UI
 
             TimelineCompatibilityHelper.SelectedClothingKind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
             _coordianteNameText = MoreOutfits.GetCurrentOutfitName();
-
-            sleeveTypeObject?.SetActive(false);
-            sleeveTypeObject?.SetActive(PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType)) > 0);
         }
 
         public void RefreshDropdowns()
@@ -660,12 +657,6 @@ namespace PseudoMaker.UI
                 pushupValue.ToString().StartsWith("Advanced") ? KK_Plugins.Pushup.ConfigSliderMin.Value / 100 : 0,
                 pushupValue.ToString().StartsWith("Advanced") ? KK_Plugins.Pushup.ConfigSliderMax.Value / 100 : 1
             );
-        }
-
-        private void RefreshPanel()
-        {
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
         }
     }
 }

@@ -2,6 +2,7 @@
 using KoiSkinOverlayX;
 using PseudoMaker.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -30,6 +31,17 @@ namespace PseudoMaker.UI
         protected GameObject TransferRowTemplate;
         protected GameObject CopyRowTemplate;
         protected GameObject ImageRowTemplate;
+
+        private void Start()
+        {
+            StartCoroutine(Refresh());
+
+            IEnumerator Refresh()
+            {
+                yield return null;
+                RefreshPanel();
+            }
+        }
 
         protected void Awake()
         {
@@ -472,6 +484,11 @@ namespace PseudoMaker.UI
                 }
                 return texType;
             }
+        }
+        protected virtual void RefreshPanel()
+        {
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
         }
     }
 }
