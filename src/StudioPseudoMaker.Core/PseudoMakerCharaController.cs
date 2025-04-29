@@ -15,6 +15,7 @@ using Studio;
 using UnityEngine;
 using static KK_Plugins.Pushup;
 using static PseudoMaker.PseudoMaker;
+using static Illusion.Utils;
 
 namespace PseudoMaker
 {
@@ -542,6 +543,24 @@ namespace PseudoMaker
                 case FloatType.ButtEditorWeight:
                     Compatibility.ButtPhysicsEditorPlugin.SetButtValue(floatType, value);
                     break;
+                case FloatType.PregnancyPlusInflation:
+                case FloatType.PregnancyPlusMultiplier:
+                case FloatType.PregnancyPlusRoundness:
+                case FloatType.PregnancyPlusMoveY:
+                case FloatType.PregnancyPlusMoveZ:
+                case FloatType.PregnancyPlusStretchX:
+                case FloatType.PregnancyPlusStretchY:
+                case FloatType.PregnancyPlusShiftY:
+                case FloatType.PregnancyPlusShiftZ:
+                case FloatType.PregnancyPlusTaperY:
+                case FloatType.PregnancyPlusTaperZ:
+                case FloatType.PregnancyPlusDrop:
+                case FloatType.PregnancyPlusClothOffset:
+                case FloatType.PregnancyPlusFatFold:
+                case FloatType.PregnancyPlusFatFoldHeight:
+                case FloatType.PregnancyPlusFatFoldGap:
+                    Compatibility.PregnancyPlus.SetFloatValue(floatType, value);
+                    break;
             }
         }
 
@@ -628,6 +647,23 @@ namespace PseudoMaker
                 case FloatType.ButtEditorDampening:
                 case FloatType.ButtEditorWeight:
                     return Compatibility.ButtPhysicsEditorPlugin.GetButtValue(floatType);
+                case FloatType.PregnancyPlusInflation:
+                case FloatType.PregnancyPlusMultiplier:
+                case FloatType.PregnancyPlusRoundness:
+                case FloatType.PregnancyPlusMoveY:
+                case FloatType.PregnancyPlusMoveZ:
+                case FloatType.PregnancyPlusStretchX:
+                case FloatType.PregnancyPlusStretchY:
+                case FloatType.PregnancyPlusShiftY:
+                case FloatType.PregnancyPlusShiftZ:
+                case FloatType.PregnancyPlusTaperY:
+                case FloatType.PregnancyPlusTaperZ:
+                case FloatType.PregnancyPlusDrop:
+                case FloatType.PregnancyPlusClothOffset:
+                case FloatType.PregnancyPlusFatFold:
+                case FloatType.PregnancyPlusFatFoldHeight:
+                case FloatType.PregnancyPlusFatFoldGap:
+                    return Compatibility.PregnancyPlus.GetFloatValue(floatType);
                 default:
                     return 0f;
             }

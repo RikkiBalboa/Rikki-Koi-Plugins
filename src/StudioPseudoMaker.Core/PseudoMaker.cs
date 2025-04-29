@@ -280,6 +280,22 @@ namespace PseudoMaker
         ButtEditorElasticity,
         ButtEditorDampening,
         ButtEditorWeight,
+        PregnancyPlusInflation,
+        PregnancyPlusMultiplier,
+        PregnancyPlusRoundness,
+        PregnancyPlusMoveY,
+        PregnancyPlusMoveZ,
+        PregnancyPlusStretchX,
+        PregnancyPlusStretchY,
+        PregnancyPlusShiftY,
+        PregnancyPlusShiftZ,
+        PregnancyPlusTaperY,
+        PregnancyPlusTaperZ,
+        PregnancyPlusDrop,
+        PregnancyPlusClothOffset,
+        PregnancyPlusFatFold,
+        PregnancyPlusFatFoldHeight,
+        PregnancyPlusFatFoldGap,
     }
 
     public enum PatternValue
