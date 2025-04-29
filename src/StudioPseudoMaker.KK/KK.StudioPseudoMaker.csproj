@@ -94,6 +94,9 @@
       <HintPath>..\..\lib\KK_OverlayMods.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KK_PregnancyPlus">
+      <HintPath>..\..\lib\KK_PregnancyPlus.dll</HintPath>
+    </Reference>
     <Reference Include="KK_Pushup">
       <HintPath>..\..\lib\KK_Pushup.dll</HintPath>
       <Private>False</Private>
@@ -133,6 +136,7 @@
     <ProjectReference Include="..\ButtPhysicsEditor.KK\ButtPhysicsEditor.KK.csproj">
       <Project>{996fcb01-1589-4d4c-b123-ba04cfa18547}</Project>
       <Name>ButtPhysicsEditor.KK</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
