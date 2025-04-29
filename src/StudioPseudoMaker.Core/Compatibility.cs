@@ -745,7 +745,6 @@ namespace PseudoMaker
 
                 void SetValue()
                 {
-                    PseudoMaker.Logger.LogInfo($"{type}: {value}");
                     var controller = GetController();
 
                     switch (type)
