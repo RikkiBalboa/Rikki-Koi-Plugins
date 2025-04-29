@@ -105,6 +105,18 @@ namespace PseudoMaker.UI
                 AddRows();
                 void AddRows()
                 {
+                    int selectedPreset = 0;
+                    AddDropdownRow(
+                        "Apply Preset Shape",
+                        BellyTemplate.shapeNames.ToList(),
+                        () => selectedPreset,
+                        value => {
+                            selectedPreset = value;
+                            Compatibility.PregnancyPlus.PasteBelly(BellyTemplate.GetTemplate(value));
+                            RefreshPanel();
+                        }
+                    );
+
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusInflation, "Pregnancy+");
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusMultiplier, "Multiplier");
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusRoundness, "Roundness");
@@ -124,7 +136,7 @@ namespace PseudoMaker.UI
                     AddButtonGroupRow(new Dictionary<string, Action>
                     {
                         { "Copy Belly",  Compatibility.PregnancyPlus.CopyBelly },
-                        { "Paste Belly", () => { Compatibility.PregnancyPlus.PasteBelly(); RefreshPanel(); } },
+                        { "Paste Belly", () => { Compatibility.PregnancyPlus.PasteBelly(PregnancyPlusPlugin.copiedBelly); RefreshPanel(); } },
                         { "Reset Belly", () => { Compatibility.PregnancyPlus.ResetBelly(); RefreshPanel(); } },
                     });
                     AddButtonGroupRow(new Dictionary<string, Action>

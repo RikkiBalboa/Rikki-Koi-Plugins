@@ -942,7 +942,7 @@ namespace PseudoMaker
                 }
             }
 
-            public static void PasteBelly()
+            public static void PasteBelly(PregnancyPlusData data)
             {
                 if (HasPregnancyPlus)
                     Paste();
@@ -953,22 +953,22 @@ namespace PseudoMaker
                     {
                         GetController().infConfig.GameplayEnabled = true;
 
-                        SetFloatValue(FloatType.PregnancyPlusInflation, PregnancyPlusPlugin.copiedBelly.inflationSize);
-                        SetFloatValue(FloatType.PregnancyPlusMultiplier, PregnancyPlusPlugin.copiedBelly.inflationMultiplier);
-                        SetFloatValue(FloatType.PregnancyPlusRoundness, PregnancyPlusPlugin.copiedBelly.inflationRoundness);
-                        SetFloatValue(FloatType.PregnancyPlusMoveY, PregnancyPlusPlugin.copiedBelly.inflationMoveY);
-                        SetFloatValue(FloatType.PregnancyPlusMoveZ, PregnancyPlusPlugin.copiedBelly.inflationMoveZ);
-                        SetFloatValue(FloatType.PregnancyPlusStretchX, PregnancyPlusPlugin.copiedBelly.inflationStretchX);
-                        SetFloatValue(FloatType.PregnancyPlusStretchY, PregnancyPlusPlugin.copiedBelly.inflationStretchY);
-                        SetFloatValue(FloatType.PregnancyPlusShiftY, PregnancyPlusPlugin.copiedBelly.inflationShiftY);
-                        SetFloatValue(FloatType.PregnancyPlusShiftZ, PregnancyPlusPlugin.copiedBelly.inflationShiftZ);
-                        SetFloatValue(FloatType.PregnancyPlusTaperY, PregnancyPlusPlugin.copiedBelly.inflationTaperY);
-                        SetFloatValue(FloatType.PregnancyPlusTaperZ, PregnancyPlusPlugin.copiedBelly.inflationTaperZ);
-                        SetFloatValue(FloatType.PregnancyPlusDrop, PregnancyPlusPlugin.copiedBelly.inflationDrop);
-                        SetFloatValue(FloatType.PregnancyPlusClothOffset, PregnancyPlusPlugin.copiedBelly.inflationClothOffset);
-                        SetFloatValue(FloatType.PregnancyPlusFatFold, PregnancyPlusPlugin.copiedBelly.inflationFatFold);
-                        SetFloatValue(FloatType.PregnancyPlusFatFoldHeight, PregnancyPlusPlugin.copiedBelly.inflationFatFoldHeight);
-                        SetFloatValue(FloatType.PregnancyPlusFatFoldGap, PregnancyPlusPlugin.copiedBelly.inflationFatFoldGap);
+                        SetFloatValue(FloatType.PregnancyPlusInflation, data.inflationSize);
+                        SetFloatValue(FloatType.PregnancyPlusMultiplier, data.inflationMultiplier);
+                        SetFloatValue(FloatType.PregnancyPlusRoundness, data.inflationRoundness);
+                        SetFloatValue(FloatType.PregnancyPlusMoveY, data.inflationMoveY);
+                        SetFloatValue(FloatType.PregnancyPlusMoveZ, data.inflationMoveZ);
+                        SetFloatValue(FloatType.PregnancyPlusStretchX, data.inflationStretchX);
+                        SetFloatValue(FloatType.PregnancyPlusStretchY, data.inflationStretchY);
+                        SetFloatValue(FloatType.PregnancyPlusShiftY, data.inflationShiftY);
+                        SetFloatValue(FloatType.PregnancyPlusShiftZ, data.inflationShiftZ);
+                        SetFloatValue(FloatType.PregnancyPlusTaperY, data.inflationTaperY);
+                        SetFloatValue(FloatType.PregnancyPlusTaperZ, data.inflationTaperZ);
+                        SetFloatValue(FloatType.PregnancyPlusDrop, data.inflationDrop);
+                        SetFloatValue(FloatType.PregnancyPlusClothOffset, data.inflationClothOffset);
+                        SetFloatValue(FloatType.PregnancyPlusFatFold, data.inflationFatFold);
+                        SetFloatValue(FloatType.PregnancyPlusFatFoldHeight, data.inflationFatFoldHeight);
+                        SetFloatValue(FloatType.PregnancyPlusFatFoldGap, data.inflationFatFoldGap);
 
                         PseudoMaker.RefreshCharacterstatusPanel();
                     }
