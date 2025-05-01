@@ -25,11 +25,13 @@ namespace PseudoMaker
     [BepInDependency(KKABMX.Core.KKABMX_Core.GUID)]
     [BepInDependency(KK_Plugins.ClothingUnlocker.GUID)]
     [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
+    [BepInDependency(KK_Plugins.MoreOutfits.Plugin.PluginGUID, KK_Plugins.MoreOutfits.Plugin.PluginVersion)]
     [BepInDependency("starstorm.aaaaaaaaaaaa", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KCOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KSOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.rikkibalboa.bepinex.buttEditor", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("KK_PregnancyPlus", BepInDependency.DependencyFlags.SoftDependency)]
     // Only needed to add the timeline compatibility if it doesn't exist.
     [BepInDependency("com.rikkibalboa.bepinex.studioSkinColorControl", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
