@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static PseudoMaker.PseudoMakerCharaController;
 using static PseudoMaker.Compatibility;
+using KKAPI;
 
 namespace PseudoMaker.UI
 {
@@ -157,13 +158,16 @@ namespace PseudoMaker.UI
             AddPickerRow(selectKindType, clothingChangeAction);
 
             if (SubCategory == SubCategory.ClothingTop)
-                sleeveTypeObject = AddToggleGroupRow(
-                    "Sleeve Type",
-                    new string[] { "Type A", "Type B", "Type C" },
-                    value => PseudoMaker.selectedCharacterController.SetSleeveType(SelectKindToIntKind(selectKindType), value),
-                    () => PseudoMaker.selectedCharacterController.GetSleeveType(SelectKindToIntKind(selectKindType)),
-                    () => PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType))
-                ).gameObject;
+#if KK
+                if (KoikatuAPI.IsDarkness())
+#endif
+                    sleeveTypeObject = AddToggleGroupRow(
+                        "Sleeve Type",
+                        new string[] { "Type A", "Type B", "Type C" },
+                        value => PseudoMaker.selectedCharacterController.SetSleeveType(SelectKindToIntKind(selectKindType), value),
+                        () => PseudoMaker.selectedCharacterController.GetSleeveType(SelectKindToIntKind(selectKindType)),
+                        () => PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType))
+                    ).gameObject;
 
             clothingOptionObject = AddClothingOption(SubCategory).gameObject;
 
@@ -627,10 +631,15 @@ namespace PseudoMaker.UI
 
         public ClothingOptionComponent AddClothingOption(SubCategory subCategory)
         {
+            var kind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
+#if KK
+            if (KoikatuAPI.IsDarkness() && kind != 2 && kind != 3)
+                return null;
+#endif
+
             var clothingOption = Instantiate(ClothingOptionTemplate, ClothingOptionTemplate.transform.parent);
             clothingOption.name = "ClothingOptions";
 
-            var kind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
 
             var clothingOptionComponent = clothingOption.AddComponent<ClothingOptionComponent>();
             clothingOptionComponent.GetCurrentValue = option => !PseudoMaker.selectedCharacterController.GetHideOpt(kind, option);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KKAPI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,6 +104,9 @@ namespace PseudoMaker.UI
                 RefreshPanel();
             });
 
+#if KK
+            if (KoikatuAPI.IsDarkness())
+#endif
             noShake = AddToggleRow(
                 "Don't Move",
                 value => PseudoMaker.selectedCharacterController.SetAccessoryNoShake(currentAccessoryNr, value),

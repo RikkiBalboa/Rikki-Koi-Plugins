@@ -966,7 +966,22 @@ namespace PseudoMaker
                 return Clothes.hideBraOpt[option];
             else if (kind == 3)
                 return Clothes.hideShortsOpt[option];
+#if KK
+            else if (KoikatuAPI.IsDarkness())
+                return GetValue();
+            else return false;
+
+            bool GetValue()
+            {
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                return selectedCharacter.nowCoordinate.clothes.parts[kind].hideOpt[option];
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+            }
+#else
             return selectedCharacter.nowCoordinate.clothes.parts[kind].hideOpt[option];
+#endif
         }
 
         public void SetHideOpt(int kind, int option, bool value)
@@ -987,13 +1002,24 @@ namespace PseudoMaker
                     SetClothes.hideShortsOpt[option] = value;
                 }
             }
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                SetValue();
+
+            void SetValue()
+#else
             else
+#endif
             {
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
                 if (Clothes.parts[kind].hideOpt[option] != value)
                 {
                     Clothes.parts[kind].hideOpt[option] = value;
                     SetClothes.parts[kind].hideOpt[option] = value;
                 }
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
             }
         }
 
@@ -1259,7 +1285,7 @@ namespace PseudoMaker
             selectedPushupController.RecalculateBody();
         }
         #endregion
-        #endregion
+#endregion
 
         #region Accessories
         public void SetAccessoryColor(int slotNr, int colorNr, Color color)
@@ -1504,16 +1530,41 @@ namespace PseudoMaker
 
         public bool GetAccessoryNoShake(int slotNr)
         {
-            if (slotNr >= 0)
-                return Accessories.parts[slotNr].noShake;
-            return false;
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                return false;
+#endif
+            return GetShake();
+
+            bool GetShake()
+                {
+                    if (slotNr >= 0)
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                    return Accessories.parts[slotNr].noShake;
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+                return false;
+                }
         }
 
         public void SetAccessoryNoShake(int slotNr, bool value)
         {
-            Accessories.parts[slotNr].noShake = value;
-            SetAccessories.parts[slotNr].noShake = value;
-            selectedCharacter.ChangeShakeAccessory(slotNr);
+#if KK
+            if (KoikatuAPI.IsDarkness())
+#endif
+                SetShake();
+
+            void SetShake()
+            {
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                Accessories.parts[slotNr].noShake = value;
+                SetAccessories.parts[slotNr].noShake = value;
+                selectedCharacter.ChangeShakeAccessory(slotNr);
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+            }
         }
 
         public void AddAccessorySlot(int num, int? coordinateIndex = null)
@@ -1599,13 +1650,43 @@ namespace PseudoMaker
 
         public bool GetHairNoShake(int part)
         {
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                return GetValue();
+            else return false;
+
+            bool GetValue()
+            {
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                return selectedCharacter.fileHair.parts[part].noShake;
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+            }
+#else
             return selectedCharacter.fileHair.parts[part].noShake;
+#endif
         }
 
         public void SetHairNoShake(int part, bool value)
         {
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                SetValue();
+
+            void SetValue()
+            {
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                selectedCharacter.fileHair.parts[part].noShake = value;
+                selectedCharacter.ChangeShakeHair(part);
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+            }
+#else
             selectedCharacter.fileHair.parts[part].noShake = value;
             selectedCharacter.ChangeShakeHair(part);
+#endif
         }
         #endregion
         #endregion
@@ -1668,11 +1749,26 @@ namespace PseudoMaker
 
             void ChangeEmblem(int kind)
             {
-                Clothes.parts[0].emblemeId = id;
-                SetClothes.parts[0].emblemeId = id;
-                selectedCharacter.ChangeCustomEmblem(0, id);
-                selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
-            }
+#if KK
+                if (KoikatuAPI.IsDarkness())
+                    SetEmblem2();
+
+                void SetEmblem2()
+                {
+
+#endif
+                    Clothes.parts[0].emblemeId = id;
+                    SetClothes.parts[0].emblemeId = id;
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                    selectedCharacter.ChangeCustomEmblem(0, id);
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                    selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+#if KK
+                }
+#endif
+                }
 
 
             if (selectedCharacter == null)
@@ -1832,7 +1928,10 @@ namespace PseudoMaker
                     Clothes.parts[0].id = id;
                     SetClothes.parts[0].id = id;
                     selectedCharacter.ChangeClothesTop(id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
-                    ClampSleeveType(0);
+#if KK
+                    if (KoikatuAPI.IsDarkness())
+#endif
+                        ClampSleeveType(0);
                     SkirtFkFix();
                     break;
                 case SelectKindType.CosSailor01:
@@ -2056,35 +2155,52 @@ namespace PseudoMaker
                     selectedCharacter.fileFace.headId = id;
                     selectedCharacter.ChangeHead(id, true);
                     break;
-                case SelectKindType.CosTopEmblem2:
-                    Clothes.parts[0].emblemeId2 = id;
-                    break;
-                case SelectKindType.CosBotEmblem2:
-                    Clothes.parts[1].emblemeId2 = id;
-                    break;
-                case SelectKindType.CosBraEmblem2:
-                    Clothes.parts[2].emblemeId2 = id;
-                    break;
-                case SelectKindType.CosShortsEmblem2:
-                    Clothes.parts[3].emblemeId2 = id;
-                    break;
-                case SelectKindType.CosGlovesEmblem2:
-                    Clothes.parts[4].emblemeId2 = id;
-                    break;
-                case SelectKindType.CosPanstEmblem2:
-                    Clothes.parts[5].emblemeId2 = id;
-                    break;
-                case SelectKindType.CosSocksEmblem2:
-                    Clothes.parts[6].emblemeId2 = id;
-                    break;
-                case SelectKindType.CosInnerShoesEmblem2:
-                    Clothes.parts[7].emblemeId2 = id;
-                    break;
-                case SelectKindType.CosOuterShoesEmblem2:
-                    Clothes.parts[8].emblemeId2 = id;
-                    break;
+#if KK
             }
-        }
+            if (KoikatuAPI.IsDarkness())
+                SetEmblem();
+
+            void SetEmblem()
+            {
+                switch (type)
+                {
+#endif
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                    case SelectKindType.CosTopEmblem2:
+                        Clothes.parts[0].emblemeId2 = id;
+                        break;
+                    case SelectKindType.CosBotEmblem2:
+                        Clothes.parts[1].emblemeId2 = id;
+                        break;
+                    case SelectKindType.CosBraEmblem2:
+                        Clothes.parts[2].emblemeId2 = id;
+                        break;
+                    case SelectKindType.CosShortsEmblem2:
+                        Clothes.parts[3].emblemeId2 = id;
+                        break;
+                    case SelectKindType.CosGlovesEmblem2:
+                        Clothes.parts[4].emblemeId2 = id;
+                        break;
+                    case SelectKindType.CosPanstEmblem2:
+                        Clothes.parts[5].emblemeId2 = id;
+                        break;
+                    case SelectKindType.CosSocksEmblem2:
+                        Clothes.parts[6].emblemeId2 = id;
+                        break;
+                    case SelectKindType.CosInnerShoesEmblem2:
+                        Clothes.parts[7].emblemeId2 = id;
+                        break;
+                    case SelectKindType.CosOuterShoesEmblem2:
+                        Clothes.parts[8].emblemeId2 = id;
+                        break;
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+                }
+#if KK
+            }
+#endif
+            }
 
         public int GetSelected(SelectKindType type)
         {
@@ -2281,6 +2397,19 @@ namespace PseudoMaker
                     return selectedCharacter.fileHair.glossId;
                 case SelectKindType.HeadType:
                     return selectedCharacter.fileFace.headId;
+#if KK
+            }
+            if (KoikatuAPI.IsDarkness())
+                return SetEmblem();
+            else return 0;
+
+            int SetEmblem()
+            {
+                switch (type)
+                {
+#endif
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
                 case SelectKindType.CosTopEmblem2:
                     return Clothes.parts[0].emblemeId2;
                 case SelectKindType.CosBotEmblem2:
@@ -2301,20 +2430,54 @@ namespace PseudoMaker
                     return Clothes.parts[8].emblemeId2;
                 default:
                     return 0;
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+                }
+#if KK
             }
+#endif
         }
 
         public void SetSleeveType(int clothesType, int sleeveType)
         {
-            Clothes.parts[clothesType].sleevesType = sleeveType;
-            SetClothes.parts[clothesType].sleevesType = sleeveType;
-            ClampSleeveType(clothesType);
-            selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                SetType();
+
+            void SetType()
+            {
+#endif
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                Clothes.parts[clothesType].sleevesType = sleeveType;
+                SetClothes.parts[clothesType].sleevesType = sleeveType;
+                ClampSleeveType(clothesType);
+                selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+#if KK
+            }
+#endif
         }
 
         public int GetSleeveType(int clothesType)
         {
-            return Clothes.parts[clothesType].sleevesType;
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                return GetType();
+            else return 0;
+
+            int GetType()
+            {
+#endif
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                return Clothes.parts[clothesType].sleevesType;
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+#if KK
+            }
+#endif
         }
 
         public void ClampSleeveType(int clothesType)
@@ -2325,10 +2488,25 @@ namespace PseudoMaker
 
         public int GetSleeveTypeCount(int clothesType)
         {
-            var clothesComponent = selectedCharacter.GetCustomClothesComponent(clothesType);
-            return Convert.ToInt32(clothesComponent?.objSleeves01?.Any())
-                + Convert.ToInt32(clothesComponent?.objSleeves02?.Any())
-                + Convert.ToInt32(clothesComponent?.objSleeves03?.Any());
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                return GetCount();
+            else return 0;
+
+            int GetCount()
+            {
+#endif
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                var clothesComponent = selectedCharacter.GetCustomClothesComponent(clothesType);
+                return Convert.ToInt32(clothesComponent?.objSleeves01?.Any())
+                    + Convert.ToInt32(clothesComponent?.objSleeves02?.Any())
+                    + Convert.ToInt32(clothesComponent?.objSleeves03?.Any());
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+#if KK
+            }
+#endif
         }
 
         public static int SelectKindToIntKind(SelectKindType type)
@@ -2654,7 +2832,11 @@ namespace PseudoMaker
 
     [Serializable]
     [MessagePackObject]
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
     public struct PushupStorageKey
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
     {
         [Key("OutfitSlot")]
         public int OutfitSlot { get; set; }
@@ -2680,7 +2862,11 @@ namespace PseudoMaker
 
     [Serializable]
     [MessagePackObject]
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
     public struct AccessoryStorageKey
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
     {
         [Key("OutfitSlot")]
         public int OutfitSlot { get; set; }
