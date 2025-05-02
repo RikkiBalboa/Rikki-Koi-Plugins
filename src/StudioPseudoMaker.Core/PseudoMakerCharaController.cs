@@ -1551,7 +1551,7 @@ namespace PseudoMaker
         public void SetAccessoryNoShake(int slotNr, bool value)
         {
 #if KK
-            if (!KoikatuAPI.IsDarkness())
+            if (KoikatuAPI.IsDarkness())
 #endif
                 SetShake();
 
@@ -1651,7 +1651,7 @@ namespace PseudoMaker
         public bool GetHairNoShake(int part)
         {
 #if KK
-            if (!KoikatuAPI.IsDarkness())
+            if (KoikatuAPI.IsDarkness())
                 return GetValue();
             else return false;
 
@@ -1671,7 +1671,7 @@ namespace PseudoMaker
         public void SetHairNoShake(int part, bool value)
         {
 #if KK
-            if (!KoikatuAPI.IsDarkness())
+            if (KoikatuAPI.IsDarkness())
                 SetValue();
 
             void SetValue()
@@ -1750,7 +1750,7 @@ namespace PseudoMaker
             void ChangeEmblem(int kind)
             {
 #if KK
-                if (!KoikatuAPI.IsDarkness())
+                if (KoikatuAPI.IsDarkness())
                     SetEmblem2();
 
                 void SetEmblem2()
@@ -1928,7 +1928,10 @@ namespace PseudoMaker
                     Clothes.parts[0].id = id;
                     SetClothes.parts[0].id = id;
                     selectedCharacter.ChangeClothesTop(id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
-                    ClampSleeveType(0);
+#if KK
+                    if (KoikatuAPI.IsDarkness())
+#endif
+                        ClampSleeveType(0);
                     SkirtFkFix();
                     break;
                 case SelectKindType.CosSailor01:
@@ -2437,15 +2440,44 @@ namespace PseudoMaker
 
         public void SetSleeveType(int clothesType, int sleeveType)
         {
-            Clothes.parts[clothesType].sleevesType = sleeveType;
-            SetClothes.parts[clothesType].sleevesType = sleeveType;
-            ClampSleeveType(clothesType);
-            selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                SetType();
+
+            void SetType()
+            {
+#endif
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                Clothes.parts[clothesType].sleevesType = sleeveType;
+                SetClothes.parts[clothesType].sleevesType = sleeveType;
+                ClampSleeveType(clothesType);
+                selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+#if KK
+            }
+#endif
         }
 
         public int GetSleeveType(int clothesType)
         {
-            return Clothes.parts[clothesType].sleevesType;
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                return GetType();
+            else return 0;
+
+            int GetType()
+            {
+#endif
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                return Clothes.parts[clothesType].sleevesType;
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+#if KK
+            }
+#endif
         }
 
         public void ClampSleeveType(int clothesType)
@@ -2456,10 +2488,25 @@ namespace PseudoMaker
 
         public int GetSleeveTypeCount(int clothesType)
         {
-            var clothesComponent = selectedCharacter.GetCustomClothesComponent(clothesType);
-            return Convert.ToInt32(clothesComponent?.objSleeves01?.Any())
-                + Convert.ToInt32(clothesComponent?.objSleeves02?.Any())
-                + Convert.ToInt32(clothesComponent?.objSleeves03?.Any());
+#if KK
+            if (KoikatuAPI.IsDarkness())
+                return GetCount();
+            else return 0;
+
+            int GetCount()
+            {
+#endif
+#pragma warning disable KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning disable KKANAL03 // Member is missing or has a different signature in KK Party.
+                var clothesComponent = selectedCharacter.GetCustomClothesComponent(clothesType);
+                return Convert.ToInt32(clothesComponent?.objSleeves01?.Any())
+                    + Convert.ToInt32(clothesComponent?.objSleeves02?.Any())
+                    + Convert.ToInt32(clothesComponent?.objSleeves03?.Any());
+#pragma warning restore KKANAL01 // Member is missing or has a different signature in games without Darkness.
+#pragma warning restore KKANAL03 // Member is missing or has a different signature in KK Party.
+#if KK
+            }
+#endif
         }
 
         public static int SelectKindToIntKind(SelectKindType type)

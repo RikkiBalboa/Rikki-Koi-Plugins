@@ -158,13 +158,16 @@ namespace PseudoMaker.UI
             AddPickerRow(selectKindType, clothingChangeAction);
 
             if (SubCategory == SubCategory.ClothingTop)
-                sleeveTypeObject = AddToggleGroupRow(
-                    "Sleeve Type",
-                    new string[] { "Type A", "Type B", "Type C" },
-                    value => PseudoMaker.selectedCharacterController.SetSleeveType(SelectKindToIntKind(selectKindType), value),
-                    () => PseudoMaker.selectedCharacterController.GetSleeveType(SelectKindToIntKind(selectKindType)),
-                    () => PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType))
-                ).gameObject;
+#if KK
+                if (KoikatuAPI.IsDarkness())
+#endif
+                    sleeveTypeObject = AddToggleGroupRow(
+                        "Sleeve Type",
+                        new string[] { "Type A", "Type B", "Type C" },
+                        value => PseudoMaker.selectedCharacterController.SetSleeveType(SelectKindToIntKind(selectKindType), value),
+                        () => PseudoMaker.selectedCharacterController.GetSleeveType(SelectKindToIntKind(selectKindType)),
+                        () => PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType))
+                    ).gameObject;
 
             clothingOptionObject = AddClothingOption(SubCategory).gameObject;
 

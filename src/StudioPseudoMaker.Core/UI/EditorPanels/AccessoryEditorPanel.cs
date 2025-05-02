@@ -105,7 +105,7 @@ namespace PseudoMaker.UI
             });
 
 #if KK
-            if (!KoikatuAPI.IsDarkness())
+            if (KoikatuAPI.IsDarkness())
 #endif
             noShake = AddToggleRow(
                 "Don't Move",
