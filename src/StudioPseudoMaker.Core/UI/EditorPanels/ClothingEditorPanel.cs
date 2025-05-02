@@ -169,7 +169,7 @@ namespace PseudoMaker.UI
                         () => PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType))
                     ).gameObject;
 
-            clothingOptionObject = AddClothingOption(SubCategory).gameObject;
+            clothingOptionObject = AddClothingOption(SubCategory)?.gameObject;
 
             if (SubCategory == SubCategory.ClothingTop)
             {
@@ -245,7 +245,7 @@ namespace PseudoMaker.UI
 
                         if (ClothesOverlays.HasColorMaskSupport())
                             AddColorMaskRow($"Color mask (Piece {i + 1})", subClothesId);
-                            //multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
+                        //multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
                     }
                 }
 
@@ -274,7 +274,7 @@ namespace PseudoMaker.UI
                     );
                 }
 
-                void AddColorMaskRow(string name,string _clothesId)
+                void AddColorMaskRow(string name, string _clothesId)
                 {
                     mainOverlayObjects.AddRange(AddClothingOverlayRow(_clothesId, name, true, KoiClothesOverlayController.MakeColormaskId(_clothesId)));
                 }
@@ -357,7 +357,7 @@ namespace PseudoMaker.UI
             );
             AddSplitter();
             AddHeader("More Outfits");
-            AddButtonGroupRow(new Dictionary<string, Action> {{"Add Outfit", MoreOutfits.AddOufitSlot}, {"Remove Last Outfit", MoreOutfits.RemoveOutfitSlot}});
+            AddButtonGroupRow(new Dictionary<string, Action> { { "Add Outfit", MoreOutfits.AddOufitSlot }, { "Remove Last Outfit", MoreOutfits.RemoveOutfitSlot } });
             AddTextInputRow("Name:", () => _coordianteNameText, s => _coordianteNameText = s, MoreOutfits.GetCurrentOutfitName());
             AddButtonRow("Rename current outfit", () => MoreOutfits.SetCurrentOutfitName(_coordianteNameText));
         }
@@ -450,7 +450,7 @@ namespace PseudoMaker.UI
         }
 
         private Dictionary<int, CopyComponent> _copyComponents = new Dictionary<int, CopyComponent>();
-        
+
         private void InitializeCopy()
         {
 
@@ -458,7 +458,7 @@ namespace PseudoMaker.UI
                 "Source Outfit",
                 PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
                 () => fromSelected,
-                value => { 
+                value => {
                     fromSelected = value;
                     _copyComponents.Values.ToList().ForEach(c => c.Refresh());
                 }
@@ -485,11 +485,11 @@ namespace PseudoMaker.UI
                 ChaListDefine.CategoryNo.co_shoes,
                 ChaListDefine.CategoryNo.co_shoes
             };
-            
+
             for (var i = 0; i < cateNo.Length; i++)
             {
                 int cNum = i;
-                _copyComponents.Add(cNum,AddCopyRow(UIMappings.GetClothingTypeName(cateNo[cNum]), () =>
+                _copyComponents.Add(cNum, AddCopyRow(UIMappings.GetClothingTypeName(cateNo[cNum]), () =>
                 {
                     ChaFileClothes fromClothes = PseudoMaker.selectedCharacter.chaFile.coordinate[fromSelected].clothes;
                     ListInfoBase listInfoFrom = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[cNum], fromClothes.parts[cNum].id) ?? PseudoMaker.selectedCharacter.lstCtrl.GetListInfo(cateNo[cNum], DefClothesID()[cNum]);
@@ -521,7 +521,7 @@ namespace PseudoMaker.UI
                 for (var i = 0; i < cateNo.Length; i++)
                 {
                     if (!_copyComponents[i].Toggled) continue;
-                    
+
                     byte[] bytes = MessagePackSerializer.Serialize<ChaFileClothes.PartsInfo>(fromClothes.parts[i]);
                     toClothes.parts[i] = MessagePackSerializer.Deserialize<ChaFileClothes.PartsInfo>(bytes);
                     if (i == 0)
@@ -562,7 +562,7 @@ namespace PseudoMaker.UI
                 PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
                 PseudoMaker.selectedCharacter.Reload(false, true, true, true);
                 PseudoMaker.RefreshCharacterstatusPanel();
-                
+
                 // section to call postfixes/events of the vanilla method
                 MaterialEditor.ClothingCopiedEvent(fromSelected, toSelected, (from kvp in _copyComponents where kvp.Value.Toggled select kvp.Key).ToList());
                 ClothesOverlays.CLothingCopiedEvent(fromSelected, toSelected, (from kvp in _copyComponents where kvp.Value.Toggled select kvp.Key).ToList());
@@ -633,7 +633,7 @@ namespace PseudoMaker.UI
         {
             var kind = PseudoMakerCharaController.SubCategoryToKind(SubCategory);
 #if KK
-            if (KoikatuAPI.IsDarkness() && kind != 2 && kind != 3)
+            if (!KoikatuAPI.IsDarkness() && kind != 2 && kind != 3)
                 return null;
 #endif
 
