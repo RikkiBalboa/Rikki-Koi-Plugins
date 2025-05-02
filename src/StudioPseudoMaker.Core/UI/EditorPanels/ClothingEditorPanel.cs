@@ -23,6 +23,7 @@ namespace PseudoMaker.UI
         private List<GameObject> clothingSailorGameObjects;
         private List<GameObject> clothingJacketGameObjects;
         private GameObject clothingOptionObject;
+        private GameObject sleeveTypeObject;
         private List<GameObject> pushupBraGameObjects;
         private List<GameObject> pushupTopGameObjects;
         private GameObject MaterialEditorSplitter;
@@ -132,6 +133,9 @@ namespace PseudoMaker.UI
                     clothingOptionObject?.SetActive(true);
                 else clothingOptionObject?.SetActive(false);
 
+                sleeveTypeObject?.SetActive(false);
+                sleeveTypeObject?.SetActive(PseudoMaker.selectedCharacterController.GetSleeveTypeCount(kind) > 0);
+
                 MaterialEditorSplitter.SetActive(current != 0);
                 MaterialEditorButton.SetActive(current != 0);
                 overlaySplitter?.SetActive(current != 0);
@@ -148,10 +152,20 @@ namespace PseudoMaker.UI
                     multiOverlayObjects?.ForEach(o => o.SetActive(false));
                 }
 
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
             };
 
             AddPickerRow(selectKindType, clothingChangeAction);
+
+            if (SubCategory == SubCategory.ClothingTop)
+                sleeveTypeObject = AddToggleGroupRow(
+                    "Sleeve Type",
+                    new string[] { "Type A", "Type B", "Type C" },
+                    value => PseudoMaker.selectedCharacterController.SetSleeveType(SelectKindToIntKind(selectKindType), value),
+                    () => PseudoMaker.selectedCharacterController.GetSleeveType(SelectKindToIntKind(selectKindType)),
+                    () => PseudoMaker.selectedCharacterController.GetSleeveTypeCount(SelectKindToIntKind(selectKindType))
+                ).gameObject;
+
             clothingOptionObject = AddClothingOption(SubCategory).gameObject;
 
             if (SubCategory == SubCategory.ClothingTop)
@@ -544,7 +558,7 @@ namespace PseudoMaker.UI
                 }
                 PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
                 PseudoMaker.selectedCharacter.Reload(false, true, true, true);
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
                 
                 // section to call postfixes/events of the vanilla method
                 MaterialEditor.ClothingCopiedEvent(fromSelected, toSelected, (from kvp in _copyComponents where kvp.Value.Toggled select kvp.Key).ToList());
@@ -649,13 +663,6 @@ namespace PseudoMaker.UI
                 pushupValue.ToString().StartsWith("Advanced") ? KK_Plugins.Pushup.ConfigSliderMin.Value / 100 : 0,
                 pushupValue.ToString().StartsWith("Advanced") ? KK_Plugins.Pushup.ConfigSliderMax.Value / 100 : 1
             );
-        }
-
-        private void RefreshPanel()
-        {
-            PseudoMaker.Logger.LogInfo("refresh");
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
         }
     }
 }

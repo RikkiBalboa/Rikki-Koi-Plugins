@@ -136,7 +136,7 @@ namespace PseudoMaker.UI
             }
             PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
             PseudoMaker.selectedCharacter.Reload(false, true, true, true);
-            Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+            PseudoMaker.RefreshCharacterstatusPanel();
 
             // trigger KKAPI event
             FieldInfo eventInfo = typeof(AccessoriesApi).GetField(nameof(AccessoriesApi.AccessoriesCopied), BindingFlags.NonPublic | BindingFlags.Static);

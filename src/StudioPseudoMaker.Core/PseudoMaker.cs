@@ -25,11 +25,13 @@ namespace PseudoMaker
     [BepInDependency(KKABMX.Core.KKABMX_Core.GUID)]
     [BepInDependency(KK_Plugins.ClothingUnlocker.GUID)]
     [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
+    [BepInDependency(KK_Plugins.MoreOutfits.Plugin.PluginGUID, KK_Plugins.MoreOutfits.Plugin.PluginVersion)]
     [BepInDependency("starstorm.aaaaaaaaaaaa", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KCOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KSOX", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.rikkibalboa.bepinex.buttEditor", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("KK_PregnancyPlus", BepInDependency.DependencyFlags.SoftDependency)]
     // Only needed to add the timeline compatibility if it doesn't exist.
     [BepInDependency("com.rikkibalboa.bepinex.studioSkinColorControl", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
@@ -38,7 +40,7 @@ namespace PseudoMaker
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.3.1.0";
+        public const string PluginVersion = "1.4.0.0";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
@@ -163,6 +165,11 @@ namespace PseudoMaker
             AddStudioButton();
         }
 
+        public static void RefreshCharacterstatusPanel()
+        {
+            Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+        }
+
         private static void AddStudioButton()
         {
             RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Route").GetComponent<RectTransform>();
@@ -275,6 +282,22 @@ namespace PseudoMaker
         ButtEditorElasticity,
         ButtEditorDampening,
         ButtEditorWeight,
+        PregnancyPlusInflation,
+        PregnancyPlusMultiplier,
+        PregnancyPlusRoundness,
+        PregnancyPlusMoveY,
+        PregnancyPlusMoveZ,
+        PregnancyPlusStretchX,
+        PregnancyPlusStretchY,
+        PregnancyPlusShiftY,
+        PregnancyPlusShiftZ,
+        PregnancyPlusTaperY,
+        PregnancyPlusTaperZ,
+        PregnancyPlusDrop,
+        PregnancyPlusClothOffset,
+        PregnancyPlusFatFold,
+        PregnancyPlusFatFoldHeight,
+        PregnancyPlusFatFoldGap,
     }
 
     public enum PatternValue

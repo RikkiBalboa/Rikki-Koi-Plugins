@@ -93,6 +93,10 @@
       <HintPath>..\..\lib\KKS_OverlayMods.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KKS_PregnancyPlus">
+      <HintPath>..\..\lib\KKS_PregnancyPlus.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KKS_Pushup">
       <HintPath>..\..\lib\KKS_Pushup.dll</HintPath>
       <Private>False</Private>
@@ -193,6 +197,7 @@
     <ProjectReference Include="..\ButtPhysicsEditor.KKS\ButtPhysicsEditor.KKS.csproj">
       <Project>{2126d895-e8f5-4adc-b34f-48534b7c2dc6}</Project>
       <Name>ButtPhysicsEditor.KKS</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\StudioPseudoMaker.Core\Core.StudioPseudoMaker.projitems" Label="Shared" />

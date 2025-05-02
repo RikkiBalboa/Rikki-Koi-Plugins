@@ -201,11 +201,5 @@ namespace PseudoMaker.UI
                 }
             }
         }
-
-        private void RefreshPanel()
-        {
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
-        }
     }
 }

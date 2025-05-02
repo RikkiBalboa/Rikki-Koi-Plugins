@@ -15,6 +15,7 @@ using Studio;
 using UnityEngine;
 using static KK_Plugins.Pushup;
 using static PseudoMaker.PseudoMaker;
+using static Illusion.Utils;
 
 namespace PseudoMaker
 {
@@ -542,6 +543,24 @@ namespace PseudoMaker
                 case FloatType.ButtEditorWeight:
                     Compatibility.ButtPhysicsEditorPlugin.SetButtValue(floatType, value);
                     break;
+                case FloatType.PregnancyPlusInflation:
+                case FloatType.PregnancyPlusMultiplier:
+                case FloatType.PregnancyPlusRoundness:
+                case FloatType.PregnancyPlusMoveY:
+                case FloatType.PregnancyPlusMoveZ:
+                case FloatType.PregnancyPlusStretchX:
+                case FloatType.PregnancyPlusStretchY:
+                case FloatType.PregnancyPlusShiftY:
+                case FloatType.PregnancyPlusShiftZ:
+                case FloatType.PregnancyPlusTaperY:
+                case FloatType.PregnancyPlusTaperZ:
+                case FloatType.PregnancyPlusDrop:
+                case FloatType.PregnancyPlusClothOffset:
+                case FloatType.PregnancyPlusFatFold:
+                case FloatType.PregnancyPlusFatFoldHeight:
+                case FloatType.PregnancyPlusFatFoldGap:
+                    Compatibility.PregnancyPlus.SetFloatValue(floatType, value);
+                    break;
             }
         }
 
@@ -628,6 +647,23 @@ namespace PseudoMaker
                 case FloatType.ButtEditorDampening:
                 case FloatType.ButtEditorWeight:
                     return Compatibility.ButtPhysicsEditorPlugin.GetButtValue(floatType);
+                case FloatType.PregnancyPlusInflation:
+                case FloatType.PregnancyPlusMultiplier:
+                case FloatType.PregnancyPlusRoundness:
+                case FloatType.PregnancyPlusMoveY:
+                case FloatType.PregnancyPlusMoveZ:
+                case FloatType.PregnancyPlusStretchX:
+                case FloatType.PregnancyPlusStretchY:
+                case FloatType.PregnancyPlusShiftY:
+                case FloatType.PregnancyPlusShiftZ:
+                case FloatType.PregnancyPlusTaperY:
+                case FloatType.PregnancyPlusTaperZ:
+                case FloatType.PregnancyPlusDrop:
+                case FloatType.PregnancyPlusClothOffset:
+                case FloatType.PregnancyPlusFatFold:
+                case FloatType.PregnancyPlusFatFoldHeight:
+                case FloatType.PregnancyPlusFatFoldGap:
+                    return Compatibility.PregnancyPlus.GetFloatValue(floatType);
                 default:
                     return 0f;
             }
@@ -1466,6 +1502,7 @@ namespace PseudoMaker
             selectedCharacter.ChangeAccessory(slotNr, type, id, parentKey);
             typeof(AccessoriesApi).GetMethod("OnAccessoryKindChanged", AccessTools.all).Invoke(null, new object[] { this, slotNr });
             SetAccessories.parts[slotNr] = Accessories.parts[slotNr];
+            PseudoMaker.RefreshCharacterstatusPanel();
         }
 
         public void SetAccessoryParent(int slotNr, string parentKey)
@@ -1545,6 +1582,7 @@ namespace PseudoMaker
             if (!coordinateIndex.HasValue || coordinateIndex.Value == selectedCharacter.fileStatus.coordinateType)
                 selectedCharacter.nowCoordinate.accessory.parts = accessoryFile.parts;
             MoreAccessories.ArraySync(selectedCharacter);
+            PseudoMaker.RefreshCharacterstatusPanel();
         }
 
         #region HairAccessoryCustomizer
@@ -1706,6 +1744,7 @@ namespace PseudoMaker
                     selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: true, updateTex04: false);
                 if (pattern == 3)
                     selectedCharacter.ChangeCustomClothes(main: true, kind, updateColor: true, updateTex01: false, updateTex02: false, updateTex03: false, updateTex04: true);
+                PseudoMaker.RefreshCharacterstatusPanel();
             }
 
             void ChangeEmblem(int kind)
@@ -1886,11 +1925,10 @@ namespace PseudoMaker
                     selectedCharacter.ChangeHairOption(true);
                     break;
                 case SelectKindType.CosTop:
-                    //clothes.parts[clothesType].sleevesType = 0;
-                    //setClothes.parts[clothesType].sleevesType = 0;
                     Clothes.parts[0].id = id;
                     SetClothes.parts[0].id = id;
                     selectedCharacter.ChangeClothesTop(id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+                    ClampSleeveType(0);
                     SkirtFkFix();
                     break;
                 case SelectKindType.CosSailor01:
@@ -2395,6 +2433,33 @@ namespace PseudoMaker
 #if KK
             }
 #endif
+        }
+
+        public void SetSleeveType(int clothesType, int sleeveType)
+        {
+            Clothes.parts[clothesType].sleevesType = sleeveType;
+            SetClothes.parts[clothesType].sleevesType = sleeveType;
+            ClampSleeveType(clothesType);
+            selectedCharacter.ChangeClothesTop(SetClothes.parts[0].id, SetClothes.subPartsId[0], SetClothes.subPartsId[1], SetClothes.subPartsId[2], true);
+        }
+
+        public int GetSleeveType(int clothesType)
+        {
+            return Clothes.parts[clothesType].sleevesType;
+        }
+
+        public void ClampSleeveType(int clothesType)
+        {
+            if (GetSleeveType(clothesType) >= GetSleeveTypeCount(clothesType) && GetSleeveTypeCount(clothesType) != 0)
+                SetSleeveType(clothesType, 0);
+        }
+
+        public int GetSleeveTypeCount(int clothesType)
+        {
+            var clothesComponent = selectedCharacter.GetCustomClothesComponent(clothesType);
+            return Convert.ToInt32(clothesComponent?.objSleeves01?.Any())
+                + Convert.ToInt32(clothesComponent?.objSleeves02?.Any())
+                + Convert.ToInt32(clothesComponent?.objSleeves03?.Any());
         }
 
         public static int SelectKindToIntKind(SelectKindType type)

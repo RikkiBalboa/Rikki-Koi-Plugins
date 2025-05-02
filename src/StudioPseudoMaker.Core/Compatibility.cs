@@ -18,6 +18,7 @@ using UnityEngine.UI;
 using ButtPhysicsEditor;
 using Shared;
 using a12 = AAAAAAAAAAAA.AAAAAAAAAAAA;
+using KK_PregnancyPlus;
 
 namespace PseudoMaker
 {
@@ -34,6 +35,7 @@ namespace PseudoMaker
         public static bool HasStudioSkinColor {  get; private set; }
         public static Version OverlayPluginVersion { get; private set; }
         public static bool HasButtPhysicsEditorPlugin { get; private set; }
+        public static bool HasPregnancyPlus {  get; private set; }
         public static bool HasC2A { get; private set; }
 
         static Compatibility()
@@ -57,6 +59,7 @@ namespace PseudoMaker
                         OverlayPluginVersion = plugin.Info.Metadata.Version;
                         break;
                     case "com.rikkibalboa.bepinex.buttEditor": HasButtPhysicsEditorPlugin = true; break;
+                    case "KK_PregnancyPlus": HasPregnancyPlus = true; break;
                 }
         }
 
@@ -728,13 +731,307 @@ namespace PseudoMaker
             }
         }
 
+        public static class PregnancyPlus
+        {
+            private static PregnancyPlusCharaController GetController()
+            {
+                return PseudoMaker.selectedCharacter.gameObject.GetComponent<PregnancyPlusCharaController>();
+            }
+
+            public static void SetFloatValue(FloatType type, float value)
+            {
+                if (HasPregnancyPlus)
+                    SetValue();
+
+                void SetValue()
+                {
+                    var controller = GetController();
+
+                    switch (type)
+                    {
+                        case FloatType.PregnancyPlusInflation:
+                            if (controller.infConfig.inflationSize == value) return;
+                            controller.infConfig.inflationSize = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusMultiplier:
+                            if (controller.infConfig.inflationMultiplier == value) return;
+                            controller.infConfig.inflationMultiplier = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusRoundness:
+                            if (controller.infConfig.inflationRoundness == value) return;
+                            controller.infConfig.inflationRoundness = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusMoveY:
+                            if (controller.infConfig.inflationMoveY == value) return;
+                            controller.infConfig.inflationMoveY = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusMoveZ:
+                            if (controller.infConfig.inflationMoveZ == value) return;
+                            controller.infConfig.inflationMoveZ = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusStretchX:
+                            if (controller.infConfig.inflationStretchX == value) return;
+                            controller.infConfig.inflationStretchX = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusStretchY:
+                            if (controller.infConfig.inflationStretchY == value) return;
+                            controller.infConfig.inflationStretchY = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusShiftY:
+                            if (controller.infConfig.inflationShiftY == value) return;
+                            controller.infConfig.inflationShiftY = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusShiftZ:
+                            if (controller.infConfig.inflationShiftZ == value) return;
+                            controller.infConfig.inflationShiftZ = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusTaperY:
+                            if (controller.infConfig.inflationTaperY == value) return;
+                            controller.infConfig.inflationTaperY = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusTaperZ:
+                            if (controller.infConfig.inflationTaperZ == value) return;
+                            controller.infConfig.inflationTaperZ = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusDrop:
+                            if (controller.infConfig.inflationDrop == value) return;
+                            controller.infConfig.inflationDrop = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusClothOffset:
+                            if (controller.infConfig.inflationClothOffset == value) return;
+                            controller.infConfig.inflationClothOffset = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusFatFold:
+                            if (controller.infConfig.inflationFatFold == value) return;
+                            controller.infConfig.inflationFatFold = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusFatFoldHeight:
+                            if (controller.infConfig.inflationFatFoldHeight == value) return;
+                            controller.infConfig.inflationFatFoldHeight = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                        case FloatType.PregnancyPlusFatFoldGap:
+                            if (controller.infConfig.inflationFatFoldGap == value) return;
+                            controller.infConfig.inflationFatFoldGap = value;
+                            controller.MeshInflate(new MeshInflateFlags(controller), "StudioPseudoMaker");
+                            break;
+                    }
+                    //PseudoMaker.RefreshCharacterstatusPanel();
+                }
+            }
+
+            public static float GetFloatValue(FloatType type)
+            {
+                if (HasPregnancyPlus)
+                    return GetValue();
+                else return 0f;
+
+                float GetValue()
+                {
+                    var controller = GetController();
+
+                    switch (type)
+                    {
+                        case FloatType.PregnancyPlusInflation:
+                            return controller.infConfig.inflationSize;
+                        case FloatType.PregnancyPlusMultiplier:
+                            return controller.infConfig.inflationMultiplier;
+                        case FloatType.PregnancyPlusRoundness:
+                            return controller.infConfig.inflationRoundness;
+                        case FloatType.PregnancyPlusMoveY:
+                            return controller.infConfig.inflationMoveY;
+                        case FloatType.PregnancyPlusMoveZ:
+                            return controller.infConfig.inflationMoveZ;
+                        case FloatType.PregnancyPlusStretchX:
+                            return controller.infConfig.inflationStretchX;
+                        case FloatType.PregnancyPlusStretchY:
+                            return controller.infConfig.inflationStretchY;
+                        case FloatType.PregnancyPlusShiftY:
+                            return controller.infConfig.inflationShiftY;
+                        case FloatType.PregnancyPlusShiftZ:
+                            return controller.infConfig.inflationShiftZ;
+                        case FloatType.PregnancyPlusTaperY:
+                            return controller.infConfig.inflationTaperY;
+                        case FloatType.PregnancyPlusTaperZ:
+                            return controller.infConfig.inflationTaperZ;
+                        case FloatType.PregnancyPlusDrop:
+                            return controller.infConfig.inflationDrop;
+                        case FloatType.PregnancyPlusClothOffset:
+                            return controller.infConfig.inflationClothOffset;
+                        case FloatType.PregnancyPlusFatFold:
+                            return controller.infConfig.inflationFatFold;
+                        case FloatType.PregnancyPlusFatFoldHeight:
+                            return controller.infConfig.inflationFatFoldHeight;
+                        case FloatType.PregnancyPlusFatFoldGap:
+                            return controller.infConfig.inflationFatFoldGap;
+                        default: return 0f;
+                    }
+                }
+            }
+
+            public static float[] GetSliderRange(FloatType type)
+            {
+                if (HasPregnancyPlus)
+                    return GetValue();
+                else return new float[] { 0f, 0f };
+
+                float[] GetValue()
+                {
+                    switch (type)
+                    {
+                        case FloatType.PregnancyPlusInflation:
+                            return PregnancyPlusGui.SliderRange.InflationSize;
+                        case FloatType.PregnancyPlusMultiplier:
+                            return PregnancyPlusGui.SliderRange.InflationMultiplier;
+                        case FloatType.PregnancyPlusRoundness:
+                            return PregnancyPlusGui.SliderRange.InflationRoundness;
+                        case FloatType.PregnancyPlusMoveY:
+                            return PregnancyPlusGui.SliderRange.InflationMoveY;
+                        case FloatType.PregnancyPlusMoveZ:
+                            return PregnancyPlusGui.SliderRange.InflationMoveZ;
+                        case FloatType.PregnancyPlusStretchX:
+                            return PregnancyPlusGui.SliderRange.InflationStretchX;
+                        case FloatType.PregnancyPlusStretchY:
+                            return PregnancyPlusGui.SliderRange.InflationStretchY;
+                        case FloatType.PregnancyPlusShiftY:
+                            return PregnancyPlusGui.SliderRange.InflationShiftY;
+                        case FloatType.PregnancyPlusShiftZ:
+                            return PregnancyPlusGui.SliderRange.InflationShiftZ;
+                        case FloatType.PregnancyPlusTaperY:
+                            return PregnancyPlusGui.SliderRange.InflationTaperY;
+                        case FloatType.PregnancyPlusTaperZ:
+                            return PregnancyPlusGui.SliderRange.InflationTaperZ;
+                        case FloatType.PregnancyPlusDrop:
+                            return PregnancyPlusGui.SliderRange.InflationDrop;
+                        case FloatType.PregnancyPlusClothOffset:
+                            return PregnancyPlusGui.SliderRange.InflationClothOffset;
+                        case FloatType.PregnancyPlusFatFold:
+                            return PregnancyPlusGui.SliderRange.InflationFatFold;
+                        case FloatType.PregnancyPlusFatFoldHeight:
+                            return PregnancyPlusGui.SliderRange.InflationFatFoldHeight;
+                        case FloatType.PregnancyPlusFatFoldGap:
+                            return PregnancyPlusGui.SliderRange.InflationFatFoldGap;
+                        default: return new float[] { 0f, 0f };
+                    }
+                }
+            }
+
+            public static void CopyBelly()
+            {
+                if (HasPregnancyPlus)
+                    Copy();
+
+                void Copy()
+                {
+                    PregnancyPlusPlugin.copiedBelly = (PregnancyPlusData)GetController().infConfig.Clone(); 
+                }
+            }
+
+            public static void PasteBelly(PregnancyPlusData data)
+            {
+                if (HasPregnancyPlus)
+                    Paste();
+
+                void Paste()
+                {
+                    if (PregnancyPlusPlugin.copiedBelly != null && PregnancyPlusPlugin.copiedBelly.HasAnyValue())
+                    {
+                        GetController().infConfig.GameplayEnabled = true;
+
+                        SetFloatValue(FloatType.PregnancyPlusInflation, data.inflationSize);
+                        SetFloatValue(FloatType.PregnancyPlusMultiplier, data.inflationMultiplier);
+                        SetFloatValue(FloatType.PregnancyPlusRoundness, data.inflationRoundness);
+                        SetFloatValue(FloatType.PregnancyPlusMoveY, data.inflationMoveY);
+                        SetFloatValue(FloatType.PregnancyPlusMoveZ, data.inflationMoveZ);
+                        SetFloatValue(FloatType.PregnancyPlusStretchX, data.inflationStretchX);
+                        SetFloatValue(FloatType.PregnancyPlusStretchY, data.inflationStretchY);
+                        SetFloatValue(FloatType.PregnancyPlusShiftY, data.inflationShiftY);
+                        SetFloatValue(FloatType.PregnancyPlusShiftZ, data.inflationShiftZ);
+                        SetFloatValue(FloatType.PregnancyPlusTaperY, data.inflationTaperY);
+                        SetFloatValue(FloatType.PregnancyPlusTaperZ, data.inflationTaperZ);
+                        SetFloatValue(FloatType.PregnancyPlusDrop, data.inflationDrop);
+                        SetFloatValue(FloatType.PregnancyPlusClothOffset, data.inflationClothOffset);
+                        SetFloatValue(FloatType.PregnancyPlusFatFold, data.inflationFatFold);
+                        SetFloatValue(FloatType.PregnancyPlusFatFoldHeight, data.inflationFatFoldHeight);
+                        SetFloatValue(FloatType.PregnancyPlusFatFoldGap, data.inflationFatFoldGap);
+
+                        PseudoMaker.RefreshCharacterstatusPanel();
+                    }
+                }
+            }
+
+            public static void ResetBelly()
+            {
+                if (HasPregnancyPlus)
+                    Reset();
+
+                void Reset()
+                {
+                    var controller = GetController();
+                    controller.CleanSlate();
+                    controller.isProcessing = false;
+                    controller.infConfig.Reset();
+                    PseudoMaker.RefreshCharacterstatusPanel();
+                }
+            }
+
+            public static void OpenBlendshapes()
+            {
+                if (HasPregnancyPlus)
+                    Open();
+
+                void Open()
+                {
+                    GetController().OnOpenBlendShapeSelected();
+                }
+            }
+
+#if KKS
+            public static void OpenOffsets()
+            {
+                if (HasPregnancyPlus)
+                    Open();
+
+                void Open()
+                {
+                    GetController().OnOpenClothOffsetSelected();
+                }
+            }
+#endif
+
+            public static void SmoothBelly()
+            {
+                if (HasPregnancyPlus)
+                    Smooth();
+
+                void Smooth()
+                {
+                    GetController().ApplySmoothing(PregnancyPlusGui.includeClothSmoothing);
+                }
+            }
+        }
+
         public static class MoreOutfits
         {
 
             public static void AddOufitSlot()
             {
                 KK_Plugins.MoreOutfits.Plugin.AddCoordinateSlot(PseudoMaker.selectedCharacter);
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
                 PseudoMaker.Logger.LogMessage("Outfit added successfully!");
             }
 
@@ -743,7 +1040,7 @@ namespace PseudoMaker
                 int outfitCount = PseudoMaker.selectedCharacter.GetOCIChar().charInfo.chaFile.coordinate.Length;
                 Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.stateInfo.OnClickCosType(outfitCount - 2);
                 KK_Plugins.MoreOutfits.Plugin.RemoveCoordinateSlot(PseudoMaker.selectedCharacter);
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
                 PseudoMaker.Logger.LogMessage("Outfit removed successfully!");
             }
 
@@ -756,7 +1053,7 @@ namespace PseudoMaker
             public static void SetCurrentOutfitName(string outfitName)
             {
                 KK_Plugins.MoreOutfits.Plugin.SetCoordinateName(PseudoMaker.selectedCharacter, PseudoMaker.selectedCharacter.fileStatus.coordinateType, outfitName);
-                Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl?.UpdateInfo();
+                PseudoMaker.RefreshCharacterstatusPanel();
                 PseudoMaker.Logger.LogMessage("Outfit renamed successfully!");
             }
         }

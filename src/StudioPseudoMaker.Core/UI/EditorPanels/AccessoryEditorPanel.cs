@@ -328,7 +328,7 @@ namespace PseudoMaker.UI
             transform1GuideObjectToggle.toggle.isOn = false;
             transform2GuideObjectToggle.toggle.isOn = false;
             RefreshPanel();
-            Studio.Studio.instance?.manipulatePanelCtrl?.charaPanelInfo.mpCharCtrl.UpdateInfo();
+            PseudoMaker.RefreshCharacterstatusPanel();
         }
 
         public void ChangeSelectedAccessory(int slotNr, ChaListDefine.CategoryNo categoryNr)
@@ -466,11 +466,10 @@ namespace PseudoMaker.UI
             RefreshPanel();
         }
 
-        public void RefreshPanel()
+        protected override void RefreshPanel()
         {
             isRefreshing = true;
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            base.RefreshPanel();
             isRefreshing = false;
         }
     }

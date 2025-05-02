@@ -1,5 +1,7 @@
-﻿using KoiSkinOverlayX;
+﻿using KK_PregnancyPlus;
+using KoiSkinOverlayX;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PseudoMaker.UI
@@ -96,12 +98,75 @@ namespace PseudoMaker.UI
                     AddSkinOverlayRow(TexType.BodyUnder, "Body Underlay Texture", onDone: RefreshPanel);
                 }
             }
+            else if  (SubCategory == SubCategory.BodyPregnancyPlus)
+            {
+                if (!Compatibility.HasPregnancyPlus) return;
+
+                AddRows();
+                void AddRows()
+                {
+                    int selectedPreset = 0;
+                    AddDropdownRow(
+                        "Apply Preset Shape",
+                        BellyTemplate.shapeNames.ToList(),
+                        () => selectedPreset,
+                        value => {
+                            selectedPreset = value;
+                            Compatibility.PregnancyPlus.PasteBelly(BellyTemplate.GetTemplate(value));
+                            RefreshPanel();
+                        }
+                    );
+
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusInflation, "Pregnancy+");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusMultiplier, "Multiplier");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusRoundness, "Roundness");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusMoveY, "Move Y");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusMoveZ, "Move Z");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusStretchX, "Stretch X");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusStretchY, "Stretch Y");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusShiftY, "Shift Y");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusShiftZ, "Shift Z");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusTaperY, "Taper Y");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusTaperZ, "Taper Z");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusClothOffset, "Cloth Offset");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusFatFold, "Fat Fold");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusFatFoldHeight, "Fat Fold Height");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusFatFoldGap, "Fat Fold Gap");
+
+                    AddButtonGroupRow(new Dictionary<string, Action>
+                    {
+                        { "Copy Belly",  Compatibility.PregnancyPlus.CopyBelly },
+                        { "Paste Belly", () => { Compatibility.PregnancyPlus.PasteBelly(PregnancyPlusPlugin.copiedBelly); RefreshPanel(); } },
+                        { "Reset Belly", () => { Compatibility.PregnancyPlus.ResetBelly(); RefreshPanel(); } },
+                    });
+                    AddButtonGroupRow(new Dictionary<string, Action>
+                    {
+                        { "Open BlendShapes", Compatibility.PregnancyPlus.OpenBlendshapes },
+#if KKS
+                        { "Open Individual Offsets", Compatibility.PregnancyPlus.OpenOffsets },
+#endif
+                    });
+                    AddButtonRow("Belly Mesh Smoothing", Compatibility.PregnancyPlus.SmoothBelly);
+                    AddToggleRow(
+                        "Include Cloth When Smoothing",
+                        value => PregnancyPlusGui.includeClothSmoothing = value,
+                        () => PregnancyPlusGui.includeClothSmoothing
+                    );
+                }
+            }
         }
 
-        private void RefreshPanel()
+        private void AddSliderRowPregnancyPlus(FloatType type, string name)
         {
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            AddSliderRow(
+                name,
+                () => PseudoMaker.selectedCharacterController.GetFloatValue(type),
+                () => PseudoMaker.selectedCharacterController.GetOriginalFloatValue(type),
+                value => PseudoMaker.selectedCharacterController.SetFloatTypeValue(value, type),
+                () => PseudoMaker.selectedCharacterController.ResetFloatTypeValue(type),
+                minValue: Compatibility.PregnancyPlus.GetSliderRange(type)[0],
+                maxValue: Compatibility.PregnancyPlus.GetSliderRange(type)[1]
+            );
         }
     }
 }
