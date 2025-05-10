@@ -1,11 +1,9 @@
 ﻿using ChaCustom;
 using KKAPI.Utilities;
-using Manager;
 using Sideloader.AutoResolver;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -31,6 +29,7 @@ namespace PseudoMaker.UI
         public Button CurrentButton;
         public static InputField SearchField;
         public Button ClearButton;
+        public Dropdown FilterDropdown;
         public static ScrollRect ScrollRect;
         public GridLayoutGroup GridLayoutGroup;
         public ToggleGroup toggleGroup;
@@ -41,6 +40,7 @@ namespace PseudoMaker.UI
         private static ChaListDefine.CategoryNo CategoryNo;
         private static Func<int> GetCurrentValue;
         private static Action<CustomSelectInfo> SetCurrentValue;
+        private static ItemBlacklist.ListVisibilityType ListVisibilityType;
 
         public static Dictionary<ChaListDefine.CategoryNo, List<CustomSelectInfo>> dictSelectInfo;
         public static List<CustomSelectInfo> currentList => dictSelectInfo[CategoryNo];
@@ -75,7 +75,7 @@ namespace PseudoMaker.UI
             CategoryNo = categoryNo;
             GetCurrentValue = getCurrentValue;
             SetCurrentValue = setCurrentValue;
-            itemList = dictSelectInfo[categoryNo];
+            itemList = dictSelectInfo[CategoryNo].Where(x => FilterInfo(x, "")).ToList();
             isDirty = true;
             instance.gameObject.SetActive(true);
             ScrollRect.content.localPosition = Vector2.zero;
@@ -118,10 +118,9 @@ namespace PseudoMaker.UI
             SearchField = transform.Find("SearchInputField").gameObject.GetComponent<InputField>();
             SearchField.onValueChanged.AddListener((value) =>
             {
-                if (value != "")
-                    itemList = dictSelectInfo[CategoryNo].Where(x => FilterInfo(x, value)).ToList();
-                else itemList = dictSelectInfo[CategoryNo];
+                itemList = dictSelectInfo[CategoryNo].Where(x => FilterInfo(x, value)).ToList();
                 isDirty = true;
+                shouldScroll = true;
             });
 # if KKS
             SearchField.m_Colors.selectedColor = SearchField.colors.highlightedColor;
@@ -129,6 +128,15 @@ namespace PseudoMaker.UI
 
             ClearButton = transform.Find("ClearButton").gameObject.GetComponent<Button>();
             ClearButton.onClick.AddListener(() => SearchField.text = "");
+
+            FilterDropdown = transform.Find("FilterDropdown").gameObject.GetComponent<Dropdown>();
+            FilterDropdown.options = Enum.GetNames(typeof(ItemBlacklist.ListVisibilityType)).Select(option => new Dropdown.OptionData(option)).ToList();
+            FilterDropdown.onValueChanged.AddListener((value) => {
+                ListVisibilityType = (ItemBlacklist.ListVisibilityType)value;
+                itemList = dictSelectInfo[CategoryNo].Where(x => FilterInfo(x, SearchField.text)).ToList();
+                isDirty = true;
+                shouldScroll = true;
+            });
 
             CurrentButton = transform.Find("CurrentButton").gameObject.GetComponent<Button>();
             CurrentButton.onClick.AddListener(ScrollToSelection);
@@ -266,8 +274,16 @@ namespace PseudoMaker.UI
             if (onToggle != null) onToggle.tgl.isOn = true;
         }
 
-        private bool FilterInfo(CustomSelectInfo info, string search)
+        private static bool FilterInfo(CustomSelectInfo info, string search)
         {
+            if (ListVisibilityType == ItemBlacklist.ListVisibilityType.Filtered && ItemBlacklist.CheckBlacklist(info))
+                return false;
+            else if (ListVisibilityType == ItemBlacklist.ListVisibilityType.Favorites && !ItemBlacklist.CheckFavorites(info))
+                return false;
+            else if (ListVisibilityType == ItemBlacklist.ListVisibilityType.Hidden && !ItemBlacklist.CheckBlacklist(info))
+                return false;
+            if (search == null || search == "") return true;
+
             var show = false;
             if (info == null) return show;
 
@@ -281,6 +297,18 @@ namespace PseudoMaker.UI
             show |= _info?.Author?.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
 
             return show;
+        }
+
+        internal static void FilterList(string filter)
+        {
+            SearchField.text = filter;
+            shouldScroll = true;
+        }
+
+        internal static void FilterList()
+        {
+            itemList = dictSelectInfo[CategoryNo].Where(x => FilterInfo(x, SearchField.text)).ToList();
+            isDirty = true;
         }
 
         private void PopulateEntryCache()

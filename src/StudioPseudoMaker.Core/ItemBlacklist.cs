@@ -63,6 +63,16 @@ namespace PseudoMaker
             return CheckGroup(Blacklist, guid, category, id);
         }
 
+        public static bool CheckBlacklist(CustomSelectInfo customSelectInfo)
+        {
+            ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
+            string guid = Info == null ? BaseGameItemGuid : Info.GUID ?? string.Empty;
+            int category = Info == null ? customSelectInfo.category : (int)Info.CategoryNo;
+            int slot = Info == null ? customSelectInfo.index : Info.Slot;
+
+            return CheckBlacklist(guid, category, slot);
+        }
+
         private static bool CheckGroup(ItemGroup group, string guid, int category, int id)
         {
             if (group.TryGetValue(guid, out var x))
@@ -193,6 +203,8 @@ namespace PseudoMaker
             group[guid][category].Remove(id);
             SaveBlacklist();
 
+            PickerPanel.FilterList();
+
             //bool changeFilter = false;
             //var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
             //for (var i = 0; i < controls.Length; i++)
@@ -266,6 +278,7 @@ namespace PseudoMaker
             }
 
             var allSkipped = onlyCurrentList ? ProcessList(PickerPanel.currentList) : PickerPanel.dictSelectInfo.Values.Sum(ProcessList);
+            PickerPanel.FilterList();
             return allSkipped;
         }
         private static void FavoriteMod(string guid, bool onlyCurrentList)
@@ -325,7 +338,7 @@ namespace PseudoMaker
             }
 
             var changeFilter = onlyCurrentList ? ProcessList(PickerPanel.currentList) : PickerPanel.dictSelectInfo.Values.Count(ProcessList) > 0;
-
+            PickerPanel.FilterList();
             //if (changeFilter)
             //    ChangeListFilter(ListVisibilityType.Filtered);
         }
@@ -348,6 +361,7 @@ namespace PseudoMaker
                 group[guid][category] = new HashSet<int>();
             group[guid][category].Add(id);
 
+            PickerPanel.FilterList();
             //var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
             //for (var i = 0; i < controls.Length; i++)
             //{
@@ -457,6 +471,7 @@ namespace PseudoMaker
             string guid = BaseGameItemGuid;
             int category = copyInfoComp.info.category;
             int id = index;
+            string author = null;
 
             if (index >= UniversalAutoResolver.BaseSlotID)
             {
@@ -465,6 +480,7 @@ namespace PseudoMaker
                 {
                     guid = info.GUID ?? string.Empty;
                     id = info.Slot;
+                    author = info.Author;
                 }
             }
 
@@ -473,7 +489,8 @@ namespace PseudoMaker
 
             var options = new Dictionary<string, Action>()
             {
-                { "Print Item Info", () => PrintInfo(copyInfoComp) }
+                { "Print Item Info", () => PrintInfo(copyInfoComp) },
+                { "Spacer0", null }
             };
 
             if (favorite)
@@ -488,6 +505,8 @@ namespace PseudoMaker
                 options["Favorite All Items From This Mod"] = () => FavoriteMod(guid, false);
                 options["Favorite All Items From This Mod On This List"] = () => FavoriteMod(guid, true);
             }
+            
+            options["Spacer1"] = null;
 
             if (blacklist)
             {
@@ -500,6 +519,12 @@ namespace PseudoMaker
                 options["Hide This Item"] = () => BlacklistItem(guid, category, id, index);
                 options["Hide All Items From This Mod"] = () => BlacklistMod(guid, false);
                 options["Hide All Items From This Mod On This List"] = () => BlacklistMod(guid, true);
+            }
+
+            if (author != null)
+            {
+                options["Spacer2"] = null;
+                options["Search By Author"] = () => PickerPanel.FilterList(author);
             }
 
             ContextMenu.OpenContextMenu(eventData, options);
