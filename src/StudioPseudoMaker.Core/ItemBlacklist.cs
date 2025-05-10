@@ -193,7 +193,7 @@ namespace PseudoMaker
         #endregion
 
         #region (Un)group
-
+        #region Item
         private static void UngroupItem(ItemGroup group, ListVisibilityType boundVisibility, string guid, int category, int id, int index)
         {
             if (!group.ContainsKey(guid))
@@ -204,25 +204,6 @@ namespace PseudoMaker
             SaveBlacklist();
 
             PickerPanel.FilterList();
-
-            //bool changeFilter = false;
-            //var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
-            //for (var i = 0; i < controls.Length; i++)
-            //{
-            //    var customSelectListCtrl = controls[i];
-            //    if (customSelectListCtrl.GetSelectInfoFromIndex(index)?.category == category)
-            //    {
-            //        if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-            //            if (visibilityType == boundVisibility)
-            //                customSelectListCtrl.DisvisibleItem(index, true);
-
-            //        if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
-            //            changeFilter = true;
-            //    }
-            //}
-
-            //if (changeFilter)
-            //    ChangeListFilter(ListVisibilityType.Filtered);
         }
         private static void UnfavoriteItem(string guid, int category, int id, int index)
         {
@@ -235,6 +216,30 @@ namespace PseudoMaker
             SaveBlacklist();
         }
 
+        private static void GroupItem(ItemGroup group, ListVisibilityType? hideFrom, string guid, int category, int id, int index)
+        {
+            if (!group.ContainsKey(guid))
+                group[guid] = new Dictionary<int, HashSet<int>>();
+            if (!group[guid].ContainsKey(category))
+                group[guid][category] = new HashSet<int>();
+            group[guid][category].Add(id);
+
+            PickerPanel.FilterList();
+        }
+        private static void FavoriteItem(string guid, int category, int id, int index)
+        {
+            UnblacklistItem(guid, category, id, index);
+            GroupItem(Favorites, null, guid, category, id, index);
+            SaveFavorites();
+        }
+        private static void BlacklistItem(string guid, int category, int id, int index)
+        {
+            UnfavoriteItem(guid, category, id, index);
+            GroupItem(Blacklist, ListVisibilityType.Filtered, guid, category, id, index);
+            SaveBlacklist();
+        }
+        #endregion
+        #region Mod
         private static int GroupMod(ItemGroup group, ItemGroup skipItemsIn, ListVisibilityType? hideFrom, string guid, bool onlyCurrentList)
         {
             //var allLists = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
@@ -263,15 +268,6 @@ namespace PseudoMaker
                     if (!group[guid].ContainsKey(category))
                         group[guid][category] = new HashSet<int>();
                     group[guid][category].Add(slot);
-
-                    //for (var j = 0; j < allLists.Length; j++)
-                    //{
-                    //    var customSelectListCtrl = allLists[j];
-                    //    if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == category)
-                    //        if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                    //            if (visibilityType == hideFrom)
-                    //                customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
-                    //}
                 }
 
                 return skipped;
@@ -318,20 +314,6 @@ namespace PseudoMaker
                     if (!group[guid].ContainsKey(category))
                         group[guid][category] = new HashSet<int>();
                     group[guid][category].Remove(slot);
-
-                    //for (var j = 0; j < allLists.Length; j++)
-                    //{
-                    //    var customSelectListCtrl = allLists[j];
-                    //    if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == category)
-                    //    {
-                    //        if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                    //            if (visibilityType == boundVisibility)
-                    //                customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
-
-                    //        if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
-                    //            result = true;
-                    //    }
-                    //}
                 }
 
                 return result;
@@ -352,38 +334,7 @@ namespace PseudoMaker
             UngroupMod(Blacklist, ListVisibilityType.Hidden, guid, onlyCurrentList);
             SaveBlacklist();
         }
-
-        private static void GroupItem(ItemGroup group, ListVisibilityType? hideFrom, string guid, int category, int id, int index)
-        {
-            if (!group.ContainsKey(guid))
-                group[guid] = new Dictionary<int, HashSet<int>>();
-            if (!group[guid].ContainsKey(category))
-                group[guid][category] = new HashSet<int>();
-            group[guid][category].Add(id);
-
-            PickerPanel.FilterList();
-            //var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
-            //for (var i = 0; i < controls.Length; i++)
-            //{
-            //    var customSelectListCtrl = controls[i];
-            //    if (customSelectListCtrl.GetSelectInfoFromIndex(index)?.category == category)
-            //        if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-            //            if (visibilityType == hideFrom)
-            //                customSelectListCtrl.DisvisibleItem(index, true);
-            //}
-        }
-        private static void FavoriteItem(string guid, int category, int id, int index)
-        {
-            UnblacklistItem(guid, category, id, index);
-            GroupItem(Favorites, null, guid, category, id, index);
-            SaveFavorites();
-        }
-        private static void BlacklistItem(string guid, int category, int id, int index)
-        {
-            UnfavoriteItem(guid, category, id, index);
-            GroupItem(Blacklist, ListVisibilityType.Filtered, guid, category, id, index);
-            SaveBlacklist();
-        }
+        #endregion
         #endregion
 
         public static void PrintInfo(CustomSelectInfoComponent customSelectInfoComponent)
