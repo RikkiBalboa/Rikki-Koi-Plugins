@@ -18,8 +18,6 @@ namespace PseudoMaker.UI
         public RectTransform ResetOriginalsButton;
         public RectTransform ResizeHandle;
 
-        public PickerPanel PickerPanel;
-
         public GameObject CategorySelectorPanel;
         public ToggleGroup CategoryToggleGroup;
 
@@ -36,7 +34,7 @@ namespace PseudoMaker.UI
             MainCanvas.offsetMax = new Vector2(70 + PseudoMaker.MainWindowWidth.Value, 65 + PseudoMaker.MainWindowHeight.Value);
             MainCanvas.offsetMin = new Vector2(70, 65);
 
-            PickerPanel = MainWindow.transform.Find("CategoryPicker").gameObject.AddComponent<PickerPanel>();
+            MainWindow.transform.Find("CategoryPicker").gameObject.AddComponent<PickerPanel>();
             DragPanel = (RectTransform)MainCanvas.transform.Find("DragPanel").transform;
             CloseButton = (RectTransform)DragPanel.Find("CloseButton");
             ResetOriginalsButton = (RectTransform)DragPanel.Find("ResetButton");
@@ -52,6 +50,8 @@ namespace PseudoMaker.UI
                     PseudoMaker.MainWindowHeight.Value = MainCanvas.sizeDelta.y;
                 }
             );
+
+            MainWindow.transform.Find("ContextMenu").gameObject.AddComponent<ContextMenu>();
 
             CloseButton.gameObject.GetComponent<Button>().onClick.AddListener(() => MainWindow.SetActive(false));
             ResetOriginalsButton.gameObject.GetComponent<Button>().onClick.AddListener(() => PseudoMaker.selectedCharacterController.ResetSavedValues());
