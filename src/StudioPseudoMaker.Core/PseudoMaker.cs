@@ -124,6 +124,8 @@ namespace PseudoMaker
 
             UIScale.SettingChanged += (e, a) => SetUIScale();
 
+            ItemBlacklist.Init();
+
 #if DEBUG
             InitUI("Studio");
             foreach (var item in Studio.Studio.Instance.dicObjectCtrl.Values)

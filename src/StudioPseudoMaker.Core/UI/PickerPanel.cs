@@ -1,9 +1,11 @@
 ﻿using ChaCustom;
 using KKAPI.Utilities;
+using Manager;
 using Sideloader.AutoResolver;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -40,7 +42,8 @@ namespace PseudoMaker.UI
         private static Func<int> GetCurrentValue;
         private static Action<CustomSelectInfo> SetCurrentValue;
 
-        internal static Dictionary<ChaListDefine.CategoryNo, List<CustomSelectInfo>> dictSelectInfo;
+        public static Dictionary<ChaListDefine.CategoryNo, List<CustomSelectInfo>> dictSelectInfo;
+        public static List<CustomSelectInfo> currentList => dictSelectInfo[CategoryNo];
         private static List<CustomSelectInfo> itemList;
 
         private static List<CustomSelectInfoComponent> cachedEntries = new List<CustomSelectInfoComponent>();
@@ -328,6 +331,7 @@ namespace PseudoMaker.UI
                 var hoverComponent = copy.AddComponent<SelectListInfoHoverComponent>();
                 hoverComponent.onEnterAction = () => TranslationHelper.TranslateAsync(copyInfoComp.info.name, value => NameField.text = value);
                 hoverComponent.onExitAction = () => NameField.text = "";
+                hoverComponent.onRightClickAction = eventData => ItemBlacklist.ShowMenu(eventData, copyInfoComp);
 
                 copyInfoComp.img = copy.GetComponent<Image>();
 

@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compatibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemBlacklist.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PseudoMakerCharaController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CurrentStateColorSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PseudoMaker.cs" />
@@ -34,6 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ToggleComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ToggleGroupComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\TransferComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ContextMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryCopyPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryTransferPanel.cs" />
