@@ -25,7 +25,7 @@ namespace PseudoMaker
     [BepInDependency(KKABMX.Core.KKABMX_Core.GUID)]
     [BepInDependency(KK_Plugins.ClothingUnlocker.GUID)]
     [BepInDependency(KK_Plugins.HairAccessoryCustomizer.GUID, KK_Plugins.HairAccessoryCustomizer.Version)]
-    [BepInDependency(KK_Plugins.MoreOutfits.Plugin.PluginGUID, KK_Plugins.MoreOutfits.Plugin.PluginVersion)]
+    [BepInDependency(KK_Plugins.MoreOutfits.Plugin.PluginGUID, "1.1.2")]
     [BepInDependency("starstorm.aaaaaaaaaaaa", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("ClothesToAccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("KCOX", BepInDependency.DependencyFlags.SoftDependency)]
@@ -40,7 +40,7 @@ namespace PseudoMaker
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.5.0.2";
+        public const string PluginVersion = "1.5.1.1";
         internal static new ManualLogSource Logger;
         private static Harmony harmony;
 
