@@ -254,7 +254,7 @@ namespace PseudoMaker.UI
 
         public void ScrollToSelection()
         {
-            var itemRow =itemList.FindIndex(x => x.index == GetCurrentValue());
+            var itemRow = itemList.FindIndex(x => x.index == GetCurrentValue());
             itemRow = itemRow < 0 ? -1 : itemRow / columnCount;
 
             if (itemRow >= 0)
@@ -262,8 +262,14 @@ namespace PseudoMaker.UI
                 var minScroll = (itemRow - 4f) * GridLayoutGroup.cellSize.x;
                 var maxScroll = (itemRow + 0.5f) * GridLayoutGroup.cellSize.x;
                 var targetScroll = itemRow * GridLayoutGroup.cellSize.x;
+
                 if (ScrollRect.content.localPosition.y < minScroll || ScrollRect.content.localPosition.y > maxScroll)
                     ScrollRect.content.localPosition = new Vector2(ScrollRect.content.localPosition.x, Mathf.Max(0, targetScroll - GridLayoutGroup.cellSize.x * 1.7f));
+            }
+            else
+            {
+                var max = ((itemList.Count - 1) / columnCount) * GridLayoutGroup.cellSize.x;
+                ScrollRect.content.localPosition = new Vector2(ScrollRect.content.localPosition.x, Mathf.Max(0, max));
             }
         }
 
