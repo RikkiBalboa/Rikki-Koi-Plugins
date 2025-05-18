@@ -594,10 +594,17 @@ namespace PseudoMaker.UI
                 AddSliderRow(SubCategory, colorNr, PatternValue.Vertical).gameObject,
                 AddSliderRow(SubCategory, colorNr, PatternValue.Rotation).gameObject,
 #endif
-                AddSliderRow(SubCategory, colorNr, PatternValue.Width).gameObject,
-                AddSliderRow(SubCategory, colorNr, PatternValue.Height).gameObject,
-                AddColorRow(SubCategory, colorNr, true).gameObject,
             };
+
+            var width = AddSliderRow(SubCategory, colorNr, PatternValue.Width);
+            var height = AddSliderRow(SubCategory, colorNr, PatternValue.Height);
+            width.PairedInputs = new SliderComponent[] { height };
+            height.PairedInputs = new SliderComponent[] { width };
+
+            patternGameObjects.Add(width.gameObject);
+            patternGameObjects.Add(height.gameObject);
+            patternGameObjects.Add(AddColorRow(SubCategory, colorNr, true).gameObject);
+
             colorGameObjects.AddRange(patternGameObjects);
             clothingColorGameobjects[colorNr] = colorGameObjects;
             clothingPatternGameobjects[colorNr] = patternGameObjects;

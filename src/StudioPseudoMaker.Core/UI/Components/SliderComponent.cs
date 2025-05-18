@@ -7,9 +7,10 @@ namespace PseudoMaker.UI
     public class SliderComponent : MonoBehaviour
     {
         private Text text;
-        private Slider slider;
-        private InputField inputField;
+        internal Slider slider;
+        internal InputField inputField;
         private Button resetButton;
+        private OnDragHandler dragHandler;
 
         public string Name;
         public float MinValue = -1;
@@ -21,13 +22,15 @@ namespace PseudoMaker.UI
         public Action OnLabelClick;
         internal string displayTemplate = "0.00";
 
+        public SliderComponent[] PairedInputs = null;
+
         private bool shouldNotUpdate = false;
 
         private void Awake()
         {
             text = GetComponentInChildren<Text>(true);
 
-            var dragHandler = text.gameObject.AddComponent<OnDragHandler>();
+            dragHandler = text.gameObject.AddComponent<OnDragHandler>();
             dragHandler.UpdateAction = value => inputField.onEndEdit.Invoke((slider.value + value).ToString());
 
             slider = GetComponentInChildren<Slider>(true);
@@ -48,6 +51,13 @@ namespace PseudoMaker.UI
             text.text = Name;
             slider.minValue = MinValue;
             slider.maxValue = MaxValue;
+
+            if (PairedInputs != null)
+                dragHandler.PairedUpdateAction = value =>
+                {
+                    foreach (var input in PairedInputs)
+                        input.inputField.onEndEdit.Invoke((input.slider.value + value).ToString());
+                };
 
             PseudoMakerUI.AddTimelineButton(text.gameObject, OnLabelClick);
         }
