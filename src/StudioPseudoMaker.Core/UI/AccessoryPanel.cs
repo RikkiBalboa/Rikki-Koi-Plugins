@@ -78,13 +78,11 @@ namespace PseudoMaker.UI
 
         private void RefreshAccessoryList()
         {
-            var accessories = PseudoMaker.selectedCharacter.infoAccessory;
             int processedAccessories = 0;
 
-            for (int i = 0; i < toggles.Count && i < accessories.Length; i++)
+            for (int i = 0; i < toggles.Count && i < PseudoMaker.selectedCharacter.infoAccessory.Length; i++)
             {
                 var _i = i;
-                var accessory = accessories[i];
 
                 toggles[i].onValueChanged.RemoveAllListeners();
                 toggles[i].onValueChanged.AddListener((change) =>
@@ -92,7 +90,7 @@ namespace PseudoMaker.UI
                     editorPanel.gameObject.SetActive(true);
                     transferPanel.gameObject.SetActive(false);
                     copyPanel.gameObject.SetActive(false);
-                    editorPanel?.ChangeSelectedAccessory(_i, accessory != null);
+                    editorPanel?.ChangeSelectedAccessory(_i, PseudoMaker.selectedCharacter.infoAccessory[_i] != null);
                 });
 
                 var text = toggles[i].gameObject.GetComponentInChildren<Text>(true);
@@ -106,10 +104,9 @@ namespace PseudoMaker.UI
                 processedAccessories++;
             }
 
-            for (int i = processedAccessories; i < accessories.Length; i++)
+            for (int i = processedAccessories; i < PseudoMaker.selectedCharacter.infoAccessory.Length; i++)
             {
                 var _i = i;
-                var accessory = accessories[i];
 
                 var go = Instantiate(ToggleTemplate, PanelScroll.content, false);
                 go.name = $"AccessoryToggle{i}";
@@ -125,10 +122,10 @@ namespace PseudoMaker.UI
                 toggle.isOn = false;
                 toggle.onValueChanged.AddListener((change) =>
                 {
+                    editorPanel?.ChangeSelectedAccessory(_i, PseudoMaker.selectedCharacter.infoAccessory[_i] != null);
                     editorPanel.gameObject.SetActive(true);
                     transferPanel.gameObject.SetActive(false);
                     copyPanel.gameObject.SetActive(false);
-                    editorPanel?.ChangeSelectedAccessory(_i, accessory != null);
                 });
                 toggle.group = PanelToggleGroup;
                 toggles.Add(toggle);
