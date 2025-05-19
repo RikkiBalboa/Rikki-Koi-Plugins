@@ -204,6 +204,10 @@ namespace PseudoMaker
             {
                 return OverlayPluginVersion >= new Version("6.3");
             }
+            public static bool HasPatternSupport()
+            {
+                return OverlayPluginVersion >= new Version("6.4");
+            }
 
             public static void DumpOriginalTexture(string clothesId)
             {
@@ -416,6 +420,28 @@ namespace PseudoMaker
                 ClothesTexData GetOverlay()
                 {
                     return GetController()?.GetOverlayTex(clothesId, false);
+                }
+            }
+
+            public static int GetPatternId()
+            {
+                if(!HasClothesOverlayPlugin || !HasPatternSupport()) return -57475893;
+
+                return GetId();
+                int GetId()
+                {
+                    return KoiClothesOverlayController.CustomPatternID;
+                }
+            }
+
+            public static Sprite GetPatternThumbnail()
+            {
+                if (!HasClothesOverlayPlugin || !HasPatternSupport()) return null;
+
+                return GetThumbnail();
+                Sprite GetThumbnail()
+                {
+                    return KoiClothesOverlayController.GetPatternThumbnail();
                 }
             }
 

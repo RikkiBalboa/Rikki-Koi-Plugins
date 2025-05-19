@@ -396,6 +396,13 @@ namespace PseudoMaker.UI
 
         public static Sprite GetThumbSprite(CustomSelectInfo item)
         {
+            if (
+                Compatibility.ClothesOverlays.HasPatternSupport()
+                && item.category == (int)ChaListDefine.CategoryNo.mt_pattern
+                && item.index == Compatibility.ClothesOverlays.GetPatternId()
+            )
+                return Compatibility.ClothesOverlays.GetPatternThumbnail();
+
             var thumbTex = CommonLib.LoadAsset<Texture2D>(item.assetBundle, item.assetName, false, string.Empty);
             Sprite thumb = null;
             if (thumbTex)
