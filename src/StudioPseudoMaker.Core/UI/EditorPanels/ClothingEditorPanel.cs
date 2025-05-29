@@ -232,9 +232,11 @@ namespace PseudoMaker.UI
 
                 mainOverlayObjects.AddRange(AddClothingOverlayRow(clothesId, "Overlay texture", true));
 
+                if (ClothesOverlays.HasPatternAndOverrideSupport())
+                    AddOverrideRows("Override texture", clothesId);
                 if (ClothesOverlays.HasColorMaskSupport())
                     AddColorMaskRow("Color mask", clothesId);
-                if (ClothesOverlays.HasPatternSupport())
+                if (ClothesOverlays.HasPatternAndOverrideSupport())
                     AddPatternRows(clothesId);
 
                 if (SubCategory == SubCategory.ClothingTop)
@@ -275,6 +277,11 @@ namespace PseudoMaker.UI
                     ).gameObject;
                 }
 
+                void AddOverrideRows(string name, string _clothesId)
+                {
+                    mainOverlayObjects.AddRange(AddClothingOverlayRow(_clothesId, name, true, KoiClothesOverlayController.MakeOverrideId(_clothesId)));
+                }
+
                 void AddColorMaskRow(string name, string _clothesId)
                 {
                     mainOverlayObjects.AddRange(AddClothingOverlayRow(_clothesId, name, true, KoiClothesOverlayController.MakeColormaskId(_clothesId)));
@@ -301,6 +308,7 @@ namespace PseudoMaker.UI
                 var texType = isMask ? "override texture" : "overlay texture";
                 var isColorMask = colormaskId != null;
                 texType = isColorMask ? "override texture" : texType;
+                var dumpString = isMask || isColorMask ? "Dump original texture" : "Dump current texture";
 
                 clothesId = !isColorMask ? clothesId : colormaskId;
 
@@ -310,7 +318,7 @@ namespace PseudoMaker.UI
 
                 objectList.Add(
                     AddButtonRow(
-                        "Dump Original Texture",
+                        dumpString,
                         () => ClothesOverlays.DumpOriginalTexture(clothesId)
                     ).gameObject
                 );

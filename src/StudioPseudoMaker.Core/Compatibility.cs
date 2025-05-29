@@ -204,9 +204,9 @@ namespace PseudoMaker
             {
                 return OverlayPluginVersion >= new Version("6.3");
             }
-            public static bool HasPatternSupport()
+            public static bool HasPatternAndOverrideSupport()
             {
-                return OverlayPluginVersion >= new Version("6.4");
+                return OverlayPluginVersion >= new Version("7.0");
             }
 
             public static void DumpOriginalTexture(string clothesId)
@@ -425,7 +425,7 @@ namespace PseudoMaker
 
             public static int GetPatternId()
             {
-                if(!HasClothesOverlayPlugin || !HasPatternSupport()) return -57475893;
+                if(!HasClothesOverlayPlugin || !HasPatternAndOverrideSupport()) return -57475893;
 
                 return GetId();
                 int GetId()
@@ -436,7 +436,7 @@ namespace PseudoMaker
 
             public static Sprite GetPatternThumbnail()
             {
-                if (!HasClothesOverlayPlugin || !HasPatternSupport()) return null;
+                if (!HasClothesOverlayPlugin || !HasPatternAndOverrideSupport()) return null;
 
                 return GetThumbnail();
                 Sprite GetThumbnail()
