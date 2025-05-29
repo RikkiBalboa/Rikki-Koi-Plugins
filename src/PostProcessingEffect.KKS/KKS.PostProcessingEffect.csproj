@@ -31,6 +31,14 @@
     <None Remove="bin\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Resources\PostProcessResources.asset" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\PostProcessResources.asset">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.20" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.Assembly-CSharp" Version="2021.9.17" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass" Version="2021.9.17" />
@@ -51,6 +59,6 @@
   <Import Project="..\PostProcessingEffect.Core\Core.PostProcessingEffect.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /y $(ProjectDir)$(OutDir)KKS_PostProcessingEffect.dll $(ProjectDir)$(OutDir)KKS\BepInEx\plugins&#xD;&#xA;xcopy /y $(SolutionDir)lib\PostProcessResources.asset $(ProjectDir)$(OutDir)KKS\BepInEx\plugins" />
+    <Exec Command="xcopy /y $(ProjectDir)$(OutDir)KKS_PostProcessingEffect.dll $(ProjectDir)$(OutDir)KKS\BepInEx\plugins" />
   </Target>
 </Project>
