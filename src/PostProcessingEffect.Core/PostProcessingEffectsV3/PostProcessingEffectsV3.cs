@@ -31,13 +31,11 @@ namespace PostProcessingEffectsV3
 #if KKS
         public const string PluginGUID = "org.bepinex.plugins.KKS_PostProcessingEffectsV3";
         public const string PluginName = "KKS_PostProcessingEffectsV3";
-        private const string assetFilePath = "plugins/KKS_postprocessresources.asset";
 #elif KK
         public const string PluginGUID = "org.bepinex.plugins.PostProcessingEffectsV3";
         public const string PluginName = "PostProcessingEffectsV3";
-        private const string assetFilePath = "plugins/postprocessresources.asset";
 #endif
-        public const string PluginVersion = "4.4";
+        public const string PluginVersion = "4.5";
 
         internal static new ManualLogSource Logger;
 
@@ -156,7 +154,7 @@ namespace PostProcessingEffectsV3
 
         private void OnEnable()
         {
-            ab = AssetBundle.LoadFromFile(Path.Combine(Paths.BepInExRootPath, assetFilePath));
+            ab = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("PostProcessResources.asset"));
             if (ab != null)
             {
                 depthnormals = ab.LoadAsset<Shader>("Internal-DepthNormalsTexturemod");
@@ -225,7 +223,6 @@ namespace PostProcessingEffectsV3
             }
             else
             {
-                Logger.LogMessage($"Missing asset file, effects will not work. Make sure it's located in 'BepInEx/{assetFilePath}'. Your game WILL crash");
                 Logger.LogError("Asset file not loaded. Effects will not work and game will eventually crash because of this.");
             }
         }
