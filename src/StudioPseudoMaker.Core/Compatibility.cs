@@ -45,7 +45,7 @@ namespace PseudoMaker
                 .Union(UnityEngine.Object.FindObjectsOfType(typeof(BaseUnityPlugin)).Cast<BaseUnityPlugin>())
                 .ToArray();
             foreach (var plugin in plugins)
-                switch (plugin.Info.Metadata.GUID)
+                switch (plugin?.Info?.Metadata?.GUID)
                 {
                     case "starstorm.aaaaaaaaaaaa": HasA12 = true; break;
                     case "ClothesToAccessories": HasC2A = true; break;
@@ -1081,6 +1081,15 @@ namespace PseudoMaker
                 KK_Plugins.MoreOutfits.Plugin.SetCoordinateName(PseudoMaker.selectedCharacter, PseudoMaker.selectedCharacter.fileStatus.coordinateType, outfitName);
                 PseudoMaker.RefreshCharacterstatusPanel();
                 PseudoMaker.Logger.LogMessage("Outfit renamed successfully!");
+            }
+
+            public static List<string> GetAllOutfits()
+            {
+                var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
+                var moreOutfitsController = KK_Plugins.MoreOutfits.Plugin.GetController(PseudoMaker.selectedCharacter);
+                for (int coord = coordinateList.Count; coord < PseudoMaker.selectedCharacter.chaFile.coordinate.Length; coord++)
+                    coordinateList.Add(moreOutfitsController.GetCoodinateName(coord));
+                return coordinateList;
             }
         }
     }

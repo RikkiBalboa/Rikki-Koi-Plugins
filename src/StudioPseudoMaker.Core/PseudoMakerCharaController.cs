@@ -1284,6 +1284,12 @@ namespace PseudoMaker
             data.NippleDepth = bodyData.NippleDepth;
             selectedPushupController.RecalculateBody();
         }
+
+        public void CopyPushupOutfitData(int coordinate, bool copyBasic, bool copyAdvanced)
+        {
+            selectedPushupController.CopyBraData(CurrentOutfitSlot, coordinate, copyBasic, copyAdvanced);
+            selectedPushupController.CopyTopData(CurrentOutfitSlot, coordinate, copyBasic, copyAdvanced);
+        }
         #endregion
 #endregion
 

@@ -34,6 +34,11 @@ namespace PseudoMaker.UI
         private List<GameObject> mainOverlayObjects;
         private List<GameObject> multiOverlayObjects;
 
+
+        private DropdownComponent pushupToDropdown;
+        private int pushupToSelected;
+        private int pushupDataToCopy;
+
         private DropdownComponent fromDropDown;
         private int fromSelected = 0;
         private DropdownComponent toDropDown;
@@ -51,9 +56,10 @@ namespace PseudoMaker.UI
 
         public void RefreshDropdowns()
         {
-            if (!fromDropDown || !toDropDown) return;
-            fromDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
-            toDropDown.SetDropdownOptions(PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList());
+            var outfits = MoreOutfits.GetAllOutfits();
+            fromDropDown?.SetDropdownOptions(outfits);
+            toDropDown?.SetDropdownOptions(outfits);
+            pushupToDropdown?.SetDropdownOptions(outfits);
         }
 
         private void OnDisable()
@@ -460,6 +466,27 @@ namespace PseudoMaker.UI
                 }
                 else pushupTopGameObjects = list;
             }
+
+            AddSplitter();
+            pushupToDropdown = AddDropdownRow(
+                "Copy To Coordinate",
+                MoreOutfits.GetAllOutfits(),
+                () => pushupToSelected,
+                value => pushupToSelected = value
+            );
+            AddDropdownRow(
+                "Data To Copy",
+                new List<string> { "Basic and Advanced", "Basic", "Advanced" },
+                () => pushupDataToCopy,
+                value => pushupDataToCopy = value
+            );
+            AddButtonRow("Copy", () =>
+            {
+                bool copyBasic = pushupDataToCopy == 0 || pushupDataToCopy == 1;
+                bool copyAdvanced = pushupDataToCopy == 0 || pushupDataToCopy == 2;
+                PseudoMaker.selectedCharacterController.CopyPushupOutfitData(pushupToSelected, copyBasic, copyAdvanced);
+            });
+
             pushupBraGameObjects.ForEach(o => o.SetActive(false));
             pushupTopGameObjects.ForEach(o => o.SetActive(false));
         }
@@ -471,7 +498,7 @@ namespace PseudoMaker.UI
 
             fromDropDown = AddDropdownRow(
                 "Source Outfit",
-                PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
+                MoreOutfits.GetAllOutfits(),
                 () => fromSelected,
                 value => {
                     fromSelected = value;
@@ -480,7 +507,7 @@ namespace PseudoMaker.UI
             );
             toDropDown = AddDropdownRow(
                 "Target Outfit",
-                PseudoMaker.selectedCharacter.chaFile.coordinate.Select((coordinate, index) => KK_Plugins.MoreOutfits.Plugin.GetCoodinateName(PseudoMaker.selectedCharacter, index)).ToList(),
+                MoreOutfits.GetAllOutfits(),
                 () => toSelected,
                 value => {
                     toSelected = value;
