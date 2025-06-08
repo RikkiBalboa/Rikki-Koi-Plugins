@@ -37,6 +37,7 @@ namespace PseudoMaker
         public static bool HasButtPhysicsEditorPlugin { get; private set; }
         public static bool HasPregnancyPlus {  get; private set; }
         public static bool HasC2A { get; private set; }
+        public static bool HasChaAlphaMask { get; private set; }
 
         static Compatibility()
         {
@@ -60,6 +61,7 @@ namespace PseudoMaker
                         break;
                     case "com.rikkibalboa.bepinex.buttEditor": HasButtPhysicsEditorPlugin = true; break;
                     case "KK_PregnancyPlus": HasPregnancyPlus = true; break;
+                    case "nakay.kk.ChaAlphaMask": HasChaAlphaMask = true; break;
                 }
         }
 

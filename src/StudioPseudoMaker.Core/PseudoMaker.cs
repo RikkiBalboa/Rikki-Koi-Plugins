@@ -34,15 +34,15 @@ namespace PseudoMaker
     [BepInDependency("KK_PregnancyPlus", BepInDependency.DependencyFlags.SoftDependency)]
     // Only needed to add the timeline compatibility if it doesn't exist.
     [BepInDependency("com.rikkibalboa.bepinex.studioSkinColorControl", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("nakay.kk.ChaAlphaMask", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.5.3.0";
+        public const string PluginVersion = "1.5.3.1";
         internal static new ManualLogSource Logger;
-        private static Harmony harmony;
 
         internal static ChaControl selectedCharacter => PseudoMakerSceneController.Instance.SelectedCharacter;
         internal static PseudoMakerCharaController selectedCharacterController => PseudoMakerCharaController.GetController(selectedCharacter);
@@ -67,7 +67,7 @@ namespace PseudoMaker
         {
             instance = this;
             Logger = base.Logger;
-            harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
+            Hooks.Init();
 
             //ResetOriginalsOnReload = Config.Bind(
             //    "General", "Reset original values reloaad",

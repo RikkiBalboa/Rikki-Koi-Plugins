@@ -11,6 +11,26 @@ namespace PseudoMaker
 {
     internal class Hooks
     {
+        private static Harmony harmony;
+
+        internal static void Init()
+        {
+            harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
+
+            var type = Type.GetType("KK_ChaAlphaMask.Patch, KK_ChaAlphaMask");
+            if (type != null)
+                harmony.Patch(
+                    type.GetMethod("ChangeCustomClothes_Post", AccessTools.all),
+                    new HarmonyMethod(typeof(Hooks).GetMethod("EmptyPatch", AccessTools.all))
+                );
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch("KK_ChaAlphaMask.Patch, KK_ChaAlphaMask", "ChangeCustomClothes_Post")]
+        private static void EmptyPatch()
+        {
+        }
+
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
         [HarmonyWrapSafe]
         private static void ChangeCoordinateTypePostfix(ChaControl __instance)
@@ -49,20 +69,26 @@ namespace PseudoMaker
         [HarmonyPrefix]
         [HarmonyPatch(MethodType.Getter)]
         [HarmonyPatch(typeof(KKAPI.Maker.MakerAPI), nameof(KKAPI.Maker.MakerAPI.InsideAndLoaded))]
+        [HarmonyPatch(typeof(KKAPI.Maker.MakerAPI), nameof(KKAPI.Maker.MakerAPI.InsideMaker))]
         private static bool MakerInsideAndLoadedPrefix(ref bool __result)
         {
             var stackframe = new StackFrame(2).GetMethod();
             var methodName = stackframe.Name;
             var typeName = stackframe.DeclaringType.Name;
-
-            if(typeName == "HairAccessoryController"
-                && (
-                    methodName == "SetColorMatch"
-                    || methodName == "SetHairGloss"
-                    || methodName == "SetHairLength"
-                    || methodName == "SetAccessoryColor"
-                    || methodName == "SetGlossColor"
-                    || methodName == "SetOutlineColor"
+            if (
+                (
+                    typeName == "HairAccessoryController"
+                    && (
+                        methodName == "SetColorMatch"
+                        || methodName == "SetHairGloss"
+                        || methodName == "SetHairLength"
+                        || methodName == "SetAccessoryColor"
+                        || methodName == "SetGlossColor"
+                        || methodName == "SetOutlineColor"
+                    )
+                ) ||
+                (
+                    typeName == "Patch" && methodName == "DMD<KK_ChaAlphaMask.Patch::ChangeCustomClothes_Post>"
                 )
             )
             {
