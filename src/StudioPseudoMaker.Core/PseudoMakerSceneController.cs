@@ -34,7 +34,7 @@ namespace PseudoMaker
 
         internal void ClearProperties()
         {
-            if (SelectedCharacter || PseudoMaker.MainWindow.gameObject.activeInHierarchy) 
+            if (PseudoMaker.MainWindow != null && (SelectedCharacter || PseudoMaker.MainWindow.gameObject.activeInHierarchy)) 
             {
                 PseudoMaker.MainWindow.gameObject.SetActive(false);
             }
