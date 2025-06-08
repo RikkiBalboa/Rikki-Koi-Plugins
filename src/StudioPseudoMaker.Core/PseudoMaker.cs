@@ -212,7 +212,7 @@ namespace PseudoMaker
             if (PseudoMakerUI.MainWindow != null) Destroy(PseudoMakerUI.MainWindow.gameObject);
             foreach (var controller in PseudoMakerCharaController.allControllers)
                 DestroyImmediate(controller.Value);
-            harmony.UnpatchSelf();
+            Hooks.harmony.UnpatchSelf();
         }
 #endif
     }

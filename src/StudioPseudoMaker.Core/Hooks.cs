@@ -11,13 +11,13 @@ namespace PseudoMaker
 {
     internal class Hooks
     {
-        private static Harmony harmony;
+        internal static Harmony harmony;
 
         internal static void Init()
         {
             harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
-            var type = Type.GetType("KK_ChaAlphaMask.Patch, KK_ChaAlphaMask");
+            var type = Type.GetType("KK_ChaAlphaMask.Patch, KK_ChaAlphaMask", throwOnError: false);
             if (type != null)
                 harmony.Patch(
                     type.GetMethod("ChangeCustomClothes_Post", AccessTools.all),
