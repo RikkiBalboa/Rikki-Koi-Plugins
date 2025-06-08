@@ -468,6 +468,11 @@ namespace PseudoMaker.UI
             }
 
             AddSplitter();
+            AddButtonGroupRow(new Dictionary<string, Action>
+            {
+                { "Copy Bra to Top", () => { PseudoMaker.selectedCharacterController.CopyPushupData(false); RefreshPanel(); } },
+                { "Copy Top to Bra", () => { PseudoMaker.selectedCharacterController.CopyPushupData(true); RefreshPanel(); } },
+            });
             pushupToDropdown = AddDropdownRow(
                 "Copy To Coordinate",
                 MoreOutfits.GetAllOutfits(),
