@@ -204,7 +204,9 @@ namespace PseudoMaker
                     break;
                 case ColorType.NailColor:
                     ChaControl.fileBody.nailColor = color;
-                    UpdateBodyTextures(inpNail: true);
+                    ChaControl.chaFile.custom.body.nailColor = color;
+                    ChaControl.customTexCtrlBody.SetColor(ChaShader._Color5, color);
+                    UpdateBodyTextures(inpBase: true, inpSub: true, inpNail: true);
                     break;
                 case ColorType.PubicHairColor:
                     ChaControl.fileBody.underhairColor = color;
