@@ -65,6 +65,10 @@
       <HintPath>..\..\packages\IllusionModdingAPI.KKSAPI.1.38.0\lib\net46\KKSAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KKS_ClothingBlendShape">
+      <HintPath>..\..\lib\KKS_ClothingBlendShape.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KKS_ClothingUnlocker">
       <HintPath>..\..\lib\KKS_ClothingUnlocker.dll</HintPath>
       <Private>False</Private>

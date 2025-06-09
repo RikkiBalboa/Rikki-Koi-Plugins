@@ -8,12 +8,14 @@ using UnityEngine.UI;
 using static PseudoMaker.PseudoMakerCharaController;
 using static PseudoMaker.Compatibility;
 using KKAPI;
+using System.Collections;
 
 namespace PseudoMaker.UI
 {
     public class ClothingEditorPanel : BaseEditorPanel
     {
         private SelectKindType selectKindType = SelectKindType.CosTop;
+        private int selectKind => SelectKindToIntKind(selectKindType);
 
         private Action clothingChangeAction;
         private Action<int> patternChangeAction;
@@ -33,6 +35,8 @@ namespace PseudoMaker.UI
         private List<GameObject> otherOverlayObjects;
         private List<GameObject> mainOverlayObjects;
         private List<GameObject> multiOverlayObjects;
+        private List<SliderComponent> blendshapeSliders;
+        private GameObject blendshapeSplitter;
 
 
         private DropdownComponent pushupToDropdown;
@@ -144,6 +148,24 @@ namespace PseudoMaker.UI
 
                 MaterialEditorSplitter.SetActive(current != 0);
                 MaterialEditorButton.SetActive(current != 0);
+
+                StartCoroutine(blenshapeUpdateCo());
+                IEnumerator blenshapeUpdateCo()
+                {
+                    yield return null;
+                    yield return null;
+                    yield return null;
+
+                    for (int i = 0; i < blendshapeSliders.Count; i++)
+                    {
+                        if (blendshapeSliders[i] == null) continue;
+                        var name = Compatibility.ClothingBlendshape.GetBlendshapeName(selectKind, i);
+                        blendshapeSliders[i].name = name;
+                        blendshapeSliders[i].text.text = name;
+                        blendshapeSliders[i].gameObject?.SetActive(name != null);
+                    }
+                }
+
                 overlaySplitter?.SetActive(current != 0);
                 overlayHeader?.gameObject.SetActive(current != 0);
                 otherOverlayObjects?.ForEach(o => o.SetActive(current != 0 && overlayHeader.isOn));
@@ -195,6 +217,8 @@ namespace PseudoMaker.UI
 
             for (int i = 0; i < 3; i++)
                 AddPatternRows(SubCategory, selectKindType, i);
+
+            AddBlendshapeRows();
 
             MaterialEditorSplitter = AddSplitter();
             MaterialEditorButton = AddButtonRow(
@@ -297,6 +321,33 @@ namespace PseudoMaker.UI
                 {
                     for (int i = 0; i < 3; i++)
                         mainOverlayObjects.AddRange(AddClothingOverlayRow(_clothesId, $"Pattern {i + 1}", true, KoiClothesOverlayController.MakePatternId(_clothesId, i)));
+                }
+            }
+        }
+
+        private void AddBlendshapeRows()
+        {
+            blendshapeSliders = new List<SliderComponent>();
+
+            if (!Compatibility.HasClothingBlendshape) return;
+
+            AddRows();
+            void AddRows()
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    var blendshape = i;
+                    blendshapeSliders.Add(
+                        AddSliderRow(
+                            $"Blendshape {i + 1}",
+                            () => Compatibility.ClothingBlendshape.GetValue(selectKind, blendshape),
+                            () => 0.2f,
+                            value => Compatibility.ClothingBlendshape.SetValue(selectKind, blendshape, value),
+                            () => Compatibility.ClothingBlendshape.SetValue(selectKind, blendshape, 0.2f),
+                            0,
+                            1f
+                        )
+                    );
                 }
             }
         }
