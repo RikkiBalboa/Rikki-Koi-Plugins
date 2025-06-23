@@ -35,11 +35,11 @@ namespace PseudoMaker
         #endregion
 
         #region Character Properties shortcuts
-        private int CurrentOutfitSlot => ChaControl.fileStatus.coordinateType;
-        private ChaFileClothes Clothes => ChaControl.nowCoordinate.clothes;
-        private ChaFileClothes SetClothes => ChaControl.chaFile.coordinate[ChaControl.chaFile.status.coordinateType].clothes;
-        private ChaFileAccessory Accessories => ChaControl.nowCoordinate.accessory;
-        private ChaFileAccessory SetAccessories => ChaControl.chaFile.coordinate[ChaControl.chaFile.status.coordinateType].accessory;
+        internal int CurrentOutfitSlot => ChaControl.fileStatus.coordinateType;
+        internal ChaFileClothes Clothes => ChaControl.nowCoordinate.clothes;
+        internal ChaFileClothes SetClothes => ChaControl.chaFile.coordinate[ChaControl.chaFile.status.coordinateType].clothes;
+        internal ChaFileAccessory Accessories => ChaControl.nowCoordinate.accessory;
+        internal ChaFileAccessory SetAccessories => ChaControl.chaFile.coordinate[ChaControl.chaFile.status.coordinateType].accessory;
         #endregion
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)

@@ -6,7 +6,7 @@ namespace PseudoMaker.UI
 {
     public class SliderComponent : MonoBehaviour
     {
-        private Text text;
+        internal Text text;
         internal Slider slider;
         internal InputField inputField;
         private Button resetButton;
