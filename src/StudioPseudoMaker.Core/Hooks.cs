@@ -35,6 +35,7 @@ namespace PseudoMaker
         [HarmonyWrapSafe]
         private static void ChangeCoordinateTypePostfix(ChaControl __instance)
         {
+            if (PseudoMaker.instance == null || PseudoMaker.MainWindow == null) return;
             PseudoMaker.instance.StartCoroutine(Refresh());
             IEnumerator Refresh()
             {
@@ -148,6 +149,47 @@ namespace PseudoMaker
         {
             PseudoMakerSceneController.Instance.ClearProperties();
             return true;
+        }
+        
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTop))]
+        private static void ChangeClothesTopPostFix(ChaControl __instance)
+        {
+            Compatibility.ClothingBlendshape.InitComp(__instance, 0);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesBot))]
+        private static void ChangeClothesBotPostfix(ChaControl __instance)
+        {
+            Compatibility.ClothingBlendshape.InitComp(__instance, 1);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesBra))]
+        private static void ChangeClothesBraPostfix(ChaControl __instance)
+        {
+            Compatibility.ClothingBlendshape.InitComp(__instance, 2);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesShorts))]
+        private static void ChangeClothesShortsPostfix(ChaControl __instance)
+        {
+            Compatibility.ClothingBlendshape.InitComp(__instance, 3);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesGloves))]
+        private static void ChangeClothesGlovesPostfix(ChaControl __instance)
+        {
+            Compatibility.ClothingBlendshape.InitComp(__instance, 4);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesPanst))]
+        private static void ChangeClothesPanstPostfix(ChaControl __instance)
+        {
+            Compatibility.ClothingBlendshape.InitComp(__instance, 5);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesSocks))]
+        private static void ChangeClothesSocksPostfix(ChaControl __instance)
+        {
+            Compatibility.ClothingBlendshape.InitComp(__instance, 6);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesShoes))]
+        private static void ChangeClothesShoesPostfix(ChaControl __instance, int id)
+        {
+            Compatibility.ClothingBlendshape.InitComp(__instance, id == 0 ? 7 : 8);
         }
     }
 }

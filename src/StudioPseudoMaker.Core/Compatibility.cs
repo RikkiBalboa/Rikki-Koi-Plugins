@@ -12,13 +12,14 @@ using System.IO;
 using System.Linq;
 using KK_Plugins;
 using KKAPI.Studio;
-using Studio;
 using UnityEngine;
 using UnityEngine.UI;
 using ButtPhysicsEditor;
 using Shared;
 using a12 = AAAAAAAAAAAA.AAAAAAAAAAAA;
 using KK_PregnancyPlus;
+using KK_ClothingBlendShape;
+using System.Collections;
 
 namespace PseudoMaker
 {
@@ -38,6 +39,7 @@ namespace PseudoMaker
         public static bool HasPregnancyPlus {  get; private set; }
         public static bool HasC2A { get; private set; }
         public static bool HasChaAlphaMask { get; private set; }
+        public static bool HasClothingBlendshape { get; private set; }
 
         static Compatibility()
         {
@@ -62,6 +64,7 @@ namespace PseudoMaker
                     case "com.rikkibalboa.bepinex.buttEditor": HasButtPhysicsEditorPlugin = true; break;
                     case "KK_PregnancyPlus": HasPregnancyPlus = true; break;
                     case "nakay.kk.ChaAlphaMask": HasChaAlphaMask = true; break;
+                    case "nakay.kk.ClothingBlendShape": HasClothingBlendshape = true; break;
                 }
         }
 
@@ -1092,6 +1095,102 @@ namespace PseudoMaker
                 for (int coord = coordinateList.Count; coord < PseudoMaker.selectedCharacter.chaFile.coordinate.Length; coord++)
                     coordinateList.Add(moreOutfitsController.GetCoodinateName(coord));
                 return coordinateList;
+            }
+        }
+
+        public static class ClothingBlendshape
+        {
+            public static ClothingBlendShapeController GetController(ChaControl chaControl = null)
+            {
+                if (!HasClothingBlendshape) return null;
+
+                return GetController();
+                ClothingBlendShapeController GetController()
+                {
+                    return (chaControl == null ? PseudoMaker.selectedCharacter : chaControl).GetComponent<ClothingBlendShapeController>();
+                }
+            }
+
+            public static void InitComp(ChaControl chaControl, int kind)
+            {
+                if (!HasClothingBlendshape || PseudoMaker.instance == null) return;
+
+                PseudoMaker.instance.StartCoroutine(Init());
+                IEnumerator Init()
+                {
+                    yield return null;
+                    yield return null;
+                    yield return null;
+                    var controller = GetController(chaControl);
+                    if (controller != null
+                        && controller.ClothesDataSet != null
+                        && PseudoMaker.selectedCharacterController != null
+                        && !controller.ClothesDataSet.Any(x =>
+                            x.Coordinate == PseudoMaker.selectedCharacterController.CurrentOutfitSlot
+                            && x.Category == PseudoMaker.selectedCharacterController.ChaControl.infoClothes[kind].Category
+                        ))
+                    {
+                        if (controller.ShapesComp[kind] && controller.ShapesComp[kind].ItemNameExists)
+                            controller.AddClothesData(chaControl.infoClothes[kind], kind);
+                        else
+                            controller.RemoveClothesData(chaControl.infoClothes[kind], kind);
+                    }
+                }
+            }
+
+            public static float GetValue(int kind, int blendshape)
+            {
+                if (!HasClothingBlendshape) return 0;
+
+                return GetValue();
+                float GetValue()
+                {
+                    BlendShapeData clothesData = GetController().GetClothesData(GetListInfo(kind, 0), kind);
+                    return (clothesData != null ? clothesData.ShapeWeight[blendshape] : 20f) / 100;
+                }
+            }
+
+            public static void SetValue(int kind, int blendshape, float value)
+            {
+                if (!HasClothingBlendshape) return;
+
+                SetValue();
+                void SetValue()
+                {
+                    var ctrl = GetController();
+                    ctrl.SetClothesDataWeight(GetListInfo(kind, 0), kind, blendshape, value * 100);
+                    ctrl.UpdateClothes(kind);
+                }
+            }
+
+            public static string GetBlendshapeName(int kind, int blendshape)
+            {
+                if (!HasClothingBlendshape || blendshape >= 4) return null;
+
+                return GetName();
+                string GetName()
+                {
+                    var controller = GetController();
+                    if (!controller.ShapesComp[kind]) return null;
+                    var name = controller.ShapesComp[kind].DataSet[blendshape]?.name;
+                    return name.IsNullOrEmpty() ? null : name;
+                }
+            }
+
+            public static ListInfoBase GetListInfo(int clothesKind, int subKind)
+            {
+                if (!HasClothingBlendshape) return null;
+
+                return GetInfo();
+                ListInfoBase GetInfo()
+                {
+                    var controller = GetController();
+                    if (!controller) return null;
+
+                    if (clothesKind == 0 && controller.IsSubParts)
+                        return controller.ChaControl.infoParts[subKind];
+                    return controller.ChaControl.infoClothes[clothesKind];
+                }
             }
         }
     }

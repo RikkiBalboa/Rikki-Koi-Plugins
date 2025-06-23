@@ -36,7 +36,6 @@ namespace PseudoMaker
     [BepInDependency("com.rikkibalboa.bepinex.studioSkinColorControl", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("nakay.kk.ChaAlphaMask", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("nakay.kk.ClothingBlendShape", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("nakay.kk.CopyChaBodyMat", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess(Plugins.Constants.StudioProcessName)]
     public partial class PseudoMaker : BaseUnityPlugin
     {
