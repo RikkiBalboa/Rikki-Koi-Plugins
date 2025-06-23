@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using KK_Plugins;
 using KKAPI.Studio;
-using Studio;
 using UnityEngine;
 using UnityEngine.UI;
 using ButtPhysicsEditor;
@@ -20,12 +19,7 @@ using Shared;
 using a12 = AAAAAAAAAAAA.AAAAAAAAAAAA;
 using KK_PregnancyPlus;
 using KK_ClothingBlendShape;
-using static HandCtrl;
-using static KK_Plugins.Pushup;
-using KKAPI.Maker;
 using System.Collections;
-using static ChaFileDefine;
-using static KK_PregnancyPlus.BlendShapeController;
 
 namespace PseudoMaker
 {
@@ -1121,15 +1115,6 @@ namespace PseudoMaker
             {
                 if (!HasClothingBlendshape || PseudoMaker.instance == null) return;
 
-                ActivateControllers();
-                void ActivateControllers()
-                {
-                    foreach (var component in chaControl.GetComponentsInChildren<ChaClothesBlendShape>(true))
-                    {
-                        PseudoMaker.instance.StartCoroutine(component.SetController());
-                    }
-                }
-
                 PseudoMaker.instance.StartCoroutine(Init());
                 IEnumerator Init()
                 {
@@ -1137,7 +1122,13 @@ namespace PseudoMaker
                     yield return null;
                     yield return null;
                     var controller = GetController(chaControl);
-                    if (controller != null)
+                    if (controller != null
+                        && controller.ClothesDataSet != null
+                        && PseudoMaker.selectedCharacterController != null
+                        && !controller.ClothesDataSet.Any(x =>
+                            x.Coordinate == PseudoMaker.selectedCharacterController.CurrentOutfitSlot
+                            && x.Category == PseudoMaker.selectedCharacterController.ChaControl.infoClothes[kind].Category
+                        ))
                     {
                         if (controller.ShapesComp[kind] && controller.ShapesComp[kind].ItemNameExists)
                             controller.AddClothesData(chaControl.infoClothes[kind], kind);
