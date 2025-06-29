@@ -128,6 +128,7 @@ namespace PseudoMaker.UI
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusShiftZ, "Shift Z");
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusTaperY, "Taper Y");
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusTaperZ, "Taper Z");
+                    AddSliderRowPregnancyPlus(FloatType.PregnancyPlusDrop, "Drop");
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusClothOffset, "Cloth Offset");
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusFatFold, "Fat Fold");
                     AddSliderRowPregnancyPlus(FloatType.PregnancyPlusFatFoldHeight, "Fat Fold Height");
