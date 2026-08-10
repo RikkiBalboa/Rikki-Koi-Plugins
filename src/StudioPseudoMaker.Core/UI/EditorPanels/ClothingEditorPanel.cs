@@ -155,6 +155,9 @@ namespace PseudoMaker.UI
                     yield return null;
                     yield return null;
                     yield return null;
+                    yield return null;
+                    yield return null;
+                    yield return null;
 
                     for (int i = 0; i < blendshapeSliders.Count; i++)
                     {
