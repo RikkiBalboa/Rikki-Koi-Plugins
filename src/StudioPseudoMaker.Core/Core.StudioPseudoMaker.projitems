@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AccessoryGuideObjectManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CardSaver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compatibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ItemBlacklist.cs" />
@@ -43,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\ClothingEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\FaceEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\HairEditorPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\SaveEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\OnDragHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PickerPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PseudoMakerUI.cs" />

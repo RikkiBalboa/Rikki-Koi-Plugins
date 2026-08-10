@@ -30,16 +30,16 @@ namespace PseudoMaker
         public static CvsAccessory CvsAccessory;
         public static int SelectedSlotNr;
 
-        public static bool HasA12 { get; private set; }
-        public static bool HasClothesOverlayPlugin { get; private set; }
-        public static bool HasSkinOverlayPlugin { get; private set; }
-        public static bool HasStudioSkinColor {  get; private set; }
-        public static Version OverlayPluginVersion { get; private set; }
-        public static bool HasButtPhysicsEditorPlugin { get; private set; }
-        public static bool HasPregnancyPlus {  get; private set; }
-        public static bool HasC2A { get; private set; }
-        public static bool HasChaAlphaMask { get; private set; }
-        public static bool HasClothingBlendshape { get; private set; }
+        public static readonly bool HasA12;
+        public static readonly bool HasClothesOverlayPlugin;
+        public static readonly bool HasSkinOverlayPlugin;
+        public static readonly bool HasStudioSkinColor;
+        public static readonly Version OverlayPluginVersion;
+        public static readonly bool HasButtPhysicsEditorPlugin;
+        public static readonly bool HasPregnancyPlus;
+        public static readonly bool HasC2A;
+        public static readonly bool HasChaAlphaMask;
+        public static readonly bool HasClothingBlendshape;
 
         static Compatibility()
         {
@@ -1056,7 +1056,7 @@ namespace PseudoMaker
                 return coordinateList;
             }
         }
-
+        
         public static class ClothingBlendshape
         {
             public static ClothingBlendShapeController GetController(ChaControl chaControl = null)

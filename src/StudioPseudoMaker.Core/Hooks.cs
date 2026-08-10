@@ -4,8 +4,12 @@ using KK_Plugins;
 using PseudoMaker.UI;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Emit;
+using BepInEx.Bootstrap;
+using MoreAccessoriesKOI;
 
 namespace PseudoMaker
 {
@@ -16,19 +20,46 @@ namespace PseudoMaker
         internal static void Init()
         {
             harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
-
-            var type = Type.GetType("KK_ChaAlphaMask.Patch, KK_ChaAlphaMask", throwOnError: false);
-            if (type != null)
-                harmony.Patch(
-                    type.GetMethod("ChangeCustomClothes_Post", AccessTools.all),
-                    new HarmonyMethod(typeof(Hooks).GetMethod("EmptyPatch", AccessTools.all))
-                );
+            if (Compatibility.HasChaAlphaMask)
+                Harmony.CreateAndPatchAll(typeof(ChaAlphaMaskHook));
+            try
+            {
+                Harmony.CreateAndPatchAll(typeof(MoreAccessoryPatch));
+            }
+            catch (Exception e)
+            {
+                PseudoMaker.Logger.LogWarning("Patching MoreAccessories failed. Saving accessories beyond slot 20 might not work.");
+                throw;
+            }
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch("KK_ChaAlphaMask.Patch, KK_ChaAlphaMask", "ChangeCustomClothes_Post")]
-        private static void EmptyPatch()
+        internal static class ChaAlphaMaskHook
         {
+            [HarmonyPostfix]
+            [HarmonyPatch("KK_ChaAlphaMask.Patch, KK_ChaAlphaMask", "ChangeCustomClothes_Post")]
+            private static void EmptyPatch()
+            {
+            }
+        }
+
+        // patches a call to ChaCustom.CustomBase from MoreAccessories to prevent a null reference exception
+        internal static class MoreAccessoryPatch
+        {
+            [HarmonyTranspiler]
+            [HarmonyPatch(typeof(MoreAccessories), nameof(MoreAccessories.OnActualCoordSave))]
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            {
+                CodeMatcher cm = new CodeMatcher(instructions, generator);
+
+                cm.MatchForward(false, new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(CustomBase), "chaCtrl")));
+                cm.Advance(-1);
+                cm.RemoveInstructions(2);
+                cm.InsertAndAdvance(
+                    new CodeInstruction(OpCodes.Call,
+                        AccessTools.PropertyGetter(typeof(PseudoMaker), nameof(PseudoMaker.selectedCharacter))));
+                
+                return cm.Instructions();
+            }
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
