@@ -396,9 +396,7 @@ namespace PseudoMaker.UI
 
         public static Sprite GetThumbSprite(CustomSelectInfo item)
         {
-            if (
-                Compatibility.ClothesOverlays.HasPatternAndOverrideSupport()
-                && item.category == (int)ChaListDefine.CategoryNo.mt_pattern
+            if (item.category == (int)ChaListDefine.CategoryNo.mt_pattern
                 && item.index == Compatibility.ClothesOverlays.GetPatternId()
             )
                 return Compatibility.ClothesOverlays.GetPatternThumbnail();
