@@ -43,29 +43,24 @@ namespace PseudoMaker
 
         static Compatibility()
         {
-            var plugins = Chainloader.PluginInfos.Values.Select(x => x.Instance)
-                .Where(plugin => plugin != null)
-                .Union(UnityEngine.Object.FindObjectsOfType(typeof(BaseUnityPlugin)).Cast<BaseUnityPlugin>())
-                .ToArray();
-            foreach (var plugin in plugins)
-                switch (plugin?.Info?.Metadata?.GUID)
-                {
-                    case "starstorm.aaaaaaaaaaaa": HasA12 = true; break;
-                    case "ClothesToAccessories": HasC2A = true; break;
-                    case "com.rikkibalboa.bepinex.studioSkinColorControl": HasStudioSkinColor = true; break;
-                    case "KCOX": 
-                        HasClothesOverlayPlugin = true;
-                        OverlayPluginVersion = plugin.Info.Metadata.Version;
-                        break;
-                    case "KSOX":
-                        HasSkinOverlayPlugin = true;
-                        OverlayPluginVersion = plugin.Info.Metadata.Version;
-                        break;
-                    case "com.rikkibalboa.bepinex.buttEditor": HasButtPhysicsEditorPlugin = true; break;
-                    case "KK_PregnancyPlus": HasPregnancyPlus = true; break;
-                    case "nakay.kk.ChaAlphaMask": HasChaAlphaMask = true; break;
-                    case "nakay.kk.ClothingBlendShape": HasClothingBlendshape = true; break;
-                }
+
+            if (Chainloader.PluginInfos.ContainsKey("starstorm.aaaaaaaaaaaa")) HasA12 = true;
+            if (Chainloader.PluginInfos.ContainsKey("ClothesToAccessories")) HasC2A = true;
+            if (Chainloader.PluginInfos.ContainsKey("com.rikkibalboa.bepinex.studioSkinColorControl")) HasStudioSkinColor = true;
+            if (Chainloader.PluginInfos.TryGetValue("KCOX", out var kcox))
+            {
+                HasClothesOverlayPlugin = true;
+                OverlayPluginVersion = kcox.Metadata.Version;
+            }
+            if (Chainloader.PluginInfos.TryGetValue("KSOX", out var ksox))
+            {
+                HasClothesOverlayPlugin = true;
+                OverlayPluginVersion = ksox.Metadata.Version;
+            }
+            if (Chainloader.PluginInfos.ContainsKey("com.rikkibalboa.bepinex.buttEditor")) HasButtPhysicsEditorPlugin = true;
+            if (Chainloader.PluginInfos.ContainsKey("KK_PregnancyPlus")) HasPregnancyPlus = true;
+            if (Chainloader.PluginInfos.ContainsKey("nakay.kk.ChaAlphaMask")) HasChaAlphaMask = true;
+            if (Chainloader.PluginInfos.ContainsKey("nakay.kk.ClothingBlendShape")) HasClothingBlendshape = true;
         }
 
         public static class A12
