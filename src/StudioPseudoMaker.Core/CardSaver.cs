@@ -2,6 +2,7 @@ using Manager;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using KKAPI.Chara;
 using UnityEngine;
 using static PseudoMaker.PseudoMaker;
 
@@ -36,8 +37,9 @@ namespace PseudoMaker
 
             try
             {
-                string path = GetSavePath("chara", "PseudoMakerChara");
                 ChaFileControl chaFile = chaControl.chaFile;
+                string subfolder = chaFile.parameter.sex == 0 ? "male" : "female";
+                string path = GetSavePath($"chara/{subfolder}", $"PseudoMakerChara_{chaFile.GetFancyCharacterName()}");
 
                 chaFile.pngData = CreatePlaceholderCardImage();
 
