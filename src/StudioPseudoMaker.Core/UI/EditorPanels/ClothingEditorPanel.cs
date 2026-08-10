@@ -260,17 +260,13 @@ namespace PseudoMaker.UI
 
                 var clothesId = ClothesOverlays.GetClothesId(SubCategory);
 
-                if (ClothesOverlays.HasResizeSupport())
-                    mainOverlayObjects.Add(AddResizeDropdown(clothesId));
+                mainOverlayObjects.Add(AddResizeDropdown(clothesId));
 
                 mainOverlayObjects.AddRange(AddClothingOverlayRow(clothesId, "Overlay texture", true));
 
-                if (ClothesOverlays.HasPatternAndOverrideSupport())
-                    AddOverrideRows("Override texture", clothesId);
-                if (ClothesOverlays.HasColorMaskSupport())
-                    AddColorMaskRow("Color mask", clothesId);
-                if (ClothesOverlays.HasPatternAndOverrideSupport())
-                    AddPatternRows(clothesId);
+                AddOverrideRows("Override texture", clothesId);
+                AddColorMaskRow("Color mask", clothesId);
+                AddPatternRows(clothesId);
 
                 if (SubCategory == SubCategory.ClothingTop)
                 {
@@ -281,8 +277,7 @@ namespace PseudoMaker.UI
                         multiOverlayObjects.Add(AddResizeDropdown(subClothesId));
                         multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Overlay textures (Piece {i + 1})", true));
 
-                        if (ClothesOverlays.HasColorMaskSupport())
-                            multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
+                        multiOverlayObjects.AddRange(AddClothingOverlayRow(subClothesId, $"Color mask (Piece {i + 1})", true, KoiClothesOverlayController.MakeColormaskId(subClothesId)));
                     }
                 }
 

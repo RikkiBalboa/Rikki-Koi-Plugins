@@ -49,14 +49,15 @@ namespace PseudoMaker
             if (Chainloader.PluginInfos.ContainsKey("com.rikkibalboa.bepinex.studioSkinColorControl")) HasStudioSkinColor = true;
             if (Chainloader.PluginInfos.TryGetValue("KCOX", out var kcox))
             {
-                HasClothesOverlayPlugin = true;
-                OverlayPluginVersion = kcox.Metadata.Version;
+                if (kcox.Metadata.Version < new Version("7.0"))
+                {
+                    HasClothesOverlayPlugin = false;
+                    PseudoMaker.Logger.LogMessage("Pseudo Maker will only work with the overlay plugin version 7.0 or higher for clothes. Compatibility disabled for this plugin");
+                }
+                else
+                    HasClothesOverlayPlugin = true;
             }
-            if (Chainloader.PluginInfos.TryGetValue("KSOX", out var ksox))
-            {
-                HasClothesOverlayPlugin = true;
-                OverlayPluginVersion = ksox.Metadata.Version;
-            }
+            if (Chainloader.PluginInfos.ContainsKey("KSOX")) HasSkinOverlayPlugin = true;
             if (Chainloader.PluginInfos.ContainsKey("com.rikkibalboa.bepinex.buttEditor")) HasButtPhysicsEditorPlugin = true;
             if (Chainloader.PluginInfos.ContainsKey("KK_PregnancyPlus")) HasPregnancyPlus = true;
             if (Chainloader.PluginInfos.ContainsKey("nakay.kk.ChaAlphaMask")) HasChaAlphaMask = true;
@@ -196,19 +197,6 @@ namespace PseudoMaker
         }
 
         public static class ClothesOverlays {
-            public static bool HasColorMaskSupport()
-            {
-                return OverlayPluginVersion >= new Version("6.2");
-            }
-            public static bool HasResizeSupport()
-            {
-                return OverlayPluginVersion >= new Version("6.3");
-            }
-            public static bool HasPatternAndOverrideSupport()
-            {
-                return OverlayPluginVersion >= new Version("7.0");
-            }
-
             public static void DumpOriginalTexture(string clothesId)
             {
                 if (!HasClothesOverlayPlugin) return;
@@ -274,28 +262,16 @@ namespace PseudoMaker
 
             public static int GetSizeOverride(string clothesId)
             {
-                if (!HasClothesOverlayPlugin && HasResizeSupport()) return 0;
-
-                return GetSize();
-                int GetSize()
-                {
-                    return GetController()?.GetTextureSizeOverride(clothesId) ?? 0;
-                }
+                return GetController()?.GetTextureSizeOverride(clothesId) ?? 0;
             }
 
             public static void SetSizeOverride(string clothesId, int newSize)
             {
-                if (!HasClothesOverlayPlugin && HasResizeSupport()) return;
-
-                GetSize();
-                void GetSize()
-                {
-                    var controller = GetController();
-                    var currentSize = controller.GetTextureSizeOverride(clothesId);
-                    newSize = controller.SetTextureSizeOverride(clothesId, newSize);
-                    if (newSize != currentSize)
-                        controller.RefreshTexture(KoiClothesOverlayController.MakeColormaskId(clothesId));
-                }
+                var controller = GetController();
+                var currentSize = controller.GetTextureSizeOverride(clothesId);
+                newSize = controller.SetTextureSizeOverride(clothesId, newSize);
+                if (newSize != currentSize)
+                    controller.RefreshTexture(KoiClothesOverlayController.MakeColormaskId(clothesId));
             }
 
             public static void ImportClothesOverlay(string clothesId, Action onDone = null)
@@ -425,24 +401,12 @@ namespace PseudoMaker
 
             public static int GetPatternId()
             {
-                if(!HasClothesOverlayPlugin || !HasPatternAndOverrideSupport()) return -57475893;
-
-                return GetId();
-                int GetId()
-                {
-                    return KoiClothesOverlayController.CustomPatternID;
-                }
+                return KoiClothesOverlayController.CustomPatternID;
             }
 
             public static Sprite GetPatternThumbnail()
             {
-                if (!HasClothesOverlayPlugin || !HasPatternAndOverrideSupport()) return null;
-
-                return GetThumbnail();
-                Sprite GetThumbnail()
-                {
-                    return KoiClothesOverlayController.GetPatternThumbnail();
-                }
+                return KoiClothesOverlayController.GetPatternThumbnail();
             }
 
             public static void CLothingCopiedEvent(int sourceOutfit, int targetOutfit, List<int> slots)
