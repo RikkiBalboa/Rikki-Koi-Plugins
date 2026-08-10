@@ -186,17 +186,19 @@ namespace PseudoMaker
             {
                 case ColorType.SkinMain:
                     ChaControl.fileBody.skinMainColor = color;
-                    UpdateFaceTextures(inpBase: true);
-                    UpdateBodyTextures(inpBase: true);
+                    //UpdateFaceTextures(inpBase: true, inpSub: true);
+                    //UpdateBodyTextures(inpBase: true, inpSub: true, inpSunburn: true);
+                    UpdateFaceTextures(true, true, true, true, true, true, true);
+                    UpdateBodyTextures(true, true, true, true, true, true);
                     break;
                 case ColorType.SkinSub:
                     ChaControl.fileBody.skinSubColor = color;
-                    UpdateFaceTextures(inpSub: true);
-                    UpdateBodyTextures(inpSub: true);
+                    UpdateFaceTextures(true, true, true, true, true, true, true);
+                    UpdateBodyTextures(true, true, true, true, true, true);
                     break;
                 case ColorType.SkinTan:
                     ChaControl.fileBody.sunburnColor = color;
-                    UpdateBodyTextures(inpSunburn: true);
+                    UpdateBodyTextures(true, true, true, true, true, true);
                     break;
                 case ColorType.NippleColor:
                     ChaControl.fileBody.nipColor = color;
@@ -206,7 +208,7 @@ namespace PseudoMaker
                     ChaControl.fileBody.nailColor = color;
                     ChaControl.chaFile.custom.body.nailColor = color;
                     ChaControl.customTexCtrlBody.SetColor(ChaShader._Color5, color);
-                    UpdateBodyTextures(inpBase: true, inpSub: true, inpNail: true);
+                    UpdateBodyTextures(true, true, true, true, true, true);
                     break;
                 case ColorType.PubicHairColor:
                     ChaControl.fileBody.underhairColor = color;
