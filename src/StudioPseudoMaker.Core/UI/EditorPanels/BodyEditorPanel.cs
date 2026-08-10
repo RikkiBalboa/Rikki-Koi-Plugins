@@ -60,15 +60,6 @@ namespace PseudoMaker.UI
             {
                 if (Compatibility.HasButtPhysicsEditorPlugin)
                     AddButtEditorRows();
-
-                void AddButtEditorRows()
-                {
-                    foreach (var type in Enum.GetValues(typeof(ButtPhysicsEditor.SliderType)).Cast<ButtPhysicsEditor.SliderType>())
-                    {
-                        var slider = AddSliderRow($"Butt {type}", (FloatType)Compatibility.ButtPhysicsEditorPlugin.SliderTypeTofloatType(type), minValue: 0f, maxValue: 0.3f);
-                        slider.displayTemplate = "0.000";
-                    }
-                }
             }
             else if (SubCategory == SubCategory.BodyPubicHair)
             {
@@ -168,6 +159,15 @@ namespace PseudoMaker.UI
                 minValue: Compatibility.PregnancyPlus.GetSliderRange(type)[0],
                 maxValue: Compatibility.PregnancyPlus.GetSliderRange(type)[1]
             );
+        }
+        
+        private void AddButtEditorRows()
+        {
+            foreach (var type in Enum.GetValues(typeof(ButtPhysicsEditor.SliderType)).Cast<ButtPhysicsEditor.SliderType>())
+            {
+                var slider = AddSliderRow($"Butt {type}", (FloatType)Compatibility.ButtPhysicsEditorPlugin.SliderTypeTofloatType(type), minValue: 0f, maxValue: 0.3f);
+                slider.displayTemplate = "0.000";
+            }
         }
     }
 }

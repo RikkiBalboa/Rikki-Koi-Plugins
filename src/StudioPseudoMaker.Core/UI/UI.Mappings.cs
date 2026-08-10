@@ -242,6 +242,8 @@ namespace PseudoMaker.UI
                 case SubCategory.HairSide: return "Side";
                 case SubCategory.HairExtensions: return "Extensions";
                 case SubCategory.HairMiscellaneous: return "Miscellaneous";
+                case SubCategory.SaveCharacter: return "Save Character";
+                case SubCategory.SaveClothes: return "Save Clothes";
                 default: return "Undefined";
             }
         }
@@ -599,6 +601,7 @@ namespace PseudoMaker.UI
         Hair,
         Clothing,
         Accessories,
+        Save,
     }
 
     public enum SubCategory
@@ -647,6 +650,8 @@ namespace PseudoMaker.UI
         HairMiscellaneous,
         Accessories,
         AccessoryTransfer,
-        AccessoryCopy
+        AccessoryCopy,
+        SaveCharacter,
+        SaveClothes
     }
 }
