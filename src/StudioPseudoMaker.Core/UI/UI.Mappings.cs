@@ -603,6 +603,7 @@ namespace PseudoMaker.UI
 
     public enum SubCategory
     {
+        Template,
         BodyGeneral,
         BodyChest,
         BodyUpper,

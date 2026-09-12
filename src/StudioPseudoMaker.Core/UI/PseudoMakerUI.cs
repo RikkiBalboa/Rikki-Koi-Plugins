@@ -60,6 +60,7 @@ namespace PseudoMaker.UI
             InitializeTemplates();
             InitializeCategories();
             ResizeHandle.SetAsLastSibling();
+            PseudoMakerApi.AnnounceInit();
         }
 
         private void InitializeTemplates()

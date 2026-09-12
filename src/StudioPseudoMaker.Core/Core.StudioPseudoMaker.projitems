@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Compatibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ItemBlacklist.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PseudoMakerApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PseudoMakerCharaController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CurrentStateColorSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PseudoMaker.cs" />

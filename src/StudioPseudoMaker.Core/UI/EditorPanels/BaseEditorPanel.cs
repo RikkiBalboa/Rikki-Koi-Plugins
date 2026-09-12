@@ -67,21 +67,24 @@ namespace PseudoMaker.UI
 
                 Initialize();
 
-                DestroyImmediate(SliderTemplate);
-                DestroyImmediate(InputTemplate);
-                DestroyImmediate(TextInputTemplate);
-                DestroyImmediate(ButtonGroupTemplate);
-                DestroyImmediate(ColorTemplate);
-                DestroyImmediate(PickerTemplate);
-                DestroyImmediate(DropdownTemplate);
-                DestroyImmediate(ClothingOptionTemplate);
-                DestroyImmediate(ToggleOptionTemplate);
-                DestroyImmediate(ToggleGroupTemplate);
-                DestroyImmediate(SplitterTemplate);
-                DestroyImmediate(HeaderTemplate);
-                DestroyImmediate(TransferRowTemplate);
-                DestroyImmediate(CopyRowTemplate);
-                DestroyImmediate(ImageRowTemplate);
+                if (SubCategory != SubCategory.Template)
+                {
+                    DestroyImmediate(SliderTemplate);
+                    DestroyImmediate(InputTemplate);
+                    DestroyImmediate(TextInputTemplate);
+                    DestroyImmediate(ButtonGroupTemplate);
+                    DestroyImmediate(ColorTemplate);
+                    DestroyImmediate(PickerTemplate);
+                    DestroyImmediate(DropdownTemplate);
+                    DestroyImmediate(ClothingOptionTemplate);
+                    DestroyImmediate(ToggleOptionTemplate);
+                    DestroyImmediate(ToggleGroupTemplate);
+                    DestroyImmediate(SplitterTemplate);
+                    DestroyImmediate(HeaderTemplate);
+                    DestroyImmediate(TransferRowTemplate);
+                    DestroyImmediate(CopyRowTemplate);
+                    DestroyImmediate(ImageRowTemplate);
+                }
             }
             catch (Exception e)
             {
@@ -92,9 +95,10 @@ namespace PseudoMaker.UI
 
         public static T CreatePanel<T>(SubCategory subCategory) where T : BaseEditorPanel
         {
-            var panel = Instantiate(CategoryPanel.EditorPanelTemplate);
+            var panel = Instantiate(CategoryPanel.EditorPanelTemplateGo);
+            Destroy(panel.GetComponent<BaseEditorPanel>());
             panel.name = $"Category{subCategory}Editor";
-            panel.transform.SetParent(CategoryPanel.EditorPanelTemplate.transform.parent, false);
+            panel.transform.SetParent(CategoryPanel.EditorPanelTemplateGo.transform.parent, false);
 
             var editor = panel.AddComponent<T>();
             editor.SubCategory = subCategory;

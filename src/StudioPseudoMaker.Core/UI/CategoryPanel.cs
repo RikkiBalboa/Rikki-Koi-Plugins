@@ -8,14 +8,15 @@ namespace PseudoMaker.UI
 {
     public class CategoryPanel : MonoBehaviour
     {
-        public Category Category;
-        public GameObject SubCategorySelectorPanel;
+        internal Category Category;
+        internal GameObject SubCategorySelectorPanel;
 
-        public ScrollRect PanelScroll;
-        public ToggleGroup PanelToggleGroup;
+        internal ScrollRect PanelScroll;
+        internal ToggleGroup PanelToggleGroup;
 
-        public Dictionary<SubCategory, BaseEditorPanel> SubCategoryPanels = new Dictionary<SubCategory, BaseEditorPanel>();
-        public static GameObject EditorPanelTemplate;
+        internal Dictionary<SubCategory, BaseEditorPanel> SubCategoryPanels = new Dictionary<SubCategory, BaseEditorPanel>();
+        public static GameObject EditorPanelTemplateGo;
+        public static BaseEditorPanel EditorPanelTemplate { get; private set; }
 
         private void Awake()
         {
@@ -29,8 +30,9 @@ namespace PseudoMaker.UI
         public void InitializeSubCategories()
         {
             var toggleTemplate = PanelScroll.content.Find("ToggleTemplate").gameObject;
-            EditorPanelTemplate = gameObject.transform.Find("EditorPanelTemplate").gameObject;
-            EditorPanelTemplate.SetActive(false);
+            EditorPanelTemplateGo = gameObject.transform.Find("EditorPanelTemplate").gameObject;
+            EditorPanelTemplate = EditorPanelTemplateGo.AddComponent<BaseEditorPanel>();
+            EditorPanelTemplateGo.SetActive(false);
 
             var toggles = new List<Toggle>();
 
@@ -84,7 +86,6 @@ namespace PseudoMaker.UI
                     toggle.isOn = false;
 
                 toggles[0].isOn = true;
-                Destroy(EditorPanelTemplate);
                 if (Category != Category.Accessories)
                     Destroy(toggleTemplate);
             }
