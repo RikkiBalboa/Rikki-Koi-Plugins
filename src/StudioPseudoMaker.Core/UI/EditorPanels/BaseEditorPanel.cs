@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace PseudoMaker.UI
 {
-    public class BaseEditorPanel : MonoBehaviour
+    public class BaseEditorPanel : MonoBehaviour, IEditorPanelApiInterface
     {
         private static GameObject TemplateGo => CategoryPanel.EditorPanelTemplateGo;
         private static BaseEditorPanel Template => CategoryPanel.EditorPanelTemplate;
