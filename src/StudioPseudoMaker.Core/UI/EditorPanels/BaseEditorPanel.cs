@@ -1,10 +1,8 @@
-﻿using ADV.Commands.Object;
+﻿using Illusion.Extensions;
 using KoiSkinOverlayX;
-using PseudoMaker.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,25 +10,28 @@ namespace PseudoMaker.UI
 {
     public class BaseEditorPanel : MonoBehaviour
     {
+        private static GameObject TemplateGo => CategoryPanel.EditorPanelTemplateGo;
+        private static BaseEditorPanel Template => CategoryPanel.EditorPanelTemplate;
+
         public SubCategory SubCategory;
 
         protected ScrollRect scrollRect;
 
-        protected GameObject SliderTemplate;
-        protected GameObject InputTemplate;
-        protected GameObject TextInputTemplate;
-        protected GameObject ButtonGroupTemplate;
-        protected GameObject ColorTemplate;
-        protected GameObject PickerTemplate;
-        protected GameObject DropdownTemplate;
-        protected GameObject ClothingOptionTemplate;
-        protected GameObject ToggleOptionTemplate;
-        protected GameObject ToggleGroupTemplate;
-        protected GameObject SplitterTemplate;
-        protected GameObject HeaderTemplate;
-        protected GameObject TransferRowTemplate;
-        protected GameObject CopyRowTemplate;
-        protected GameObject ImageRowTemplate;
+        protected static GameObject SliderTemplate;
+        protected static GameObject InputTemplate;
+        protected static GameObject TextInputTemplate;
+        protected static GameObject ButtonGroupTemplate;
+        protected static GameObject ColorTemplate;
+        protected static GameObject PickerTemplate;
+        protected static GameObject DropdownTemplate;
+        protected static GameObject ClothingOptionTemplate;
+        protected static GameObject ToggleOptionTemplate;
+        protected static GameObject ToggleGroupTemplate;
+        protected static GameObject SplitterTemplate;
+        protected static GameObject HeaderTemplate;
+        protected static GameObject TransferRowTemplate;
+        protected static GameObject CopyRowTemplate;
+        protected static GameObject ImageRowTemplate;
 
         private void Start()
         {
@@ -43,47 +44,38 @@ namespace PseudoMaker.UI
             }
         }
 
+        internal void InitTemplateVariables()
+        {
+            scrollRect = GetComponentInChildren<ScrollRect>();
+
+            SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
+            InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
+            TextInputTemplate = scrollRect.content.Find("TextInputFieldTemplate").gameObject;
+            ButtonGroupTemplate = scrollRect.content.Find("ButtonGroupTemplate").gameObject;
+            ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
+            PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
+            DropdownTemplate = scrollRect.content.Find("DropdownTemplate").gameObject;
+            ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
+            ToggleOptionTemplate = scrollRect.content.Find("ToggleOptionTemplate").gameObject;
+            ToggleGroupTemplate = scrollRect.content.Find("ToggleGroupTemplate").gameObject;
+            SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
+            HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
+            TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
+            CopyRowTemplate = scrollRect.content.Find("CopyRowTemplate").gameObject;
+            ImageRowTemplate = scrollRect.content.Find("ImageRowTemplate").gameObject;
+        }
+
         protected void Awake()
         {
             try
             {
                 scrollRect = GetComponentInChildren<ScrollRect>();
 
-                SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
-                InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
-                TextInputTemplate = scrollRect.content.Find("TextInputFieldTemplate").gameObject;
-                ButtonGroupTemplate = scrollRect.content.Find("ButtonGroupTemplate").gameObject;
-                ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
-                PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
-                DropdownTemplate = scrollRect.content.Find("DropdownTemplate").gameObject;
-                ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
-                ToggleOptionTemplate = scrollRect.content.Find("ToggleOptionTemplate").gameObject;
-                ToggleGroupTemplate = scrollRect.content.Find("ToggleGroupTemplate").gameObject;
-                SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
-                HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
-                TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
-                CopyRowTemplate = scrollRect.content.Find("CopyRowTemplate").gameObject;
-                ImageRowTemplate = scrollRect.content.Find("ImageRowTemplate").gameObject;
-
-                Initialize();
-
                 if (SubCategory != SubCategory.Template)
                 {
-                    DestroyImmediate(SliderTemplate);
-                    DestroyImmediate(InputTemplate);
-                    DestroyImmediate(TextInputTemplate);
-                    DestroyImmediate(ButtonGroupTemplate);
-                    DestroyImmediate(ColorTemplate);
-                    DestroyImmediate(PickerTemplate);
-                    DestroyImmediate(DropdownTemplate);
-                    DestroyImmediate(ClothingOptionTemplate);
-                    DestroyImmediate(ToggleOptionTemplate);
-                    DestroyImmediate(ToggleGroupTemplate);
-                    DestroyImmediate(SplitterTemplate);
-                    DestroyImmediate(HeaderTemplate);
-                    DestroyImmediate(TransferRowTemplate);
-                    DestroyImmediate(CopyRowTemplate);
-                    DestroyImmediate(ImageRowTemplate);
+                    foreach (var child in scrollRect.content.Children())
+                        Destroy(child.gameObject);
+                    Initialize();
                 }
             }
             catch (Exception e)
@@ -93,12 +85,12 @@ namespace PseudoMaker.UI
             }
         }
 
-        public static T CreatePanel<T>(SubCategory subCategory) where T : BaseEditorPanel
+        internal static T CreatePanel<T>(SubCategory subCategory) where T : BaseEditorPanel
         {
-            var panel = Instantiate(CategoryPanel.EditorPanelTemplateGo);
+            var panel = Instantiate(TemplateGo);
             Destroy(panel.GetComponent<BaseEditorPanel>());
             panel.name = $"Category{subCategory}Editor";
-            panel.transform.SetParent(CategoryPanel.EditorPanelTemplateGo.transform.parent, false);
+            panel.transform.SetParent(TemplateGo.transform.parent, false);
 
             var editor = panel.AddComponent<T>();
             editor.SubCategory = subCategory;
@@ -430,11 +422,9 @@ namespace PseudoMaker.UI
             return imageComponent;
         }
 
-        public CopyComponent AddCopyRow(string title, Func<string> getFromName, Func<string> getToName, bool initiallyToggled = false, GameObject template = null)
+        public CopyComponent AddCopyRow(string title, Func<string> getFromName, Func<string> getToName, bool initiallyToggled = false, Transform parent = null)
         {
-            if (CopyRowTemplate) template = CopyRowTemplate;
-            else if (!template) return null;
-            var row = Instantiate(template, template.transform.parent);
+            var row = Instantiate(CopyRowTemplate, parent == null ? scrollRect.content : parent);
             row.name = $"CopyRow{title.Replace(" ", "")}";
             var copyComponent = row.AddComponent<CopyComponent>();
             copyComponent.LabelName = title;

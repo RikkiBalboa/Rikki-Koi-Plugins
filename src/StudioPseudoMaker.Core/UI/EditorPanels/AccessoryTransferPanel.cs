@@ -3,7 +3,6 @@ using KKAPI.Maker;
 using MessagePack;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,9 +71,9 @@ namespace PseudoMaker.UI
             }
         }
 
-        private TransferComponent AddTransferRow(int slotNr)
+        private TransferComponent AddTransferRow(int slotNr, Transform parent = null)
         {
-            var transferRow = Instantiate(rowTemplate, rowTemplate.transform.parent);
+            var transferRow = Instantiate(rowTemplate, parent == null ? scrollRect.content : parent);
             transferRow.SetActive(true);
             transferRow.name = $"TransferRow{slotNr}";
 

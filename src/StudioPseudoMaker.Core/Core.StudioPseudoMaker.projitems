@@ -44,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\ClothingEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\FaceEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\HairEditorPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\IEditorPanelApiInterface.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\OnDragHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PickerPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\PseudoMakerUI.cs" />

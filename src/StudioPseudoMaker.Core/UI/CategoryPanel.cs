@@ -32,6 +32,7 @@ namespace PseudoMaker.UI
             var toggleTemplate = PanelScroll.content.Find("ToggleTemplate").gameObject;
             EditorPanelTemplateGo = gameObject.transform.Find("EditorPanelTemplate").gameObject;
             EditorPanelTemplate = EditorPanelTemplateGo.AddComponent<BaseEditorPanel>();
+            EditorPanelTemplate.InitTemplateVariables();
             EditorPanelTemplateGo.SetActive(false);
 
             var toggles = new List<Toggle>();

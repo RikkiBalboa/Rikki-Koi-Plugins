@@ -100,7 +100,7 @@ namespace PseudoMaker.UI
                         if (slotNum >= toAccessory.parts.Length) return "None";
                         ListInfoBase listInfoTo = PseudoMaker.selectedCharacter.lstCtrl.GetListInfo((ChaListDefine.CategoryNo)toAccessory.parts[slotNum].type, toAccessory.parts[slotNum].id);
                         return listInfoTo != null ? listInfoTo.Name : "None";
-                    }, toggleStates.TryGetValue(i, out bool toggled) && toggled, copyRowTemplate));
+                    }, toggleStates.TryGetValue(i, out bool toggled) && toggled));
                 }
             }
             _copyComponents.Values.ToList().ForEach(c => c.Refresh());
