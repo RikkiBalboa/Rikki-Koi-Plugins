@@ -15,8 +15,7 @@ namespace PseudoMaker.UI
         internal ToggleGroup PanelToggleGroup;
 
         internal Dictionary<SubCategory, BaseEditorPanel> SubCategoryPanels = new Dictionary<SubCategory, BaseEditorPanel>();
-        public static GameObject EditorPanelTemplateGo;
-        public static BaseEditorPanel EditorPanelTemplate { get; private set; }
+        internal Transform EditorPanelParent { get; private set; }
 
         private void Awake()
         {
@@ -30,10 +29,10 @@ namespace PseudoMaker.UI
         public void InitializeSubCategories()
         {
             var toggleTemplate = PanelScroll.content.Find("ToggleTemplate").gameObject;
-            EditorPanelTemplateGo = gameObject.transform.Find("EditorPanelTemplate").gameObject;
-            EditorPanelTemplate = EditorPanelTemplateGo.AddComponent<BaseEditorPanel>();
-            EditorPanelTemplate.InitTemplateVariables();
-            EditorPanelTemplateGo.SetActive(false);
+
+            var panel = gameObject.transform.Find("EditorPanelTemplate").gameObject;
+            var PanelParent = panel.transform.parent;
+            TemplateEditorPanel.InitializeTemplate(panel);
 
             var toggles = new List<Toggle>();
 
@@ -44,13 +43,13 @@ namespace PseudoMaker.UI
                 if (Category == Category.Accessories)
                 {
                     var accessoryPanel = SubCategorySelectorPanel.AddComponent<AccessoryPanel>();
-                    AccessoryEditorPanel accessoryPanelEditorPanel = BaseEditorPanel.CreatePanel<AccessoryEditorPanel>(subCategory);
+                    AccessoryEditorPanel accessoryPanelEditorPanel = BaseEditorPanel.CreatePanel<AccessoryEditorPanel>(subCategory, PanelParent);
                     accessoryPanel.editorPanel = accessoryPanelEditorPanel;
                     SubCategoryPanels.Add(subCategory, accessoryPanelEditorPanel);
-                    AccessoryCopyPanel accessoryPanelCopyPanel = BaseEditorPanel.CreatePanel<AccessoryCopyPanel>(SubCategory.AccessoryCopy);
+                    AccessoryCopyPanel accessoryPanelCopyPanel = BaseEditorPanel.CreatePanel<AccessoryCopyPanel>(SubCategory.AccessoryCopy, PanelParent);
                     accessoryPanel.copyPanel = accessoryPanelCopyPanel;
                     SubCategoryPanels.Add(SubCategory.AccessoryCopy, accessoryPanelCopyPanel);
-                    AccessoryTransferPanel accessoryPanelTransferPanel = BaseEditorPanel.CreatePanel<AccessoryTransferPanel>(SubCategory.AccessoryTransfer);
+                    AccessoryTransferPanel accessoryPanelTransferPanel = BaseEditorPanel.CreatePanel<AccessoryTransferPanel>(SubCategory.AccessoryTransfer, PanelParent);
                     accessoryPanel.transferPanel = accessoryPanelTransferPanel;
                     SubCategoryPanels.Add(SubCategory.AccessoryTransfer, accessoryPanelTransferPanel);
                 }
@@ -71,10 +70,10 @@ namespace PseudoMaker.UI
                     var text = go.GetComponentInChildren<Text>(true);
                     text.text = UIMappings.GetSubcategoryName(subCategory);
 
-                    if (Category == Category.Body) editorPanel = BaseEditorPanel.CreatePanel<BodyEditorPanel>(subCategory);
-                    else if (Category == Category.Face) editorPanel = BaseEditorPanel.CreatePanel<FaceEditorPanel>(subCategory);
-                    else if (Category == Category.Hair) editorPanel = BaseEditorPanel.CreatePanel<HairEditorPanel>(subCategory);
-                    else if (Category == Category.Clothing) editorPanel = BaseEditorPanel.CreatePanel<ClothingEditorPanel>(subCategory);
+                    if (Category == Category.Body) editorPanel = BaseEditorPanel.CreatePanel<BodyEditorPanel>(subCategory, PanelParent);
+                    else if (Category == Category.Face) editorPanel = BaseEditorPanel.CreatePanel<FaceEditorPanel>(subCategory, PanelParent);
+                    else if (Category == Category.Hair) editorPanel = BaseEditorPanel.CreatePanel<HairEditorPanel>(subCategory, PanelParent);
+                    else if (Category == Category.Clothing) editorPanel = BaseEditorPanel.CreatePanel<ClothingEditorPanel>(subCategory, PanelParent);
                 }
 
                 if (editorPanel != null)

@@ -23,7 +23,7 @@ namespace PseudoMaker.UI
         {
             base.Initialize();
 
-            rowTemplate = Instantiate(TransferRowTemplate, TransferRowTemplate.transform.parent);
+            rowTemplate = Instantiate(TemplateEditorPanel.TransferRowTemplate, scrollRect.content);
             rowTemplate.SetActive(false);
 
             var go = new GameObject("FromToggleGroup");

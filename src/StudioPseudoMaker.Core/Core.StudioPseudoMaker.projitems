@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryCopyPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\AccessoryTransferPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\TemplateEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\BodyEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\ClothingEditorPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\EditorPanels\FaceEditorPanel.cs" />

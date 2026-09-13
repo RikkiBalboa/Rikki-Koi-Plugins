@@ -10,28 +10,9 @@ namespace PseudoMaker.UI
 {
     public class BaseEditorPanel : MonoBehaviour, IEditorPanelApiInterface
     {
-        private static GameObject TemplateGo => CategoryPanel.EditorPanelTemplateGo;
-        private static BaseEditorPanel Template => CategoryPanel.EditorPanelTemplate;
-
         public SubCategory SubCategory;
 
         protected ScrollRect scrollRect;
-
-        protected static GameObject SliderTemplate;
-        protected static GameObject InputTemplate;
-        protected static GameObject TextInputTemplate;
-        protected static GameObject ButtonGroupTemplate;
-        protected static GameObject ColorTemplate;
-        protected static GameObject PickerTemplate;
-        protected static GameObject DropdownTemplate;
-        protected static GameObject ClothingOptionTemplate;
-        protected static GameObject ToggleOptionTemplate;
-        protected static GameObject ToggleGroupTemplate;
-        protected static GameObject SplitterTemplate;
-        protected static GameObject HeaderTemplate;
-        protected static GameObject TransferRowTemplate;
-        protected static GameObject CopyRowTemplate;
-        protected static GameObject ImageRowTemplate;
 
         private void Start()
         {
@@ -44,39 +25,12 @@ namespace PseudoMaker.UI
             }
         }
 
-        internal void InitTemplateVariables()
-        {
-            scrollRect = GetComponentInChildren<ScrollRect>();
-
-            SliderTemplate = scrollRect.content.Find("SliderTemplate").gameObject;
-            InputTemplate = scrollRect.content.Find("InputFieldTemplate").gameObject;
-            TextInputTemplate = scrollRect.content.Find("TextInputFieldTemplate").gameObject;
-            ButtonGroupTemplate = scrollRect.content.Find("ButtonGroupTemplate").gameObject;
-            ColorTemplate = scrollRect.content.Find("ColorTemplate").gameObject;
-            PickerTemplate = scrollRect.content.Find("PickerTemplate").gameObject;
-            DropdownTemplate = scrollRect.content.Find("DropdownTemplate").gameObject;
-            ClothingOptionTemplate = scrollRect.content.Find("ClothingOptionTemplate").gameObject;
-            ToggleOptionTemplate = scrollRect.content.Find("ToggleOptionTemplate").gameObject;
-            ToggleGroupTemplate = scrollRect.content.Find("ToggleGroupTemplate").gameObject;
-            SplitterTemplate = scrollRect.content.Find("SplitterTemplate").gameObject;
-            HeaderTemplate = scrollRect.content.Find("HeaderTemplate").gameObject;
-            TransferRowTemplate = scrollRect.content.Find("AccessoryTransferRowRemplate").gameObject;
-            CopyRowTemplate = scrollRect.content.Find("CopyRowTemplate").gameObject;
-            ImageRowTemplate = scrollRect.content.Find("ImageRowTemplate").gameObject;
-        }
-
         protected void Awake()
         {
+            scrollRect = GetComponentInChildren<ScrollRect>();
             try
             {
-                scrollRect = GetComponentInChildren<ScrollRect>();
-
-                if (SubCategory != SubCategory.Template)
-                {
-                    foreach (var child in scrollRect.content.Children())
-                        Destroy(child.gameObject);
-                    Initialize();
-                }
+                Initialize();
             }
             catch (Exception e)
             {
@@ -85,31 +39,39 @@ namespace PseudoMaker.UI
             }
         }
 
-        internal static T CreatePanel<T>(SubCategory subCategory) where T : BaseEditorPanel
+        internal static T CreatePanel<T>(SubCategory subCategory, Transform parent) where T : BaseEditorPanel
         {
-            var panel = Instantiate(TemplateGo);
-            Destroy(panel.GetComponent<BaseEditorPanel>());
+            var panel = Instantiate(TemplateEditorPanel.EditorTemplate);
             panel.name = $"Category{subCategory}Editor";
-            panel.transform.SetParent(TemplateGo.transform.parent, false);
+            panel.transform.SetParent(parent, false);
 
             var editor = panel.AddComponent<T>();
             editor.SubCategory = subCategory;
 
+            if (typeof(T) == typeof(TemplateEditorPanel))
+            {
+                editor.gameObject.SetActive(true);
+                editor.gameObject.SetActive(false);
+            }
             return editor;
         }
 
-        protected virtual void Initialize() { }
+        protected virtual void Initialize()
+        {
+            foreach (var child in scrollRect.content.Children())
+                Destroy(child.gameObject);
+        }
 
         public GameObject AddSplitter(Transform parent = null)
         {
-            var splitter = Instantiate(SplitterTemplate, parent == null ? scrollRect.content : parent);
+            var splitter = Instantiate(TemplateEditorPanel.SplitterTemplate, parent == null ? scrollRect.content : parent);
             splitter.name = "Splitter";
             return splitter;
         }
 
         public GameObject AddHeader(string name, Transform parent = null)
         {
-            var header = Instantiate(HeaderTemplate, parent == null ? scrollRect.content : parent);
+            var header = Instantiate(TemplateEditorPanel.HeaderTemplate, parent == null ? scrollRect.content : parent);
             header.name = "Header";
 
             header.GetComponentInChildren<Text>().text = name;
@@ -118,7 +80,7 @@ namespace PseudoMaker.UI
 
         public Toggle AddHeaderToggle(string name, Action<bool> onValueChanged, Transform parent = null)
         {
-            var header = Instantiate(HeaderTemplate, parent == null ? scrollRect.content : parent);
+            var header = Instantiate(TemplateEditorPanel.HeaderTemplate, parent == null ? scrollRect.content : parent);
             header.name = "Header";
 
             var text = header.GetComponentInChildren<Text>();
@@ -132,7 +94,7 @@ namespace PseudoMaker.UI
 
         public ButtonGroupComponent AddButtonGroupRow(Dictionary<string, Action> buttonsMap, Transform parent = null)
         {
-            var buttonGroup = Instantiate(ButtonGroupTemplate, parent == null ? scrollRect.content : parent);
+            var buttonGroup = Instantiate(TemplateEditorPanel.ButtonGroupTemplate, parent == null ? scrollRect.content : parent);
             buttonGroup.name = "ButtonsGroup";
 
             var buttonGroupComponent = buttonGroup.AddComponent<ButtonGroupComponent>();
@@ -148,7 +110,7 @@ namespace PseudoMaker.UI
 
         public ToggleComponent AddToggleRow(string name, Action<bool> onValueChanged, Func<bool> GetCurrentValue, Transform parent = null)
         {
-            var toggleObject = Instantiate(ToggleOptionTemplate, parent == null ? scrollRect.content : parent);
+            var toggleObject = Instantiate(TemplateEditorPanel.ToggleOptionTemplate, parent == null ? scrollRect.content : parent);
             toggleObject.name = $"Toggle{name.Replace(" ", "")}";
 
             var toggle = toggleObject.AddComponent<ToggleComponent>();
@@ -161,7 +123,7 @@ namespace PseudoMaker.UI
 
         public ToggleGroupComponent AddToggleGroupRow(string label, IEnumerable<string> options, Action<int> onValueChanged, Func<int> GetCurrentValue, Func<int> getCurrentAvailableOptions = null, Transform parent = null)
         {
-            var toggleObject = Instantiate(ToggleGroupTemplate, parent == null ? scrollRect.content : parent);
+            var toggleObject = Instantiate(TemplateEditorPanel.ToggleGroupTemplate, parent == null ? scrollRect.content : parent);
             toggleObject.name = $"ToggleGroup";
 
             var toggleGroup = toggleObject.AddComponent<ToggleGroupComponent>();
@@ -176,7 +138,7 @@ namespace PseudoMaker.UI
 
         public InputFieldComponent AddInputRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, float incrementValue = 1, Transform parent = null)
         {
-            var inputField = Instantiate(InputTemplate, parent == null ? scrollRect.content : parent);
+            var inputField = Instantiate(TemplateEditorPanel.InputTemplate, parent == null ? scrollRect.content : parent);
             inputField.name = $"InputField{name.Replace(" ", "")}";
 
             var inputFieldComponent = inputField.AddComponent<InputFieldComponent>();
@@ -194,7 +156,7 @@ namespace PseudoMaker.UI
 
         public TextInputFieldComponent AddTextInputRow(string name, Func<string> getCurrentValueAction, Action<string> setValueAction, string placeholder = "Type here...", Transform parent = null)
         {
-            var inputField = Instantiate(TextInputTemplate, parent == null ? scrollRect.content : parent);
+            var inputField = Instantiate(TemplateEditorPanel.TextInputTemplate, parent == null ? scrollRect.content : parent);
             inputField.name = $"TextInputField{name.Replace(" ", "")}";
 
             var inputFieldComponent = inputField.AddComponent<TextInputFieldComponent>();
@@ -208,10 +170,11 @@ namespace PseudoMaker.UI
 
         public SliderComponent AddSliderRow(string name, Func<float> getCurrentValueAction, Func<float> getOriginalValueAction, Action<float> setValueAction, Action resetValueAction, float minValue = -1, float maxValue = 2, Action onLabelClick = null, Transform parent = null)
         {
-            var slider = Instantiate(SliderTemplate, parent == null ? scrollRect.content : parent);
+            var slider = Instantiate(TemplateEditorPanel.SliderTemplate, parent == null ? scrollRect.content : parent);
             slider.name = $"Slider{name.Replace(" ", "")}";
 
             var sliderComponent = slider.AddComponent<SliderComponent>();
+            sliderComponent.enabled = true;
             sliderComponent.Name = name;
             sliderComponent.MinValue = minValue;
             sliderComponent.MaxValue = maxValue;
@@ -241,7 +204,7 @@ namespace PseudoMaker.UI
 
         public ColorComponent AddColorRow(string name, Func<Color> getCurrentValueAction, Func<Color> getOriginalValueAction, Action<Color> setValueAction, Action resetValueAction, Action onLabelClick = null, Transform parent = null)
         {
-            var button = Instantiate(ColorTemplate, parent == null ? scrollRect.content : parent);
+            var button = Instantiate(TemplateEditorPanel.ColorTemplate, parent == null ? scrollRect.content : parent);
             button.name = $"ColorPicker{name.Replace(" ", "")}";
 
             var colorComponent = button.AddComponent<ColorComponent>();
@@ -272,7 +235,7 @@ namespace PseudoMaker.UI
         {
             var name = UIMappings.GetSelectKindTypeName(selectKind);
 
-            var picker = Instantiate(PickerTemplate, parent == null ? scrollRect.content : parent);
+            var picker = Instantiate(TemplateEditorPanel.PickerTemplate, parent == null ? scrollRect.content : parent);
             picker.name = $"CategoryPicker{name.Replace(" ", "")}";
 
             ChaListDefine.CategoryNo[] array = new ChaListDefine.CategoryNo[104]
@@ -400,7 +363,7 @@ namespace PseudoMaker.UI
 
         public DropdownComponent AddDropdownRow(string name, List<string> options, Func<int> getCurrentValueAction, Action<int> setValueAction, Transform parent = null)
         {
-            var dropdown = Instantiate(DropdownTemplate, parent == null ? scrollRect.content : parent);
+            var dropdown = Instantiate(TemplateEditorPanel.DropdownTemplate, parent == null ? scrollRect.content : parent);
             dropdown.name = $"Dropdown{name.Replace(" ", "")}";
 
             var dropdownComponent = dropdown.AddComponent<DropdownComponent>();
@@ -414,7 +377,7 @@ namespace PseudoMaker.UI
 
         public ImageComponent AddImageRow(Func<Texture> getCurrentValueAction, Transform parent = null)
         {
-            var image = Instantiate(ImageRowTemplate, parent == null ? scrollRect.content : parent);
+            var image = Instantiate(TemplateEditorPanel.ImageRowTemplate, parent == null ? scrollRect.content : parent);
 
             var imageComponent = image.AddComponent<ImageComponent>();
             imageComponent.GetCurrentValue = getCurrentValueAction;
@@ -424,7 +387,7 @@ namespace PseudoMaker.UI
 
         public CopyComponent AddCopyRow(string title, Func<string> getFromName, Func<string> getToName, bool initiallyToggled = false, Transform parent = null)
         {
-            var row = Instantiate(CopyRowTemplate, parent == null ? scrollRect.content : parent);
+            var row = Instantiate(TemplateEditorPanel.CopyRowTemplate, parent == null ? scrollRect.content : parent);
             row.name = $"CopyRow{title.Replace(" ", "")}";
             var copyComponent = row.AddComponent<CopyComponent>();
             copyComponent.LabelName = title;

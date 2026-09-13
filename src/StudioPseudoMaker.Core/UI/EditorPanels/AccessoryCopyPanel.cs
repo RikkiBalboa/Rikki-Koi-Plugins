@@ -27,7 +27,7 @@ namespace PseudoMaker.UI
         {
             base.Initialize();
 
-            copyRowTemplate = Instantiate(CopyRowTemplate, CopyRowTemplate.transform.parent);
+            copyRowTemplate = Instantiate(TemplateEditorPanel.CopyRowTemplate, scrollRect.content);
             copyRowTemplate.SetActive(false);
 
             fromDropDown = AddDropdownRow(

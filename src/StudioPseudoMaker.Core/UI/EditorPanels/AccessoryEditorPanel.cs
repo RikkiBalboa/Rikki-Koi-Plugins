@@ -398,7 +398,7 @@ namespace PseudoMaker.UI
 
         public PickerComponent AddPickerRow(ChaListDefine.CategoryNo categoryNr)
         {
-            var picker = Instantiate(PickerTemplate, PickerTemplate.transform.parent);
+            var picker = Instantiate(TemplateEditorPanel.PickerTemplate, scrollRect.content);
             picker.name = "CategoryPickerAccessories";
 
             var pickerComponent = picker.AddComponent<PickerComponent>();

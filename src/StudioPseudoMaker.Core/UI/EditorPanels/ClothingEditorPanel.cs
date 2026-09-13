@@ -740,7 +740,7 @@ namespace PseudoMaker.UI
                 return null;
 #endif
 
-            var clothingOption = Instantiate(ClothingOptionTemplate, ClothingOptionTemplate.transform.parent);
+            var clothingOption = Instantiate(TemplateEditorPanel.ClothingOptionTemplate, scrollRect.content);
             clothingOption.name = "ClothingOptions";
 
 
