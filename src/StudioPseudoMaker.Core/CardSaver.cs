@@ -88,10 +88,9 @@ namespace PseudoMaker
                 {
                     name = Path.GetFileNameWithoutExtension(path);
                 }
-                // Neither of these are set in studio, and an empty name shows up blank in the coordinate list
+                
                 coordinate.pngData = CreatePlaceholderCardImage();
-                if (string.IsNullOrEmpty(coordinate.coordinateName))
-                    coordinate.coordinateName = name;
+                coordinate.coordinateName = name;
 
                 coordinate.SaveFile(path);
 
