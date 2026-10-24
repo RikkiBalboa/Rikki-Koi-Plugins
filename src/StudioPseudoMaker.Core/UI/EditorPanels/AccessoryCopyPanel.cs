@@ -129,8 +129,18 @@ namespace PseudoMaker.UI
                     {
                         PseudoMaker.selectedCharacterController.AddAccessorySlot((i + 1) - toAccessory.parts.Length, toSelected);
                     }
-                    byte[] array = MessagePackSerializer.Serialize(fromAccessory.parts[i]);
-                    toAccessory.parts[i] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(array);
+
+                    if (fromAccessory.parts.Length <= i) // if slot not on source outfit act as if copying a "None"-Type accessory
+                    {
+                        ChaFileAccessory.PartsInfo nonePart = new ChaFileAccessory.PartsInfo();
+                        nonePart.MemberInit(); // sets up "None"-Type accessory
+                        toAccessory.parts[i] = nonePart;
+                    }
+                    else
+                    { 
+                        byte[] array = MessagePackSerializer.Serialize(fromAccessory.parts[i]);
+                        toAccessory.parts[i] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(array);
+                    }
                     copiedSlots.Add(i);
                 }
             }
