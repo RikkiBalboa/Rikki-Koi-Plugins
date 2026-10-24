@@ -146,8 +146,9 @@ namespace PseudoMaker.UI
             }
             PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
             PseudoMaker.selectedCharacter.Reload(false, true, true, true);
+            PseudoMaker.selectedCharacterController.SkirtFkFix(); // copy accessory can destroy bones and recreate them, so skirt fk has to be fixed again
             PseudoMaker.RefreshCharacterstatusPanel();
-
+            
             // trigger KKAPI event
             FieldInfo eventInfo = typeof(AccessoriesApi).GetField(nameof(AccessoriesApi.AccessoriesCopied), BindingFlags.NonPublic | BindingFlags.Static);
             if (eventInfo == null) return;
@@ -158,7 +159,7 @@ namespace PseudoMaker.UI
                 (ChaFileDefine.CoordinateType)toSelected
             );
             eventValue?.GetType().GetMethod("Invoke")?.Invoke(eventValue, new object[] { this, args });
-
+            
             // TODO: someone rework A12
             // Compatibility.A12.CopyAccessoryAfter(fromSelected, toSelected, copiedSlots);
         }
