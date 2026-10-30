@@ -20,13 +20,10 @@ namespace PseudoMaker
 
         /// <summary>
         /// Saves the selected character as a character card.
+        /// Uses the game's own ChaFileControl.SaveCharaFile, so the card is stamped with the current
+        /// userID and gets a new dataID, same as saving from the maker.
         /// </summary>
-        /// <param name="useGameMethod">
-        /// When true the game's own ChaFileControl.SaveCharaFile is used, which also assigns a new
-        /// dataID/userID and updates charaFileName. When false the card is written through the plain
-        /// ChaFile.SaveFile, leaving all of that metadata untouched.
-        /// </param>
-        public static void SaveCharacter(bool useGameMethod)
+        public static void SaveCharacter()
         {
             ChaControl chaControl = selectedCharacter;
             if (!chaControl)
@@ -39,21 +36,15 @@ namespace PseudoMaker
             {
                 ChaFileControl chaFile = chaControl.chaFile;
                 string subfolder = chaFile.parameter.sex == 0 ? "male" : "female";
-                string path = GetSavePath($"chara/{subfolder}", $"PseudoMakerChara_{chaFile.GetFancyCharacterName()}");
+                string charaNameClean = string.Join("", chaFile.GetFancyCharacterName().Split(Path.GetInvalidFileNameChars()));
+                string path = GetSavePath($"chara/{subfolder}", $"PseudoMakerChara_{charaNameClean}");
 
                 chaFile.pngData = CreatePlaceholderCardImage();
 
-                if (useGameMethod)
+                if (!chaFile.SaveCharaFile(path, 255, true))
                 {
-                    if (!chaFile.SaveCharaFile(path, 255, true))
-                    {
-                        PseudoMaker.Logger.LogMessage("Failed to save character card");
-                        return;
-                    }
-                }
-                else
-                {
-                    chaFile.SaveFile(path);
+                    PseudoMaker.Logger.LogMessage("Failed to save character card");
+                    return;
                 }
 
                 PseudoMaker.Logger.LogMessage($"Saved character card to {path}");

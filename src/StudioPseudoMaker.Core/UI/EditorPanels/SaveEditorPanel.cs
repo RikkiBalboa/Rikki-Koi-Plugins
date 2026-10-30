@@ -11,8 +11,7 @@ namespace PseudoMaker.UI
             if (SubCategory == SubCategory.SaveCharacter)
             {
                 AddHeader("Save Character Card");
-                AddButtonRow("Save Character", () => CardSaver.SaveCharacter(true));
-                AddButtonRow("Save Character (keep card data)", () => CardSaver.SaveCharacter(false));
+                AddButtonRow("Save Character", CardSaver.SaveCharacter);
             }
             else if (SubCategory == SubCategory.SaveClothes)
             {
