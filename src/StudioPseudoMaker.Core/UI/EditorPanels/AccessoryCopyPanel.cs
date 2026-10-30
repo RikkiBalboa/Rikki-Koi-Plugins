@@ -129,15 +129,26 @@ namespace PseudoMaker.UI
                     {
                         PseudoMaker.selectedCharacterController.AddAccessorySlot((i + 1) - toAccessory.parts.Length, toSelected);
                     }
-                    byte[] array = MessagePackSerializer.Serialize(fromAccessory.parts[i]);
-                    toAccessory.parts[i] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(array);
+
+                    if (fromAccessory.parts.Length <= i) // if slot not on source outfit act as if copying a "None"-Type accessory
+                    {
+                        ChaFileAccessory.PartsInfo nonePart = new ChaFileAccessory.PartsInfo();
+                        nonePart.MemberInit(); // sets up "None"-Type accessory
+                        toAccessory.parts[i] = nonePart;
+                    }
+                    else
+                    { 
+                        byte[] array = MessagePackSerializer.Serialize(fromAccessory.parts[i]);
+                        toAccessory.parts[i] = MessagePackSerializer.Deserialize<ChaFileAccessory.PartsInfo>(array);
+                    }
                     copiedSlots.Add(i);
                 }
             }
             PseudoMaker.selectedCharacter.ChangeCoordinateType(true);
             PseudoMaker.selectedCharacter.Reload(false, true, true, true);
+            PseudoMaker.selectedCharacterController.SkirtFkFix(); // copy accessory can destroy bones and recreate them, so skirt fk has to be fixed again
             PseudoMaker.RefreshCharacterstatusPanel();
-
+            
             // trigger KKAPI event
             FieldInfo eventInfo = typeof(AccessoriesApi).GetField(nameof(AccessoriesApi.AccessoriesCopied), BindingFlags.NonPublic | BindingFlags.Static);
             if (eventInfo == null) return;
@@ -148,7 +159,7 @@ namespace PseudoMaker.UI
                 (ChaFileDefine.CoordinateType)toSelected
             );
             eventValue?.GetType().GetMethod("Invoke")?.Invoke(eventValue, new object[] { this, args });
-
+            
             // TODO: someone rework A12
             // Compatibility.A12.CopyAccessoryAfter(fromSelected, toSelected, copiedSlots);
         }

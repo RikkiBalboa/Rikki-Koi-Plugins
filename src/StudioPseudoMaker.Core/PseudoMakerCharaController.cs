@@ -1728,7 +1728,7 @@ namespace PseudoMaker
             SetSelectKind(type, info.index);
         }
 
-        private void SkirtFkFix()
+        internal void SkirtFkFix()
         {
             OCIChar ociChar = PseudoMaker.selectedCharacter.GetOCIChar();
             if (ociChar != null)

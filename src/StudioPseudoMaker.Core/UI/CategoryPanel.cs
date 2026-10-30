@@ -72,6 +72,7 @@ namespace PseudoMaker.UI
                     else if (Category == Category.Face) editorPanel = BaseEditorPanel.CreatePanel<FaceEditorPanel>(subCategory);
                     else if (Category == Category.Hair) editorPanel = BaseEditorPanel.CreatePanel<HairEditorPanel>(subCategory);
                     else if (Category == Category.Clothing) editorPanel = BaseEditorPanel.CreatePanel<ClothingEditorPanel>(subCategory);
+                    else if (Category == Category.Save) editorPanel = BaseEditorPanel.CreatePanel<SaveEditorPanel>(subCategory);
                 }
 
                 if (editorPanel != null)
@@ -105,6 +106,7 @@ namespace PseudoMaker.UI
                 case Category.Face:
                 case Category.Clothing:
                 case Category.Hair:
+                case Category.Save:
                     return Enum.GetValues(typeof(SubCategory))
                         .Cast<SubCategory>()
                         .Where(x => x.ToString().StartsWith(Category.ToString()));
