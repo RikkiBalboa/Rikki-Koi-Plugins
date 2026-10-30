@@ -60,7 +60,12 @@ namespace PseudoMaker
             if (Chainloader.PluginInfos.ContainsKey("KSOX")) HasSkinOverlayPlugin = true;
             if (Chainloader.PluginInfos.ContainsKey("com.rikkibalboa.bepinex.buttEditor")) HasButtPhysicsEditorPlugin = true;
             if (Chainloader.PluginInfos.ContainsKey("KK_PregnancyPlus")) HasPregnancyPlus = true;
-            if (Chainloader.PluginInfos.ContainsKey("nakay.kk.ChaAlphaMask")) HasChaAlphaMask = true;
+            if (Chainloader.PluginInfos.TryGetValue("nakay.kk.ChaAlphaMask", out var chaAlphaMask))
+            {  
+                // Special stuff only needs to be done on this version
+                if (kcox.Metadata.Version == new Version("1.0.0"))
+                    HasChaAlphaMask = true;
+            }
             if (Chainloader.PluginInfos.ContainsKey("nakay.kk.ClothingBlendShape")) HasClothingBlendshape = true;
         }
 
@@ -196,7 +201,8 @@ namespace PseudoMaker
             }
         }
 
-        public static class ClothesOverlays {
+        public static class ClothesOverlays
+        {
             public static void DumpOriginalTexture(string clothesId)
             {
                 if (!HasClothesOverlayPlugin) return;
@@ -421,7 +427,7 @@ namespace PseudoMaker
                     copySlots.AddRange(Enum.GetNames(typeof(MaskKind)));
                     copySlots.AddRange(KoiClothesOverlayMgr.SubClothesNames);
                 }
-                
+
                 Dictionary<string, ClothesTexData> sourceDic = controller.GetOverlayTextures((ChaFileDefine.CoordinateType)sourceOutfit);
                 Dictionary<string, ClothesTexData> destinationDic = controller.GetOverlayTextures((ChaFileDefine.CoordinateType)targetOutfit);
 
@@ -662,7 +668,8 @@ namespace PseudoMaker
                 if (!HasButtPhysicsEditorPlugin) return;
 
                 SetValue();
-                void SetValue() {
+                void SetValue()
+                {
                     PseudoMaker.selectedCharacter.GetComponent<ButtPhysicsEditorCharaController>()?.SetButtValue(type, value);
                 }
             }
@@ -927,7 +934,7 @@ namespace PseudoMaker
 
                 void Copy()
                 {
-                    PregnancyPlusPlugin.copiedBelly = (PregnancyPlusData)GetController().infConfig.Clone(); 
+                    PregnancyPlusPlugin.copiedBelly = (PregnancyPlusData)GetController().infConfig.Clone();
                 }
             }
 
@@ -1056,7 +1063,7 @@ namespace PseudoMaker
                 return coordinateList;
             }
         }
-        
+
         public static class ClothingBlendshape
         {
             public static ClothingBlendShapeController GetController(ChaControl chaControl = null)
