@@ -178,7 +178,7 @@ namespace PseudoMaker
         [HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.LoadSceneCoroutine))]
         private static bool LoadScenePrefix()
         {
-            PseudoMakerSceneController.Instance.ClearProperties();
+            if (PseudoMakerSceneController.Instance) PseudoMakerSceneController.Instance.ClearProperties();
             return true;
         }
         
