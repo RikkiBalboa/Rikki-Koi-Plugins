@@ -42,7 +42,7 @@ namespace PseudoMaker
         public const string PluginGUID = "com.rikkibalboa.bepinex.studioPseudoMaker";
         public const string PluginName = "StudioPseudoMaker";
         public const string PluginNameInternal = Plugins.Constants.Prefix + "_StudioPseudoMaker";
-        public const string PluginVersion = "1.5.3.1";
+        public const string PluginVersion = "1.6.0.0";
         internal static new ManualLogSource Logger;
 
         internal static ChaControl selectedCharacter => PseudoMakerSceneController.Instance.SelectedCharacter;
